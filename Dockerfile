@@ -1,29 +1,23 @@
-FROM node:22-slim
+FROM node:23-slim
 
-# Set working directory
-WORKDIR /app
+# Create app directory
+WORKDIR /usr/src/app
 
-# Copy package dependency manifests
+# Install app dependencies
 COPY package*.json ./
 
-# Install dependencies (including devDependencies for build)
+# Install dependencies (npm ci is preferred for reproducible builds)
 RUN npm ci
 
-# Copy codebase
+# Bundle app source
 COPY . .
 
-# Build the client production assets
+# Build Vite frontend
 RUN npm run build
 
-# Prune development dependencies to keep image slim
-RUN npm prune --production
-
-# Expose port
+# Expose port (Coolify uses the PORT env var)
+ENV PORT=5000
 EXPOSE 5000
 
-# Set environment
-ENV NODE_ENV=production
-ENV PORT=5000
-
-# Run the Express production server
-CMD ["npm", "start"]
+# Start the Express server
+CMD [ "npm", "start" ]

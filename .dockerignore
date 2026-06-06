@@ -1,6 +1,6 @@
 node_modules
 dist
-server/database.sqlite
 .git
-.gitignore
-README.md
+.env
+.DS_Store
+npm-debug.log
