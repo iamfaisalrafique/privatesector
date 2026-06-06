@@ -1,0 +1,426 @@
+/* Prestige Editorial Design System (privatesector.ch) */
+:root {
+  /* Color System (Option 3 - Prestige Editorial) */
+  --primary-gold: #BF9B30;
+  --gold-hover: #8A6E1F;
+  --gold-light: #F5E6B8;
+  
+  --bg-ivory: #FFFDF7;
+  --surface-warm: #F5F0E8;
+  
+  --text-ink: #1A1A1A;
+  --text-charcoal: #5A5A5A;
+  
+  --dark-nav: #0A0A0A;
+  --dark-surface: #1A1A1A;
+  
+  --dark-border: rgba(42, 42, 42, 0.4);
+  --light-border: #E8E0C8;
+  
+  --accent-red: #8B0000;
+  --accent-green: #4A6741;
+  
+  /* Fonts */
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', Courier, monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-ivory);
+  color: var(--text-ink);
+  font-family: var(--font-sans);
+  line-height: 1.75;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Page fade transition */
+.page-fade-enter {
+  opacity: 0;
+  transition: opacity 150ms ease-out;
+}
+.page-fade-enter-active {
+  opacity: 1;
+}
+
+/* RTL layout utility */
+[dir="rtl"] {
+  text-align: right;
+}
+
+/* Typography Hierarchy */
+h1, h2, h3, h4, .display-font {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--text-ink);
+  line-height: 1.3;
+}
+
+p, li, .sans-font {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  color: var(--text-ink);
+}
+
+.text-secondary {
+  color: var(--text-charcoal);
+}
+
+.editorial-text {
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.8;
+  color: var(--text-ink);
+}
+
+.caps-label {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--primary-gold);
+}
+
+.mono-data {
+  font-family: var(--font-mono);
+}
+
+/* Layout Utilities */
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.grid-12 {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 32px;
+}
+
+/* Buttons (No shadows, flat surfaces) */
+.btn {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 13px;
+  padding: 12px 24px;
+  border-radius: 0px; /* Editorial feel */
+  cursor: pointer;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  min-height: 44px; /* touch target */
+}
+
+.btn-gold-fill {
+  background-color: var(--primary-gold);
+  color: #1A1A1A;
+  border: 0.5px solid var(--primary-gold);
+  font-weight: 600;
+}
+.btn-gold-fill:hover {
+  background-color: var(--gold-hover);
+  border-color: var(--gold-hover);
+  color: #FFFFFF;
+}
+
+.btn-gold-outline {
+  background-color: transparent;
+  color: var(--primary-gold);
+  border: 0.5px solid var(--primary-gold);
+}
+.btn-gold-outline:hover {
+  background-color: var(--primary-gold);
+  color: #1A1A1A;
+}
+
+.btn-dark-outline {
+  background-color: transparent;
+  color: #FFFFFF;
+  border: 0.5px solid #FFFFFF;
+}
+.btn-dark-outline:hover {
+  background-color: #FFFFFF;
+  color: var(--dark-nav);
+}
+
+/* Navigation Links */
+.nav-link {
+  color: #888888;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  position: relative;
+  padding-bottom: 4px;
+  transition: color 150ms ease;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 1.5px;
+  bottom: 0;
+  left: 0;
+  background-color: var(--primary-gold);
+  transform-origin: bottom left;
+  transition: transform 200ms ease-out;
+}
+.nav-link:hover::after {
+  transform: scaleX(1);
+}
+.nav-link:hover, .nav-link.active {
+  color: var(--primary-gold);
+}
+
+/* Breaking news banner */
+.breaking-banner {
+  background-color: var(--accent-red);
+  color: #FFFFFF;
+  padding: 8px 0;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-align: center;
+}
+
+.breaking-label {
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-right: 8px;
+}
+
+/* Prestige Cards (No shadows, flat depth through contrast, 6px border-radius) */
+.company-card {
+  background-color: #FFFFFF;
+  border: 0.5px solid var(--light-border);
+  border-radius: 6px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: border-color 200ms ease;
+}
+
+.company-card:hover {
+  border-color: var(--primary-gold);
+}
+
+/* Premium ribbon */
+.premium-ribbon {
+  position: absolute;
+  top: 12px;
+  right: -30px;
+  background-color: var(--primary-gold);
+  color: #1A1A1A;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 30px;
+  transform: rotate(45deg);
+}
+
+/* Badges (flat) */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-canton {
+  background-color: var(--surface-warm);
+  color: var(--text-charcoal);
+  border: 0.5px solid var(--light-border);
+}
+
+.badge-industry {
+  background-color: var(--gold-light);
+  color: var(--gold-dark);
+  border: 0.5px solid var(--primary-gold);
+}
+
+.badge-verified {
+  background-color: rgba(74, 103, 65, 0.1);
+  color: var(--accent-green);
+  border: 0.5px solid var(--accent-green);
+}
+
+/* Form controls */
+.input-field {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  padding: 12px 16px;
+  border: 0.5px solid var(--light-border);
+  border-radius: 6px;
+  background-color: #FFFFFF;
+  color: var(--text-ink);
+  outline: none;
+  width: 100%;
+  transition: border-color 150ms ease;
+  min-height: 44px;
+}
+
+.input-field:focus {
+  border-color: var(--primary-gold);
+}
+
+/* Ad Placement elements */
+.ad-slot-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: 1px dashed var(--light-border);
+  box-sizing: border-box;
+}
+
+.ad-label {
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  font-size: 9px;
+  font-family: var(--font-sans);
+  color: var(--text-charcoal);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ad-empty-prompt {
+  font-size: 11px;
+  color: var(--text-charcoal);
+  text-align: center;
+}
+
+/* Sidebar filter items */
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 0.5px solid var(--light-border);
+  cursor: pointer;
+}
+
+.filter-content {
+  padding: 16px 0;
+}
+
+/* Statistics ticker chips */
+.ticker-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 16px;
+}
+
+.ticker-number {
+  font-family: var(--font-mono);
+  color: #FFFFFF;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.ticker-label {
+  font-size: 10px;
+  color: #888888;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Tab controls */
+.tab-list {
+  display: flex;
+  border-bottom: 0.5px solid var(--light-border);
+  gap: 32px;
+  margin-bottom: 24px;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-charcoal);
+  padding: 16px 0;
+  cursor: pointer;
+  position: relative;
+  transition: color 150ms ease;
+}
+
+.tab-btn.active {
+  color: var(--primary-gold);
+  font-weight: 600;
+}
+
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--primary-gold);
+}
+
+/* Canton map */
+.canton-tile {
+  background-color: var(--bg-ivory);
+  border: 0.5px solid var(--light-border);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 80px;
+  transition: border-color 150ms ease;
+}
+
+.canton-tile:hover {
+  border-color: var(--primary-gold);
+}
+
+/* Pullquote */
+.editorial-pullquote {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 22px;
+  line-height: 1.5;
+  border-left: 4px solid var(--primary-gold);
+  padding-left: 24px;
+  margin: 32px 0;
+  color: var(--text-ink);
+}
+
+/* Responsive queries */
+@media (max-width: 1024px) {
+  .grid-12 {
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 16px;
+  }
+}
