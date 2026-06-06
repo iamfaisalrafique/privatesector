@@ -1,0 +1,3 @@
+# nixpacks.toml override to run the full-stack Node server
+[start]
+cmd = "npm start"
