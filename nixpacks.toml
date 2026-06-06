@@ -1,3 +1,6 @@
-# nixpacks.toml override to run the full-stack Node server
+# nixpacks.toml override
+[phases.install]
+cmds = ["npm install"]
+
 [start]
 cmd = "npm start"
