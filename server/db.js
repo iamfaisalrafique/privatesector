@@ -1,46 +1,47 @@
-import sqlite3 from 'sqlite3';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import pg from 'pg';
+import dotenv from 'dotenv';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const dbPath = path.resolve(__dirname, 'database.sqlite');
+dotenv.config();
 
-// Open connection to SQLite
-const db = new sqlite3.Database(dbPath, (err) => {
-  if (err) {
-    console.error('Error opening SQLite database:', err);
-  } else {
-    console.log('Connected to SQLite database at:', dbPath);
-  }
+const connectionString = process.env.DATABASE_URL || 'postgres://postgres:sEZiFJJsF4zRlk94MJIfrR6zvBwCDqmTbQuAnLcLrvAdSlHKtzNbKvjAFN1pJ7es@jyx3rke6geesevkw8hz8ucf7:5432/postgres';
+
+const pool = new pg.Pool({
+  connectionString,
 });
 
-// Promisify database operations to match async/await style of PostgreSQL drivers
-export function dbQuery(sql, params = []) {
-  return new Promise((resolve, reject) => {
-    db.all(sql, params, (err, rows) => {
-      if (err) reject(err);
-      else resolve(rows);
-    });
-  });
+pool.on('error', (err) => {
+  console.error('Unexpected error on idle pg client', err);
+});
+
+// Helper to convert SQLite `?` placeholders to PostgreSQL `$1, $2, ...`
+function convertSql(sql) {
+  let index = 1;
+  return sql.replace(/\?/g, () => `$${index++}`);
 }
 
-export function dbRun(sql, params = []) {
-  return new Promise((resolve, reject) => {
-    db.run(sql, params, function (err) {
-      if (err) reject(err);
-      else resolve({ id: this.lastID, changes: this.changes });
-    });
-  });
+export async function dbQuery(sql, params = []) {
+  const converted = convertSql(sql);
+  const res = await pool.query(converted, params);
+  return res.rows;
 }
 
-export function dbGet(sql, params = []) {
-  return new Promise((resolve, reject) => {
-    db.get(sql, params, (err, row) => {
-      if (err) reject(err);
-      else resolve(row);
-    });
-  });
+export async function dbRun(sql, params = []) {
+  let converted = convertSql(sql);
+  const isInsert = converted.trim().toUpperCase().startsWith('INSERT');
+  if (isInsert && !converted.toUpperCase().includes('RETURNING')) {
+    converted = `${converted} RETURNING id`;
+  }
+  const res = await pool.query(converted, params);
+  return {
+    id: isInsert && res.rows[0] ? res.rows[0].id : null,
+    changes: res.rowCount
+  };
+}
+
+export async function dbGet(sql, params = []) {
+  const converted = convertSql(sql);
+  const res = await pool.query(converted, params);
+  return res.rows[0] || null;
 }
 
 // Database schema and seeding script
@@ -50,7 +51,7 @@ export async function initializeDatabase() {
   // 1. Companies Table
   await dbRun(`
     CREATE TABLE IF NOT EXISTS companies (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       name TEXT NOT NULL,
       logo_bg TEXT NOT NULL,
       canton TEXT NOT NULL,
@@ -73,7 +74,7 @@ export async function initializeDatabase() {
   // 2. News Table
   await dbRun(`
     CREATE TABLE IF NOT EXISTS news (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       title TEXT NOT NULL,
       subtitle TEXT NOT NULL,
       category TEXT NOT NULL,
@@ -90,7 +91,7 @@ export async function initializeDatabase() {
   // 3. Ads Table
   await dbRun(`
     CREATE TABLE IF NOT EXISTS ads (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       name TEXT NOT NULL,
       type TEXT NOT NULL,
       position TEXT NOT NULL,
@@ -108,7 +109,7 @@ export async function initializeDatabase() {
   // 4. Pages Table
   await dbRun(`
     CREATE TABLE IF NOT EXISTS pages (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       path TEXT UNIQUE NOT NULL,
       title TEXT NOT NULL,
       meta_description TEXT NOT NULL,
@@ -131,7 +132,7 @@ export async function initializeDatabase() {
   // 6. Interviews Table
   await dbRun(`
     CREATE TABLE IF NOT EXISTS interviews (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       title TEXT NOT NULL,
       subtitle TEXT NOT NULL,
       interviewee_name TEXT NOT NULL,
@@ -800,8 +801,10 @@ UBS has already confirmed the launch of a pilot program targeting tokenized corp
       const text = langObj[lang] || langObj['en']; // fallback to english
       const status = (lang === 'de' || lang === 'fr' || lang === 'en') ? 'reviewed' : 'auto-only';
       await dbRun(`
-        INSERT OR REPLACE INTO translations (language_code, key, translated_text, status)
+        INSERT INTO translations (language_code, key, translated_text, status)
         VALUES (?, ?, ?, ?)
+        ON CONFLICT (language_code, key) 
+        DO UPDATE SET translated_text = EXCLUDED.translated_text, status = EXCLUDED.status
       `, [lang, key, text, status]);
     }
   }
