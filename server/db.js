@@ -635,6 +635,7 @@ async function seedData() {
 
   // Seed News Articles
   const articles = [
+    // 1. Luxury Goods
     {
       title: 'Swiss Watch Exports Surge by 8.6% Driven by Premium Asia Demands',
       subtitle: 'Luxury manufactures like Rolex and Richemont see record order books despite macroeconomic cooling.',
@@ -652,6 +653,36 @@ The demand has forced manufacturers like Rolex to expand their domestic producti
       tags: JSON.stringify(['Rolex', 'Richemont', 'Exports', 'Luxury'])
     },
     {
+      title: 'Richemont Posts Strong Jewelry Sales Amid Soft Watch Demand',
+      subtitle: 'Cartier and Van Cleef & Arpels drive group revenues upward while watch divisions experience consolidation.',
+      category: 'Luxury Goods',
+      author_name: 'Helene Duport',
+      author_avatar: 'https://i.pravatar.cc/100?img=2',
+      date_published: '2026-05-29',
+      read_time_mins: 6,
+      content_body: `Richemont reported robust sales performance for its jewelry Maisons, balancing out a minor contraction in its specialist watchmakers. The Geneva-based luxury conglomerate saw strong performance in both retail and online channels, highlighting the enduring value of high jewelry.
+
+Cartier and Van Cleef & Arpels continue to attract long-term collectors, particularly in the Middle East and the Americas. The group\'s operating margin remained resilient, though executives warn of rising labor costs for skilled artisans in the Jura region.`,
+      pull_quote: 'Jewelry continues to act as the primary engine of long-term luxury growth.',
+      tags: JSON.stringify(['Richemont', 'Cartier', 'Jewelry', 'Luxury'])
+    },
+    {
+      title: 'Audemars Piguet Expands Heritage Museum in Le Brassus',
+      subtitle: 'The brand invests in local cultural infrastructure to celebrate the history of complex Swiss watch complications.',
+      category: 'Luxury Goods',
+      author_name: 'Marc Vandeveld',
+      author_avatar: 'https://i.pravatar.cc/100?img=3',
+      date_published: '2026-05-12',
+      read_time_mins: 4,
+      content_body: `Audemars Piguet has officially inaugurated a new extension to its architectural museum in the Vallée de Joux. The pavilion showcases over 300 historical timepieces, highlighting the evolution of watch complications from the 18th century to modern day.
+
+The expansion is part of a broader initiative by luxury brands to establish deeper roots in local heritage, driving tourism and preserving classical Swiss watchmaking disciplines.`,
+      pull_quote: 'Our history is not a static display; it is the blueprint for our future designs.',
+      tags: JSON.stringify(['Audemars Piguet', 'Le Brassus', 'Museum', 'Watchmaking'])
+    },
+
+    // 2. Pharmaceuticals
+    {
       title: 'Pharmaceutical Giants Invest CHF 1.2B in Basel Biotech Incubators',
       subtitle: 'Roche and Novartis back custom therapies research as Swiss R&D pipelines seek innovative biological platforms.',
       category: 'Pharmaceuticals',
@@ -668,6 +699,36 @@ Switzerland\'s corporate tax reforms and research subsidies have played a vital 
       tags: JSON.stringify(['Roche', 'Novartis', 'Biotech', 'Basel'])
     },
     {
+      title: 'Novartis Focuses on Pure-Play Medicines Strategy Post-SpinOff',
+      subtitle: 'CEO Vas Narasimhan outlines core therapeutic areas as Sandoz separation completes successfully.',
+      category: 'Pharmaceuticals',
+      author_name: 'Adrian Keller',
+      author_avatar: 'https://i.pravatar.cc/100?img=6',
+      date_published: '2026-05-20',
+      read_time_mins: 6,
+      content_body: `Novartis has successfully completed its separation from Sandoz, its generics division. The company will now focus entirely on innovative medicines, targeting four key therapeutic areas: cardiovascular, immunology, neuroscience, and oncology.
+
+The restructuring is designed to improve profit margins and accelerate the development of high-value biologics, leveraging Novartis\'s advanced chemistry hubs in Basel and East Hanover.`,
+      pull_quote: 'Our goal is to build the leading pure-play innovative medicines company in the world.',
+      tags: JSON.stringify(['Novartis', 'Sandoz', 'Pharma', 'Strategy'])
+    },
+    {
+      title: 'Lonza Expands Biologics Manufacturing Capacity in Visp',
+      subtitle: 'The contract manufacturer builds out new mammalian cell culture lines to meet rising global drug production needs.',
+      category: 'Pharmaceuticals',
+      author_name: 'Sarah Brunner',
+      author_avatar: 'https://i.pravatar.cc/100?img=7',
+      date_published: '2026-05-08',
+      read_time_mins: 5,
+      content_body: `Lonza Group has announced a major expansion of its bio-manufacturing facility in Visp, Canton Valais. The investment adds multiple new bioreactor lines, allowing the company to manufacture complex monoclonal antibodies for major global pharmaceutical clients.
+
+The expansion solidifies Switzerland\'s role as a key manufacturing node for global biologics supply chains, supported by highly trained local engineering staff.`,
+      pull_quote: 'Scaling up biotechnology is an engineering challenge that Swiss expertise is uniquely suited for.',
+      tags: JSON.stringify(['Lonza', 'Visp', 'Biologics', 'Manufacturing'])
+    },
+
+    // 3. Financial Services
+    {
       title: 'Swiss Banking Sector Accelerates Digital Asset Integration',
       subtitle: 'FINMA issues guidelines for institutional custody of tokenized equities, prompting major banks to launch trading desks.',
       category: 'Financial Services',
@@ -682,6 +743,254 @@ UBS has already confirmed the launch of a pilot program targeting tokenized corp
 "Regulatory clarity is our absolute competitive edge," says Hintermann. "While other jurisdictions seek to restrict digital tokenization, the Swiss framework offers clear guidance that preserves security while promoting technical integration."`,
       pull_quote: 'Compliance is not an obstacle to innovation; it is its foundation.',
       tags: JSON.stringify(['UBS', 'FINMA', 'Digital Assets', 'Banking'])
+    },
+    {
+      title: 'UBS Completes Integration Phase of Credit Suisse Retail Operations',
+      subtitle: 'The banking giant migrates millions of client accounts under unified Swiss retail banner.',
+      category: 'Financial Services',
+      author_name: 'Beat Hintermann',
+      author_avatar: 'https://i.pravatar.cc/100?img=8',
+      date_published: '2026-05-27',
+      read_time_mins: 8,
+      content_body: `UBS has successfully completed the migration of Credit Suisse\'s domestic retail and corporate clients to the UBS platform. The consolidation marks a historic step in the merger of Switzerland\'s two largest financial entities.
+
+While the integration has resulted in administrative cost savings, UBS executives emphasized that branch counts will remain stable in key cantons to preserve regional B2B service availability.`,
+      pull_quote: 'A single strong bank is vital for supporting Switzerland\'s export-driven B2B economy.',
+      tags: JSON.stringify(['UBS', 'Credit Suisse', 'Banking', 'Merger'])
+    },
+    {
+      title: 'Swiss Re Forecasts Increased Natural Catastrophe Premiums for 2027',
+      subtitle: 'Climate volatility and property valuation updates drive global reinsurance pricing models higher.',
+      category: 'Financial Services',
+      author_name: 'Christina Meier',
+      author_avatar: 'https://i.pravatar.cc/100?img=9',
+      date_published: '2026-05-14',
+      read_time_mins: 7,
+      content_body: `Swiss Re\'s latest economic report warns of rising reinsurance premiums. The group expects property catastrophe rates to adjust upward to offset the increasing frequency of severe weather events worldwide.
+
+The Zurich-based reinsurer is deploying advanced AI models to simulate micro-climatic damage risks, allowing for more precise actuarial pricing.`,
+      pull_quote: 'Risk models must evolve to reflect the reality of systemic weather volatility.',
+      tags: JSON.stringify(['Swiss Re', 'Reinsurance', 'Climate', 'Risk'])
+    },
+
+    // 4. Consumer Goods
+    {
+      title: 'Nestlé Expands Plant-Based Production in Konolfingen',
+      subtitle: 'A CHF 120M investment builds out state-of-the-art alternative protein research and processing lines.',
+      category: 'Consumer Goods',
+      author_name: 'Sophie Grandjean',
+      author_avatar: 'https://i.pravatar.cc/100?img=11',
+      date_published: '2026-05-31',
+      read_time_mins: 5,
+      content_body: `Nestlé has officially opened its new plant-based beverage expansion in Konolfingen, Canton Bern. The facility is equipped with state-of-the-art extrusion technologies, enabling the processing of high-grade dairy alternatives.
+
+The investment aims to address the growing European demand for lactose-free and plant-based protein alternatives, utilizing local Swiss oats and peas.`,
+      pull_quote: 'Pioneering nutrition is about adapting our agricultural supply to ecological reality.',
+      tags: JSON.stringify(['Nestle', 'Konolfingen', 'Plant-Based', 'Food'])
+    },
+    {
+      title: 'Swiss Chocolate Manufacturers Face Record Cocoa Cost Pressures',
+      subtitle: 'Barry Callebaut and local brands navigate supply shortfalls from West African plantations.',
+      category: 'Consumer Goods',
+      author_name: 'Daniel Schmid',
+      author_avatar: 'https://i.pravatar.cc/100?img=12',
+      date_published: '2026-05-25',
+      read_time_mins: 6,
+      content_body: `Unfavorable weather in Ghana and Côte d\'Ivoire has sent global cocoa prices to historic highs. Barry Callebaut has adjusted its sourcing strategies, increasing investments in sustainable farming and regenerative agriculture.
+
+The company aims to stabilize supplies by building direct partnerships with cooperatives, bypassing traditional merchant middlemen.`,
+      pull_quote: 'Chocolate manufacturing is facing its biggest raw material challenge in a generation.',
+      tags: JSON.stringify(['Barry Callebaut', 'Cocoa', 'Supply Chain', 'Agriculture'])
+    },
+    {
+      title: 'DKSH Reports Solid Growth in Asia-Pacific Consumer Sector',
+      subtitle: 'The Zurich-based market expansion specialist gains market share in Southeast Asian retail networks.',
+      category: 'Consumer Goods',
+      author_name: 'Thomas Meier',
+      author_avatar: 'https://i.pravatar.cc/100?img=13',
+      date_published: '2026-05-05',
+      read_time_mins: 5,
+      content_body: `DKSH reported strong financial performance in its consumer goods division. The group leveraged its extensive distribution networks in Thailand, Vietnam, and Malaysia to expand international brands.
+
+The focus on digital supply chains and automated warehousing has helped the firm maintain margins despite rising regional inflation.`,
+      pull_quote: 'Asia-Pacific remains the most dynamic growth region for premium consumer goods.',
+      tags: JSON.stringify(['DKSH', 'Distribution', 'Asia', 'Consumer'])
+    },
+
+    // 5. Telecommunications
+    {
+      title: 'Swisscom Rolls Out 5G Standalone Network Across Switzerland',
+      subtitle: 'The telco launches pure-5G infrastructure, offering ultra-low latency and network slicing for enterprise clients.',
+      category: 'Telecommunications',
+      author_name: 'Hans-Rudolf Lutz',
+      author_avatar: 'https://i.pravatar.cc/100?img=15',
+      date_published: '2026-05-22',
+      read_time_mins: 5,
+      content_body: `Swisscom has successfully deployed its standalone 5G network core. Unlike previous iterations that relied on 4G infrastructure, the new standalone core enables true network slicing, giving enterprises dedicated bandwidth lanes.
+
+Industries such as precision logistics and emergency services will benefit from millisecond latencies, boosting Swiss competitive edge in digital operations.`,
+      pull_quote: 'Standalone 5G is the backbone of the next industrial revolution in Switzerland.',
+      tags: JSON.stringify(['Swisscom', '5G', 'Telecom', 'Infrastructure'])
+    },
+    {
+      title: 'Telecom Security: Swiss Operators Align on Quantum Cryptography',
+      subtitle: 'Swisscom and Sunrise conduct pilot testing of Quantum Key Distribution to secure critical banking backbones.',
+      category: 'Telecommunications',
+      author_name: 'Erich Steiner',
+      author_avatar: 'https://i.pravatar.cc/100?img=16',
+      date_published: '2026-05-15',
+      read_time_mins: 7,
+      content_body: `Swiss telecom companies are collaborating to test Quantum Key Distribution (QKD) systems. The pilot project aims to establish secure fiber lines linking major financial data hubs in Zurich and Geneva.
+
+The technology uses quantum mechanics to detect interception attempts, making banking data transfers immune to future decryption technologies.`,
+      pull_quote: 'Data security in the future requires anticipating quantum threat vectors today.',
+      tags: JSON.stringify(['Swisscom', 'Quantum', 'Security', 'Banking'])
+    },
+    {
+      title: 'Sunrise and Swisscom Battle for Business IT Cloud Contracts',
+      subtitle: 'Major Swiss enterprises migrate workloads to local data centers, sparking competitive bidding for hybrid cloud infrastructure.',
+      category: 'Telecommunications',
+      author_name: 'Lukas Fischer',
+      author_avatar: 'https://i.pravatar.cc/100?img=17',
+      date_published: '2026-05-02',
+      read_time_mins: 6,
+      content_body: `The competition for corporate IT contracts is intensifying. Local regulations regarding data residency have forced multinational firms in Switzerland to store their core database workloads within Swiss territory.
+
+Both Swisscom and Sunrise are expanding their local hyper-scale facilities, offering customized hybrid clouds that guarantee Swiss jurisdictional protection.`,
+      pull_quote: 'Swiss data residency is no longer just a luxury; it is a regulatory mandate.',
+      tags: JSON.stringify(['Sunrise', 'Swisscom', 'Cloud', 'Data Residency'])
+    },
+
+    // 6. Technology
+    {
+      title: 'Logitech Unveils Next-Gen AI-Integrated Ergonomic Workstations',
+      subtitle: 'The Lausanne-based company launches intelligent peripheral line with integrated voice assistant interfaces.',
+      category: 'Technology',
+      author_name: 'Jan de Wit',
+      author_avatar: 'https://i.pravatar.cc/100?img=19',
+      date_published: '2026-05-28',
+      read_time_mins: 5,
+      content_body: `Logitech has introduced a new suite of ergonomic input devices that feature dedicated AI processing chips. The mice and keyboards include configurable hotkeys that launch local AI assistant models, optimizing workflows.
+
+The engineering team in Lausanne focused on reducing power consumption while maintaining wireless latency below 1 millisecond.`,
+      pull_quote: 'Human-machine interfaces are transitioning from input channels to active partners.',
+      tags: JSON.stringify(['Logitech', 'AI', 'Hardware', 'Lausanne'])
+    },
+    {
+      title: 'Swiss Software Sector Records 12% Revenue Boost in Enterprise SaaS',
+      subtitle: 'Zurich tech ecosystem benefits from increased B2B demand for localized security and compliance software.',
+      category: 'Technology',
+      author_name: 'Martin Wenger',
+      author_avatar: 'https://i.pravatar.cc/100?img=20',
+      date_published: '2026-05-19',
+      read_time_mins: 4,
+      content_body: `Switzerland\'s software-as-a-service sector continues to grow. High local compliance standards have created a niche for Swiss-made software, protecting sensitive customer files from foreign surveillance frameworks.
+
+Investment capital for Swiss B2B tech firms reached new highs, with significant funding flowing from local institutional pension funds.`,
+      pull_quote: 'Trust is our primary technical commodity; Swiss software represents security.',
+      tags: JSON.stringify(['Software', 'SaaS', 'Zurich', 'Sovereignty'])
+    },
+    {
+      title: 'Sensirion Invests in Micro-Sensor Production Facilities in Stäfa',
+      subtitle: 'The sensor manufacturer expands cleanroom capacities to meet automotive and environmental measurement needs.',
+      category: 'Technology',
+      author_name: 'Ursula Keller',
+      author_avatar: 'https://i.pravatar.cc/100?img=21',
+      date_published: '2026-05-09',
+      read_time_mins: 6,
+      content_body: `Sensirion has announced an expansion of its production infrastructure in Stäfa, Canton Zurich. The company will install automated cleanrooms to manufacture high-precision gas and humidity sensors.
+
+The growth is driven by the expansion of the EV sector, which requires specialized sensors for battery thermal management.`,
+      pull_quote: 'Precision measurements are essential for building efficient green mobility solutions.',
+      tags: JSON.stringify(['Sensirion', 'Sensors', 'Stäfa', 'Cleanrooms'])
+    },
+
+    // 7. Manufacturing
+    {
+      title: 'Stadler Rail Secures Major CHF 1.8B Order for Italian Regional Trains',
+      subtitle: 'The Bussnang manufacturer will deliver hydrogen-powered and electric multiple-unit trains to Trenitalia.',
+      category: 'Manufacturing',
+      author_name: 'Peter Spuhler',
+      author_avatar: 'https://i.pravatar.cc/100?img=23',
+      date_published: '2026-05-30',
+      read_time_mins: 6,
+      content_body: `Stadler Rail has signed a contract with Italy\'s national rail operator to deliver 90 regional passenger trains. The order includes a mix of battery-electric and hydrogen-powered models, highlighting Stadler\'s leadership in alternative propulsion.
+
+The trains will be manufactured at Stadler\'s Swiss facilities, securing jobs and driving local industrial export volumes.`,
+      pull_quote: 'Rail transportation must lead the transition to zero-emission logistics.',
+      tags: JSON.stringify(['Stadler Rail', 'Trains', 'Hydrogen', 'Italy'])
+    },
+    {
+      title: 'Bühler Group Pioneers Carbon-Neutral Grain Processing Plants',
+      subtitle: 'The Uzwil company launches industrial grain mills powered by local agricultural biomass.',
+      category: 'Manufacturing',
+      author_name: 'Stefan Scheiber',
+      author_avatar: 'https://i.pravatar.cc/100?img=24',
+      date_published: '2026-05-23',
+      read_time_mins: 5,
+      content_body: `Bühler has introduced a new line of grain processing plants that utilize by-product hulls to generate energy. The systems allow food manufacturers to reduce their reliance on natural gas.
+
+The technology is being deployed in European mills, helping food companies meet strict Scope 1 emission targets.`,
+      pull_quote: 'Industrial food systems must close their energy loops to achieve sustainability.',
+      tags: JSON.stringify(['Bühler Group', 'Grain', 'Biomass', 'Sustainability'])
+    },
+    {
+      title: 'ABB Invests in Robotics and Automation Hub in Baden',
+      subtitle: 'The engineering firm builds a research center focused on collaborative robots for electronics manufacturing.',
+      category: 'Manufacturing',
+      author_name: 'Christina Wyss',
+      author_avatar: 'https://i.pravatar.cc/100?img=25',
+      date_published: '2026-05-11',
+      read_time_mins: 6,
+      content_body: `ABB is constructing a new research facility in Baden, Canton Aargau, dedicated to collaborative robots (cobots). The center will focus on developing AI-guided armatures that can assist human operators.
+
+The investment supports Switzerland\'s industrial base, helping local factories automate assembly processes to counter rising labor costs.`,
+      pull_quote: 'Automation is not about replacing workers; it is about amplifying their capability.',
+      tags: JSON.stringify(['ABB', 'Robotics', 'Baden', 'Automation'])
+    },
+
+    // 8. Commodities
+    {
+      title: 'Glencore Directs Capital to Copper Operations Supporting EV Transition',
+      subtitle: 'The Baar-based natural resource company expands copper mining in Peru and Africa to meet global electrification demand.',
+      category: 'Commodities',
+      author_name: 'Gary Nagle',
+      author_avatar: 'https://i.pravatar.cc/100?img=27',
+      date_published: '2026-05-26',
+      read_time_mins: 7,
+      content_body: `Glencore has adjusted its capital expenditure plans, prioritizing copper mining operations. Copper is a critical component for EV motors and renewable energy grids, with global demand projected to double by 2035.
+
+The commodity trading giant is restructuring its mining portfolio, committing to responsible extraction practices and carbon-reduction targets.`,
+      pull_quote: 'Electrification requires copper; our job is to supply it responsibly.',
+      tags: JSON.stringify(['Glencore', 'Copper', 'EVs', 'Mining'])
+    },
+    {
+      title: 'Swiss Commodity Traders Enhance ESG Transparency Protocols',
+      subtitle: 'Geneva and Zug associations adopt unified ESG reporting metrics to address regulatory oversight.',
+      category: 'Commodities',
+      author_name: 'Jean-Francois Legrand',
+      author_avatar: 'https://i.pravatar.cc/100?img=28',
+      date_published: '2026-05-16',
+      read_time_mins: 6,
+      content_body: `The Swiss Commodity Merchants Association has published new guidelines for environmental and social reporting. The metrics require traders to disclose the carbon footprint of their shipping fleets and supply chains.
+
+The self-regulatory initiative is designed to align the sector with newer federal disclosure requirements on non-financial reporting.`,
+      pull_quote: 'Transparency is essential for maintaining trust in global trade channels.',
+      tags: JSON.stringify(['Commodities', 'ESG', 'Compliance', 'Trading'])
+    },
+    {
+      title: 'Trafigura Navigates Supply Chain Shifts in Hydrogen Infrastructure',
+      subtitle: 'The commodity firm invests in European green hydrogen ports, preparing for clean fuel distribution networks.',
+      category: 'Commodities',
+      author_name: 'Luc de Temmerman',
+      author_avatar: 'https://i.pravatar.cc/100?img=29',
+      date_published: '2026-05-04',
+      read_time_mins: 5,
+      content_body: `Trafigura has committed capital to a joint venture developing green hydrogen import terminals in Northern Europe. The terminals will receive liquid hydrogen from solar-rich regions for industrial use.
+
+The investment represents a strategic diversification for the trading firm as global industries transition away from fossil fuels.`,
+      pull_quote: 'Hydrogen will play a critical role in decarbonizing heavy transport and manufacturing.',
+      tags: JSON.stringify(['Trafigura', 'Hydrogen', 'Logistics', 'Clean Energy'])
     }
   ];
 
@@ -887,6 +1196,72 @@ async function seedInterviews() {
         {
           q: 'Does smartwatch technology pose a threat to mechanical watchmaking?',
           a: 'Not at all. A mechanical watch is an emotional object, a piece of art, and a repository of history. A digital screen is obsolete in a few years, but a mechanical Rolex is designed to last for generations.'
+        }
+      ])
+    },
+    {
+      title: 'Navigating Consolidation in Global Wealth Management',
+      subtitle: 'UBS CEO Sergio Ermotti discusses the integration of Credit Suisse and regional B2B growth.',
+      interviewee_name: 'Sergio Ermotti',
+      interviewee_title: 'CEO, UBS Group AG',
+      interviewee_avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=256',
+      company_id: 4,
+      company_name: 'UBS Group AG',
+      date_published: '2026-06-03',
+      read_time_mins: 9,
+      audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+      qa_content: JSON.stringify([
+        {
+          q: 'How is the integration of Credit Suisse progressing for corporate clients?',
+          a: 'We have prioritized maintaining stable credit facilities for Swiss SMEs. The integration is moving on schedule, and our combined capabilities allow us to offer institutional-grade services to local businesses looking to expand globally.'
+        },
+        {
+          q: 'Is Switzerland\'s financial competitiveness secure?',
+          a: 'Yes, but we must protect our core strengths: stability, a strong currency, and a highly skilled workforce. Embracing digital asset standards while maintaining regulatory rigor is key to staying ahead.'
+        }
+      ])
+    },
+    {
+      title: 'Decarbonizing Rail: Hydrogen vs. Battery Propulsion',
+      subtitle: 'Stadler Rail\'s Chairman discusses new zero-emission orders and European logistics markets.',
+      interviewee_name: 'Peter Spuhler',
+      interviewee_title: 'Chairman, Stadler Rail AG',
+      interviewee_avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=256',
+      company_id: 9,
+      company_name: 'Stadler Rail AG',
+      date_published: '2026-05-25',
+      read_time_mins: 7,
+      audio_url: null,
+      qa_content: JSON.stringify([
+        {
+          q: 'Which technology is winning the regional rail race: battery or hydrogen?',
+          a: 'It depends on the infrastructure. For routes without overhead catenary lines that are shorter than 100 kilometers, battery trains are highly efficient. For longer, demanding routes, hydrogen remains the superior choice. We offer both platforms to meet diverse operator needs.'
+        },
+        {
+          q: 'How are supply chain costs affecting Stadler\'s order book?',
+          a: 'High energy and steel costs in Europe have put pressure on margins. However, our strong focus on local Swiss fabrication and precision engineering allows us to maintain quality and deliver on time.'
+        }
+      ])
+    },
+    {
+      title: 'Designing Peripherals for the Hybrid Workspace',
+      subtitle: 'Logitech\'s CEO discusses AI integration, sustainable hardware materials, and global consumer demand.',
+      interviewee_name: 'Hanneke Faber',
+      interviewee_title: 'CEO, Logitech International S.A.',
+      interviewee_avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=256',
+      company_id: 7,
+      company_name: 'Logitech International S.A.',
+      date_published: '2026-05-18',
+      read_time_mins: 6,
+      audio_url: null,
+      qa_content: JSON.stringify([
+        {
+          q: 'How is Logitech incorporating sustainability into consumer electronics?',
+          a: 'We are designing with post-consumer recycled plastics and labeling our products with their carbon footprint. Over 65% of our product line now incorporates recycled materials, proving that high-performance peripherals can be eco-friendly.'
+        },
+        {
+          q: 'What role does artificial intelligence play in your device design?',
+          a: 'We are integrating smart software features that simplify workflows, such as smart macros and voice-to-text controls. The hardware is becoming more contextual, understanding how and when you work.'
         }
       ])
     }
