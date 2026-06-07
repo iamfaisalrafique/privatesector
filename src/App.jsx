@@ -422,7 +422,7 @@ function AppContent() {
           </div>
 
           <div style={{ maxWidth: '1280px', margin: '0 auto', borderTop: '0.5px solid #2A2A2A', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', color: '#666666', fontSize: '11px' }}>
-            <span>&copy; 2026 privatesector.ch. Alle Rechte vorbehalten.</span>
+            <span>&copy; 2026 privatesector.vitalswiss.ch. Alle Rechte vorbehalten.</span>
             <span>Konform mit DSGVO & Schweizer Datenschutzgesetz 🇨🇭</span>
           </div>
         </footer>

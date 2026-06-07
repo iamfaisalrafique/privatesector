@@ -188,7 +188,7 @@ async function seedData() {
         "@type": "Corporation",
         "name": "Nestlé S.A.",
         "url": "https://www.nestle.com",
-        "logo": "https://privatesector.ch/logos/nestle.png",
+        "logo": "https://privatesector.vitalswiss.ch/logos/nestle.png",
         "foundingDate": "1866",
         "address": {
           "@type": "PostalAddress",

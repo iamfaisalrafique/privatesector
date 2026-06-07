@@ -38,7 +38,7 @@ export default function CookieBanner() {
     >
       <div style={{ flex: '1 1 300px' }}>
         <p style={{ color: '#FFFFFF', fontSize: '13px', margin: 0, fontFamily: 'Inter, sans-serif', lineHeight: 1.5 }}>
-          Wir verwenden Cookies, um Ihre Erfahrung auf privatesector.ch zu optimieren. Mit der Nutzung der Website stimmen Sie unseren Richtlinien zu. 
+          Wir verwenden Cookies, um Ihre Erfahrung auf privatesector.vitalswiss.ch zu optimieren. Mit der Nutzung der Website stimmen Sie unseren Richtlinien zu. 
           <span style={{ color: '#A09885', display: 'block', fontSize: '11px', marginTop: '4px' }}>
             We use cookies to optimize your experience. By using our website, you agree to our policies.
           </span>
