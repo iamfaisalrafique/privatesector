@@ -149,7 +149,7 @@ export async function initializeDatabase() {
 
   // Seed check
   const companyCount = await dbGet('SELECT COUNT(*) as count FROM companies');
-  if (companyCount.count === 0) {
+  if (Number(companyCount.count) === 0) {
     console.log('Seeding mock B2B data...');
     await seedData();
   } else {
@@ -158,7 +158,7 @@ export async function initializeDatabase() {
 
   // Seed check for interviews
   const interviewCount = await dbGet('SELECT COUNT(*) as count FROM interviews');
-  if (interviewCount.count === 0) {
+  if (Number(interviewCount.count) === 0) {
     console.log('Seeding mock interviews...');
     await seedInterviews();
   }
