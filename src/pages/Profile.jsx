@@ -332,6 +332,44 @@ export default function Profile({ companyId, onBack, navigate }) {
           {/* Column 3: Right Sidebar (280px) */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }} className="profile-right-col">
             
+            {/* ESG Rating Scorecard */}
+            {data.esg_rating > 0 && (
+              <div 
+                style={{
+                  backgroundColor: '#FFFFFF',
+                  border: '0.5px solid var(--light-border)',
+                  borderTop: '4px solid #2E7D32',
+                  padding: '24px',
+                  borderRadius: '6px'
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                  <span className="caps-label" style={{ fontSize: '11px', color: '#2E7D32', fontWeight: 600 }}>
+                    ESG Nachhaltigkeit
+                  </span>
+                  <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#2E7D32', backgroundColor: 'rgba(46, 125, 50, 0.1)', padding: '2px 6px', borderRadius: '4px' }}>
+                    Score: {data.esg_rating}/100
+                  </span>
+                </div>
+                
+                <div style={{ display: 'flex', gap: '4px', marginBottom: '12px' }}>
+                  {Array.from({ length: 5 }).map((_, i) => {
+                    const leafScore = data.esg_rating / 20;
+                    const isFilled = i < Math.round(leafScore);
+                    return (
+                      <span key={i} style={{ fontSize: '18px', filter: isFilled ? 'none' : 'grayscale(100%) opacity(30%)' }}>
+                        🍃
+                      </span>
+                    );
+                  })}
+                </div>
+
+                <p style={{ fontSize: '12.5px', color: 'var(--text-charcoal)', lineHeight: 1.5, margin: 0 }}>
+                  {data.sustainability_summary}
+                </p>
+              </div>
+            )}
+            
             {/* Zone D Half-page Ad */}
             <AdSlot position="D" />
 

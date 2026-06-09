@@ -68,6 +68,9 @@ export default function CompanyCard({ company, onClick }) {
             {company.verified === 1 && (
               <span className="badge badge-verified" style={{ fontSize: '9px', padding: '2px 6px' }}>✓ Verified</span>
             )}
+            {company.esg_rating >= 80 && (
+              <span className="badge" style={{ fontSize: '9px', padding: '2px 6px', backgroundColor: 'rgba(46, 125, 50, 0.1)', color: '#2E7D32', border: '0.5px solid rgba(46, 125, 50, 0.3)' }}>🍃 Eco-Leader</span>
+            )}
           </div>
         </div>
       </div>

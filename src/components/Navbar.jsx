@@ -25,7 +25,8 @@ export default function Navbar({ currentPath, navigate }) {
     { label: t('nav_news', 'News'), path: '/news' },
     { label: t('nav_statistics', 'Statistiken'), path: '/statistiken' },
     { label: t('nav_interviews', 'Interviews'), path: '/interviews' },
-    { label: t('nav_podcasts', 'Podcasts'), path: '/podcasts' }
+    { label: t('nav_podcasts', 'Podcasts'), path: '/podcasts' },
+    { label: t('nav_careers', 'Karriere'), path: '/karriere' }
   ];
 
   const handleSearchSubmit = (e) => {

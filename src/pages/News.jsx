@@ -142,6 +142,16 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
                 </div>
               </div>
 
+              {activeArticle.image_url && (
+                <div style={{ width: '100%', height: '380px', overflow: 'hidden', borderRadius: '6px', marginBottom: '32px' }}>
+                  <img 
+                    src={activeArticle.image_url} 
+                    alt={activeArticle.title} 
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                  />
+                </div>
+              )}
+
               {/* Zone A Leaderboard */}
               <AdSlot position="A" />
 
@@ -222,6 +232,16 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
                       onClick={() => selectArticle(art.id)}
                       className="related-news-card"
                     >
+                      {art.image_url && (
+                        <div style={{ width: '100%', height: '110px', overflow: 'hidden', borderRadius: '4px', marginBottom: '12px' }}>
+                          <img 
+                            src={art.image_url} 
+                            alt={art.title} 
+                            style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s' }}
+                            className="card-img"
+                          />
+                        </div>
+                      )}
                       <span className="badge badge-industry" style={{ alignSelf: 'flex-start', marginBottom: '12px', fontSize: '9px' }}>{art.category}</span>
                       <h4 style={{ fontFamily: '"Playfair Display", serif', fontSize: '14px', color: 'var(--text-ink)', marginBottom: '16px', lineHeight: 1.4, flex: 1, fontWeight: 700 }}>
                         {art.title}
@@ -390,6 +410,16 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
                 onClick={() => selectArticle(art.id)}
                 className="feed-article-card"
               >
+                {art.image_url && (
+                  <div style={{ width: '100%', height: '180px', overflow: 'hidden', borderRadius: '4px', marginBottom: '16px' }}>
+                    <img 
+                      src={art.image_url} 
+                      alt={art.title} 
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s' }}
+                      className="card-img"
+                    />
+                  </div>
+                )}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                   <span className="badge badge-industry">{art.category}</span>
                   <span style={{ fontSize: '11px', color: 'var(--text-charcoal)', fontFamily: 'var(--font-mono)' }}>{art.date_published}</span>
@@ -453,8 +483,14 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
         .feed-article-card:hover {
           border-color: var(--primary-gold) !important;
         }
+        .feed-article-card:hover .card-img {
+          transform: scale(1.05);
+        }
         .related-news-card:hover {
           border-color: var(--primary-gold) !important;
+        }
+        .related-news-card:hover .card-img {
+          transform: scale(1.05);
         }
         @media (max-width: 768px) {
           .news-layout-grid {

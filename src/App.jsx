@@ -11,6 +11,8 @@ import Statistics from './pages/Statistics';
 import Admin from './pages/Admin';
 import Interviews from './pages/Interviews';
 import Auth from './pages/Auth';
+import Careers from './pages/Careers';
+import StudentProfile from './pages/StudentProfile';
 import CompanyCard from './components/CompanyCard';
 import { Landmark, ArrowRight, ShieldCheck } from 'lucide-react';
 
@@ -95,6 +97,11 @@ function AppContent() {
       return { route: 'interview-detail', id, params: query };
     }
     if (path === '/podcasts') return { route: 'podcasts', params: query };
+    if (path === '/karriere') return { route: 'careers', params: query };
+    if (path.startsWith('/student/')) {
+      const id = path.split('/')[2];
+      return { route: 'student-profile', id, params: query };
+    }
     if (path === '/login') return { route: 'login', params: query };
     if (path === '/register') return { route: 'register', params: query };
     if (path === '/admin') return { route: 'admin', params: query };
@@ -337,6 +344,16 @@ function AppContent() {
             selectInterview={(id) => id ? navigate(`/interviews/${id}`) : navigate('/podcasts')}
             navigate={navigate}
           />
+        )}
+
+        {/* ROUTE: CAREERS */}
+        {routeInfo.route === 'careers' && (
+          <Careers navigate={navigate} />
+        )}
+
+        {/* ROUTE: STUDENT PROFILE */}
+        {routeInfo.route === 'student-profile' && (
+          <StudentProfile studentId={routeInfo.id} navigate={navigate} />
         )}
 
         {/* ROUTE: LOGIN */}

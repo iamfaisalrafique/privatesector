@@ -51,7 +51,7 @@ app.get('/api/companies', async (req, res) => {
   try {
     const { search, canton, industry, size, verified, premium } = req.query;
     
-    let query = 'SELECT id, name, logo_bg, canton, industry, size_class, description, premium, verified, founded, employees, revenue_band FROM companies WHERE 1=1';
+    let query = 'SELECT id, name, logo_bg, canton, industry, size_class, description, premium, verified, founded, employees, revenue_band, esg_rating FROM companies WHERE 1=1';
     const params = [];
     
     if (search) {
@@ -151,7 +151,7 @@ app.get('/api/companies/:id', async (req, res) => {
 // 4. News List API
 app.get('/api/news', async (req, res) => {
   try {
-    const news = await dbQuery('SELECT id, title, subtitle, category, author_name, author_avatar, date_published, read_time_mins, pull_quote, tags FROM news ORDER BY date_published DESC');
+    const news = await dbQuery('SELECT id, title, subtitle, category, author_name, author_avatar, date_published, read_time_mins, pull_quote, tags, image_url FROM news ORDER BY date_published DESC');
     const parsedNews = news.map(item => ({
       ...item,
       tags: JSON.parse(item.tags || '[]')
@@ -171,15 +171,20 @@ app.get('/api/news/:id', async (req, res) => {
     }
     article.tags = JSON.parse(article.tags || '[]');
     
-    // Fetch related articles
+    let studentAuthor = null;
+    if (article.student_author_id) {
+      studentAuthor = await dbGet('SELECT id, name, university, avatar FROM student_profiles WHERE id = ?', [article.student_author_id]);
+    }
+    
     const related = await dbQuery(
-      'SELECT id, title, category, date_published, read_time_mins FROM news WHERE id != ? LIMIT 3',
+      'SELECT id, title, category, date_published, read_time_mins, image_url FROM news WHERE id != ? LIMIT 3',
       [article.id]
     );
     
     res.json({
       article,
-      related
+      related,
+      studentAuthor
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -190,7 +195,7 @@ app.get('/api/news/:id', async (req, res) => {
 app.get('/api/interviews', async (req, res) => {
   try {
     const { has_audio } = req.query;
-    let query = 'SELECT id, title, subtitle, interviewee_name, interviewee_title, interviewee_avatar, company_id, company_name, date_published, read_time_mins, audio_url FROM interviews';
+    let query = 'SELECT id, title, subtitle, interviewee_name, interviewee_title, interviewee_avatar, company_id, company_name, date_published, read_time_mins, audio_url, category, student_author_id FROM interviews';
     const params = [];
     
     if (has_audio === 'true') {
@@ -212,7 +217,16 @@ app.get('/api/interviews/:id', async (req, res) => {
       return res.status(404).json({ error: 'Interview not found' });
     }
     row.qa_content = JSON.parse(row.qa_content || '[]');
-    res.json(row);
+    
+    let studentAuthor = null;
+    if (row.student_author_id) {
+      studentAuthor = await dbGet('SELECT id, name, university, avatar FROM student_profiles WHERE id = ?', [row.student_author_id]);
+    }
+    
+    res.json({
+      ...row,
+      studentAuthor
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -406,6 +420,66 @@ app.post('/api/admin/translations/auto-translate-all', async (req, res) => {
     }
     
     res.json({ success: true, count: rows.length });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// 10. Student Talents & Careers Hub API
+app.get('/api/jobs', async (req, res) => {
+  try {
+    const { type, location, company_id } = req.query;
+    let query = 'SELECT * FROM jobs WHERE 1=1';
+    const params = [];
+    
+    if (type) {
+      query += ' AND type = ?';
+      params.push(type);
+    }
+    if (location) {
+      query += ' AND location LIKE ?';
+      params.push(`%${location}%`);
+    }
+    if (company_id) {
+      query += ' AND company_id = ?';
+      params.push(parseInt(company_id));
+    }
+    
+    query += ' ORDER BY date_posted DESC';
+    const rows = await dbQuery(query, params);
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/students', async (req, res) => {
+  try {
+    const rows = await dbQuery('SELECT * FROM student_profiles ORDER BY name ASC');
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/students/:id', async (req, res) => {
+  try {
+    const student = await dbGet('SELECT * FROM student_profiles WHERE id = ?', [req.params.id]);
+    if (!student) {
+      return res.status(404).json({ error: 'Student not found' });
+    }
+    
+    // Get articles written by student
+    const articles = await dbQuery('SELECT id, title, category, date_published FROM news WHERE student_author_id = ?', [req.params.id]);
+    
+    // Get interviews/podcasts done by student
+    const podcasts = await dbQuery('SELECT id, title, subtitle, date_published, category, audio_url FROM interviews WHERE student_author_id = ?', [req.params.id]);
+    
+    res.json({
+      ...student,
+      articles,
+      podcasts
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

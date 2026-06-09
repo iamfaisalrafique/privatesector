@@ -9,6 +9,7 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
   const [activeDossier, setActiveDossier] = useState(null);
   const [loading, setLoading] = useState(true);
   const [companyCardData, setCompanyCardData] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState('All');
 
   // Audio Player state
   const [isPlaying, setIsPlaying] = useState(false);
@@ -152,6 +153,35 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
                     </>
                   )}
                 </div>
+
+                {activeDossier.studentAuthor && (
+                  <div 
+                    onClick={() => navigate(`/student/${activeDossier.studentAuthor.id}`)}
+                    style={{ 
+                      marginTop: '16px', 
+                      display: 'inline-flex', 
+                      alignItems: 'center', 
+                      gap: '8px', 
+                      cursor: 'pointer',
+                      border: '0.5px solid rgba(191, 155, 48, 0.4)',
+                      padding: '6px 14px',
+                      backgroundColor: 'rgba(255, 253, 247, 0.05)',
+                      borderRadius: '4px',
+                      transition: 'all 0.2s'
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.borderColor = '#BF9B30'}
+                    onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(191, 155, 48, 0.4)'}
+                  >
+                    <img 
+                      src={activeDossier.studentAuthor.avatar} 
+                      alt={activeDossier.studentAuthor.name} 
+                      style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover', border: '1px solid #BF9B30' }}
+                    />
+                    <span style={{ fontSize: '11.5px', color: '#BF9B30', fontWeight: 600 }}>
+                      Beitrag von {activeDossier.studentAuthor.name} ({activeDossier.studentAuthor.university})
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -337,97 +367,137 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
         {/* Zone A Leaderboard Ad */}
         <AdSlot position="A" />
 
-        {/* Grid List */}
-        {interviews.length === 0 ? (
-          <p style={{ textAlign: 'center', color: 'var(--text-charcoal)', marginTop: '24px' }}>Keine Interviews im Archiv vorhanden.</p>
-        ) : (
-          <div 
-            style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', 
-              gap: '32px',
-              marginTop: '32px'
-            }}
-          >
-            {interviews.map(iv => (
-              <div 
-                key={iv.id}
+        {/* Category Tabs */}
+        {!selectedInterviewId && interviews.length > 0 && (
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginBottom: '24px', flexWrap: 'wrap', marginTop: '32px' }}>
+            {['All', 'Executive Briefing', 'Street Briefing', 'University Perspective'].map(cat => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
                 style={{
-                  backgroundColor: '#FFFFFF',
+                  background: selectedCategory === cat ? '#BF9B30' : '#FFFFFF',
+                  color: selectedCategory === cat ? '#FFFFFF' : 'var(--text-ink)',
                   border: '0.5px solid var(--light-border)',
-                  borderRadius: '6px',
-                  padding: '24px',
-                  display: 'flex',
-                  flexDirection: 'column',
+                  padding: '8px 16px',
+                  fontSize: '12px',
+                  fontWeight: 600,
                   cursor: 'pointer',
-                  position: 'relative'
+                  borderRadius: '0px',
+                  fontFamily: 'Inter, sans-serif',
+                  transition: 'all 0.15s ease-in-out'
                 }}
-                onClick={() => selectInterview(iv.id)}
               >
-                {/* Header with avatar thumbnail */}
-                <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '16px' }}>
-                  <img 
-                    src={iv.interviewee_avatar} 
-                    alt={iv.interviewee_name} 
-                    style={{ width: '48px', height: '48px', borderRadius: '50%', border: '1.5px solid #BF9B30', objectFit: 'cover' }}
-                  />
-                  <div>
-                    <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-ink)', display: 'block' }}>{iv.interviewee_name}</span>
-                    <span style={{ fontSize: '11px', color: 'var(--text-charcoal)' }}>{iv.interviewee_title}</span>
-                  </div>
-                </div>
-
-                <h3 
-                  style={{ 
-                    fontFamily: '"Playfair Display", serif', 
-                    fontSize: '18px', 
-                    color: 'var(--text-ink)', 
-                    marginBottom: '12px',
-                    fontWeight: 700,
-                    lineHeight: 1.3
-                  }}
-                >
-                  {iv.title}
-                </h3>
-                
-                <p 
-                  style={{ 
-                    fontFamily: 'Inter, sans-serif', 
-                    fontSize: '12px', 
-                    color: 'var(--text-charcoal)', 
-                    lineHeight: 1.5,
-                    marginBottom: '20px',
-                    flex: 1
-                  }}
-                >
-                  {iv.subtitle}
-                </p>
-
-                <div 
-                  style={{ 
-                    marginTop: 'auto',
-                    borderTop: '0.5px solid var(--light-border)',
-                    paddingTop: '16px',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    fontSize: '11px',
-                    color: 'var(--primary-gold)',
-                    fontWeight: 600
-                  }}
-                >
-                  <span style={{ color: 'var(--text-charcoal)', fontFamily: 'var(--font-mono)' }}>
-                    {iv.date_published}
-                  </span>
-                  
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    {iv.audio_url ? 'Podcast anhören' : 'Dossier lesen'} <ArrowRight size={14} />
-                  </span>
-                </div>
-              </div>
+                {cat === 'All' ? 'Alle Beiträge' : 
+                 cat === 'Executive Briefing' ? 'Executive Briefings' : 
+                 cat === 'Street Briefing' ? 'Street Briefings 🎤' : 'University Perspectives 🎓'}
+              </button>
             ))}
           </div>
         )}
+
+        {/* Grid List */}
+        {(() => {
+          const filteredInterviews = selectedCategory === 'All'
+            ? interviews
+            : interviews.filter(iv => iv.category === selectedCategory);
+            
+          if (filteredInterviews.length === 0) {
+            return (
+              <p style={{ textAlign: 'center', color: 'var(--text-charcoal)', marginTop: '48px', fontFamily: '"Playfair Display", serif', fontSize: '18px' }}>
+                Keine Beiträge in dieser Kategorie vorhanden.
+              </p>
+            );
+          }
+          
+          return (
+            <div 
+              style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', 
+                gap: '32px',
+                marginTop: '32px'
+              }}
+            >
+              {filteredInterviews.map(iv => (
+                <div 
+                  key={iv.id}
+                  style={{
+                    backgroundColor: '#FFFFFF',
+                    border: '0.5px solid var(--light-border)',
+                    borderRadius: '6px',
+                    padding: '24px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    cursor: 'pointer',
+                    position: 'relative'
+                  }}
+                  onClick={() => selectInterview(iv.id)}
+                >
+                  {/* Header with avatar thumbnail */}
+                  <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '16px' }}>
+                    <img 
+                      src={iv.interviewee_avatar} 
+                      alt={iv.interviewee_name} 
+                      style={{ width: '48px', height: '48px', borderRadius: '50%', border: '1.5px solid #BF9B30', objectFit: 'cover' }}
+                    />
+                    <div>
+                      <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-ink)', display: 'block' }}>{iv.interviewee_name}</span>
+                      <span style={{ fontSize: '11px', color: 'var(--text-charcoal)' }}>{iv.interviewee_title}</span>
+                    </div>
+                  </div>
+
+                  <h3 
+                    style={{ 
+                      fontFamily: '"Playfair Display", serif', 
+                      fontSize: '18px', 
+                      color: 'var(--text-ink)', 
+                      marginBottom: '12px',
+                      fontWeight: 700,
+                      lineHeight: 1.3
+                    }}
+                  >
+                    {iv.title}
+                  </h3>
+                  
+                  <p 
+                    style={{ 
+                      fontFamily: 'Inter, sans-serif', 
+                      fontSize: '12px', 
+                      color: 'var(--text-charcoal)', 
+                      lineHeight: 1.5,
+                      marginBottom: '20px',
+                      flex: 1
+                    }}
+                  >
+                    {iv.subtitle}
+                  </p>
+
+                  <div 
+                    style={{ 
+                      marginTop: 'auto',
+                      borderTop: '0.5px solid var(--light-border)',
+                      paddingTop: '16px',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      fontSize: '11px',
+                      color: 'var(--primary-gold)',
+                      fontWeight: 600
+                    }}
+                  >
+                    <span style={{ color: 'var(--text-charcoal)', fontFamily: 'var(--font-mono)' }}>
+                      {iv.date_published}
+                    </span>
+                    
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      {iv.audio_url ? 'Podcast anhören' : 'Dossier lesen'} <ArrowRight size={14} />
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          );
+        })()}
 
       </div>
     </div>

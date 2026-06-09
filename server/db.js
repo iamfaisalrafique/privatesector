@@ -1,17 +1,50 @@
 import pg from 'pg';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
 
-const connectionString = process.env.DATABASE_URL || 'postgres://postgres:sEZiFJJsF4zRlk94MJIfrR6zvBwCDqmTbQuAnLcLrvAdSlHKtzNbKvjAFN1pJ7es@jyx3rke6geesevkw8hz8ucf7:5432/postgres';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const dbPath = path.resolve(__dirname, 'database.sqlite');
 
-const pool = new pg.Pool({
-  connectionString,
-});
+let usePg = false;
+let pool = null;
+let sqliteDb = null;
+let sqlite3 = null;
 
-pool.on('error', (err) => {
-  console.error('Unexpected error on idle pg client', err);
-});
+const connectionString = process.env.DATABASE_URL;
+
+if (connectionString) {
+  console.log('DATABASE_URL environment variable found. Using PostgreSQL.');
+  usePg = true;
+  pool = new pg.Pool({
+    connectionString,
+  });
+  pool.on('error', (err) => {
+    console.error('Unexpected error on idle pg client', err);
+  });
+} else {
+  console.log('No DATABASE_URL environment variable found. Falling back to local SQLite.');
+  usePg = false;
+  try {
+    const sqliteModule = await import('sqlite3');
+    sqlite3 = sqliteModule.default || sqliteModule;
+  } catch (err) {
+    console.error('Failed to import sqlite3 database driver. Make sure to run "npm install sqlite3 --no-save"');
+  }
+}
+
+if (!usePg && sqlite3) {
+  sqliteDb = new sqlite3.Database(dbPath, (err) => {
+    if (err) {
+      console.error('Error opening SQLite database:', err);
+    } else {
+      console.log('Connected to SQLite database at:', dbPath);
+    }
+  });
+}
 
 // Helper to convert SQLite `?` placeholders to PostgreSQL `$1, $2, ...`
 function convertSql(sql) {
@@ -19,30 +52,82 @@ function convertSql(sql) {
   return sql.replace(/\?/g, () => `$${index++}`);
 }
 
+// Helper to clean PostgreSQL syntax for SQLite compatibility
+function cleanSqlForSQLite(sql) {
+  let cleaned = sql;
+  
+  // Replace SERIAL PRIMARY KEY with INTEGER PRIMARY KEY AUTOINCREMENT
+  cleaned = cleaned.replace(/SERIAL\s+PRIMARY\s+KEY/gi, 'INTEGER PRIMARY KEY AUTOINCREMENT');
+  
+  // Replace ADD COLUMN IF NOT EXISTS with ADD COLUMN (SQLite handles exist check through error handling)
+  cleaned = cleaned.replace(/ADD\s+COLUMN\s+IF\s+NOT\s+EXISTS/gi, 'ADD COLUMN');
+  
+  return cleaned;
+}
+
 export async function dbQuery(sql, params = []) {
-  const converted = convertSql(sql);
-  const res = await pool.query(converted, params);
-  return res.rows;
+  if (usePg) {
+    const converted = convertSql(sql);
+    const res = await pool.query(converted, params);
+    return res.rows;
+  } else {
+    const cleanedSql = cleanSqlForSQLite(sql);
+    return new Promise((resolve, reject) => {
+      sqliteDb.all(cleanedSql, params, (err, rows) => {
+        if (err) reject(err);
+        else resolve(rows);
+      });
+    });
+  }
 }
 
 export async function dbRun(sql, params = []) {
-  let converted = convertSql(sql);
-  const isInsert = converted.trim().toUpperCase().startsWith('INSERT');
-  if (isInsert && !converted.toUpperCase().includes('RETURNING')) {
-    converted = `${converted} RETURNING id`;
+  if (usePg) {
+    let converted = convertSql(sql);
+    const isInsert = converted.trim().toUpperCase().startsWith('INSERT');
+    if (isInsert && !converted.toUpperCase().includes('RETURNING')) {
+      converted = `${converted} RETURNING id`;
+    }
+    const res = await pool.query(converted, params);
+    return {
+      id: isInsert && res.rows[0] ? res.rows[0].id : null,
+      changes: res.rowCount
+    };
+  } else {
+    const cleanedSql = cleanSqlForSQLite(sql);
+    return new Promise((resolve, reject) => {
+      sqliteDb.run(cleanedSql, params, function (err) {
+        if (err) {
+          // Swallow duplicate column name error during migrations
+          if (err.message.includes('duplicate column name')) {
+            resolve({ id: null, changes: 0 });
+          } else {
+            reject(err);
+          }
+        } else {
+          resolve({ id: this.lastID, changes: this.changes });
+        }
+      });
+    });
   }
-  const res = await pool.query(converted, params);
-  return {
-    id: isInsert && res.rows[0] ? res.rows[0].id : null,
-    changes: res.rowCount
-  };
 }
 
 export async function dbGet(sql, params = []) {
-  const converted = convertSql(sql);
-  const res = await pool.query(converted, params);
-  return res.rows[0] || null;
+  if (usePg) {
+    const converted = convertSql(sql);
+    const res = await pool.query(converted, params);
+    return res.rows[0] || null;
+  } else {
+    const cleanedSql = cleanSqlForSQLite(sql);
+    return new Promise((resolve, reject) => {
+      sqliteDb.get(cleanedSql, params, (err, row) => {
+        if (err) reject(err);
+        else resolve(row || null);
+      });
+    });
+  }
 }
+
 
 // Database schema and seeding script
 export async function initializeDatabase() {
@@ -84,7 +169,8 @@ export async function initializeDatabase() {
       read_time_mins INTEGER NOT NULL,
       content_body TEXT NOT NULL,
       pull_quote TEXT NOT NULL,
-      tags TEXT NOT NULL
+      tags TEXT NOT NULL,
+      image_url TEXT DEFAULT ''
     )
   `);
 
@@ -147,20 +233,81 @@ export async function initializeDatabase() {
     )
   `);
 
-  // Seed check
-  const companyCount = await dbGet('SELECT COUNT(*) as count FROM companies');
-  if (Number(companyCount.count) === 0) {
-    console.log('Seeding mock B2B data...');
-    await seedData();
-  } else {
-    console.log('Database already populated.');
-  }
+  // Alter existing tables if needed for migrations
+  await dbRun(`ALTER TABLE companies ADD COLUMN IF NOT EXISTS esg_rating INTEGER DEFAULT 0`);
+  await dbRun(`ALTER TABLE companies ADD COLUMN IF NOT EXISTS sustainability_summary TEXT DEFAULT ''`);
+  await dbRun(`ALTER TABLE news ADD COLUMN IF NOT EXISTS student_author_id INTEGER`);
+  await dbRun(`ALTER TABLE news ADD COLUMN IF NOT EXISTS image_url TEXT DEFAULT ''`);
+  await dbRun(`ALTER TABLE interviews ADD COLUMN IF NOT EXISTS student_author_id INTEGER`);
+  await dbRun(`ALTER TABLE interviews ADD COLUMN IF NOT EXISTS category TEXT DEFAULT 'Executive Briefing'`);
 
-  // Seed check for interviews
+  // Create new tables
+  await dbRun(`
+    CREATE TABLE IF NOT EXISTS student_profiles (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL,
+      university TEXT NOT NULL,
+      study_field TEXT NOT NULL,
+      avatar TEXT NOT NULL,
+      grad_year INTEGER NOT NULL,
+      portfolio_url TEXT NOT NULL,
+      bio TEXT NOT NULL
+    )
+  `);
+
+  await dbRun(`
+    CREATE TABLE IF NOT EXISTS jobs (
+      id SERIAL PRIMARY KEY,
+      title TEXT NOT NULL,
+      type TEXT NOT NULL,
+      description TEXT NOT NULL,
+      company_id INTEGER,
+      company_name TEXT NOT NULL,
+      location TEXT NOT NULL,
+      apply_url TEXT NOT NULL,
+      date_posted TEXT NOT NULL
+    )
+  `);
+
+  // Count checks to decide if we need to clean and seed
+  const companyCount = await dbGet('SELECT COUNT(*) as count FROM companies');
+  const newsCount = await dbGet('SELECT COUNT(*) as count FROM news');
   const interviewCount = await dbGet('SELECT COUNT(*) as count FROM interviews');
-  if (Number(interviewCount.count) === 0) {
+  const newsWithoutImages = await dbGet("SELECT COUNT(*) as count FROM news WHERE image_url = '' OR image_url IS NULL");
+
+  const needsReset = Number(companyCount.count) < 15 || Number(newsCount.count) < 20 || Number(interviewCount.count) < 6 || Number(newsWithoutImages.count) > 0;
+
+  if (needsReset) {
+    console.log('Database schema or seed count is low. Clearing database to perform a complete re-seed...');
+    
+    if (usePg) {
+      await dbRun('TRUNCATE TABLE companies, news, ads, pages, translations, interviews, student_profiles, jobs RESTART IDENTITY CASCADE');
+    } else {
+      await dbRun('DELETE FROM companies');
+      await dbRun('DELETE FROM news');
+      await dbRun('DELETE FROM ads');
+      await dbRun('DELETE FROM pages');
+      await dbRun('DELETE FROM translations');
+      await dbRun('DELETE FROM interviews');
+      await dbRun('DELETE FROM student_profiles');
+      await dbRun('DELETE FROM jobs');
+      try {
+        await dbRun("DELETE FROM sqlite_sequence WHERE name IN ('companies', 'news', 'ads', 'pages', 'translations', 'interviews', 'student_profiles', 'jobs')");
+      } catch (e) {
+        // Ignore if sqlite_sequence table does not exist
+      }
+    }
+    
+    console.log('Seeding mock B2B data (companies and news)...');
+    await seedData();
+    
+    console.log('Seeding student profiles and jobs...');
+    await seedStudentsAndJobs();
+    
     console.log('Seeding mock interviews...');
     await seedInterviews();
+  } else {
+    console.log('Database is already fully populated with latest B2B, Careers, ESG, and podcast features.');
   }
 }
 
@@ -994,14 +1141,27 @@ The investment represents a strategic diversification for the trading firm as gl
     }
   ];
 
+  const categoryImages = {
+    'Luxury Goods': 'https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&q=80&w=600',
+    'Pharmaceuticals': 'https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=600',
+    'Financial Services': 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&q=80&w=600',
+    'Consumer Goods': 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&q=80&w=600',
+    'Telecommunications': 'https://images.unsplash.com/photo-1562408590-e32931084e23?auto=format&fit=crop&q=80&w=600',
+    'Technology': 'https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?auto=format&fit=crop&q=80&w=600',
+    'Manufacturing': 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=600',
+    'Commodities': 'https://images.unsplash.com/photo-1518173946687-a4c8a383392e?auto=format&fit=crop&q=80&w=600'
+  };
+  const defaultImage = 'https://images.unsplash.com/photo-1518173946687-a4c8a383392e?auto=format&fit=crop&q=80&w=600';
+
   for (const art of articles) {
+    const imgUrl = art.image_url || categoryImages[art.category] || defaultImage;
     await dbRun(`
       INSERT INTO news (
-        title, subtitle, category, author_name, author_avatar, date_published, read_time_mins, content_body, pull_quote, tags
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        title, subtitle, category, author_name, author_avatar, date_published, read_time_mins, content_body, pull_quote, tags, image_url
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `, [
       art.title, art.subtitle, art.category, art.author_name, art.author_avatar, art.date_published,
-      art.read_time_mins, art.content_body, art.pull_quote, art.tags
+      art.read_time_mins, art.content_body, art.pull_quote, art.tags, imgUrl
     ]);
   }
 
@@ -1145,7 +1305,9 @@ async function seedInterviews() {
           q: 'Are we seeing a permanent shift in consumer purchasing power?',
           a: 'Inflation has certainly tested price elasticities, but our focus on premium brands and high-nutrition categories has proven resilient. We see stable volume growth in premium coffees and pet care.'
         }
-      ])
+      ]),
+      category: 'Executive Briefing',
+      student_author_id: null
     },
     {
       title: 'The Convergence of Diagnostics and Personalized Medicine',
@@ -1171,7 +1333,9 @@ async function seedInterviews() {
           q: 'What is your outlook on Swiss-EU research integration?',
           a: 'It is critical for Switzerland to remain fully associated with Horizon Europe. Science thrives on international collaboration. Restricting talent mobility or funding participation ultimately harms patients globally.'
         }
-      ])
+      ]),
+      category: 'Executive Briefing',
+      student_author_id: null
     },
     {
       title: 'Preserving Horological Heritage in a Digital Age',
@@ -1197,7 +1361,9 @@ async function seedInterviews() {
           q: 'Does smartwatch technology pose a threat to mechanical watchmaking?',
           a: 'Not at all. A mechanical watch is an emotional object, a piece of art, and a repository of history. A digital screen is obsolete in a few years, but a mechanical Rolex is designed to last for generations.'
         }
-      ])
+      ]),
+      category: 'Executive Briefing',
+      student_author_id: null
     },
     {
       title: 'Navigating Consolidation in Global Wealth Management',
@@ -1219,51 +1385,57 @@ async function seedInterviews() {
           q: 'Is Switzerland\'s financial competitiveness secure?',
           a: 'Yes, but we must protect our core strengths: stability, a strong currency, and a highly skilled workforce. Embracing digital asset standards while maintaining regulatory rigor is key to staying ahead.'
         }
-      ])
+      ]),
+      category: 'Executive Briefing',
+      student_author_id: null
     },
     {
-      title: 'Decarbonizing Rail: Hydrogen vs. Battery Propulsion',
-      subtitle: 'Stadler Rail\'s Chairman discusses new zero-emission orders and European logistics markets.',
-      interviewee_name: 'Peter Spuhler',
-      interviewee_title: 'Chairman, Stadler Rail AG',
-      interviewee_avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=256',
-      company_id: 9,
-      company_name: 'Stadler Rail AG',
-      date_published: '2026-05-25',
-      read_time_mins: 7,
-      audio_url: null,
-      qa_content: JSON.stringify([
-        {
-          q: 'Which technology is winning the regional rail race: battery or hydrogen?',
-          a: 'It depends on the infrastructure. For routes without overhead catenary lines that are shorter than 100 kilometers, battery trains are highly efficient. For longer, demanding routes, hydrogen remains the superior choice. We offer both platforms to meet diverse operator needs.'
-        },
-        {
-          q: 'How are supply chain costs affecting Stadler\'s order book?',
-          a: 'High energy and steel costs in Europe have put pressure on margins. However, our strong focus on local Swiss fabrication and precision engineering allows us to maintain quality and deliver on time.'
-        }
-      ])
-    },
-    {
-      title: 'Designing Peripherals for the Hybrid Workspace',
-      subtitle: 'Logitech\'s CEO discusses AI integration, sustainable hardware materials, and global consumer demand.',
-      interviewee_name: 'Hanneke Faber',
-      interviewee_title: 'CEO, Logitech International S.A.',
-      interviewee_avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=256',
-      company_id: 7,
-      company_name: 'Logitech International S.A.',
-      date_published: '2026-05-18',
+      title: 'Zurich Street Buzz: How locals choose their retail banks',
+      subtitle: 'We took to the streets of Zurich to ask locals why they choose UBS, PostFinance, or Cantonal Banks.',
+      interviewee_name: 'Zurich Public Opinions',
+      interviewee_title: 'Street Survey',
+      interviewee_avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=256',
+      company_id: null,
+      company_name: 'Zurich Street Broadcast',
+      date_published: '2026-06-08',
       read_time_mins: 6,
-      audio_url: null,
+      audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
       qa_content: JSON.stringify([
         {
-          q: 'How is Logitech incorporating sustainability into consumer electronics?',
-          a: 'We are designing with post-consumer recycled plastics and labeling our products with their carbon footprint. Over 65% of our product line now incorporates recycled materials, proving that high-performance peripherals can be eco-friendly.'
+          q: 'Why do you choose a Cantonal Bank over a major bank like UBS?',
+          a: 'Mostly because of the local connection. Cantonal banks invest directly back into regional infrastructure and projects. For personal savings, the state guarantee is also a major trust factor.'
         },
         {
-          q: 'What role does artificial intelligence play in your device design?',
-          a: 'We are integrating smart software features that simplify workflows, such as smart macros and voice-to-text controls. The hardware is becoming more contextual, understanding how and when you work.'
+          q: 'Does digital banking technology influence your bank selection?',
+          a: 'Absolutely. If the mobile app is slow or clunky, I won\'t use it. Mobile-first Neobanks are gaining a lot of ground among university students because they have zero fees and instant transfers.'
         }
-      ])
+      ]),
+      category: 'Street Briefing',
+      student_author_id: 1
+    },
+    {
+      title: 'The Rise of Green Industry: Bühler Group\'s Biomass Transition',
+      subtitle: 'ETH St. Gallen student analysis of Bühler Group\'s new carbon-neutral biomass grain processing solutions.',
+      interviewee_name: 'Stefan Scheiber',
+      interviewee_title: 'CEO, Bühler Group',
+      interviewee_avatar: 'https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?auto=format&fit=crop&q=80&w=256',
+      company_id: 10,
+      company_name: 'Bühler Group',
+      date_published: '2026-06-07',
+      read_time_mins: 5,
+      audio_url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+      qa_content: JSON.stringify([
+        {
+          q: 'How does Bühler help companies reduce their Scope 1 emissions in milling?',
+          a: 'Our biomass-powered burners utilize the hulls of processed grain directly to heat the mills. This creates a circular energy system, eliminating the need for fossil natural gas entirely in the drying process.'
+        },
+        {
+          q: 'Is carbon neutrality economically viable for medium-sized mills?',
+          a: 'Yes, because agricultural waste is practically free. With energy prices fluctuating, building energy-independent milling plants pays off within three to five years.'
+        }
+      ]),
+      category: 'University Perspective',
+      student_author_id: 2
     }
   ];
 
@@ -1271,11 +1443,121 @@ async function seedInterviews() {
     await dbRun(`
       INSERT INTO interviews (
         title, subtitle, interviewee_name, interviewee_title, interviewee_avatar,
-        company_id, company_name, date_published, read_time_mins, audio_url, qa_content
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        company_id, company_name, date_published, read_time_mins, audio_url, qa_content, category, student_author_id
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `, [
       iv.title, iv.subtitle, iv.interviewee_name, iv.interviewee_title, iv.interviewee_avatar,
-      iv.company_id, iv.company_name, iv.date_published, iv.read_time_mins, iv.audio_url, iv.qa_content
+      iv.company_id, iv.company_name, iv.date_published, iv.read_time_mins, iv.audio_url, iv.qa_content, iv.category, iv.student_author_id
     ]);
   }
+}
+
+async function seedStudentsAndJobs() {
+  console.log('Seeding student profiles...');
+  const students = [
+    {
+      name: 'Amina Al-Mansoor',
+      university: 'University of St. Gallen (HSG)',
+      study_field: 'Banking & Finance',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=256',
+      grad_year: 2027,
+      portfolio_url: 'https://hsg-alumni.ch/amina-almansoor',
+      bio: 'Honors student in Banking & Finance at HSG. Passionate about Swiss private banking systems and ESG metrics. Research contributor to the Zurich B2B Economic Briefings.'
+    },
+    {
+      name: 'Lukas Keller',
+      university: 'ETH Zurich',
+      study_field: 'Environmental Engineering & IT',
+      avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=256',
+      grad_year: 2026,
+      portfolio_url: 'https://ethz.ch/lukas-keller-sustainability',
+      bio: 'Graduate student at ETH Zurich focusing on industrial decarbonization. Specializes in auditing Scope 1 and Scope 2 emissions in Swiss manufacturing systems.'
+    },
+    {
+      name: 'Elena Rossi',
+      university: 'University of Geneva (UNIGE)',
+      study_field: 'International Relations & Economics',
+      avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=256',
+      grad_year: 2027,
+      portfolio_url: 'https://unige.ch/elena-rossi-portfolio',
+      bio: 'Bilingual economics researcher focused on multilateral trade flows and Swiss pharma expansion in Southeast Asia.'
+    }
+  ];
+
+  for (const s of students) {
+    await dbRun(`
+      INSERT INTO student_profiles (name, university, study_field, avatar, grad_year, portfolio_url, bio)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `, [s.name, s.university, s.study_field, s.avatar, s.grad_year, s.portfolio_url, s.bio]);
+  }
+
+  console.log('Seeding job postings...');
+  const jobs = [
+    {
+      title: 'Sustainable Agriculture Analyst (Internship)',
+      type: 'Internship',
+      description: 'Support Nestlé\'s global ESG compliance team in auditing cocoa supply chains. Ideal for students with environmental sciences or agricultural economics backgrounds.',
+      company_id: 1,
+      company_name: 'Nestlé S.A.',
+      location: 'Vevey, VD',
+      apply_url: 'https://nestle.com/careers/sustainable-agri-intern',
+      date_posted: '2026-06-08'
+    },
+    {
+      title: 'Wealth Management Trainee',
+      type: 'Trainee',
+      description: 'Join the UBS Graduate Talent Program in Zurich. Work alongside senior client advisors managing ultra-high-net-worth portfolios across European markets.',
+      company_id: 4,
+      company_name: 'UBS Group AG',
+      location: 'Zurich, ZH',
+      apply_url: 'https://ubs.com/careers/wealth-management-trainee',
+      date_posted: '2026-06-07'
+    },
+    {
+      title: 'Healthcare Data Analyst (Trainee)',
+      type: 'Trainee',
+      description: 'Rotational trainee program at Roche HQ in Basel. Analyze clinical trial data pipelines using advanced ML and stats. Requires strong Python/R and biotech interest.',
+      company_id: 2,
+      company_name: 'Roche Holding AG',
+      location: 'Basel, BS',
+      apply_url: 'https://roche.com/careers/healthcare-data-trainee',
+      date_posted: '2026-06-05'
+    },
+    {
+      title: 'Precision Mechanical Engineer (Internship)',
+      type: 'Internship',
+      description: 'Hands-on internship at Bühler Group. Design and test carbon-neutral biomass grain processing armatures. Ideal for ETH/EPFL mechanical engineering students.',
+      company_id: 10,
+      company_name: 'Bühler Group',
+      location: 'Uzwil, SG',
+      apply_url: 'https://buhlergroup.com/careers/precision-engineer-intern',
+      date_posted: '2026-06-06'
+    }
+  ];
+
+  for (const j of jobs) {
+    await dbRun(`
+      INSERT INTO jobs (title, type, description, company_id, company_name, location, apply_url, date_posted)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `, [j.title, j.type, j.description, j.company_id, j.company_name, j.location, j.apply_url, j.date_posted]);
+  }
+
+  console.log('Updating companies with ESG scores...');
+  const esgUpdates = [
+    { id: 1, score: 88, summary: 'Nestlé is targeting net-zero emissions by 2050 and uses 100% sustainably sourced cocoa for its Swiss chocolate production.' },
+    { id: 2, score: 92, summary: 'Roche ranks as one of the most sustainable pharmaceutical companies, focusing on energy-efficient laboratories and medical waste reduction in Basel.' },
+    { id: 3, score: 78, summary: 'Novartis is committed to carbon neutrality in its operations by 2030 and works on green transport fleets for medicines distribution.' },
+    { id: 4, score: 85, summary: 'UBS has committed to fully green investment portfolios and has phased out financing for new coal-fired power plants.' },
+    { id: 5, score: 62, summary: 'Rolex is expanding green certifications for its watch assembly sites and uses certified ethically-sourced gold.' },
+    { id: 10, score: 82, summary: 'Bühler Group plays a key role in global food sustainability, designing plants that cut waste and energy consumption in grain milling by 50%.' },
+    { id: 11, score: 84, summary: 'Barry Callebaut is driving the "Forever Chocolate" initiative, aiming to lift cocoa farmers out of poverty and eliminate child labor.' },
+    { id: 12, score: 90, summary: 'Swiss Re uses advanced AI-driven climatic modeling to set strict underwriting criteria for eco-friendly infrastructure projects.' }
+  ];
+
+  for (const up of esgUpdates) {
+    await dbRun('UPDATE companies SET esg_rating = ?, sustainability_summary = ? WHERE id = ?', [up.score, up.summary, up.id]);
+  }
+
+  // Set student author on some existing articles
+  await dbRun('UPDATE news SET student_author_id = 2 WHERE id IN (4, 11)'); // Lukas Keller authored Bühler Group / ESG transparency articles
 }

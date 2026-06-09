@@ -25,12 +25,17 @@ export default function Directory({ initialSearch = '', selectCompany }) {
   const [selectedIndustries, setSelectedIndustries] = useState([]);
   const [sizeClass, setSizeClass] = useState('All');
   const [verifiedOnly, setVerifiedOnly] = useState(false);
+  const [ecoOnly, setEcoOnly] = useState(false);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState('grid'); // grid or list
 
   const [cantonsExpanded, setCantonsExpanded] = useState(false);
   const [industriesExpanded, setIndustriesExpanded] = useState(true);
   const [sizeExpanded, setSizeExpanded] = useState(true);
+
+  const filteredCompanies = ecoOnly 
+    ? companies.filter(c => c.esg_rating >= 80)
+    : companies;
 
   useEffect(() => {
     async function fetchFilteredCompanies() {
@@ -84,6 +89,7 @@ export default function Directory({ initialSearch = '', selectCompany }) {
     setSelectedIndustries([]);
     setSizeClass('All');
     setVerifiedOnly(false);
+    setEcoOnly(false);
   };
 
   return (
@@ -189,6 +195,36 @@ export default function Directory({ initialSearch = '', selectCompany }) {
                 </button>
               </div>
 
+              {/* Eco-Leader Toggle */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderTop: '0.5px solid var(--light-border)', paddingTop: '12px' }}>
+                <span className="caps-label" style={{ color: 'var(--text-ink)', fontSize: '11px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>🍃 Eco-Leader Only</span>
+                <button
+                  onClick={() => setEcoOnly(!ecoOnly)}
+                  style={{
+                    width: '40px',
+                    height: '22px',
+                    borderRadius: '0px',
+                    backgroundColor: ecoOnly ? '#2E7D32' : 'var(--surface-warm)',
+                    border: '0.5px solid var(--light-border)',
+                    position: 'relative',
+                    cursor: 'pointer',
+                    transition: 'background-color 0.2s'
+                  }}
+                >
+                  <div 
+                    style={{
+                      width: '14px',
+                      height: '14px',
+                      backgroundColor: ecoOnly ? '#FFFFFF' : 'var(--text-charcoal)',
+                      position: 'absolute',
+                      top: '3px',
+                      left: ecoOnly ? '22px' : '4px',
+                      transition: 'left 0.2s'
+                    }}
+                  />
+                </button>
+              </div>
+
               {/* Canton Filter */}
               <div>
                 <div className="filter-header" onClick={() => setCantonsExpanded(!cantonsExpanded)}>
@@ -287,7 +323,7 @@ export default function Directory({ initialSearch = '', selectCompany }) {
             {/* Sort Bar + Grid/List Toggle */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '12px' }}>
               <span className="caps-label" style={{ color: 'var(--text-ink)', fontWeight: 600 }}>
-                {companies.length} {companies.length === 1 ? 'Eintrag' : 'Einträge'} gefunden
+                {filteredCompanies.length} {filteredCompanies.length === 1 ? 'Eintrag' : 'Einträge'} gefunden
               </span>
               
               <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
@@ -322,13 +358,13 @@ export default function Directory({ initialSearch = '', selectCompany }) {
                 </div>
               </div>
             </div>
-
+ 
             {loading ? (
               <div style={{ textAlign: 'center', padding: '64px 0' }}>
                 <div style={{ width: '40px', height: '40px', border: '2px solid var(--light-border)', borderTopColor: '#BF9B30', borderRadius: '50%', animation: 'spin 1s infinite linear', margin: '0 auto 16px' }} />
                 <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', color: 'var(--text-charcoal)' }}>Firmendaten werden geladen...</p>
               </div>
-            ) : companies.length === 0 ? (
+            ) : filteredCompanies.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '64px 24px', border: '0.5px solid var(--light-border)', borderRadius: '6px', backgroundColor: '#FFFFFF' }}>
                 <Map size={48} style={{ color: '#BF9B30', margin: '0 auto 16px', opacity: 0.6 }} />
                 <h3 style={{ fontFamily: '"Playfair Display", serif', fontSize: '22px', color: 'var(--text-ink)', marginBottom: '8px' }}>Keine Ergebnisse gefunden</h3>
@@ -354,7 +390,7 @@ export default function Directory({ initialSearch = '', selectCompany }) {
                     gap: '24px' 
                   }}
                 >
-                  {companies.map((company, index) => {
+                  {filteredCompanies.map((company, index) => {
                     const cardElement = (
                       <CompanyCard 
                         key={company.id} 
@@ -362,7 +398,7 @@ export default function Directory({ initialSearch = '', selectCompany }) {
                         onClick={() => selectCompany(company.id)} 
                       />
                     );
-
+ 
                     // Inject Zone F Spotlight Ad every 9th card
                     if ((index + 1) % 9 === 0) {
                       return (
@@ -372,7 +408,7 @@ export default function Directory({ initialSearch = '', selectCompany }) {
                         </React.Fragment>
                       );
                     }
-
+ 
                     return cardElement;
                   })}
                 </div>
