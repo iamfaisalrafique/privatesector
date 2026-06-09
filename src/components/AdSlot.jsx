@@ -134,7 +134,7 @@ export default function AdSlot({ position, adData, adminPreview = false }) {
 
   if (showEmpty) {
     const borderStyle = adminPreview 
-      ? '1px dashed #BF9B30' // Admin view: dashed gold
+      ? '1px dashed var(--primary-red)' // Admin view: dashed gold
       : '1px dashed #E8E0C8'; // Public view: dashed light border
 
     const labelText = adminPreview 
@@ -192,7 +192,7 @@ export default function AdSlot({ position, adData, adminPreview = false }) {
             top: '4px', 
             right: '8px', 
             fontSize: '9px', 
-            color: adminPreview ? '#BF9B30' : 'var(--text-charcoal)', 
+            color: adminPreview ? 'var(--primary-red)' : 'var(--text-charcoal)', 
             textTransform: 'uppercase', 
             letterSpacing: '0.05em',
             fontWeight: adminPreview ? '600' : 'normal'

@@ -71,20 +71,20 @@ export default function Auth({ mode = 'login', navigate }) {
             alignItems: 'baseline'
           }}
         >
-          <span style={{ color: '#BF9B30' }}>privatesector</span>
+          <span style={{ color: 'var(--primary-red)' }}>privatesector</span>
           <span style={{ color: '#8B0000', fontSize: '18px', fontWeight: 800 }}>.ch</span>
         </div>
 
         {/* Value Proposition */}
         <div style={{ maxWidth: '440px', margin: '40px 0' }}>
           <h2 style={{ fontFamily: '"Playfair Display", serif', fontSize: '36px', fontWeight: 700, lineHeight: 1.3, marginBottom: '24px', color: '#FFFDF7' }}>
-            Schweizer Wirtschaftsdaten, <span style={{ color: '#BF9B30', fontStyle: 'italic' }}>vollständig verifiziert.</span>
+            Schweizer Wirtschaftsdaten, <span style={{ color: 'var(--primary-red)', fontStyle: 'italic' }}>vollständig verifiziert.</span>
           </h2>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
               <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: 'rgba(191, 155, 48, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <Check size={14} style={{ color: '#BF9B30' }} />
+                <Check size={14} style={{ color: 'var(--primary-red)' }} />
               </div>
               <div>
                 <strong style={{ display: 'block', fontSize: '14px', color: '#FFFDF7' }}>Verifizierte B2B-Firmendossiers</strong>
@@ -94,7 +94,7 @@ export default function Auth({ mode = 'login', navigate }) {
 
             <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
               <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: 'rgba(191, 155, 48, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <Shield size={14} style={{ color: '#BF9B30' }} />
+                <Shield size={14} style={{ color: 'var(--primary-red)' }} />
               </div>
               <div>
                 <strong style={{ display: 'block', fontSize: '14px', color: '#FFFDF7' }}>Präzise Analysen & Marktberichte</strong>
@@ -104,7 +104,7 @@ export default function Auth({ mode = 'login', navigate }) {
 
             <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
               <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: 'rgba(191, 155, 48, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <Lock size={14} style={{ color: '#BF9B30' }} />
+                <Lock size={14} style={{ color: 'var(--primary-red)' }} />
               </div>
               <div>
                 <strong style={{ display: 'block', fontSize: '14px', color: '#FFFDF7' }}>100% DSGVO / GDPR Konformität</strong>

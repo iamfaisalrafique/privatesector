@@ -77,7 +77,7 @@ export default function LanguageSwitcher() {
                   border: 'none',
                   borderRadius: '3px',
                   backgroundColor: isActive ? '#FAF4E5' : 'transparent',
-                  color: isActive ? '#BF9B30' : '#1A1A1A',
+                  color: isActive ? 'var(--primary-red)' : '#1A1A1A',
                   cursor: 'pointer',
                   textAlign: 'left',
                   fontSize: '12px',

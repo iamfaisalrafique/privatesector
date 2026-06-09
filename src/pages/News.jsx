@@ -50,7 +50,7 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
   if (loading) {
     return (
       <div className="container" style={{ padding: '64px 0', textAlign: 'center' }}>
-        <div style={{ width: '40px', height: '40px', border: '2px solid var(--light-border)', borderTopColor: '#BF9B30', borderRadius: '50%', animation: 'spin 1s infinite linear', margin: '0 auto 16px' }} />
+        <div style={{ width: '40px', height: '40px', border: '2px solid var(--light-border)', borderTopColor: 'var(--primary-red)', borderRadius: '50%', animation: 'spin 1s infinite linear', margin: '0 auto 16px' }} />
         <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', color: 'var(--text-charcoal)' }}>Medienarchiv wird geladen...</p>
       </div>
     );
@@ -268,7 +268,7 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                   {mockMostRead.map((item, idx) => (
                     <div key={idx} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                      <span style={{ fontSize: '20px', fontFamily: '"Playfair Display", serif', color: '#BF9B30', fontWeight: 700, lineHeight: 1 }}>{idx + 1}</span>
+                      <span style={{ fontSize: '20px', fontFamily: '"Playfair Display", serif', color: 'var(--primary-red)', fontWeight: 700, lineHeight: 1 }}>{idx + 1}</span>
                       <div>
                         <span style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: 'var(--text-ink)', lineHeight: 1.4, cursor: 'pointer' }} onClick={() => alert('Wird geladen...')}>
                           {item.title}

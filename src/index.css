@@ -1,9 +1,13 @@
 /* Prestige Editorial Design System (privatesector.ch) */
 :root {
-  /* Color System (Option 3 - Prestige Editorial) */
-  --primary-gold: #BF9B30;
-  --gold-hover: #8A6E1F;
-  --gold-light: #F5E6B8;
+  /* Color System (Swiss Flag Red & White Editorial Theme) */
+  --primary-red: #D52B1E;
+  --red-hover: #A61F15;
+  --red-light: #FCE8E6;
+  
+  --primary-gold: var(--primary-red);
+  --gold-hover: var(--red-hover);
+  --gold-light: var(--red-light);
   
   --bg-ivory: #FFFDF7;
   --surface-warm: #F5F0E8;
@@ -15,9 +19,9 @@
   --dark-surface: #1A1A1A;
   
   --dark-border: rgba(42, 42, 42, 0.4);
-  --light-border: #E8E0C8;
+  --light-border: #E5E2D9; /* Clean neutral warm grey instead of goldish-ivory */
   
-  --accent-red: #8B0000;
+  --accent-red: #D52B1E; /* Swiss Red breaking news */
   --accent-green: #4A6741;
   
   /* Fonts */

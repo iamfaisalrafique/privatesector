@@ -26,7 +26,7 @@ export default function StudentProfile({ studentId, navigate }) {
   if (loading) {
     return (
       <div className="container" style={{ padding: '64px 0', textAlign: 'center' }}>
-        <div style={{ width: '40px', height: '40px', border: '2px solid var(--light-border)', borderTopColor: '#BF9B30', borderRadius: '50%', animation: 'spin 1s infinite linear', margin: '0 auto 16px' }} />
+        <div style={{ width: '40px', height: '40px', border: '2px solid var(--light-border)', borderTopColor: 'var(--primary-red)', borderRadius: '50%', animation: 'spin 1s infinite linear', margin: '0 auto 16px' }} />
         <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', color: 'var(--text-charcoal)' }}>Studenten-Profil wird geladen...</p>
       </div>
     );
@@ -56,7 +56,7 @@ export default function StudentProfile({ studentId, navigate }) {
             style={{
               background: 'none',
               border: 'none',
-              color: '#BF9B30',
+              color: 'var(--primary-red)',
               cursor: 'pointer',
               display: 'inline-flex',
               alignItems: 'center',
@@ -79,13 +79,13 @@ export default function StudentProfile({ studentId, navigate }) {
                 width: '140px',
                 height: '140px',
                 borderRadius: '50%',
-                border: '3px solid #BF9B30',
+                border: '3px solid var(--primary-red)',
                 objectFit: 'cover'
               }}
             />
 
             <div style={{ flex: 1, textAlign: isRtl ? 'right' : 'left' }}>
-              <span className="caps-label" style={{ color: '#BF9B30', fontSize: '11px', fontWeight: 600, display: 'block', marginBottom: '8px' }}>
+              <span className="caps-label" style={{ color: 'var(--primary-red)', fontSize: '11px', fontWeight: 600, display: 'block', marginBottom: '8px' }}>
                 Zertifizierter Student Contributor
               </span>
               
@@ -93,7 +93,7 @@ export default function StudentProfile({ studentId, navigate }) {
                 {profile.name}
               </h1>
               
-              <p style={{ color: '#BF9B30', fontSize: '16px', fontWeight: 500, marginBottom: '16px', fontFamily: 'Inter, sans-serif', display: 'flex', alignItems: 'center', gap: '6px', justifyContent: isRtl ? 'flex-end' : 'flex-start' }}>
+              <p style={{ color: 'var(--primary-red)', fontSize: '16px', fontWeight: 500, marginBottom: '16px', fontFamily: 'Inter, sans-serif', display: 'flex', alignItems: 'center', gap: '6px', justifyContent: isRtl ? 'flex-end' : 'flex-start' }}>
                 <GraduationCap size={18} /> {profile.university}
               </p>
 
@@ -128,7 +128,7 @@ export default function StudentProfile({ studentId, navigate }) {
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
-                color: '#BF9B30',
+                color: 'var(--primary-red)',
                 fontSize: '13px',
                 fontWeight: 600,
                 textDecoration: 'none'
@@ -150,7 +150,7 @@ export default function StudentProfile({ studentId, navigate }) {
             {/* Written Publications */}
             <div style={{ marginBottom: '40px' }}>
               <div style={{ borderBottom: '0.5px solid var(--light-border)', paddingBottom: '12px', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <BookOpen size={18} style={{ color: '#BF9B30' }} />
+                <BookOpen size={18} style={{ color: 'var(--primary-red)' }} />
                 <h3 style={{ fontSize: '20px', fontFamily: '"Playfair Display", serif', fontWeight: 700, margin: 0 }}>
                   Publikationen & Analysen
                 </h3>
@@ -177,7 +177,7 @@ export default function StudentProfile({ studentId, navigate }) {
                       className="contributed-card"
                     >
                       <div>
-                        <span style={{ fontSize: '10px', textTransform: 'uppercase', color: '#BF9B30', letterSpacing: '0.05em', fontWeight: 600, display: 'block', marginBottom: '4px' }}>
+                        <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--primary-red)', letterSpacing: '0.05em', fontWeight: 600, display: 'block', marginBottom: '4px' }}>
                           {art.category}
                         </span>
                         <h4 style={{ fontSize: '15px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: 'var(--text-ink)', margin: 0 }}>
@@ -187,7 +187,7 @@ export default function StudentProfile({ studentId, navigate }) {
                           {art.date_published}
                         </span>
                       </div>
-                      <ArrowRight size={14} style={{ color: '#BF9B30' }} />
+                      <ArrowRight size={14} style={{ color: 'var(--primary-red)' }} />
                     </div>
                   ))}
                 </div>
@@ -197,7 +197,7 @@ export default function StudentProfile({ studentId, navigate }) {
             {/* Podcasts & Broadcasts */}
             <div>
               <div style={{ borderBottom: '0.5px solid var(--light-border)', paddingBottom: '12px', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Mic size={18} style={{ color: '#BF9B30' }} />
+                <Mic size={18} style={{ color: 'var(--primary-red)' }} />
                 <h3 style={{ fontSize: '20px', fontFamily: '"Playfair Display", serif', fontWeight: 700, margin: 0 }}>
                   Audio Briefings & Podcasts
                 </h3>
@@ -224,7 +224,7 @@ export default function StudentProfile({ studentId, navigate }) {
                       className="contributed-card"
                     >
                       <div>
-                        <span style={{ fontSize: '10px', textTransform: 'uppercase', color: '#BF9B30', letterSpacing: '0.05em', fontWeight: 600, display: 'block', marginBottom: '4px' }}>
+                        <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--primary-red)', letterSpacing: '0.05em', fontWeight: 600, display: 'block', marginBottom: '4px' }}>
                           {pod.category}
                         </span>
                         <h4 style={{ fontSize: '15px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: 'var(--text-ink)', margin: 0 }}>
@@ -237,7 +237,7 @@ export default function StudentProfile({ studentId, navigate }) {
                           {pod.date_published}
                         </span>
                       </div>
-                      <ArrowRight size={14} style={{ color: '#BF9B30' }} />
+                      <ArrowRight size={14} style={{ color: 'var(--primary-red)' }} />
                     </div>
                   ))}
                 </div>
@@ -254,7 +254,7 @@ export default function StudentProfile({ studentId, navigate }) {
 
       <style>{`
         .contributed-card:hover {
-          border-color: #BF9B30 !important;
+          border-color: var(--primary-red) !important;
           box-shadow: 0 4px 12px rgba(191,155,48,0.05);
         }
         .portfolio-link:hover {

@@ -35,7 +35,7 @@ export default function Careers({ navigate }) {
   if (loading) {
     return (
       <div className="container" style={{ padding: '64px 0', textAlign: 'center' }}>
-        <div style={{ width: '40px', height: '40px', border: '2px solid var(--light-border)', borderTopColor: '#BF9B30', borderRadius: '50%', animation: 'spin 1s infinite linear', margin: '0 auto 16px' }} />
+        <div style={{ width: '40px', height: '40px', border: '2px solid var(--light-border)', borderTopColor: 'var(--primary-red)', borderRadius: '50%', animation: 'spin 1s infinite linear', margin: '0 auto 16px' }} />
         <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', color: 'var(--text-charcoal)' }}>Karriere-Zentrum wird geladen...</p>
       </div>
     );
@@ -66,7 +66,7 @@ export default function Careers({ navigate }) {
           {/* Left Column: Featured Student Writers (Student Talent) */}
           <div>
             <div style={{ borderBottom: '0.5px solid var(--light-border)', paddingBottom: '12px', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <GraduationCap size={20} style={{ color: '#BF9B30' }} />
+              <GraduationCap size={20} style={{ color: 'var(--primary-red)' }} />
               <h2 style={{ fontSize: '22px', fontFamily: '"Playfair Display", serif', fontWeight: 700, margin: 0 }}>
                 Nachwuchstalente
               </h2>
@@ -96,18 +96,18 @@ export default function Careers({ navigate }) {
                   <img 
                     src={s.avatar} 
                     alt={s.name} 
-                    style={{ width: '64px', height: '64px', borderRadius: '50%', border: '1.5px solid #BF9B30', objectFit: 'cover' }}
+                    style={{ width: '64px', height: '64px', borderRadius: '50%', border: '1.5px solid var(--primary-red)', objectFit: 'cover' }}
                   />
                   <div style={{ flex: 1 }}>
                     <strong style={{ display: 'block', fontSize: '15px', color: 'var(--text-ink)' }}>{s.name}</strong>
-                    <span style={{ fontSize: '12px', color: '#BF9B30', display: 'block', margin: '2px 0 4px', fontWeight: 500 }}>
+                    <span style={{ fontSize: '12px', color: 'var(--primary-red)', display: 'block', margin: '2px 0 4px', fontWeight: 500 }}>
                       {s.university}
                     </span>
                     <span style={{ fontSize: '11px', color: 'var(--text-charcoal)', fontFamily: 'var(--font-mono)' }}>
                       {s.study_field} · Klasse {s.grad_year}
                     </span>
                   </div>
-                  <ArrowRight size={16} style={{ color: '#BF9B30' }} className="arrow-icon" />
+                  <ArrowRight size={16} style={{ color: 'var(--primary-red)' }} className="arrow-icon" />
                 </div>
               ))}
             </div>
@@ -122,7 +122,7 @@ export default function Careers({ navigate }) {
             {/* Header & Filter Controls */}
             <div style={{ borderBottom: '0.5px solid var(--light-border)', paddingBottom: '12px', marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Briefcase size={20} style={{ color: '#BF9B30' }} />
+                <Briefcase size={20} style={{ color: 'var(--primary-red)' }} />
                 <h2 style={{ fontSize: '22px', fontFamily: '"Playfair Display", serif', fontWeight: 700, margin: 0 }}>
                   Stellenangebote & Praktika
                 </h2>
@@ -173,7 +173,7 @@ export default function Careers({ navigate }) {
                       display: 'flex',
                       flexDirection: 'column',
                       position: 'relative',
-                      borderLeft: '4px solid #BF9B30'
+                      borderLeft: '4px solid var(--primary-red)'
                     }}
                   >
                     {/* Badge */}
@@ -185,7 +185,7 @@ export default function Careers({ navigate }) {
                         fontSize: '10px', 
                         textTransform: 'uppercase', 
                         fontWeight: 700, 
-                        color: j.type === 'Internship' ? '#0066CC' : '#BF9B30',
+                        color: j.type === 'Internship' ? '#0066CC' : 'var(--primary-red)',
                         backgroundColor: j.type === 'Internship' ? 'rgba(0,102,204,0.1)' : 'rgba(191,155,48,0.1)',
                         padding: '4px 8px',
                         borderRadius: '4px'
@@ -258,7 +258,7 @@ export default function Careers({ navigate }) {
 
       <style>{`
         .student-card:hover {
-          border-color: #BF9B30 !important;
+          border-color: var(--primary-red) !important;
           box-shadow: 0 4px 12px rgba(191,155,48,0.08);
         }
         .student-card:hover .arrow-icon {

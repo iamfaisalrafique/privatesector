@@ -78,7 +78,7 @@ export default function Navbar({ currentPath, navigate }) {
               alignItems: 'baseline'
             }}
           >
-            <span style={{ color: '#BF9B30' }}>privatesector</span>
+            <span style={{ color: 'var(--primary-red)' }}>privatesector</span>
             <span style={{ color: '#8B0000', fontSize: '18px', fontWeight: 800 }}>.ch</span>
           </div>
 
@@ -102,7 +102,7 @@ export default function Navbar({ currentPath, navigate }) {
                 }}
                 className={`nav-link ${currentPath === item.path ? 'active' : ''}`}
                 style={{
-                  color: currentPath === item.path ? '#BF9B30' : '#888888',
+                  color: currentPath === item.path ? 'var(--primary-red)' : '#888888',
                   fontFamily: 'Inter, sans-serif',
                   fontSize: '14px',
                   fontWeight: 500
@@ -121,7 +121,7 @@ export default function Navbar({ currentPath, navigate }) {
               style={{
                 background: 'none',
                 border: 'none',
-                color: '#BF9B30',
+                color: 'var(--primary-red)',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -140,8 +140,8 @@ export default function Navbar({ currentPath, navigate }) {
               onClick={() => navigate('/admin')}
               style={{
                 background: 'none',
-                border: '0.5px solid #BF9B30',
-                color: '#BF9B30',
+                border: '0.5px solid var(--primary-red)',
+                color: 'var(--primary-red)',
                 padding: '6px 12px',
                 cursor: 'pointer',
                 fontSize: '12px',
@@ -190,7 +190,7 @@ export default function Navbar({ currentPath, navigate }) {
               }}
               className="mobile-hamburger"
             >
-              {mobileMenuOpen ? <X size={24} style={{ color: '#BF9B30' }} /> : <Menu size={24} style={{ color: '#BF9B30' }} />}
+              {mobileMenuOpen ? <X size={24} style={{ color: 'var(--primary-red)' }} /> : <Menu size={24} style={{ color: 'var(--primary-red)' }} />}
             </button>
           </div>
         </div>
@@ -275,7 +275,7 @@ export default function Navbar({ currentPath, navigate }) {
               setMobileMenuOpen(false);
             }}
             style={{
-              color: '#BF9B30',
+              color: 'var(--primary-red)',
               fontSize: '18px',
               textDecoration: 'none',
               fontFamily: '"Playfair Display", serif',
@@ -328,35 +328,35 @@ export default function Navbar({ currentPath, navigate }) {
       <div className="mobile-bottom-nav">
         <button 
           onClick={() => navigate('/')}
-          style={{ background: 'none', border: 'none', color: currentPath === '/' ? '#BF9B30' : '#888888', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '9px', gap: '3px', cursor: 'pointer' }}
+          style={{ background: 'none', border: 'none', color: currentPath === '/' ? 'var(--primary-red)' : '#888888', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '9px', gap: '3px', cursor: 'pointer' }}
         >
           <Home size={18} />
           <span>Home</span>
         </button>
         <button 
           onClick={() => navigate('/unternehmen')}
-          style={{ background: 'none', border: 'none', color: currentPath === '/unternehmen' ? '#BF9B30' : '#888888', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '9px', gap: '3px', cursor: 'pointer' }}
+          style={{ background: 'none', border: 'none', color: currentPath === '/unternehmen' ? 'var(--primary-red)' : '#888888', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '9px', gap: '3px', cursor: 'pointer' }}
         >
           <Building2 size={18} />
           <span>Directory</span>
         </button>
         <button 
           onClick={() => navigate('/news')}
-          style={{ background: 'none', border: 'none', color: currentPath === '/news' ? '#BF9B30' : '#888888', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '9px', gap: '3px', cursor: 'pointer' }}
+          style={{ background: 'none', border: 'none', color: currentPath === '/news' ? 'var(--primary-red)' : '#888888', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '9px', gap: '3px', cursor: 'pointer' }}
         >
           <Newspaper size={18} />
           <span>News</span>
         </button>
         <button 
           onClick={() => navigate('/interviews')}
-          style={{ background: 'none', border: 'none', color: currentPath === '/interviews' ? '#BF9B30' : '#888888', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '9px', gap: '3px', cursor: 'pointer' }}
+          style={{ background: 'none', border: 'none', color: currentPath === '/interviews' ? 'var(--primary-red)' : '#888888', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '9px', gap: '3px', cursor: 'pointer' }}
         >
           <MessageSquare size={18} />
           <span>Interviews</span>
         </button>
         <button 
           onClick={() => navigate('/admin')}
-          style={{ background: 'none', border: 'none', color: currentPath === '/admin' ? '#BF9B30' : '#888888', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '9px', gap: '3px', cursor: 'pointer' }}
+          style={{ background: 'none', border: 'none', color: currentPath === '/admin' ? 'var(--primary-red)' : '#888888', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '9px', gap: '3px', cursor: 'pointer' }}
         >
           <LayoutDashboard size={18} />
           <span>Admin</span>

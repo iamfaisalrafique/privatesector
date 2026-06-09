@@ -50,17 +50,17 @@ export default function Hero({ navigate }) {
       >
         <defs>
           <radialGradient id="dotGrad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#BF9B30" stopOpacity="0.4" />
+            <stop offset="0%" stopColor="var(--primary-red)" stopOpacity="0.4" />
             <stop offset="100%" stopColor="#003453" stopOpacity="0" />
           </radialGradient>
         </defs>
         
         {/* Network connections */}
         <circle cx="10%" cy="20%" r="2" fill="#003453" />
-        <circle cx="15%" cy="45%" r="3" fill="#BF9B30" />
+        <circle cx="15%" cy="45%" r="3" fill="var(--primary-red)" />
         <circle cx="8%" cy="70%" r="1.5" fill="#003453" />
         
-        <circle cx="85%" cy="15%" r="2.5" fill="#BF9B30" />
+        <circle cx="85%" cy="15%" r="2.5" fill="var(--primary-red)" />
         <circle cx="92%" cy="50%" r="1.5" fill="#003453" />
         <circle cx="88%" cy="80%" r="3" fill="#003453" />
 
@@ -96,7 +96,7 @@ export default function Hero({ navigate }) {
                 fontSize: '12px', 
                 letterSpacing: '0.15em', 
                 marginBottom: '16px',
-                color: '#BF9B30',
+                color: 'var(--primary-red)',
                 fontWeight: 600
               }}
             >
@@ -114,7 +114,7 @@ export default function Hero({ navigate }) {
               }}
             >
               The Swiss Private <br />
-              Sector, <span style={{ color: '#BF9B30', fontStyle: 'italic' }}>Unified.</span>
+              Sector, <span style={{ color: 'var(--primary-red)', fontStyle: 'italic' }}>Unified.</span>
             </h1>
             
             <p 
@@ -146,7 +146,7 @@ export default function Hero({ navigate }) {
                 boxShadow: '0 4px 20px rgba(0, 52, 83, 0.05)'
               }}
             >
-              <Search size={18} style={{ color: '#BF9B30', marginLeft: '12px' }} />
+              <Search size={18} style={{ color: 'var(--primary-red)', marginLeft: '12px' }} />
               <input 
                 type="text"
                 placeholder="Firma suchen (z.B. Nestlé, Roche, UBS)..."
@@ -234,7 +234,7 @@ export default function Hero({ navigate }) {
                 width: '280px',
                 backgroundColor: '#FFFFFF',
                 border: '0.5px solid var(--light-border)',
-                borderTop: '3px solid #BF9B30',
+                borderTop: '3px solid var(--primary-red)',
                 borderRadius: '6px',
                 padding: '20px',
                 transform: 'translate(-25px, -25px) rotate(-4deg)',
@@ -258,7 +258,7 @@ export default function Hero({ navigate }) {
                 width: '280px',
                 backgroundColor: '#FFFFFF',
                 border: '0.5px solid var(--light-border)',
-                borderTop: '3px solid #BF9B30',
+                borderTop: '3px solid var(--primary-red)',
                 borderRadius: '6px',
                 padding: '20px',
                 transform: 'translate(15px, 15px) rotate(3deg)',
@@ -282,7 +282,7 @@ export default function Hero({ navigate }) {
                 width: '290px',
                 backgroundColor: '#FFFFFF',
                 border: '0.5px solid var(--light-border)',
-                borderTop: '3px solid #BF9B30',
+                borderTop: '3px solid var(--primary-red)',
                 borderRadius: '6px',
                 padding: '24px',
                 transform: 'translate(0px, 0px) rotate(-1deg)',
@@ -312,15 +312,15 @@ export default function Hero({ navigate }) {
               <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '0.5px solid #E8E0C8', paddingTop: '16px', fontSize: '11px' }}>
                 <div>
                   <span style={{ color: '#5A5A5A', display: 'block', fontSize: '9px', textTransform: 'uppercase' }}>FOUNDED</span>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, color: '#BF9B30' }}>1866</span>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, color: 'var(--primary-red)' }}>1866</span>
                 </div>
                 <div>
                   <span style={{ color: '#5A5A5A', display: 'block', fontSize: '9px', textTransform: 'uppercase' }}>REVENUE</span>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, color: '#BF9B30' }}>CHF 93'000M</span>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, color: 'var(--primary-red)' }}>CHF 93'000M</span>
                 </div>
                 <div>
                   <span style={{ color: '#5A5A5A', display: 'block', fontSize: '9px', textTransform: 'uppercase' }}>EMPLOYEES</span>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, color: '#BF9B30' }}>273'000</span>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, color: 'var(--primary-red)' }}>273'000</span>
                 </div>
               </div>
             </div>
@@ -333,7 +333,7 @@ export default function Hero({ navigate }) {
       {/* Bottom Ticker Stats Strip */}
       <div 
         style={{
-          backgroundColor: '#BF9B30',
+          backgroundColor: 'var(--primary-red)',
           padding: '16px 0',
           borderTop: '0.5px solid rgba(255, 255, 255, 0.2)'
         }}
@@ -386,7 +386,7 @@ export default function Hero({ navigate }) {
           box-shadow: 0 12px 35px rgba(0, 52, 83, 0.15) !important;
         }
         .quick-search-link:hover {
-          color: #BF9B30 !important;
+          color: var(--primary-red) !important;
         }
       `}</style>
     </div>

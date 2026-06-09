@@ -63,7 +63,7 @@ export default function Statistics({ navigate }) {
   if (loading) {
     return (
       <div className="container" style={{ padding: '64px 0', textAlign: 'center' }}>
-        <div style={{ width: '40px', height: '40px', border: '2px solid var(--light-border)', borderTopColor: '#BF9B30', borderRadius: '50%', animation: 'spin 1s infinite linear', margin: '0 auto 16px' }} />
+        <div style={{ width: '40px', height: '40px', border: '2px solid var(--light-border)', borderTopColor: 'var(--primary-red)', borderRadius: '50%', animation: 'spin 1s infinite linear', margin: '0 auto 16px' }} />
         <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', color: 'var(--text-charcoal)' }}>Makroökonomische Indikatoren werden berechnet...</p>
       </div>
     );
@@ -73,7 +73,7 @@ export default function Statistics({ navigate }) {
   const getCantonColor = (code) => {
     if (!statsData || !statsData.cantonWeights) return 'rgba(0, 0, 0, 0.02)';
     const weight = statsData.cantonWeights[code] || 20;
-    if (weight > 85) return '#BF9B30';
+    if (weight > 85) return 'var(--primary-red)';
     if (weight > 65) return '#D3B151';
     if (weight > 40) return '#E8C874';
     if (weight > 20) return '#F3E2AE';
@@ -112,7 +112,7 @@ export default function Statistics({ navigate }) {
             <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#888888', display: 'block', marginBottom: '8px' }}>
               BIP Wachstums-Prognose
             </span>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '56px', color: '#BF9B30', fontWeight: 700 }}>+1.8%</span>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '56px', color: 'var(--primary-red)', fontWeight: 700 }}>+1.8%</span>
             <span style={{ fontSize: '11px', color: 'var(--accent-green)', display: 'block', marginTop: '6px' }}>▲ Stabiler Ausblick</span>
           </div>
 
@@ -120,7 +120,7 @@ export default function Statistics({ navigate }) {
             <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#888888', display: 'block', marginBottom: '8px' }}>
               Erwerbstätige Gesamt
             </span>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '56px', color: '#BF9B30', fontWeight: 700 }}>5'400'000</span>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '56px', color: 'var(--primary-red)', fontWeight: 700 }}>5'400'000</span>
             <span style={{ fontSize: '11px', color: '#888888', display: 'block', marginTop: '6px' }}>Inländische & Grenzgänger</span>
           </div>
 
@@ -128,15 +128,15 @@ export default function Statistics({ navigate }) {
             <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#888888', display: 'block', marginBottom: '8px' }}>
               Eingetragene Holdings
             </span>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '56px', color: '#BF9B30', fontWeight: 700 }}>500'000+</span>
-            <span style={{ fontSize: '11px', color: '#BF9B30', display: 'block', marginTop: '6px' }}>Zefix-registrierte Entitäten</span>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '56px', color: 'var(--primary-red)', fontWeight: 700 }}>500'000+</span>
+            <span style={{ fontSize: '11px', color: 'var(--primary-red)', display: 'block', marginTop: '6px' }}>Zefix-registrierte Entitäten</span>
           </div>
 
           <div style={{ padding: '0 16px' }}>
             <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#888888', display: 'block', marginBottom: '8px' }}>
               Nationale Teuerung (CPI)
             </span>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '56px', color: '#BF9B30', fontWeight: 700 }}>1.2%</span>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '56px', color: 'var(--primary-red)', fontWeight: 700 }}>1.2%</span>
             <span style={{ fontSize: '11px', color: 'var(--accent-green)', display: 'block', marginTop: '6px' }}>Tiefstwert im Euroraum</span>
           </div>
 
@@ -163,7 +163,7 @@ export default function Statistics({ navigate }) {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Filter size={18} style={{ color: '#BF9B30' }} />
+            <Filter size={18} style={{ color: 'var(--primary-red)' }} />
             <span style={{ fontWeight: 600, fontSize: '14px', fontFamily: 'Inter, sans-serif' }}>Kennzahlen filtern:</span>
           </div>
           
@@ -176,7 +176,7 @@ export default function Statistics({ navigate }) {
                 max="2026" 
                 value={yearFilter} 
                 onChange={(e) => setYearFilter(Number(e.target.value))}
-                style={{ accentColor: '#BF9B30' }}
+                style={{ accentColor: 'var(--primary-red)' }}
               />
             </div>
             

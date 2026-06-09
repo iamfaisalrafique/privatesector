@@ -76,7 +76,7 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
   if (loading) {
     return (
       <div className="container" style={{ padding: '64px 0', textAlign: 'center' }}>
-        <div style={{ width: '40px', height: '40px', border: '2px solid var(--light-border)', borderTopColor: '#BF9B30', borderRadius: '50%', animation: 'spin 1s infinite linear', margin: '0 auto 16px' }} />
+        <div style={{ width: '40px', height: '40px', border: '2px solid var(--light-border)', borderTopColor: 'var(--primary-red)', borderRadius: '50%', animation: 'spin 1s infinite linear', margin: '0 auto 16px' }} />
         <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', color: 'var(--text-charcoal)' }}>Dossiers werden geladen...</p>
       </div>
     );
@@ -95,7 +95,7 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
               style={{
                 background: 'none',
                 border: 'none',
-                color: '#BF9B30',
+                color: 'var(--primary-red)',
                 cursor: 'pointer',
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -120,7 +120,7 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
                     width: '160px',
                     height: '160px',
                     borderRadius: '50%',
-                    border: '3px solid #BF9B30',
+                    border: '3px solid var(--primary-red)',
                     objectFit: 'cover'
                   }}
                 />
@@ -128,7 +128,7 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
 
               {/* Title & Metadata */}
               <div style={{ flex: 1, textAlign: isRtl ? 'right' : 'left' }}>
-                <span className="caps-label" style={{ color: '#BF9B30', fontSize: '11px', fontWeight: 600, display: 'block', marginBottom: '8px' }}>
+                <span className="caps-label" style={{ color: 'var(--primary-red)', fontSize: '11px', fontWeight: 600, display: 'block', marginBottom: '8px' }}>
                   CEO-Gespräch & Leader-Dossier
                 </span>
                 
@@ -136,7 +136,7 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
                   {activeDossier.interviewee_name}
                 </h1>
                 
-                <p style={{ color: '#BF9B30', fontSize: '16px', fontWeight: 500, marginBottom: '16px', fontFamily: 'Inter, sans-serif' }}>
+                <p style={{ color: 'var(--primary-red)', fontSize: '16px', fontWeight: 500, marginBottom: '16px', fontFamily: 'Inter, sans-serif' }}>
                   {activeDossier.interviewee_title} — {activeDossier.company_name}
                 </p>
 
@@ -147,7 +147,7 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
                   {activeDossier.audio_url && (
                     <>
                       <span>·</span>
-                      <span style={{ color: '#BF9B30', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <span style={{ color: 'var(--primary-red)', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px' }}>
                         <Mic size={12} /> PODCAST EPISODE
                       </span>
                     </>
@@ -169,15 +169,15 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
                       borderRadius: '4px',
                       transition: 'all 0.2s'
                     }}
-                    onMouseEnter={e => e.currentTarget.style.borderColor = '#BF9B30'}
+                    onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--primary-red)'}
                     onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(191, 155, 48, 0.4)'}
                   >
                     <img 
                       src={activeDossier.studentAuthor.avatar} 
                       alt={activeDossier.studentAuthor.name} 
-                      style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover', border: '1px solid #BF9B30' }}
+                      style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--primary-red)' }}
                     />
-                    <span style={{ fontSize: '11.5px', color: '#BF9B30', fontWeight: 600 }}>
+                    <span style={{ fontSize: '11.5px', color: 'var(--primary-red)', fontWeight: 600 }}>
                       Beitrag von {activeDossier.studentAuthor.name} ({activeDossier.studentAuthor.university})
                     </span>
                   </div>
@@ -199,7 +199,7 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
                 <div 
                   style={{ 
                     backgroundColor: '#0D0D0D', 
-                    border: '1px solid #BF9B30', 
+                    border: '1px solid var(--primary-red)', 
                     padding: '20px', 
                     marginBottom: '40px',
                     display: 'flex',
@@ -215,7 +215,7 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
                         width: '48px', 
                         height: '48px', 
                         borderRadius: '50%', 
-                        backgroundColor: '#BF9B30', 
+                        backgroundColor: 'var(--primary-red)', 
                         border: 'none', 
                         display: 'flex', 
                         alignItems: 'center', 
@@ -231,7 +231,7 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
                       <span style={{ fontSize: '11px', color: '#888' }}>Laurent Freixe im Gespräch mit der Redaktion</span>
                     </div>
                   </div>
-                  <Volume2 size={20} style={{ color: '#BF9B30' }} />
+                  <Volume2 size={20} style={{ color: 'var(--primary-red)' }} />
                 </div>
               )}
 
@@ -252,7 +252,7 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
                         fontSize: '13px', 
                         fontWeight: 600, 
                         letterSpacing: '0.08em', 
-                        color: '#BF9B30',
+                        color: 'var(--primary-red)',
                         textTransform: 'uppercase'
                       }}
                     >
@@ -375,7 +375,7 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
                 style={{
-                  background: selectedCategory === cat ? '#BF9B30' : '#FFFFFF',
+                  background: selectedCategory === cat ? 'var(--primary-red)' : '#FFFFFF',
                   color: selectedCategory === cat ? '#FFFFFF' : 'var(--text-ink)',
                   border: '0.5px solid var(--light-border)',
                   padding: '8px 16px',
@@ -438,7 +438,7 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
                     <img 
                       src={iv.interviewee_avatar} 
                       alt={iv.interviewee_name} 
-                      style={{ width: '48px', height: '48px', borderRadius: '50%', border: '1.5px solid #BF9B30', objectFit: 'cover' }}
+                      style={{ width: '48px', height: '48px', borderRadius: '50%', border: '1.5px solid var(--primary-red)', objectFit: 'cover' }}
                     />
                     <div>
                       <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-ink)', display: 'block' }}>{iv.interviewee_name}</span>

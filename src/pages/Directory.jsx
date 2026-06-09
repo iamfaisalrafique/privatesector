@@ -152,7 +152,7 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
                 outline: 'none'
               }}
             />
-            <Search size={20} style={{ position: 'absolute', left: '16px', top: '18px', color: '#BF9B30' }} />
+            <Search size={20} style={{ position: 'absolute', left: '16px', top: '18px', color: 'var(--primary-red)' }} />
           </div>
           <button 
             className="btn btn-gold-fill" 
@@ -180,7 +180,7 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '12px' }}>
-                <Filter size={18} style={{ color: '#BF9B30' }} />
+                <Filter size={18} style={{ color: 'var(--primary-red)' }} />
                 <h2 style={{ fontSize: '18px', fontFamily: '"Playfair Display", serif', color: 'var(--text-ink)', margin: 0, fontWeight: 700 }}>Filterpanel</h2>
               </div>
 
@@ -248,7 +248,7 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
               <div>
                 <div className="filter-header" onClick={() => setCantonsExpanded(!cantonsExpanded)}>
                   <span className="caps-label" style={{ color: 'var(--text-ink)' }}>Kanton ({CANTONS.length})</span>
-                  {cantonsExpanded ? <ChevronUp size={16} style={{ color: '#BF9B30' }} /> : <ChevronDown size={16} style={{ color: '#BF9B30' }} />}
+                  {cantonsExpanded ? <ChevronUp size={16} style={{ color: 'var(--primary-red)' }} /> : <ChevronDown size={16} style={{ color: 'var(--primary-red)' }} />}
                 </div>
                 {cantonsExpanded && (
                   <div style={{ maxHeight: '180px', overflowY: 'auto', marginTop: '8px', paddingRight: '4px' }}>
@@ -261,7 +261,7 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
                             onClick={() => handleCantonToggle(canton)}
                             style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '13px', color: isChecked ? 'var(--text-ink)' : 'var(--text-charcoal)' }}
                           >
-                            {isChecked ? <CheckSquare size={14} style={{ color: '#BF9B30' }} /> : <Square size={14} style={{ color: 'var(--light-border)' }} />}
+                            {isChecked ? <CheckSquare size={14} style={{ color: 'var(--primary-red)' }} /> : <Square size={14} style={{ color: 'var(--light-border)' }} />}
                             <span style={{ fontFamily: 'var(--font-mono)', fontWeight: isChecked ? 600 : 400 }}>{canton}</span>
                           </div>
                         );
@@ -275,7 +275,7 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
               <div>
                 <div className="filter-header" onClick={() => setIndustriesExpanded(!industriesExpanded)}>
                   <span className="caps-label" style={{ color: 'var(--text-ink)' }}>Industrie ({INDUSTRIES.length})</span>
-                  {industriesExpanded ? <ChevronUp size={16} style={{ color: '#BF9B30' }} /> : <ChevronDown size={16} style={{ color: '#BF9B30' }} />}
+                  {industriesExpanded ? <ChevronUp size={16} style={{ color: 'var(--primary-red)' }} /> : <ChevronDown size={16} style={{ color: 'var(--primary-red)' }} />}
                 </div>
                 {industriesExpanded && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
@@ -287,7 +287,7 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
                           onClick={() => handleIndustryToggle(ind)}
                           style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '13px', color: isChecked ? 'var(--text-ink)' : 'var(--text-charcoal)' }}
                         >
-                          {isChecked ? <CheckSquare size={14} style={{ color: '#BF9B30' }} /> : <Square size={14} style={{ color: 'var(--light-border)' }} />}
+                          {isChecked ? <CheckSquare size={14} style={{ color: 'var(--primary-red)' }} /> : <Square size={14} style={{ color: 'var(--light-border)' }} />}
                           <span style={{ fontFamily: 'Inter, sans-serif', fontWeight: isChecked ? 600 : 400 }}>{ind}</span>
                         </div>
                       );
@@ -300,7 +300,7 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
               <div>
                 <div className="filter-header" onClick={() => setSizeExpanded(!sizeExpanded)}>
                   <span className="caps-label" style={{ color: 'var(--text-ink)' }}>Firmengrösse</span>
-                  {sizeExpanded ? <ChevronUp size={16} style={{ color: '#BF9B30' }} /> : <ChevronDown size={16} style={{ color: '#BF9B30' }} />}
+                  {sizeExpanded ? <ChevronUp size={16} style={{ color: 'var(--primary-red)' }} /> : <ChevronDown size={16} style={{ color: 'var(--primary-red)' }} />}
                 </div>
                 {sizeExpanded && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
@@ -312,7 +312,7 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
                           value={size} 
                           checked={sizeClass === size}
                           onChange={() => setSizeClass(size)}
-                          style={{ accentColor: '#BF9B30' }}
+                          style={{ accentColor: 'var(--primary-red)' }}
                         />
                         <span>{size === 'All' ? 'Alle Grössen' : `${size} Enterprise`}</span>
                       </label>
@@ -356,7 +356,7 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
                       padding: '4px', 
                       cursor: 'pointer',
                       borderRadius: '3px',
-                      color: viewMode === 'grid' ? '#BF9B30' : 'var(--text-charcoal)' 
+                      color: viewMode === 'grid' ? 'var(--primary-red)' : 'var(--text-charcoal)' 
                     }}
                   >
                     <Grid size={16} />
@@ -369,7 +369,7 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
                       padding: '4px', 
                       cursor: 'pointer',
                       borderRadius: '3px',
-                      color: viewMode === 'list' ? '#BF9B30' : 'var(--text-charcoal)' 
+                      color: viewMode === 'list' ? 'var(--primary-red)' : 'var(--text-charcoal)' 
                     }}
                   >
                     <List size={16} />
@@ -380,12 +380,12 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
  
             {loading ? (
               <div style={{ textAlign: 'center', padding: '64px 0' }}>
-                <div style={{ width: '40px', height: '40px', border: '2px solid var(--light-border)', borderTopColor: '#BF9B30', borderRadius: '50%', animation: 'spin 1s infinite linear', margin: '0 auto 16px' }} />
+                <div style={{ width: '40px', height: '40px', border: '2px solid var(--light-border)', borderTopColor: 'var(--primary-red)', borderRadius: '50%', animation: 'spin 1s infinite linear', margin: '0 auto 16px' }} />
                 <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', color: 'var(--text-charcoal)' }}>Firmendaten werden geladen...</p>
               </div>
             ) : filteredCompanies.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '64px 24px', border: '0.5px solid var(--light-border)', borderRadius: '6px', backgroundColor: '#FFFFFF' }}>
-                <Map size={48} style={{ color: '#BF9B30', margin: '0 auto 16px', opacity: 0.6 }} />
+                <Map size={48} style={{ color: 'var(--primary-red)', margin: '0 auto 16px', opacity: 0.6 }} />
                 <h3 style={{ fontFamily: '"Playfair Display", serif', fontSize: '22px', color: 'var(--text-ink)', marginBottom: '8px' }}>Keine Ergebnisse gefunden</h3>
                 <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '14px', color: 'var(--text-charcoal)', maxWidth: '400px', margin: '0 auto' }}>
                   Es wurden keine Unternehmen gefunden, die den gewählten Filtern entsprechen. Setzen Sie die Filter zurück oder passen Sie die Suche an.

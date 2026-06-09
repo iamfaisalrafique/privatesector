@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Landmark, AlertCircle, Network, TrendingUp, Users, Shield, Award, MapPin } from 'lucide-react';
 
 const CANTON_DATA = [
-  { code: 'ZH', name: 'Zürich', count: '124\'820', gdp: '21.5%', color: '#BF9B30' },
+  { code: 'ZH', name: 'Zürich', count: '124\'820', gdp: '21.5%', color: 'var(--primary-red)' },
   { code: 'BE', name: 'Bern', count: '78\'410', gdp: '12.8%', color: '#003453' },
   { code: 'GE', name: 'Genf', count: '46\'950', gdp: '9.2%', color: '#8B0000' },
   { code: 'VD', name: 'Waadt', count: '42\'110', gdp: '8.7%', color: '#4A6741' },
@@ -279,10 +279,10 @@ export default function HomepageGraphics({ navigate }) {
           >
             <svg width="100%" height="100%" viewBox="0 0 500 300" style={{ cursor: 'default' }}>
               {/* Connection Lines with gradients */}
-              <line x1="250" y1="150" x2="100" y2="70" stroke={activeNetworkNode === 'genentech' ? '#BF9B30' : '#E8E0C8'} strokeWidth={activeNetworkNode === 'genentech' ? 3 : 1.5} style={{ transition: 'stroke 0.3s, stroke-width 0.3s' }} />
-              <line x1="250" y1="150" x2="400" y2="70" stroke={activeNetworkNode === 'chugai' ? '#BF9B30' : '#E8E0C8'} strokeWidth={activeNetworkNode === 'chugai' ? 3 : 1.5} style={{ transition: 'stroke 0.3s, stroke-width 0.3s' }} />
-              <line x1="250" y1="150" x2="120" y2="230" stroke={activeNetworkNode === 'diagnostics' ? '#BF9B30' : '#E8E0C8'} strokeWidth={activeNetworkNode === 'diagnostics' ? 3 : 1.5} style={{ transition: 'stroke 0.3s, stroke-width 0.3s' }} />
-              <line x1="250" y1="150" x2="380" y2="230" stroke={activeNetworkNode === 'foundation' ? '#BF9B30' : '#E8E0C8'} strokeWidth={activeNetworkNode === 'foundation' ? 3 : 1.5} style={{ transition: 'stroke 0.3s, stroke-width 0.3s' }} />
+              <line x1="250" y1="150" x2="100" y2="70" stroke={activeNetworkNode === 'genentech' ? 'var(--primary-red)' : '#E8E0C8'} strokeWidth={activeNetworkNode === 'genentech' ? 3 : 1.5} style={{ transition: 'stroke 0.3s, stroke-width 0.3s' }} />
+              <line x1="250" y1="150" x2="400" y2="70" stroke={activeNetworkNode === 'chugai' ? 'var(--primary-red)' : '#E8E0C8'} strokeWidth={activeNetworkNode === 'chugai' ? 3 : 1.5} style={{ transition: 'stroke 0.3s, stroke-width 0.3s' }} />
+              <line x1="250" y1="150" x2="120" y2="230" stroke={activeNetworkNode === 'diagnostics' ? 'var(--primary-red)' : '#E8E0C8'} strokeWidth={activeNetworkNode === 'diagnostics' ? 3 : 1.5} style={{ transition: 'stroke 0.3s, stroke-width 0.3s' }} />
+              <line x1="250" y1="150" x2="380" y2="230" stroke={activeNetworkNode === 'foundation' ? 'var(--primary-red)' : '#E8E0C8'} strokeWidth={activeNetworkNode === 'foundation' ? 3 : 1.5} style={{ transition: 'stroke 0.3s, stroke-width 0.3s' }} />
 
               {/* Node 1: Center Parent (Roche Holding) */}
               <g 
@@ -294,7 +294,7 @@ export default function HomepageGraphics({ navigate }) {
                 <circle cx="250" cy="150" r="32" fill="#FFFFFF" stroke="#003453" strokeWidth="3" />
                 <circle cx="250" cy="150" r="28" fill="rgba(0, 52, 83, 0.05)" />
                 <text x="250" y="153" fontFamily="Inter" fontSize="10" fontWeight="bold" fill="#003453" textAnchor="middle">Roche</text>
-                <text x="250" y="163" fontFamily="Inter" fontSize="7" fill="#BF9B30" textAnchor="middle">Holding AG</text>
+                <text x="250" y="163" fontFamily="Inter" fontSize="7" fill="var(--primary-red)" textAnchor="middle">Holding AG</text>
               </g>
 
               {/* Node 2: Genentech */}
@@ -303,7 +303,7 @@ export default function HomepageGraphics({ navigate }) {
                 onMouseLeave={() => setActiveNetworkNode(null)}
                 style={{ cursor: 'pointer' }}
               >
-                <circle cx="100" cy="70" r="22" fill="#FFFFFF" stroke={activeNetworkNode === 'genentech' ? '#BF9B30' : '#E8E0C8'} strokeWidth="2" style={{ transition: 'stroke 0.2s' }} />
+                <circle cx="100" cy="70" r="22" fill="#FFFFFF" stroke={activeNetworkNode === 'genentech' ? 'var(--primary-red)' : '#E8E0C8'} strokeWidth="2" style={{ transition: 'stroke 0.2s' }} />
                 <text x="100" y="73" fontFamily="Inter" fontSize="8" fontWeight="600" fill="var(--text-ink)" textAnchor="middle">Genentech</text>
                 <text x="100" y="81" fontFamily="JetBrains Mono" fontSize="6" fill="var(--text-charcoal)" textAnchor="middle">100% (US)</text>
               </g>
@@ -314,7 +314,7 @@ export default function HomepageGraphics({ navigate }) {
                 onMouseLeave={() => setActiveNetworkNode(null)}
                 style={{ cursor: 'pointer' }}
               >
-                <circle cx="400" cy="70" r="22" fill="#FFFFFF" stroke={activeNetworkNode === 'chugai' ? '#BF9B30' : '#E8E0C8'} strokeWidth="2" style={{ transition: 'stroke 0.2s' }} />
+                <circle cx="400" cy="70" r="22" fill="#FFFFFF" stroke={activeNetworkNode === 'chugai' ? 'var(--primary-red)' : '#E8E0C8'} strokeWidth="2" style={{ transition: 'stroke 0.2s' }} />
                 <text x="400" y="73" fontFamily="Inter" fontSize="8" fontWeight="600" fill="var(--text-ink)" textAnchor="middle">Chugai</text>
                 <text x="400" y="81" fontFamily="JetBrains Mono" fontSize="6" fill="var(--text-charcoal)" textAnchor="middle">61.5% (JP)</text>
               </g>
@@ -325,7 +325,7 @@ export default function HomepageGraphics({ navigate }) {
                 onMouseLeave={() => setActiveNetworkNode(null)}
                 style={{ cursor: 'pointer' }}
               >
-                <circle cx="120" cy="230" r="22" fill="#FFFFFF" stroke={activeNetworkNode === 'diagnostics' ? '#BF9B30' : '#E8E0C8'} strokeWidth="2" style={{ transition: 'stroke 0.2s' }} />
+                <circle cx="120" cy="230" r="22" fill="#FFFFFF" stroke={activeNetworkNode === 'diagnostics' ? 'var(--primary-red)' : '#E8E0C8'} strokeWidth="2" style={{ transition: 'stroke 0.2s' }} />
                 <text x="120" y="233" fontFamily="Inter" fontSize="8" fontWeight="600" fill="var(--text-ink)" textAnchor="middle">Diagnostics</text>
                 <text x="120" y="241" fontFamily="JetBrains Mono" fontSize="6" fill="var(--text-charcoal)" textAnchor="middle">100% (CH)</text>
               </g>
@@ -336,7 +336,7 @@ export default function HomepageGraphics({ navigate }) {
                 onMouseLeave={() => setActiveNetworkNode(null)}
                 style={{ cursor: 'pointer' }}
               >
-                <circle cx="380" cy="230" r="22" fill="#FFFFFF" stroke={activeNetworkNode === 'foundation' ? '#BF9B30' : '#E8E0C8'} strokeWidth="2" style={{ transition: 'stroke 0.2s' }} />
+                <circle cx="380" cy="230" r="22" fill="#FFFFFF" stroke={activeNetworkNode === 'foundation' ? 'var(--primary-red)' : '#E8E0C8'} strokeWidth="2" style={{ transition: 'stroke 0.2s' }} />
                 <text x="380" y="233" fontFamily="Inter" fontSize="8" fontWeight="600" fill="var(--text-ink)" textAnchor="middle">Foundation</text>
                 <text x="380" y="241" fontFamily="JetBrains Mono" fontSize="6" fill="var(--text-charcoal)" textAnchor="middle">100% (US)</text>
               </g>
@@ -421,7 +421,7 @@ export default function HomepageGraphics({ navigate }) {
               <div style={{ width: '50px', height: '50px', position: 'relative' }}>
                 <svg width="50" height="50" viewBox="0 0 36 36">
                   <circle cx="18" cy="18" r="15.915" fill="none" stroke="rgba(232, 224, 200, 0.4)" strokeWidth="3" />
-                  <circle cx="18" cy="18" r="15.915" fill="none" stroke="#BF9B30" strokeWidth="3" strokeDasharray="94 6" strokeDashoffset="25" />
+                  <circle cx="18" cy="18" r="15.915" fill="none" stroke="var(--primary-red)" strokeWidth="3" strokeDasharray="94 6" strokeDashoffset="25" />
                 </svg>
                 <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
                   94%

@@ -176,7 +176,7 @@ function AppContent() {
                   <a 
                     href="#/unternehmen" 
                     onClick={(e) => { e.preventDefault(); navigate('/unternehmen'); }}
-                    style={{ fontSize: '13px', color: '#BF9B30', textDecoration: 'none', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}
+                    style={{ fontSize: '13px', color: 'var(--primary-red)', textDecoration: 'none', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}
                   >
                     <span>Verzeichnis öffnen</span>
                     <ArrowRight size={14} />
@@ -217,7 +217,7 @@ function AppContent() {
                         className="home-news-teaser"
                       >
                         <div style={{ flex: 1 }}>
-                          <span style={{ fontSize: '11px', color: '#BF9B30', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>
+                          <span style={{ fontSize: '11px', color: 'var(--primary-red)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>
                             {art.category}
                           </span>
                           <h3 style={{ fontSize: '18px', fontFamily: '"Playfair Display", serif', color: 'var(--text-ink)', margin: '4px 0 8px', fontWeight: 700 }}>
@@ -240,10 +240,10 @@ function AppContent() {
                       color: '#FFFFFF', 
                       padding: '24px', 
                       borderRadius: '6px',
-                      borderTop: '4px solid #BF9B30'
+                      borderTop: '4px solid var(--primary-red)'
                     }}
                   >
-                    <Landmark size={32} style={{ color: '#BF9B30', marginBottom: '16px' }} />
+                    <Landmark size={32} style={{ color: 'var(--primary-red)', marginBottom: '16px' }} />
                     <h3 style={{ fontFamily: '"Playfair Display", serif', fontSize: '20px', color: '#FFFDF7', marginBottom: '8px', fontWeight: 700 }}>
                       B2B Vertrauensindex
                     </h3>
@@ -269,7 +269,7 @@ function AppContent() {
 
             <style>{`
               .home-news-teaser:hover h3 {
-                color: #BF9B30 !important;
+                color: var(--primary-red) !important;
               }
               @media (max-width: 768px) {
                 .home-news-row {
@@ -403,7 +403,7 @@ function AppContent() {
             }}
           >
             <div>
-              <div style={{ fontFamily: '"Playfair Display", serif', fontSize: '22px', fontWeight: 700, color: '#BF9B30', marginBottom: '12px' }}>
+              <div style={{ fontFamily: '"Playfair Display", serif', fontSize: '22px', fontWeight: 700, color: 'var(--primary-red)', marginBottom: '12px' }}>
                 privatesector<span style={{ color: '#8B0000' }}>.ch</span>
               </div>
               <p style={{ color: '#888888', fontSize: '12px', lineHeight: 1.5 }}>
@@ -412,20 +412,20 @@ function AppContent() {
             </div>
             
             <div>
-              <strong style={{ color: '#BF9B30', display: 'block', marginBottom: '16px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Verzeichnis</strong>
+              <strong style={{ color: 'var(--primary-red)', display: 'block', marginBottom: '16px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Verzeichnis</strong>
               <a href="#/unternehmen" onClick={(e) => { e.preventDefault(); navigate('/unternehmen'); }} style={{ color: '#888888', textDecoration: 'none', display: 'block', margin: '8px 0' }}>Unternehmen suchen</a>
               <a href="#/unternehmen" onClick={(e) => { e.preventDefault(); navigate('/unternehmen?verified=true'); }} style={{ color: '#888888', textDecoration: 'none', display: 'block', margin: '8px 0' }}>Verifizierte Partner</a>
             </div>
 
             <div>
-              <strong style={{ color: '#BF9B30', display: 'block', marginBottom: '16px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Redaktion</strong>
+              <strong style={{ color: 'var(--primary-red)', display: 'block', marginBottom: '16px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Redaktion</strong>
               <a href="#/news" onClick={(e) => { e.preventDefault(); navigate('/news'); }} style={{ color: '#888888', textDecoration: 'none', display: 'block', margin: '8px 0' }}>Wirtschaftsberichte</a>
               <a href="#/interviews" onClick={(e) => { e.preventDefault(); navigate('/interviews'); }} style={{ color: '#888888', textDecoration: 'none', display: 'block', margin: '8px 0' }}>CEO-Interviews</a>
               <a href="#/podcasts" onClick={(e) => { e.preventDefault(); navigate('/podcasts'); }} style={{ color: '#888888', textDecoration: 'none', display: 'block', margin: '8px 0' }}>Wirtschafts-Podcasts</a>
             </div>
 
             <div>
-              <strong style={{ color: '#BF9B30', display: 'block', marginBottom: '16px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Konsole</strong>
+              <strong style={{ color: 'var(--primary-red)', display: 'block', marginBottom: '16px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Konsole</strong>
               <a href="#/admin" onClick={(e) => { e.preventDefault(); navigate('/admin'); }} style={{ color: '#888888', textDecoration: 'none', display: 'block', margin: '8px 0' }}>Admin Dashboard</a>
               <a href="#/statistiken" onClick={(e) => { e.preventDefault(); navigate('/statistiken'); }} style={{ color: '#888888', textDecoration: 'none', display: 'block', margin: '8px 0' }}>Statistiken & heatmaps</a>
             </div>

@@ -249,8 +249,8 @@ export default function Admin({ navigate }) {
               padding: '16px 24px',
               background: 'none',
               border: 'none',
-              borderLeft: activeTab === 'overview' ? '3px solid #BF9B30' : '3px solid transparent',
-              color: activeTab === 'overview' ? '#BF9B30' : '#888888',
+              borderLeft: activeTab === 'overview' ? '3px solid var(--primary-red)' : '3px solid transparent',
+              color: activeTab === 'overview' ? 'var(--primary-red)' : '#888888',
               cursor: 'pointer',
               fontSize: '14px',
               fontWeight: 500,
@@ -270,8 +270,8 @@ export default function Admin({ navigate }) {
               padding: '16px 24px',
               background: 'none',
               border: 'none',
-              borderLeft: activeTab === 'pages' ? '3px solid #BF9B30' : '3px solid transparent',
-              color: activeTab === 'pages' ? '#BF9B30' : '#888888',
+              borderLeft: activeTab === 'pages' ? '3px solid var(--primary-red)' : '3px solid transparent',
+              color: activeTab === 'pages' ? 'var(--primary-red)' : '#888888',
               cursor: 'pointer',
               fontSize: '14px',
               fontWeight: 500,
@@ -291,8 +291,8 @@ export default function Admin({ navigate }) {
               padding: '16px 24px',
               background: 'none',
               border: 'none',
-              borderLeft: activeTab === 'ads' ? '3px solid #BF9B30' : '3px solid transparent',
-              color: activeTab === 'ads' ? '#BF9B30' : '#888888',
+              borderLeft: activeTab === 'ads' ? '3px solid var(--primary-red)' : '3px solid transparent',
+              color: activeTab === 'ads' ? 'var(--primary-red)' : '#888888',
               cursor: 'pointer',
               fontSize: '14px',
               fontWeight: 500,
@@ -312,8 +312,8 @@ export default function Admin({ navigate }) {
               padding: '16px 24px',
               background: 'none',
               border: 'none',
-              borderLeft: activeTab === 'translations' ? '3px solid #BF9B30' : '3px solid transparent',
-              color: activeTab === 'translations' ? '#BF9B30' : '#888888',
+              borderLeft: activeTab === 'translations' ? '3px solid var(--primary-red)' : '3px solid transparent',
+              color: activeTab === 'translations' ? 'var(--primary-red)' : '#888888',
               cursor: 'pointer',
               fontSize: '14px',
               fontWeight: 500,
@@ -353,7 +353,7 @@ export default function Admin({ navigate }) {
         {/* Top Header Bar */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', borderBottom: '1px solid #2A2A2A', paddingBottom: '16px' }}>
           <div>
-            <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#BF9B30' }}>ADMIN PORTAL</span>
+            <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: 'var(--primary-red)' }}>ADMIN PORTAL</span>
             <h1 style={{ fontSize: '28px', fontFamily: '"Playfair Display", serif', margin: 0, color: '#FFFDF7', fontWeight: 700 }}>
               {activeTab === 'overview' && 'Dashboard Overview'}
               {activeTab === 'pages' && 'Page Builder'}
@@ -368,7 +368,7 @@ export default function Admin({ navigate }) {
               <div style={{ position: 'absolute', top: '-2px', right: '-2px', width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--accent-red)' }} />
             </button>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Avatar" style={{ width: '32px', height: '32px', borderRadius: '4px', border: '0.5px solid #BF9B30' }} />
+              <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Avatar" style={{ width: '32px', height: '32px', borderRadius: '4px', border: '0.5px solid var(--primary-red)' }} />
               <span style={{ fontSize: '13px', fontWeight: 600, color: '#FFFDF7', fontFamily: 'Inter, sans-serif' }}>F. Schneider</span>
             </div>
           </div>
@@ -382,25 +382,25 @@ export default function Admin({ navigate }) {
               
               <div style={{ backgroundColor: '#1A1A1A', border: '0.5px solid #2A2A2A', padding: '24px', borderRadius: '6px' }}>
                 <span className="caps-label" style={{ color: '#888888', display: 'block', marginBottom: '8px', fontSize: '11px' }}>Total Companies</span>
-                <span style={{ fontSize: '32px', fontFamily: 'var(--font-mono)', color: '#BF9B30', fontWeight: 700 }}>{companies.length}</span>
+                <span style={{ fontSize: '32px', fontFamily: 'var(--font-mono)', color: 'var(--primary-red)', fontWeight: 700 }}>{companies.length}</span>
                 <span style={{ display: 'block', fontSize: '11px', color: 'var(--accent-green)', marginTop: '4px' }}>+12 This Week</span>
               </div>
 
               <div style={{ backgroundColor: '#1A1A1A', border: '0.5px solid #2A2A2A', padding: '24px', borderRadius: '6px' }}>
                 <span className="caps-label" style={{ color: '#888888', display: 'block', marginBottom: '8px', fontSize: '11px' }}>Monthly Visitors</span>
-                <span style={{ fontSize: '32px', fontFamily: 'var(--font-mono)', color: '#BF9B30', fontWeight: 700 }}>84'200</span>
+                <span style={{ fontSize: '32px', fontFamily: 'var(--font-mono)', color: 'var(--primary-red)', fontWeight: 700 }}>84'200</span>
                 <span style={{ display: 'block', fontSize: '11px', color: 'var(--accent-green)', marginTop: '4px' }}>+8.4% CTR Gain</span>
               </div>
 
               <div style={{ backgroundColor: '#1A1A1A', border: '0.5px solid #2A2A2A', padding: '24px', borderRadius: '6px' }}>
                 <span className="caps-label" style={{ color: '#888888', display: 'block', marginBottom: '8px', fontSize: '11px' }}>Active Ad Placements</span>
-                <span style={{ fontSize: '32px', fontFamily: 'var(--font-mono)', color: '#BF9B30', fontWeight: 700 }}>{ads.length}</span>
-                <span style={{ display: 'block', fontSize: '11px', color: '#BF9B30', marginTop: '4px' }}>85% Occupancy</span>
+                <span style={{ fontSize: '32px', fontFamily: 'var(--font-mono)', color: 'var(--primary-red)', fontWeight: 700 }}>{ads.length}</span>
+                <span style={{ display: 'block', fontSize: '11px', color: 'var(--primary-red)', marginTop: '4px' }}>85% Occupancy</span>
               </div>
 
               <div style={{ backgroundColor: '#1A1A1A', border: '0.5px solid #2A2A2A', padding: '24px', borderRadius: '6px' }}>
                 <span className="caps-label" style={{ color: '#888888', display: 'block', marginBottom: '8px', fontSize: '11px' }}>Monthly Revenue</span>
-                <span style={{ fontSize: '32px', fontFamily: 'var(--font-mono)', color: '#BF9B30', fontWeight: 700 }}>CHF 124'500</span>
+                <span style={{ fontSize: '32px', fontFamily: 'var(--font-mono)', color: 'var(--primary-red)', fontWeight: 700 }}>CHF 124'500</span>
                 <span style={{ display: 'block', fontSize: '11px', color: 'var(--accent-green)', marginTop: '4px' }}>+15% Growth</span>
               </div>
 
@@ -427,7 +427,7 @@ export default function Admin({ navigate }) {
                 <span className="caps-label" style={{ color: '#888888' }}>Site Directory</span>
                 <button 
                   onClick={handleAddPageClick}
-                  style={{ background: 'none', border: 'none', color: '#BF9B30', cursor: 'pointer' }}
+                  style={{ background: 'none', border: 'none', color: 'var(--primary-red)', cursor: 'pointer' }}
                   title="Neue Seite +"
                 >
                   <Plus size={16} />
@@ -444,7 +444,7 @@ export default function Admin({ navigate }) {
                       textAlign: 'left',
                       border: 'none',
                       backgroundColor: selectedPage.path === p.path ? '#0D0D0D' : 'transparent',
-                      color: selectedPage.path === p.path ? '#BF9B30' : '#888888',
+                      color: selectedPage.path === p.path ? 'var(--primary-red)' : '#888888',
                       cursor: 'pointer',
                       borderRadius: '4px',
                       fontSize: '13px',
@@ -472,7 +472,7 @@ export default function Admin({ navigate }) {
                   <div 
                     key={block.id}
                     style={{
-                      border: block.enabled ? '1.5px dashed #BF9B30' : '1px dashed #2A2A2A', // gold dashed selected blocks
+                      border: block.enabled ? '1.5px dashed var(--primary-red)' : '1px dashed #2A2A2A', // gold dashed selected blocks
                       backgroundColor: block.enabled ? '#0D0D0D' : '#1A1A1A',
                       opacity: block.enabled ? 1 : 0.5,
                       borderRadius: '4px',
@@ -546,7 +546,7 @@ export default function Admin({ navigate }) {
                     type="checkbox" 
                     checked={selectedPage.ads_enabled === 1}
                     onChange={(e) => setSelectedPage({ ...selectedPage, ads_enabled: e.target.checked ? 1 : 0 })}
-                    style={{ accentColor: '#BF9B30' }}
+                    style={{ accentColor: 'var(--primary-red)' }}
                   />
                 </div>
               </div>
@@ -593,7 +593,7 @@ export default function Admin({ navigate }) {
                         <td style={{ padding: '16px 20px', color: '#888888' }}>{ad.company_name || 'Generic AdSense'}</td>
                         <td style={{ padding: '16px 20px', fontFamily: 'var(--font-mono)' }}>{ad.impressions.toLocaleString()}</td>
                         <td style={{ padding: '16px 20px', fontFamily: 'var(--font-mono)' }}>{ad.clicks.toLocaleString()}</td>
-                        <td style={{ padding: '16px 20px', fontWeight: 600, color: '#BF9B30', fontFamily: 'var(--font-mono)' }}>{ctr}</td>
+                        <td style={{ padding: '16px 20px', fontWeight: 600, color: 'var(--primary-red)', fontFamily: 'var(--font-mono)' }}>{ctr}</td>
                         <td style={{ padding: '16px 20px' }}>
                           <span style={{ 
                             backgroundColor: ad.status === 'active' ? 'rgba(74, 103, 65, 0.2)' : 'rgba(139, 0, 0, 0.2)', 
@@ -651,7 +651,7 @@ export default function Admin({ navigate }) {
                       <span>{adModalStep === 1 && 'Kampagnen-Typ wählen'} {adModalStep === 2 && 'Platzierung wählen'} {adModalStep === 3 && 'Details eingeben'} {adModalStep === 4 && 'Überprüfen & Aktivieren'}</span>
                     </div>
                     <div style={{ height: '4px', backgroundColor: '#2A2A2A', borderRadius: '2px', overflow: 'hidden' }}>
-                      <div style={{ height: '100%', backgroundColor: '#BF9B30', width: `${adModalStep * 25}%`, transition: 'width 0.2s' }} />
+                      <div style={{ height: '100%', backgroundColor: 'var(--primary-red)', width: `${adModalStep * 25}%`, transition: 'width 0.2s' }} />
                     </div>
                   </div>
 
@@ -670,7 +670,7 @@ export default function Admin({ navigate }) {
                             onClick={() => setNewAdForm({ ...newAdForm, type: opt.title })}
                             style={{
                               padding: '16px',
-                              border: newAdForm.type === opt.title ? '1.5px solid #BF9B30' : '0.5px solid #2A2A2A',
+                              border: newAdForm.type === opt.title ? '1.5px solid var(--primary-red)' : '0.5px solid #2A2A2A',
                               backgroundColor: newAdForm.type === opt.title ? '#0D0D0D' : 'transparent',
                               cursor: 'pointer',
                               borderRadius: '4px'
@@ -697,7 +697,7 @@ export default function Admin({ navigate }) {
                           <button 
                             type="button"
                             onClick={() => setNewAdForm({ ...newAdForm, position: 'A' })}
-                            style={{ padding: '6px', backgroundColor: newAdForm.position === 'A' ? '#BF9B30' : '#1A1A1A', border: '0.5px solid #2A2A2A', color: newAdForm.position === 'A' ? '#1A1A1A' : '#888', fontSize: '9px', fontWeight: 'bold', cursor: 'pointer' }}
+                            style={{ padding: '6px', backgroundColor: newAdForm.position === 'A' ? 'var(--primary-red)' : '#1A1A1A', border: '0.5px solid #2A2A2A', color: newAdForm.position === 'A' ? '#1A1A1A' : '#888', fontSize: '9px', fontWeight: 'bold', cursor: 'pointer' }}
                           >
                             [ZONE A] Leaderboard Top (728x90)
                           </button>
@@ -709,7 +709,7 @@ export default function Admin({ navigate }) {
                             <button 
                               type="button"
                               onClick={() => setNewAdForm({ ...newAdForm, position: 'C' })}
-                              style={{ backgroundColor: newAdForm.position === 'C' ? '#BF9B30' : '#1A1A1A', border: '0.5px solid #2A2A2A', color: newAdForm.position === 'C' ? '#1A1A1A' : '#888', fontSize: '9px', fontWeight: 'bold', cursor: 'pointer', padding: '4px' }}
+                              style={{ backgroundColor: newAdForm.position === 'C' ? 'var(--primary-red)' : '#1A1A1A', border: '0.5px solid #2A2A2A', color: newAdForm.position === 'C' ? '#1A1A1A' : '#888', fontSize: '9px', fontWeight: 'bold', cursor: 'pointer', padding: '4px' }}
                             >
                               [ZONE C] Sidebar Rectangle
                             </button>
@@ -718,7 +718,7 @@ export default function Admin({ navigate }) {
                           <button 
                             type="button"
                             onClick={() => setNewAdForm({ ...newAdForm, position: 'F' })}
-                            style={{ padding: '6px', backgroundColor: newAdForm.position === 'F' ? '#BF9B30' : '#1A1A1A', border: '0.5px solid #2A2A2A', color: newAdForm.position === 'F' ? '#1A1A1A' : '#888', fontSize: '9px', fontWeight: 'bold', cursor: 'pointer' }}
+                            style={{ padding: '6px', backgroundColor: newAdForm.position === 'F' ? 'var(--primary-red)' : '#1A1A1A', border: '0.5px solid #2A2A2A', color: newAdForm.position === 'F' ? '#1A1A1A' : '#888', fontSize: '9px', fontWeight: 'bold', cursor: 'pointer' }}
                           >
                             [ZONE F] Company Spotlight (Directory)
                           </button>
@@ -899,7 +899,7 @@ export default function Admin({ navigate }) {
                           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                             <div style={{ width: '100px', height: '6px', backgroundColor: '#0D0D0D', borderRadius: '3px', overflow: 'hidden' }}>
                               {/* progress bar gold fill */}
-                              <div style={{ width: `${progressPercent}%`, height: '100%', backgroundColor: '#BF9B30' }} />
+                              <div style={{ width: `${progressPercent}%`, height: '100%', backgroundColor: 'var(--primary-red)' }} />
                             </div>
                             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: '#888' }}>{stat.reviewCount + stat.autoCount} / {stat.total}</span>
                           </div>
@@ -912,7 +912,7 @@ export default function Admin({ navigate }) {
                             </span>
                           )}
                           {stat.status === 'auto-only' && (
-                            <span style={{ backgroundColor: 'rgba(191, 155, 48, 0.2)', color: '#BF9B30', padding: '4px 10px', fontSize: '11px', fontWeight: 600, border: '0.5px solid #BF9B30' }}>
+                            <span style={{ backgroundColor: 'rgba(191, 155, 48, 0.2)', color: 'var(--primary-red)', padding: '4px 10px', fontSize: '11px', fontWeight: 600, border: '0.5px solid var(--primary-red)' }}>
                               Auto (Amber)
                             </span>
                           )}
@@ -949,7 +949,7 @@ export default function Admin({ navigate }) {
                   bottom: 0,
                   width: '500px',
                   backgroundColor: '#1A1A1A',
-                  borderLeft: '2px solid #BF9B30',
+                  borderLeft: '2px solid var(--primary-red)',
                   boxShadow: '-10px 0 30px rgba(0,0,0,0.5)',
                   zIndex: 9999,
                   padding: '32px',
@@ -982,7 +982,7 @@ export default function Admin({ navigate }) {
                     const engText = transList.find(t => t.language_code === 'en' && t.key === item.key)?.translated_text || '';
                     return (
                       <div key={item.key} style={{ backgroundColor: '#0D0D0D', padding: '16px', borderRadius: '4px', border: '0.5px solid #2A2A2A' }}>
-                        <span className="mono-data" style={{ fontSize: '11px', color: '#BF9B30', display: 'block', marginBottom: '12px' }}>Schlüssel: {item.key}</span>
+                        <span className="mono-data" style={{ fontSize: '11px', color: 'var(--primary-red)', display: 'block', marginBottom: '12px' }}>Schlüssel: {item.key}</span>
                         
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                           <div>
