@@ -26,3 +26,7 @@ dist-ssr
 # SQLite databases
 *.sqlite
 
+# Audio / temporary files
+*.ogg
+*.wav
+*.mp3
