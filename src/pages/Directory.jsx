@@ -18,18 +18,18 @@ const INDUSTRIES = [
   'Commodities'
 ];
 
-export default function Directory({ initialSearch = '', selectCompany }) {
+export default function Directory({ initialSearch = '', initialCanton = '', initialIndustry = '', selectCompany }) {
   const [companies, setCompanies] = useState([]);
   const [searchVal, setSearchVal] = useState(initialSearch);
-  const [selectedCantons, setSelectedCantons] = useState([]);
-  const [selectedIndustries, setSelectedIndustries] = useState([]);
+  const [selectedCantons, setSelectedCantons] = useState(initialCanton ? initialCanton.split(',') : []);
+  const [selectedIndustries, setSelectedIndustries] = useState(initialIndustry ? initialIndustry.split(',') : []);
   const [sizeClass, setSizeClass] = useState('All');
   const [verifiedOnly, setVerifiedOnly] = useState(false);
   const [ecoOnly, setEcoOnly] = useState(false);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState('grid'); // grid or list
 
-  const [cantonsExpanded, setCantonsExpanded] = useState(false);
+  const [cantonsExpanded, setCantonsExpanded] = useState(!!initialCanton);
   const [industriesExpanded, setIndustriesExpanded] = useState(true);
   const [sizeExpanded, setSizeExpanded] = useState(true);
 
@@ -70,6 +70,25 @@ export default function Directory({ initialSearch = '', selectCompany }) {
   useEffect(() => {
     setSearchVal(initialSearch);
   }, [initialSearch]);
+
+  useEffect(() => {
+    if (initialCanton) {
+      setSelectedCantons(initialCanton.split(','));
+      setCantonsExpanded(true);
+    } else {
+      setSelectedCantons([]);
+    }
+  }, [initialCanton]);
+
+  useEffect(() => {
+    if (initialIndustry) {
+      setSelectedIndustries(initialIndustry.split(','));
+      setIndustriesExpanded(true);
+    } else {
+      setSelectedIndustries([]);
+    }
+  }, [initialIndustry]);
+
 
   const handleCantonToggle = (canton) => {
     setSelectedCantons(prev => 

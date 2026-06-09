@@ -14,6 +14,7 @@ import Auth from './pages/Auth';
 import Careers from './pages/Careers';
 import StudentProfile from './pages/StudentProfile';
 import CompanyCard from './components/CompanyCard';
+import HomepageGraphics from './components/HomepageGraphics';
 import { Landmark, ArrowRight, ShieldCheck } from 'lucide-react';
 
 function AppContent() {
@@ -195,6 +196,9 @@ function AppContent() {
                 </div>
               </div>
 
+              {/* Interactive Canton, Live Register, & Network Graphics */}
+              <HomepageGraphics navigate={navigate} />
+
               {/* Editorial / News teaser block */}
               <div style={{ marginTop: '64px', display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '32px' }} className="home-news-row">
                 
@@ -280,6 +284,8 @@ function AppContent() {
         {routeInfo.route === 'directory' && (
           <Directory 
             initialSearch={routeInfo.params.search || ''} 
+            initialCanton={routeInfo.params.canton || ''}
+            initialIndustry={routeInfo.params.industry || ''}
             selectCompany={(id) => navigate(`/unternehmen/${id}`)}
           />
         )}

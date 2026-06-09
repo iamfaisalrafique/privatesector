@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Search, Landmark } from 'lucide-react';
 
 export default function Hero({ navigate }) {
   const { t, isRtl } = useLanguage();
+  const [searchQuery, setSearchQuery] = useState('');
 
   const stats = [
     { value: "500'000+", label: "Companies" },
@@ -13,22 +14,73 @@ export default function Hero({ navigate }) {
     { value: "50'000+", label: "Readers" }
   ];
 
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/unternehmen?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
+  const handleQuickSearch = (term) => {
+    navigate(`/unternehmen?search=${encodeURIComponent(term)}`);
+  };
+
   return (
     <div 
       style={{ 
-        backgroundColor: '#0A0A0A', 
-        borderBottom: '1.5px solid rgba(191, 155, 48, 0.2)',
+        background: 'linear-gradient(135deg, var(--bg-ivory) 0%, #F5FAFF 100%)', 
+        borderBottom: '1.5px solid rgba(191, 155, 48, 0.25)',
         position: 'relative',
         overflow: 'hidden',
-        color: '#FFFFFF'
+        color: 'var(--text-ink)'
       }}
     >
+      {/* Delicate Network Connections SVG Background */}
+      <svg 
+        style={{ 
+          position: 'absolute', 
+          top: 0, 
+          left: 0, 
+          width: '100%', 
+          height: '100%', 
+          zIndex: 1, 
+          opacity: 0.35, 
+          pointerEvents: 'none' 
+        }}
+      >
+        <defs>
+          <radialGradient id="dotGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#BF9B30" stopOpacity="0.4" />
+            <stop offset="100%" stopColor="#003453" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+        
+        {/* Network connections */}
+        <circle cx="10%" cy="20%" r="2" fill="#003453" />
+        <circle cx="15%" cy="45%" r="3" fill="#BF9B30" />
+        <circle cx="8%" cy="70%" r="1.5" fill="#003453" />
+        
+        <circle cx="85%" cy="15%" r="2.5" fill="#BF9B30" />
+        <circle cx="92%" cy="50%" r="1.5" fill="#003453" />
+        <circle cx="88%" cy="80%" r="3" fill="#003453" />
+
+        <line x1="10%" y1="20%" x2="15%" y2="45%" stroke="rgba(0,52,83,0.1)" strokeWidth="1" />
+        <line x1="15%" y1="45%" x2="8%" y2="70%" stroke="rgba(191,155,48,0.15)" strokeWidth="1" />
+        
+        <line x1="85%" y1="15%" x2="92%" y2="50%" stroke="rgba(191,155,48,0.1)" strokeWidth="1" />
+        <line x1="92%" y1="50%" x2="88%" y2="80%" stroke="rgba(0,52,83,0.12)" strokeWidth="1" />
+
+        {/* Decorative soft glow paths */}
+        <circle cx="15%" cy="45%" r="60" fill="url(#dotGrad)" />
+        <circle cx="88%" cy="80%" r="70" fill="url(#dotGrad)" />
+      </svg>
+
       {/* Hero Body */}
       <div 
         className="container"
         style={{
-          paddingTop: '80px',
-          paddingBottom: '80px',
+          paddingTop: '96px',
+          paddingBottom: '96px',
           position: 'relative',
           zIndex: 2
         }}
@@ -44,7 +96,8 @@ export default function Hero({ navigate }) {
                 fontSize: '12px', 
                 letterSpacing: '0.15em', 
                 marginBottom: '16px',
-                color: '#BF9B30'
+                color: '#BF9B30',
+                fontWeight: 600
               }}
             >
               🇨🇭 Switzerland's Private Sector Platform
@@ -52,11 +105,11 @@ export default function Hero({ navigate }) {
             
             <h1 
               style={{
-                fontSize: '60px',
-                fontFamily: '"Playfair Display", Georgia, serif',
+                fontSize: '56px',
+                fontFamily: 'var(--font-display)',
                 lineHeight: 1.15,
-                color: '#FFFDF7',
-                marginBottom: '24px',
+                color: '#003453',
+                marginBottom: '20px',
                 fontWeight: 700
               }}
             >
@@ -66,16 +119,82 @@ export default function Hero({ navigate }) {
             
             <p 
               style={{
-                fontSize: '18px',
-                color: '#888888',
-                fontFamily: 'Inter, sans-serif',
+                fontSize: '17px',
+                color: 'var(--text-charcoal)',
+                fontFamily: 'var(--font-sans)',
                 lineHeight: 1.6,
-                marginBottom: '36px',
-                maxWidth: '480px'
+                marginBottom: '32px',
+                maxWidth: '520px'
               }}
             >
               {t('hero_subtitle', "Access premium insights, verified B2B data, and the latest news on Swiss enterprises.")}
             </p>
+
+            {/* Dossier search form */}
+            <form 
+              onSubmit={handleSearchSubmit}
+              style={{
+                display: 'flex',
+                maxWidth: '520px',
+                backgroundColor: '#FFFFFF',
+                border: '1px solid var(--light-border)',
+                padding: '6px',
+                borderRadius: '0px',
+                alignItems: 'center',
+                gap: '8px',
+                marginBottom: '14px',
+                boxShadow: '0 4px 20px rgba(0, 52, 83, 0.05)'
+              }}
+            >
+              <Search size={18} style={{ color: '#BF9B30', marginLeft: '12px' }} />
+              <input 
+                type="text"
+                placeholder="Firma suchen (z.B. Nestlé, Roche, UBS)..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{
+                  flex: 1,
+                  border: 'none',
+                  outline: 'none',
+                  fontSize: '14px',
+                  fontFamily: 'var(--font-sans)',
+                  color: 'var(--text-ink)',
+                  padding: '8px 0'
+                }}
+              />
+              <button 
+                type="submit"
+                className="btn btn-gold-fill"
+                style={{
+                  minHeight: '38px',
+                  height: '38px',
+                  padding: '0 20px',
+                  fontSize: '13px'
+                }}
+              >
+                Suchen
+              </button>
+            </form>
+
+            {/* Quick searches */}
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap', marginBottom: '36px', fontSize: '12px' }}>
+              <span style={{ color: 'var(--text-charcoal)' }}>Beliebte Suchen:</span>
+              {['Nestlé', 'Roche', 'UBS', 'Stadler Rail'].map(term => (
+                <span 
+                  key={term}
+                  onClick={() => handleQuickSearch(term)}
+                  className="quick-search-link"
+                  style={{
+                    color: '#003453',
+                    cursor: 'pointer',
+                    fontWeight: 600,
+                    textDecoration: 'underline'
+                  }}
+                >
+                  {term}
+                </span>
+              ))}
+            </div>
             
             <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: isRtl ? 'flex-end' : 'flex-start' }}>
               <button 
@@ -89,7 +208,7 @@ export default function Hero({ navigate }) {
               
               <button 
                 onClick={() => navigate('/news')}
-                className="btn btn-dark-outline"
+                className="btn btn-gold-outline"
                 style={{ padding: '14px 28px', fontSize: '14px' }}
               >
                 {t('button_latest_news', 'Latest News')}
@@ -114,19 +233,20 @@ export default function Hero({ navigate }) {
                 position: 'absolute',
                 width: '280px',
                 backgroundColor: '#FFFFFF',
-                border: '0.5px solid #E8E0C8',
+                border: '0.5px solid var(--light-border)',
                 borderTop: '3px solid #BF9B30',
                 borderRadius: '6px',
                 padding: '20px',
                 transform: 'translate(-25px, -25px) rotate(-4deg)',
                 zIndex: 1,
-                opacity: 0.6,
-                color: '#1A1A1A'
+                opacity: 0.65,
+                color: '#1A1A1A',
+                boxShadow: '0 4px 15px rgba(0, 0, 0, 0.03)'
               }}
             >
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px' }}>
                 <div style={{ width: '24px', height: '24px', backgroundColor: '#114D30', borderRadius: '2px' }} />
-                <span style={{ fontFamily: '"Playfair Display", serif', fontWeight: 600, fontSize: '14px' }}>Rolex SA</span>
+                <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '14px' }}>Rolex SA</span>
               </div>
               <div style={{ width: '40%', height: '6px', backgroundColor: '#F5F0E8' }} />
             </div>
@@ -137,19 +257,20 @@ export default function Hero({ navigate }) {
                 position: 'absolute',
                 width: '280px',
                 backgroundColor: '#FFFFFF',
-                border: '0.5px solid #E8E0C8',
+                border: '0.5px solid var(--light-border)',
                 borderTop: '3px solid #BF9B30',
                 borderRadius: '6px',
                 padding: '20px',
                 transform: 'translate(15px, 15px) rotate(3deg)',
                 zIndex: 2,
-                opacity: 0.8,
-                color: '#1A1A1A'
+                opacity: 0.85,
+                color: '#1A1A1A',
+                boxShadow: '0 6px 20px rgba(0, 0, 0, 0.04)'
               }}
             >
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px' }}>
                 <div style={{ width: '24px', height: '24px', backgroundColor: '#0066CC', borderRadius: '2px' }} />
-                <span style={{ fontFamily: '"Playfair Display", serif', fontWeight: 600, fontSize: '14px' }}>Roche Holding</span>
+                <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '14px' }}>Roche Holding</span>
               </div>
               <div style={{ width: '50%', height: '6px', backgroundColor: '#F5F0E8' }} />
             </div>
@@ -160,14 +281,15 @@ export default function Hero({ navigate }) {
                 position: 'absolute',
                 width: '290px',
                 backgroundColor: '#FFFFFF',
-                border: '0.5px solid #E8E0C8',
+                border: '0.5px solid var(--light-border)',
                 borderTop: '3px solid #BF9B30',
                 borderRadius: '6px',
                 padding: '24px',
                 transform: 'translate(0px, 0px) rotate(-1deg)',
                 zIndex: 3,
                 color: '#1A1A1A',
-                transition: 'transform 0.3s ease'
+                boxShadow: '0 8px 30px rgba(0, 52, 83, 0.08)',
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease'
               }}
               className="hero-top-card"
             >
@@ -178,7 +300,7 @@ export default function Hero({ navigate }) {
               <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '16px' }}>
                 <div style={{ width: '36px', height: '36px', backgroundColor: '#1A365D', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#FFF', fontWeight: 'bold', fontSize: '14px' }}>N</div>
                 <div>
-                  <h3 style={{ fontFamily: '"Playfair Display", serif', fontSize: '16px', color: '#1A1A1A', fontWeight: 600 }}>Nestlé S.A.</h3>
+                  <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '16px', color: '#1A1A1A', fontWeight: 600 }}>Nestlé S.A.</h3>
                   <span style={{ fontSize: '11px', color: '#5A5A5A' }}>Canton VD · Consumer Goods</span>
                 </div>
               </div>
@@ -241,7 +363,7 @@ export default function Hero({ navigate }) {
               <span 
                 style={{ 
                   color: '#1A1A1A', 
-                  fontFamily: 'Inter, sans-serif', 
+                  fontFamily: 'var(--font-sans)', 
                   fontSize: '11px', 
                   fontWeight: 500,
                   textTransform: 'uppercase', 
@@ -260,7 +382,11 @@ export default function Hero({ navigate }) {
       
       <style>{`
         .hero-top-card:hover {
-          transform: translate(0px, -8px) rotate(0deg) !important;
+          transform: translate(0px, -12px) rotate(0deg) !important;
+          box-shadow: 0 12px 35px rgba(0, 52, 83, 0.15) !important;
+        }
+        .quick-search-link:hover {
+          color: #BF9B30 !important;
         }
       `}</style>
     </div>
