@@ -2,26 +2,26 @@
 :root {
   /* Color System (Swiss Flag Red & White Editorial Theme) */
   --primary-red: #D52B1E;
-  --red-hover: #A61F15;
-  --red-light: #FCE8E6;
+  --red-hover: #000000;
+  --red-light: #FFF5F5;
   
   --primary-gold: var(--primary-red);
   --gold-hover: var(--red-hover);
   --gold-light: var(--red-light);
   
-  --bg-ivory: #FFFDF7;
-  --surface-warm: #F5F0E8;
+  --bg-ivory: #FFFFFF;
+  --surface-warm: #F9F9F9;
   
-  --text-ink: #1A1A1A;
-  --text-charcoal: #5A5A5A;
+  --text-ink: #000000;
+  --text-charcoal: #2C2C2C;
   
-  --dark-nav: #0A0A0A;
-  --dark-surface: #1A1A1A;
+  --dark-nav: #000000;
+  --dark-surface: #0A0A0A;
   
-  --dark-border: rgba(42, 42, 42, 0.4);
-  --light-border: #E5E2D9; /* Clean neutral warm grey instead of goldish-ivory */
+  --dark-border: rgba(0, 0, 0, 0.8);
+  --light-border: #E5E5E5;
   
-  --accent-red: #D52B1E; /* Swiss Red breaking news */
+  --accent-red: #D52B1E;
   --accent-green: #4A6741;
   
   /* Fonts */
@@ -129,13 +129,13 @@ p, li, .sans-font {
 
 .btn-gold-fill {
   background-color: var(--primary-gold);
-  color: #1A1A1A;
+  color: #FFFFFF;
   border: 0.5px solid var(--primary-gold);
   font-weight: 600;
 }
 .btn-gold-fill:hover {
-  background-color: var(--gold-hover);
-  border-color: var(--gold-hover);
+  background-color: #000000;
+  border-color: #000000;
   color: #FFFFFF;
 }
 
@@ -146,7 +146,7 @@ p, li, .sans-font {
 }
 .btn-gold-outline:hover {
   background-color: var(--primary-gold);
-  color: #1A1A1A;
+  color: #FFFFFF;
 }
 
 .btn-dark-outline {
@@ -156,7 +156,7 @@ p, li, .sans-font {
 }
 .btn-dark-outline:hover {
   background-color: #FFFFFF;
-  color: var(--dark-nav);
+  color: #000000;
 }
 
 /* Navigation Links */

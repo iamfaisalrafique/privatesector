@@ -46,7 +46,7 @@ export default function Navbar({ currentPath, navigate }) {
           height: '64px',
           display: 'flex',
           alignItems: 'center',
-          borderBottom: '1.5px solid rgba(191, 155, 48, 0.2)',
+          borderBottom: '1.5px solid rgba(213, 43, 30, 0.25)',
           position: 'sticky',
           top: 0,
           zIndex: 999,

@@ -28,8 +28,8 @@ export default function Hero({ navigate }) {
   return (
     <div 
       style={{ 
-        background: 'linear-gradient(135deg, var(--bg-ivory) 0%, #F5FAFF 100%)', 
-        borderBottom: '1.5px solid rgba(191, 155, 48, 0.25)',
+        background: 'linear-gradient(135deg, #FFFFFF 0%, #F9F9F9 100%)', 
+        borderBottom: '1.5px solid rgba(213, 43, 30, 0.15)',
         position: 'relative',
         overflow: 'hidden',
         color: 'var(--text-ink)'
@@ -51,24 +51,24 @@ export default function Hero({ navigate }) {
         <defs>
           <radialGradient id="dotGrad" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stopColor="var(--primary-red)" stopOpacity="0.4" />
-            <stop offset="100%" stopColor="#003453" stopOpacity="0" />
+            <stop offset="100%" stopColor="#000000" stopOpacity="0" />
           </radialGradient>
         </defs>
         
         {/* Network connections */}
-        <circle cx="10%" cy="20%" r="2" fill="#003453" />
+        <circle cx="10%" cy="20%" r="2" fill="#000000" />
         <circle cx="15%" cy="45%" r="3" fill="var(--primary-red)" />
-        <circle cx="8%" cy="70%" r="1.5" fill="#003453" />
+        <circle cx="8%" cy="70%" r="1.5" fill="#000000" />
         
         <circle cx="85%" cy="15%" r="2.5" fill="var(--primary-red)" />
-        <circle cx="92%" cy="50%" r="1.5" fill="#003453" />
-        <circle cx="88%" cy="80%" r="3" fill="#003453" />
+        <circle cx="92%" cy="50%" r="1.5" fill="#000000" />
+        <circle cx="88%" cy="80%" r="3" fill="#000000" />
 
-        <line x1="10%" y1="20%" x2="15%" y2="45%" stroke="rgba(0,52,83,0.1)" strokeWidth="1" />
-        <line x1="15%" y1="45%" x2="8%" y2="70%" stroke="rgba(191,155,48,0.15)" strokeWidth="1" />
+        <line x1="10%" y1="20%" x2="15%" y2="45%" stroke="rgba(0,0,0,0.08)" strokeWidth="1" />
+        <line x1="15%" y1="45%" x2="8%" y2="70%" stroke="rgba(213,43,30,0.12)" strokeWidth="1" />
         
-        <line x1="85%" y1="15%" x2="92%" y2="50%" stroke="rgba(191,155,48,0.1)" strokeWidth="1" />
-        <line x1="92%" y1="50%" x2="88%" y2="80%" stroke="rgba(0,52,83,0.12)" strokeWidth="1" />
+        <line x1="85%" y1="15%" x2="92%" y2="50%" stroke="rgba(213,43,30,0.08)" strokeWidth="1" />
+        <line x1="92%" y1="50%" x2="88%" y2="80%" stroke="rgba(0,0,0,0.1)" strokeWidth="1" />
 
         {/* Decorative soft glow paths */}
         <circle cx="15%" cy="45%" r="60" fill="url(#dotGrad)" />
@@ -108,7 +108,7 @@ export default function Hero({ navigate }) {
                 fontSize: '56px',
                 fontFamily: 'var(--font-display)',
                 lineHeight: 1.15,
-                color: '#003453',
+                color: '#000000',
                 marginBottom: '20px',
                 fontWeight: 700
               }}
@@ -185,7 +185,7 @@ export default function Hero({ navigate }) {
                   onClick={() => handleQuickSearch(term)}
                   className="quick-search-link"
                   style={{
-                    color: '#003453',
+                    color: '#000000',
                     cursor: 'pointer',
                     fontWeight: 600,
                     textDecoration: 'underline'
@@ -288,7 +288,7 @@ export default function Hero({ navigate }) {
                 transform: 'translate(0px, 0px) rotate(-1deg)',
                 zIndex: 3,
                 color: '#1A1A1A',
-                boxShadow: '0 8px 30px rgba(0, 52, 83, 0.08)',
+                boxShadow: '0 8px 30px rgba(0, 0, 0, 0.08)',
                 transition: 'transform 0.3s ease, box-shadow 0.3s ease'
               }}
               className="hero-top-card"
@@ -333,9 +333,9 @@ export default function Hero({ navigate }) {
       {/* Bottom Ticker Stats Strip */}
       <div 
         style={{
-          backgroundColor: 'var(--primary-red)',
+          backgroundColor: '#000000',
           padding: '16px 0',
-          borderTop: '0.5px solid rgba(255, 255, 255, 0.2)'
+          borderTop: '1.5px solid var(--primary-red)'
         }}
       >
         <div 
@@ -353,7 +353,7 @@ export default function Hero({ navigate }) {
               <span 
                 style={{ 
                   fontFamily: 'var(--font-mono)', 
-                  color: '#1A1A1A', 
+                  color: '#FFFFFF', 
                   fontSize: '16px', 
                   fontWeight: 700 
                 }}
@@ -362,10 +362,10 @@ export default function Hero({ navigate }) {
               </span>
               <span 
                 style={{ 
-                  color: '#1A1A1A', 
+                  color: 'var(--primary-red)', 
                   fontFamily: 'var(--font-sans)', 
                   fontSize: '11px', 
-                  fontWeight: 500,
+                  fontWeight: 600,
                   textTransform: 'uppercase', 
                   letterSpacing: '0.05em'
                 }}
@@ -373,7 +373,7 @@ export default function Hero({ navigate }) {
                 {st.label}
               </span>
               {idx < stats.length - 1 && (
-                <span style={{ color: '#1A1A1A', opacity: 0.3, marginLeft: '16px' }} className="desktop-only">·</span>
+                <span style={{ color: 'rgba(255, 255, 255, 0.2)', marginLeft: '16px' }} className="desktop-only">·</span>
               )}
             </div>
           ))}
@@ -383,7 +383,7 @@ export default function Hero({ navigate }) {
       <style>{`
         .hero-top-card:hover {
           transform: translate(0px, -12px) rotate(0deg) !important;
-          box-shadow: 0 12px 35px rgba(0, 52, 83, 0.15) !important;
+          box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15) !important;
         }
         .quick-search-link:hover {
           color: var(--primary-red) !important;
