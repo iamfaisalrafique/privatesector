@@ -150,7 +150,7 @@ export default function Navbar({ currentPath, navigate }) {
               }}
               className="desktop-only"
             >
-              Admin
+              {t('Admin', 'Admin')}
             </button>
 
             {/* Login & Register (Desktop Only) */}
@@ -213,7 +213,7 @@ export default function Navbar({ currentPath, navigate }) {
           <form onSubmit={handleSearchSubmit} style={{ maxWidth: '600px', margin: '0 auto', display: 'flex', gap: '12px', flexDirection: isRtl ? 'row-reverse' : 'row' }}>
             <input 
               type="text" 
-              placeholder="Suchbegriff eingeben..." 
+              placeholder={t('search_placeholder_short', 'Search...')} 
               value={searchVal}
               onChange={(e) => setSearchVal(e.target.value)}
               className="input-field"
@@ -221,7 +221,7 @@ export default function Navbar({ currentPath, navigate }) {
               autoFocus
             />
             <button type="submit" className="btn btn-gold-fill" style={{ fontSize: '13px', padding: '8px 16px', minHeight: '44px' }}>
-              Suchen
+              {t('search_button', 'Search')}
             </button>
           </form>
         </div>
@@ -285,7 +285,7 @@ export default function Navbar({ currentPath, navigate }) {
               textAlign: isRtl ? 'right' : 'left'
             }}
           >
-            Admin Dashboard
+            {t('Admin Dashboard', 'Admin Dashboard')}
           </a>
           <button 
             className="btn btn-gold-fill" 
@@ -331,35 +331,35 @@ export default function Navbar({ currentPath, navigate }) {
           style={{ background: 'none', border: 'none', color: currentPath === '/' ? 'var(--primary-red)' : '#888888', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '9px', gap: '3px', cursor: 'pointer' }}
         >
           <Home size={18} />
-          <span>Home</span>
+          <span>{t('dir_home', 'Home')}</span>
         </button>
         <button 
           onClick={() => navigate('/unternehmen')}
           style={{ background: 'none', border: 'none', color: currentPath === '/unternehmen' ? 'var(--primary-red)' : '#888888', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '9px', gap: '3px', cursor: 'pointer' }}
         >
           <Building2 size={18} />
-          <span>Directory</span>
+          <span>{t('dir_directory', 'Directory')}</span>
         </button>
         <button 
           onClick={() => navigate('/news')}
           style={{ background: 'none', border: 'none', color: currentPath === '/news' ? 'var(--primary-red)' : '#888888', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '9px', gap: '3px', cursor: 'pointer' }}
         >
           <Newspaper size={18} />
-          <span>News</span>
+          <span>{t('nav_news', 'News')}</span>
         </button>
         <button 
           onClick={() => navigate('/interviews')}
           style={{ background: 'none', border: 'none', color: currentPath === '/interviews' ? 'var(--primary-red)' : '#888888', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '9px', gap: '3px', cursor: 'pointer' }}
         >
           <MessageSquare size={18} />
-          <span>Interviews</span>
+          <span>{t('nav_interviews', 'Interviews')}</span>
         </button>
         <button 
           onClick={() => navigate('/admin')}
           style={{ background: 'none', border: 'none', color: currentPath === '/admin' ? 'var(--primary-red)' : '#888888', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '9px', gap: '3px', cursor: 'pointer' }}
         >
           <LayoutDashboard size={18} />
-          <span>Admin</span>
+          <span>{t('Admin', 'Admin')}</span>
         </button>
       </div>
     </>
