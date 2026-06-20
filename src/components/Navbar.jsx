@@ -9,7 +9,8 @@ import {
   Menu, 
   X,
   Mic,
-  MessageSquare
+  MessageSquare,
+  GraduationCap
 } from 'lucide-react';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useLanguage } from '../context/LanguageContext';
@@ -26,7 +27,7 @@ export default function Navbar({ currentPath, navigate }) {
     { label: t('nav_statistics', 'Statistiken'), path: '/statistiken' },
     { label: t('nav_interviews', 'Interviews'), path: '/interviews' },
     { label: t('nav_podcasts', 'Podcasts'), path: '/podcasts' },
-    { label: t('nav_careers', 'Karriere'), path: '/karriere' }
+    { label: t('nav_careers', 'Talent & Ranking'), path: '/karriere' }
   ];
 
   const handleSearchSubmit = (e) => {
@@ -355,11 +356,11 @@ export default function Navbar({ currentPath, navigate }) {
           <span>{t('nav_interviews', 'Interviews')}</span>
         </button>
         <button 
-          onClick={() => navigate('/admin')}
-          style={{ background: 'none', border: 'none', color: currentPath === '/admin' ? 'var(--primary-red)' : '#888888', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '9px', gap: '3px', cursor: 'pointer' }}
+          onClick={() => navigate('/karriere')}
+          style={{ background: 'none', border: 'none', color: currentPath === '/karriere' ? 'var(--primary-red)' : '#888888', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '9px', gap: '3px', cursor: 'pointer' }}
         >
-          <LayoutDashboard size={18} />
-          <span>{t('Admin', 'Admin')}</span>
+          <GraduationCap size={18} />
+          <span>{t('nav_careers', 'Talent & Ranking')}</span>
         </button>
       </div>
     </>

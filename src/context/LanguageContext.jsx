@@ -32,7 +32,7 @@ export const LanguageProvider = ({ children }) => {
     // 2. Check browser locale
     const browserLang = navigator.language.split('-')[0];
     const exists = LANGUAGES.some(l => l.code === browserLang);
-    return exists ? browserLang : 'de'; // default to German (de) for Swiss context
+    return exists ? browserLang : 'en'; // default to English (en)
   });
 
   const [translations, setTranslations] = useState({});
