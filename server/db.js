@@ -584,6 +584,8 @@ export async function initializeDatabase() {
     await autoTranslateDatabaseContent();
   } else {
     console.log('Database is already fully populated with latest B2B, Careers, ESG, and podcast features.');
+    console.log('Running incremental auto-translation scanner...');
+    await autoTranslateDatabaseContent();
   }
 }
 
@@ -1992,7 +1994,60 @@ async function autoTranslateDatabaseContent() {
     'Sponsored by',
     'Google B2B Services',
     "Learn about modern cloud compliance infrastructures designed to align with FINMA's latest technical directives.",
-    'Read the Whitepaper ↗'
+    'Read the Whitepaper ↗',
+    'Loading dashboard...',
+    'Student Profile Not Found',
+    'Go to Careers Center',
+    'Student Talent Hub',
+    'Welcome, {name}!',
+    'View Public Profile',
+    'Overview',
+    'Edit Profile (LinkedIn Style)',
+    'Write Business Article',
+    'Dossier Overview',
+    'Articles Written',
+    'Podcasts & Briefings',
+    'My Published Pieces',
+    "You haven't published any articles yet. Navigate to 'Write Business Article' to get started!",
+    'View Article',
+    'University',
+    'Field of Study',
+    'Graduation Year',
+    'Portfolio URL',
+    'Avatar Image URL',
+    'Email',
+    'Phone Number',
+    'Birth Date',
+    'Bio / Summary',
+    'Skills & Endorsements',
+    'Add a skill...',
+    'Add',
+    'Experience & Projects',
+    'Remove',
+    'Add Experience',
+    'Role (e.g. Intern)',
+    'Company / University project',
+    'Duration (e.g. 3 months)',
+    'Description...',
+    'Save Changes',
+    'Compose Business Article',
+    'Title',
+    'Swiss watch exports reach historic heights...',
+    'Subtitle',
+    'Brief summary teaser...',
+    'Category',
+    'University Perspective',
+    'Executive Briefing',
+    'Street Briefing',
+    'Image URL',
+    'Unsplash image URL...',
+    'Tags (Comma separated)',
+    'Rolex, Richemont, ESG',
+    'Pull Quote (Featured text highlight)',
+    'Pull quote highlight...',
+    'Body Content',
+    'Publish Article',
+    'Go to Student Talent Dashboard 🚀'
   ];
   for (const k of newUiKeys) {
     stringsToTranslate.add(k.trim());

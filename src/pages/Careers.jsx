@@ -61,7 +61,7 @@ export default function Careers({ navigate }) {
             className="btn btn-gold-fill" 
             style={{ minHeight: '44px', fontSize: '14px', padding: '10px 24px' }}
           >
-            Go to Student Talent Dashboard 🚀
+            {t('Go to Student Talent Dashboard 🚀', 'Go to Student Talent Dashboard 🚀')}
           </button>
         </div>
 
