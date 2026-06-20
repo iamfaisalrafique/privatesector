@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function AdSlot({ position, adData, adminPreview = false }) {
+  const { t } = useLanguage();
   const [ad, setAd] = useState(adData || null);
   const [loading, setLoading] = useState(!adData);
   const [consentGranted, setConsentGranted] = useState(
@@ -138,8 +140,8 @@ export default function AdSlot({ position, adData, adminPreview = false }) {
       : '1px dashed #E8E0C8'; // Public view: dashed light border
 
     const labelText = adminPreview 
-      ? `Werbung - Zone ${zoneLetter} (${zoneDesc})` 
-      : 'Werbung';
+      ? `${t('Werbung', 'Werbung')} - Zone ${zoneLetter} (${zoneDesc})` 
+      : t('Werbung', 'Werbung');
 
     // Spotlight has a card empty state
     if (zoneLetter === 'F') {
@@ -161,10 +163,10 @@ export default function AdSlot({ position, adData, adminPreview = false }) {
           </span>
           <div style={{ textAlign: 'center', padding: '16px' }}>
             <span style={{ fontSize: '12px', color: 'var(--text-charcoal)', display: 'block', marginBottom: '8px' }}>
-              Spotlight-Unternehmen
+              {t('Spotlight-Unternehmen', 'Spotlight-Unternehmen')}
             </span>
             <span style={{ fontSize: '10px', color: '#888' }}>
-              Sponsor-Dossier hier platzieren.
+              {t('Sponsor-Dossier hier platzieren.', 'Sponsor-Dossier hier platzieren.')}
             </span>
           </div>
         </div>
@@ -206,7 +208,7 @@ export default function AdSlot({ position, adData, adminPreview = false }) {
           </span>
           {!consentGranted && (
             <span style={{ display: 'block', fontSize: '9px', color: '#888', marginTop: '2px' }}>
-              (Erfordert Cookie-Zustimmung)
+              {t('(Erfordert Cookie-Zustimmung)', '(Erfordert Cookie-Zustimmung)')}
             </span>
           )}
         </div>
@@ -239,11 +241,11 @@ export default function AdSlot({ position, adData, adminPreview = false }) {
             position: 'relative'
           }}
         >
-          <span style={{ position: 'absolute', top: '4px', right: '8px', fontSize: '8px', color: 'var(--primary-gold)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>Sponsored</span>
+          <span style={{ position: 'absolute', top: '4px', right: '8px', fontSize: '8px', color: 'var(--primary-gold)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>{t('Sponsored', 'Sponsored')}</span>
           {!ad.image_url && (
             <div style={{ textAlign: 'center', padding: '10px' }}>
-              <div style={{ fontFamily: '"Playfair Display", serif', fontSize: '16px', fontWeight: 600, color: 'var(--text-ink)' }}>{ad.name}</div>
-              <div style={{ fontFamily: 'Inter, sans-serif', fontSize: '10px', color: 'var(--text-charcoal)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>Click to view profile</div>
+              <div style={{ fontFamily: '"Playfair Display", serif', fontSize: '16px', fontWeight: 600, color: 'var(--text-ink)' }}>{t(ad.name, ad.name)}</div>
+              <div style={{ fontFamily: 'Inter, sans-serif', fontSize: '10px', color: 'var(--text-charcoal)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>{t('Click to view profile', 'Click to view profile')}</div>
             </div>
           )}
         </div>
@@ -279,12 +281,12 @@ export default function AdSlot({ position, adData, adminPreview = false }) {
             boxSizing: 'border-box'
           }}
         >
-          <span style={{ position: 'absolute', top: '8px', right: '12px', fontSize: '8px', color: 'var(--primary-gold)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>Sponsored Spotlight</span>
+          <span style={{ position: 'absolute', top: '8px', right: '12px', fontSize: '8px', color: 'var(--primary-gold)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>{t('Sponsored Spotlight', 'Sponsored Spotlight')}</span>
           {!ad.image_url && (
             <div>
-              <div style={{ fontFamily: '"Playfair Display", serif', fontSize: '20px', fontWeight: 600, color: 'var(--text-ink)', marginBottom: '8px' }}>{ad.name}</div>
-              <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '12px', color: 'var(--text-charcoal)', marginBottom: '16px', lineHeight: 1.4 }}>Discover our premium verified solutions tailored for Swiss industry leaders.</p>
-              <span className="btn btn-gold-fill" style={{ fontSize: '11px', padding: '6px 12px', minHeight: '32px' }}>Visit Profile</span>
+              <div style={{ fontFamily: '"Playfair Display", serif', fontSize: '20px', fontWeight: 600, color: 'var(--text-ink)', marginBottom: '8px' }}>{t(ad.name, ad.name)}</div>
+              <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '12px', color: 'var(--text-charcoal)', marginBottom: '16px', lineHeight: 1.4 }}>{t('Discover our premium verified solutions tailored for Swiss industry leaders.', 'Discover our premium verified solutions tailored for Swiss industry leaders.')}</p>
+              <span className="btn btn-gold-fill" style={{ fontSize: '11px', padding: '6px 12px', minHeight: '32px' }}>{t('Visit Profile', 'Visit Profile')}</span>
             </div>
           )}
         </div>
@@ -304,18 +306,18 @@ export default function AdSlot({ position, adData, adminPreview = false }) {
           position: 'relative'
         }}
       >
-        <div className="premium-ribbon">Featured</div>
+        <div className="premium-ribbon">{t('Featured', 'Featured')}</div>
         <div style={{ display: 'flex', gap: '16px', marginBottom: '12px', alignItems: 'center' }}>
           <div style={{ width: '60px', height: '60px', backgroundColor: 'var(--primary-gold)', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1A1A1A', fontWeight: 700, fontSize: '18px' }}>
             {ad.name ? ad.name.charAt(0) : 'S'}
           </div>
           <div>
-            <h3 style={{ fontSize: '18px', fontFamily: '"Playfair Display", serif', color: 'var(--text-ink)', fontWeight: 700 }}>{ad.name}</h3>
-            <span className="badge badge-verified" style={{ marginTop: '4px', fontSize: '9px' }}>✓ Verified Partner</span>
+            <h3 style={{ fontSize: '18px', fontFamily: '"Playfair Display", serif', color: 'var(--text-ink)', fontWeight: 700 }}>{t(ad.name, ad.name)}</h3>
+            <span className="badge badge-verified" style={{ marginTop: '4px', fontSize: '9px' }}>{t('✓ Verified Partner', '✓ Verified Partner')}</span>
           </div>
         </div>
         <p style={{ fontSize: '13px', color: 'var(--text-charcoal)', lineHeight: 1.6, marginBottom: '16px' }}>
-          Learn more about the leading B2B financial and reinsurance structures operating out of Zurich.
+          {t('Learn more about the leading B2B financial and reinsurance structures operating out of Zurich.', 'Learn more about the leading B2B financial and reinsurance structures operating out of Zurich.')}
         </p>
         <div style={{ marginTop: 'auto' }}>
           <a 
@@ -324,7 +326,7 @@ export default function AdSlot({ position, adData, adminPreview = false }) {
             className="btn btn-gold-fill"
             style={{ width: '100%', fontSize: '11px', padding: '8px 12px', minHeight: '36px' }}
           >
-            Explore Corporate Dossier
+            {t('Explore Corporate Dossier', 'Explore Corporate Dossier')}
           </a>
         </div>
       </div>
@@ -344,17 +346,17 @@ export default function AdSlot({ position, adData, adminPreview = false }) {
           borderLeft: '4px solid var(--primary-gold)'
         }}
       >
-        <span style={{ position: 'absolute', top: '8px', right: '12px', fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--primary-gold)', fontWeight: 600 }}>Sponsored Content</span>
-        <h4 style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', marginBottom: '8px', color: 'var(--text-ink)', fontWeight: 700 }}>How Switzerland's Private Sector Navigates Evolving Global Compliance Standards</h4>
+        <span style={{ position: 'absolute', top: '8px', right: '12px', fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--primary-gold)', fontWeight: 600 }}>{t('Sponsored Content', 'Sponsored Content')}</span>
+        <h4 style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', marginBottom: '8px', color: 'var(--text-ink)', fontWeight: 700 }}>{t("How Switzerland's Private Sector Navigates Evolving Global Compliance Standards", "How Switzerland's Private Sector Navigates Evolving Global Compliance Standards")}</h4>
         <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '13px', color: 'var(--text-charcoal)', lineHeight: 1.6, marginBottom: '12px' }}>
-          Sponsored by {ad.name || 'Google B2B Services'}. Learn about modern cloud compliance infrastructures designed to align with FINMA's latest technical directives.
+          {t('Sponsored by', 'Sponsored by')} {t(ad.name || 'Google B2B Services', ad.name || 'Google B2B Services')}. {t("Learn about modern cloud compliance infrastructures designed to align with FINMA's latest technical directives.", "Learn about modern cloud compliance infrastructures designed to align with FINMA's latest technical directives.")}
         </p>
         <a 
           href={ad.company_id ? `#/unternehmen/${ad.company_id}` : '#'} 
           style={{ color: 'var(--primary-gold)', fontSize: '12px', fontWeight: 600, textDecoration: 'none' }}
           onClick={handleAdClick}
         >
-          Read the Whitepaper ↗
+          {t('Read the Whitepaper ↗', 'Read the Whitepaper ↗')}
         </a>
       </div>
     );

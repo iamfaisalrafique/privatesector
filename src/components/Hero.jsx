@@ -7,11 +7,11 @@ export default function Hero({ navigate }) {
   const [searchQuery, setSearchQuery] = useState('');
 
   const stats = [
-    { value: "500'000+", label: "Companies" },
-    { value: "26", label: "Cantons" },
-    { value: "CHF 4'200'000M", label: "GDP" },
-    { value: "18", label: "Languages" },
-    { value: "50'000+", label: "Readers" }
+    { value: "500'000+", label: t('stats_companies', 'Companies') },
+    { value: "26", label: t('stats_cantons', 'Cantons') },
+    { value: "CHF 4'200'000M", label: t('stats_gdp', 'GDP') },
+    { value: "18", label: t('stats_languages', 'Languages') },
+    { value: "50'000+", label: t('stats_readers', 'Readers') }
   ];
 
   const handleSearchSubmit = (e) => {
@@ -100,7 +100,7 @@ export default function Hero({ navigate }) {
                 fontWeight: 600
               }}
             >
-              🇨🇭 Switzerland's Private Sector Platform
+              {t('hero_platform_label', '🇨🇭 Switzerland\'s Private Sector Platform')}
             </span>
             
             <h1 
@@ -113,8 +113,7 @@ export default function Hero({ navigate }) {
                 fontWeight: 700
               }}
             >
-              The Swiss Private <br />
-              Sector, <span style={{ color: 'var(--primary-red)', fontStyle: 'italic' }}>Unified.</span>
+              {t('hero_title', "The Swiss Private Sector, Unified.")}
             </h1>
             
             <p 
@@ -149,7 +148,7 @@ export default function Hero({ navigate }) {
               <Search size={18} style={{ color: 'var(--primary-red)', marginLeft: '12px' }} />
               <input 
                 type="text"
-                placeholder="Firma suchen (z.B. Nestlé, Roche, UBS)..."
+                placeholder={t('search_placeholder', "Firma suchen (z.B. Nestlé, Roche, UBS)...")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 style={{
@@ -172,13 +171,13 @@ export default function Hero({ navigate }) {
                   fontSize: '13px'
                 }}
               >
-                Suchen
+                {t('search_button', 'Suchen')}
               </button>
             </form>
 
             {/* Quick searches */}
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap', marginBottom: '36px', fontSize: '12px' }}>
-              <span style={{ color: 'var(--text-charcoal)' }}>Beliebte Suchen:</span>
+              <span style={{ color: 'var(--text-charcoal)' }}>{t('popular_searches', 'Beliebte Suchen:')}</span>
               {['Nestlé', 'Roche', 'UBS', 'Stadler Rail'].map(term => (
                 <span 
                   key={term}
@@ -294,32 +293,32 @@ export default function Hero({ navigate }) {
               className="hero-top-card"
             >
               <div style={{ position: 'absolute', top: '16px', right: '16px' }}>
-                <span className="badge badge-verified" style={{ fontSize: '9px', padding: '2px 6px' }}>✓ Premium</span>
+                <span className="badge badge-verified" style={{ fontSize: '9px', padding: '2px 6px' }}>{t('✓ Premium', '✓ Premium')}</span>
               </div>
               
               <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '16px' }}>
                 <div style={{ width: '36px', height: '36px', backgroundColor: '#1A365D', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#FFF', fontWeight: 'bold', fontSize: '14px' }}>N</div>
                 <div>
                   <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '16px', color: '#1A1A1A', fontWeight: 600 }}>Nestlé S.A.</h3>
-                  <span style={{ fontSize: '11px', color: '#5A5A5A' }}>Canton VD · Consumer Goods</span>
+                  <span style={{ fontSize: '11px', color: '#5A5A5A' }}>{t('Canton VD · Consumer Goods', 'Canton VD · Consumer Goods')}</span>
                 </div>
               </div>
 
               <p style={{ fontSize: '12px', color: '#5A5A5A', lineHeight: 1.5, marginBottom: '20px' }}>
-                The world's largest food & beverage company. Headquartered in Vevey.
+                {t("The world's largest food & beverage company. Headquartered in Vevey.", "The world's largest food & beverage company. Headquartered in Vevey.")}
               </p>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '0.5px solid #E8E0C8', paddingTop: '16px', fontSize: '11px' }}>
                 <div>
-                  <span style={{ color: '#5A5A5A', display: 'block', fontSize: '9px', textTransform: 'uppercase' }}>FOUNDED</span>
+                  <span style={{ color: '#5A5A5A', display: 'block', fontSize: '9px', textTransform: 'uppercase' }}>{t('FOUNDED', 'FOUNDED')}</span>
                   <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, color: 'var(--primary-red)' }}>1866</span>
                 </div>
                 <div>
-                  <span style={{ color: '#5A5A5A', display: 'block', fontSize: '9px', textTransform: 'uppercase' }}>REVENUE</span>
+                  <span style={{ color: '#5A5A5A', display: 'block', fontSize: '9px', textTransform: 'uppercase' }}>{t('REVENUE', 'REVENUE')}</span>
                   <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, color: 'var(--primary-red)' }}>CHF 93'000M</span>
                 </div>
                 <div>
-                  <span style={{ color: '#5A5A5A', display: 'block', fontSize: '9px', textTransform: 'uppercase' }}>EMPLOYEES</span>
+                  <span style={{ color: '#5A5A5A', display: 'block', fontSize: '9px', textTransform: 'uppercase' }}>{t('EMPLOYEES', 'EMPLOYEES')}</span>
                   <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, color: 'var(--primary-red)' }}>273'000</span>
                 </div>
               </div>

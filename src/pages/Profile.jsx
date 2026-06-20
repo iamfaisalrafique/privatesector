@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import KnowledgePanel from '../components/KnowledgePanel';
 import AdSlot from '../components/AdSlot';
 import { ArrowLeft, Mail, Building, Users } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Profile({ companyId, onBack, navigate }) {
+  const { t, isRtl } = useLanguage();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
@@ -47,7 +49,7 @@ export default function Profile({ companyId, onBack, navigate }) {
     return (
       <div className="container" style={{ padding: '64px 0', textAlign: 'center' }}>
         <div style={{ width: '40px', height: '40px', border: '2px solid var(--light-border)', borderTopColor: 'var(--primary-gold)', borderRadius: '50%', animation: 'spin 1s infinite linear', margin: '0 auto 16px' }} />
-        <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', color: 'var(--text-charcoal)' }}>Dossier wird geladen...</p>
+        <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', color: 'var(--text-charcoal)' }}>{t('Dossier wird geladen...', 'Dossier wird geladen...')}</p>
       </div>
     );
   }
@@ -55,17 +57,17 @@ export default function Profile({ companyId, onBack, navigate }) {
   if (!data) {
     return (
       <div className="container" style={{ padding: '64px 0', textAlign: 'center' }}>
-        <p>Fehler beim Laden des Unternehmensprofils. Bitte kehren Sie zum Verzeichnis zurück.</p>
-        <button className="btn btn-gold-fill" onClick={onBack} style={{ marginTop: '16px' }}>Zurück zum Verzeichnis</button>
+        <p>{t('Fehler beim Laden des Unternehmensprofils. Bitte kehren Sie zum Verzeichnis zurück.', 'Fehler beim Laden des Unternehmensprofils. Bitte kehren Sie zum Verzeichnis zurück.')}</p>
+        <button className="btn btn-gold-fill" onClick={onBack} style={{ marginTop: '16px' }}>{t('Zurück zum Verzeichnis', 'Zurück zum Verzeichnis')}</button>
       </div>
     );
   }
 
   // Mock executives for the "Personen" tab
   const mockExecutives = [
-    { name: 'Dr. Beat Hintermann', role: 'Verwaltungsratspräsident / Chairman', tenure: 'Seit 2021' },
-    { name: data.name.includes('Nestlé') ? 'Laurent Freixe' : data.name.includes('Roche') ? 'Thomas Schinecker' : 'Jean-Frédéric Dufour', role: 'Delegierter des Verwaltungsrats / CEO', tenure: 'Seit 2023' },
-    { name: 'Anna Manz', role: 'Mitglied der Geschäftsleitung / CFO', tenure: 'Seit 2022' }
+    { name: 'Dr. Beat Hintermann', role: t('Verwaltungsratspräsident / Chairman', 'Verwaltungsratspräsident / Chairman'), tenure: `${t('Seit', 'Seit')} 2021` },
+    { name: data.name.includes('Nestlé') ? 'Laurent Freixe' : data.name.includes('Roche') ? 'Thomas Schinecker' : 'Jean-Frédéric Dufour', role: t('Delegierter des Verwaltungsrats / CEO', 'Delegierter des Verwaltungsrats / CEO'), tenure: `${t('Seit', 'Seit')} 2023` },
+    { name: 'Anna Manz', role: t('Mitglied der Geschäftsleitung / CFO', 'Mitglied der Geschäftsleitung / CFO'), tenure: `${t('Seit', 'Seit')} 2022` }
   ];
 
   return (
@@ -89,7 +91,7 @@ export default function Profile({ companyId, onBack, navigate }) {
           }}
         >
           <ArrowLeft size={16} />
-          <span>Zurück zum Verzeichnis</span>
+          <span>{t('Zurück zum Verzeichnis', 'Zurück zum Verzeichnis')}</span>
         </button>
       </div>
 
@@ -108,10 +110,10 @@ export default function Profile({ companyId, onBack, navigate }) {
             
             {/* Tabs */}
             <div className="tab-list">
-              <button className={`tab-btn ${activeTab === 'overview' ? 'active' : ''}`} onClick={() => setActiveTab('overview')}>Übersicht</button>
-              <button className={`tab-btn ${activeTab === 'news' ? 'active' : ''}`} onClick={() => setActiveTab('news')}>News</button>
-              <button className={`tab-btn ${activeTab === 'statistics' ? 'active' : ''}`} onClick={() => setActiveTab('statistics')}>Statistiken</button>
-              <button className={`tab-btn ${activeTab === 'people' ? 'active' : ''}`} onClick={() => setActiveTab('people')}>Personen</button>
+              <button className={`tab-btn ${activeTab === 'overview' ? 'active' : ''}`} onClick={() => setActiveTab('overview')}>{t('Übersicht', 'Übersicht')}</button>
+              <button className={`tab-btn ${activeTab === 'news' ? 'active' : ''}`} onClick={() => setActiveTab('news')}>{t('News', 'News')}</button>
+              <button className={`tab-btn ${activeTab === 'statistics' ? 'active' : ''}`} onClick={() => setActiveTab('statistics')}>{t('Statistiken', 'Statistiken')}</button>
+              <button className={`tab-btn ${activeTab === 'people' ? 'active' : ''}`} onClick={() => setActiveTab('people')}>{t('Personen', 'Personen')}</button>
             </div>
 
             {/* Tab: Overview */}
@@ -119,37 +121,37 @@ export default function Profile({ companyId, onBack, navigate }) {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
                 <div>
                   <h2 style={{ fontSize: '24px', fontFamily: '"Playfair Display", serif', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '8px', marginBottom: '16px', color: 'var(--text-ink)', fontWeight: 700 }}>
-                    Über {data.name}
+                    {t('Über', 'Über')} {t(data.name, data.name)}
                   </h2>
                   <p style={{ fontSize: '15px', color: 'var(--text-ink)', lineHeight: 1.8, fontFamily: 'Inter, sans-serif' }}>
-                    {data.about_text}
+                    {t(data.about_text, data.about_text)}
                   </p>
                 </div>
 
                 <div>
                   <h2 style={{ fontSize: '24px', fontFamily: '"Playfair Display", serif', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '8px', marginBottom: '16px', color: 'var(--text-ink)', fontWeight: 700 }}>
-                    Unternehmensfakten
+                    {t('Unternehmensfakten', 'Unternehmensfakten')}
                   </h2>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '14px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '8px' }}>
-                      <span style={{ color: 'var(--text-charcoal)' }}>Offizieller Firmenname</span>
-                      <span style={{ fontWeight: 600, color: 'var(--text-ink)' }}>{data.name}</span>
+                      <span style={{ color: 'var(--text-charcoal)' }}>{t('Offizieller Firmenname', 'Offizieller Firmenname')}</span>
+                      <span style={{ fontWeight: 600, color: 'var(--text-ink)' }}>{t(data.name, data.name)}</span>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '8px' }}>
-                      <span style={{ color: 'var(--text-charcoal)' }}>Hauptsitz</span>
-                      <span style={{ fontWeight: 600, color: 'var(--text-ink)' }}>Kanton {data.canton}, Schweiz</span>
+                      <span style={{ color: 'var(--text-charcoal)' }}>{t('Hauptsitz', 'Hauptsitz')}</span>
+                      <span style={{ fontWeight: 600, color: 'var(--text-ink)' }}>{t('Kanton', 'Kanton')} {t(data.canton, data.canton)}, {t('Schweiz', 'Schweiz')}</span>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '8px' }}>
-                      <span style={{ color: 'var(--text-charcoal)' }}>Gründungsjahr</span>
+                      <span style={{ color: 'var(--text-charcoal)' }}>{t('Gründungsjahr', 'Gründungsjahr')}</span>
                       <span style={{ fontWeight: 600, color: 'var(--text-ink)', fontFamily: 'var(--font-mono)' }}>{data.founded}</span>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '8px' }}>
-                      <span style={{ color: 'var(--text-charcoal)' }}>Mitarbeiter</span>
+                      <span style={{ color: 'var(--text-charcoal)' }}>{t('Mitarbeiter', 'Mitarbeiter')}</span>
                       <span style={{ fontWeight: 600, color: 'var(--text-ink)', fontFamily: 'var(--font-mono)' }}>{formatSwissNumber(data.employees)}</span>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ color: 'var(--text-charcoal)' }}>Umsatzklasse</span>
-                      <span style={{ fontWeight: 600, color: 'var(--text-ink)', fontFamily: 'var(--font-mono)' }}>{data.revenue_band}</span>
+                      <span style={{ color: 'var(--text-charcoal)' }}>{t('Umsatzklasse', 'Umsatzklasse')}</span>
+                      <span style={{ fontWeight: 600, color: 'var(--text-ink)', fontFamily: 'var(--font-mono)' }}>{t(data.revenue_band, data.revenue_band)}</span>
                     </div>
                   </div>
                 </div>
@@ -160,11 +162,11 @@ export default function Profile({ companyId, onBack, navigate }) {
             {activeTab === 'news' && (
               <div>
                 <h2 style={{ fontSize: '24px', fontFamily: '"Playfair Display", serif', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '8px', marginBottom: '20px', color: 'var(--text-ink)', fontWeight: 700 }}>
-                  Berichte & Medienmitteilungen
+                  {t('Berichte & Medienmitteilungen', 'Berichte & Medienmitteilungen')}
                 </h2>
                 
                 {data.relatedNews?.length === 0 ? (
-                  <p style={{ color: 'var(--text-charcoal)', fontStyle: 'italic' }}>Keine aktuellen Berichte für dieses Unternehmen vorhanden.</p>
+                  <p style={{ color: 'var(--text-charcoal)', fontStyle: 'italic' }}>{t('Keine aktuellen Berichte für dieses Unternehmen vorhanden.', 'Keine aktuellen Berichte für dieses Unternehmen vorhanden.')}</p>
                 ) : (
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '20px' }}>
                     {data.relatedNews?.map(news => (
@@ -183,9 +185,9 @@ export default function Profile({ companyId, onBack, navigate }) {
                         onClick={() => navigate(`/news/${news.id}`)}
                         className="related-news-card"
                       >
-                        <span className="badge badge-industry" style={{ alignSelf: 'flex-start', marginBottom: '12px', fontSize: '9px' }}>{news.category}</span>
+                        <span className="badge badge-industry" style={{ alignSelf: 'flex-start', marginBottom: '12px', fontSize: '9px' }}>{t(news.category, news.category)}</span>
                         <h4 style={{ fontFamily: '"Playfair Display", serif', fontSize: '15px', color: 'var(--text-ink)', marginBottom: '12px', flex: 1, lineHeight: 1.4, fontWeight: 700 }}>
-                          {news.title}
+                          {t(news.title, news.title)}
                         </h4>
                         <span style={{ fontSize: '11px', color: 'var(--text-charcoal)', fontFamily: 'var(--font-mono)' }}>{news.date_published}</span>
                       </div>
@@ -202,7 +204,7 @@ export default function Profile({ companyId, onBack, navigate }) {
                 {/* Revenue SVG Line Chart */}
                 <div style={{ backgroundColor: '#FFFDF7', border: '0.5px solid var(--light-border)', padding: '24px', borderRadius: '4px' }}>
                   <h3 style={{ fontSize: '15px', fontFamily: 'Inter, sans-serif', fontWeight: 600, color: 'var(--text-ink)', marginBottom: '20px' }}>
-                    Umsatzentwicklung (CHF)
+                    {t('Umsatzentwicklung (CHF)', 'Umsatzentwicklung (CHF)')}
                   </h3>
                   
                   <div style={{ width: '100%', overflowX: 'auto' }}>
@@ -260,7 +262,7 @@ export default function Profile({ companyId, onBack, navigate }) {
                 {/* Employee Count Trend Bar Chart */}
                 <div style={{ backgroundColor: '#FFFDF7', border: '0.5px solid var(--light-border)', padding: '24px', borderRadius: '4px' }}>
                   <h3 style={{ fontSize: '15px', fontFamily: 'Inter, sans-serif', fontWeight: 600, color: 'var(--text-ink)', marginBottom: '20px' }}>
-                    Entwicklung der Mitarbeiterzahlen (Headcount)
+                    {t('Entwicklung der Mitarbeiterzahlen (Headcount)', 'Entwicklung der Mitarbeiterzahlen (Headcount)')}
                   </h3>
                   
                   <div style={{ width: '100%', overflowX: 'auto' }}>
@@ -301,7 +303,7 @@ export default function Profile({ companyId, onBack, navigate }) {
             {activeTab === 'people' && (
               <div>
                 <h2 style={{ fontSize: '24px', fontFamily: '"Playfair Display", serif', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '8px', marginBottom: '20px', color: 'var(--text-ink)', fontWeight: 700 }}>
-                  Schlüsselpersonen & Management
+                  {t('Schlüsselpersonen & Management', 'Schlüsselpersonen & Management')}
                 </h2>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                   {mockExecutives.map((exec, idx) => (
@@ -345,7 +347,7 @@ export default function Profile({ companyId, onBack, navigate }) {
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                   <span className="caps-label" style={{ fontSize: '11px', color: '#2E7D32', fontWeight: 600 }}>
-                    ESG Nachhaltigkeit
+                    {t('ESG Nachhaltigkeit', 'ESG Nachhaltigkeit')}
                   </span>
                   <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#2E7D32', backgroundColor: 'rgba(46, 125, 50, 0.1)', padding: '2px 6px', borderRadius: '4px' }}>
                     Score: {data.esg_rating}/100
@@ -365,7 +367,7 @@ export default function Profile({ companyId, onBack, navigate }) {
                 </div>
 
                 <p style={{ fontSize: '12.5px', color: 'var(--text-charcoal)', lineHeight: 1.5, margin: 0 }}>
-                  {data.sustainability_summary}
+                  {t(data.sustainability_summary, data.sustainability_summary)}
                 </p>
               </div>
             )}
@@ -383,11 +385,11 @@ export default function Profile({ companyId, onBack, navigate }) {
               }}
             >
               <span className="caps-label" style={{ fontSize: '11px', display: 'block', marginBottom: '16px' }}>
-                Ähnliche Unternehmen
+                {t('Ähnliche Unternehmen', 'Ähnliche Unternehmen')}
               </span>
               
               {similarCompanies.length === 0 ? (
-                <p style={{ fontSize: '12px', color: 'var(--text-charcoal)' }}>Keine ähnlichen Einträge gefunden.</p>
+                <p style={{ fontSize: '12px', color: 'var(--text-charcoal)' }}>{t('Keine ähnlichen Einträge gefunden.', 'Keine ähnlichen Einträge gefunden.')}</p>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                   {similarCompanies.map(c => (
@@ -410,8 +412,8 @@ export default function Profile({ companyId, onBack, navigate }) {
                         {c.name.charAt(0)}
                       </div>
                       <div style={{ minWidth: 0 }}>
-                        <span style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: 'var(--text-ink)', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>{c.name}</span>
-                        <span style={{ fontSize: '11px', color: 'var(--text-charcoal)' }}>Kanton {c.canton}</span>
+                        <span style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: 'var(--text-ink)', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>{t(c.name, c.name)}</span>
+                        <span style={{ fontSize: '11px', color: 'var(--text-charcoal)' }}>{t('Kanton', 'Kanton')} {t(c.canton, c.canton)}</span>
                       </div>
                     </div>
                   ))}
@@ -430,15 +432,15 @@ export default function Profile({ companyId, onBack, navigate }) {
               }}
             >
               <h4 style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', color: '#FFFDF7', marginBottom: '8px', fontWeight: 700 }}>
-                Schweizer Wirtschafts-Newsletter
+                {t('Schweizer Wirtschafts-Newsletter', 'Schweizer Wirtschafts-Newsletter')}
               </h4>
               <p style={{ fontSize: '12px', color: '#888888', lineHeight: 1.5, marginBottom: '16px' }}>
-                Erhalten Sie wöchentlich verifizierte B2B-Daten und Premium-Analysen direkt in Ihr Postfach.
+                {t('Erhalten Sie wöchentlich verifizierte B2B-Daten und Premium-Analysen direkt in Ihr Postfach.', 'Erhalten Sie wöchentlich verifizierte B2B-Daten und Premium-Analysen direkt in Ihr Postfach.')}
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <input 
                   type="email" 
-                  placeholder="Ihre E-Mail-Adresse" 
+                  placeholder={t('Ihre E-Mail-Adresse', 'Ihre E-Mail-Adresse')} 
                   style={{ 
                     padding: '8px 12px', 
                     borderRadius: '0px', 
@@ -449,7 +451,7 @@ export default function Profile({ companyId, onBack, navigate }) {
                   }} 
                 />
                 <button className="btn btn-gold-fill" style={{ fontSize: '12px', padding: '8px', minHeight: '36px', width: '100%' }}>
-                  Abonnieren
+                  {t('Abonnieren', 'Abonnieren')}
                 </button>
               </div>
             </div>

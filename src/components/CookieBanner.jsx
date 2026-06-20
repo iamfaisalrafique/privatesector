@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function CookieBanner() {
+  const { t } = useLanguage();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -38,10 +40,7 @@ export default function CookieBanner() {
     >
       <div style={{ flex: '1 1 300px' }}>
         <p style={{ color: '#FFFFFF', fontSize: '13px', margin: 0, fontFamily: 'Inter, sans-serif', lineHeight: 1.5 }}>
-          Wir verwenden Cookies, um Ihre Erfahrung auf privatesector.vitalswiss.ch zu optimieren. Mit der Nutzung der Website stimmen Sie unseren Richtlinien zu. 
-          <span style={{ color: '#A09885', display: 'block', fontSize: '11px', marginTop: '4px' }}>
-            We use cookies to optimize your experience. By using our website, you agree to our policies.
-          </span>
+          {t('cookie_text', 'We use cookies to optimize your experience on privatesector.vitalswiss.ch. By using the website, you agree to our policies.')}
         </p>
       </div>
       <div style={{ display: 'flex', gap: '12px' }}>
@@ -55,7 +54,7 @@ export default function CookieBanner() {
             letterSpacing: '0.05em'
           }}
         >
-          Einverstanden / Accept
+          {t('cookie_accept', 'Accept')}
         </button>
       </div>
     </div>

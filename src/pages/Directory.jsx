@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import CompanyCard from '../components/CompanyCard';
 import AdSlot from '../components/AdSlot';
 import { Search, Map, Filter, ChevronDown, ChevronUp, CheckSquare, Square, Grid, List } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 const CANTONS = [
   'ZH', 'BE', 'LU', 'UR', 'SZ', 'OW', 'NW', 'GL', 'ZG', 'FR', 'SO', 'BS', 'BL', 'SH',
@@ -19,6 +20,7 @@ const INDUSTRIES = [
 ];
 
 export default function Directory({ initialSearch = '', initialCanton = '', initialIndustry = '', selectCompany }) {
+  const { t } = useLanguage();
   const [companies, setCompanies] = useState([]);
   const [searchVal, setSearchVal] = useState(initialSearch);
   const [selectedCantons, setSelectedCantons] = useState(initialCanton ? initialCanton.split(',') : []);
@@ -116,9 +118,9 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
       {/* Top Breadcrumbs & Leaderboard Zone A */}
       <div className="container" style={{ paddingTop: '24px' }}>
         <div style={{ fontSize: '12px', color: 'var(--text-charcoal)', marginBottom: '16px', display: 'flex', gap: '6px' }}>
-          <span style={{ cursor: 'pointer' }} onClick={() => window.location.hash = '#'}>Home</span>
+          <span style={{ cursor: 'pointer' }} onClick={() => window.location.hash = '#'}>{t('dir_home', 'Home')}</span>
           <span>/</span>
-          <span style={{ fontWeight: 600, color: 'var(--text-ink)' }}>Directory</span>
+          <span style={{ fontWeight: 600, color: 'var(--text-ink)' }}>{t('dir_directory', 'Directory')}</span>
         </div>
         <AdSlot position="A" />
       </div>
@@ -139,7 +141,7 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
           <div style={{ position: 'relative', flex: 1 }}>
             <input 
               type="text" 
-              placeholder="Firma suchen (z.B. Nestlé, Roche)..." 
+              placeholder={t('search_placeholder', "Firma suchen (z.B. Nestlé, Roche)...")} 
               value={searchVal}
               onChange={(e) => setSearchVal(e.target.value)}
               className="input-field"
@@ -158,7 +160,7 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
             className="btn btn-gold-fill" 
             style={{ height: '56px', padding: '0 32px', fontSize: '15px' }}
           >
-            Suchen
+            {t('search_button', 'Suchen')}
           </button>
         </div>
       </div>
@@ -181,12 +183,12 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '12px' }}>
                 <Filter size={18} style={{ color: 'var(--primary-red)' }} />
-                <h2 style={{ fontSize: '18px', fontFamily: '"Playfair Display", serif', color: 'var(--text-ink)', margin: 0, fontWeight: 700 }}>Filterpanel</h2>
+                <h2 style={{ fontSize: '18px', fontFamily: '"Playfair Display", serif', color: 'var(--text-ink)', margin: 0, fontWeight: 700 }}>{t('dir_filterpanel', 'Filterpanel')}</h2>
               </div>
 
               {/* Verified Toggle */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0' }}>
-                <span className="caps-label" style={{ color: 'var(--text-ink)', fontSize: '11px', fontWeight: 600 }}>Verified Only</span>
+                <span className="caps-label" style={{ color: 'var(--text-ink)', fontSize: '11px', fontWeight: 600 }}>{t('dir_verified_only', 'Verified Only')}</span>
                 <button
                   onClick={() => setVerifiedOnly(!verifiedOnly)}
                   style={{
@@ -216,7 +218,7 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
 
               {/* Eco-Leader Toggle */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderTop: '0.5px solid var(--light-border)', paddingTop: '12px' }}>
-                <span className="caps-label" style={{ color: 'var(--text-ink)', fontSize: '11px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>🍃 Eco-Leader Only</span>
+                <span className="caps-label" style={{ color: 'var(--text-ink)', fontSize: '11px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>🍃 {t('dir_eco_only', 'Eco-Leader Only')}</span>
                 <button
                   onClick={() => setEcoOnly(!ecoOnly)}
                   style={{
@@ -247,7 +249,7 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
               {/* Canton Filter */}
               <div>
                 <div className="filter-header" onClick={() => setCantonsExpanded(!cantonsExpanded)}>
-                  <span className="caps-label" style={{ color: 'var(--text-ink)' }}>Kanton ({CANTONS.length})</span>
+                  <span className="caps-label" style={{ color: 'var(--text-ink)' }}>{t('dir_canton', 'Kanton')} ({CANTONS.length})</span>
                   {cantonsExpanded ? <ChevronUp size={16} style={{ color: 'var(--primary-red)' }} /> : <ChevronDown size={16} style={{ color: 'var(--primary-red)' }} />}
                 </div>
                 {cantonsExpanded && (
@@ -274,7 +276,7 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
               {/* Industry Filter */}
               <div>
                 <div className="filter-header" onClick={() => setIndustriesExpanded(!industriesExpanded)}>
-                  <span className="caps-label" style={{ color: 'var(--text-ink)' }}>Industrie ({INDUSTRIES.length})</span>
+                  <span className="caps-label" style={{ color: 'var(--text-ink)' }}>{t('dir_industry', 'Industrie')} ({INDUSTRIES.length})</span>
                   {industriesExpanded ? <ChevronUp size={16} style={{ color: 'var(--primary-red)' }} /> : <ChevronDown size={16} style={{ color: 'var(--primary-red)' }} />}
                 </div>
                 {industriesExpanded && (
@@ -299,7 +301,7 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
               {/* Size Filter */}
               <div>
                 <div className="filter-header" onClick={() => setSizeExpanded(!sizeExpanded)}>
-                  <span className="caps-label" style={{ color: 'var(--text-ink)' }}>Firmengrösse</span>
+                  <span className="caps-label" style={{ color: 'var(--text-ink)' }}>{t('dir_company_size', 'Firmengrösse')}</span>
                   {sizeExpanded ? <ChevronUp size={16} style={{ color: 'var(--primary-red)' }} /> : <ChevronDown size={16} style={{ color: 'var(--primary-red)' }} />}
                 </div>
                 {sizeExpanded && (
@@ -314,7 +316,7 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
                           onChange={() => setSizeClass(size)}
                           style={{ accentColor: 'var(--primary-red)' }}
                         />
-                        <span>{size === 'All' ? 'Alle Grössen' : `${size} Enterprise`}</span>
+                        <span>{size === 'All' ? t('dir_all_sizes', 'Alle Grössen') : `${t(size, size)} ${t('dir_enterprise', 'Enterprise')}`}</span>
                       </label>
                     ))}
                   </div>
@@ -327,7 +329,7 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
                   onClick={handleResetAll} 
                   style={{ background: 'none', border: 'none', color: '#8B0000', fontSize: '13px', fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
                 >
-                  Filter zurücksetzen
+                  {t('dir_reset_filters', 'Filter zurücksetzen')}
                 </button>
               </div>
 
@@ -342,11 +344,11 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
             {/* Sort Bar + Grid/List Toggle */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '12px' }}>
               <span className="caps-label" style={{ color: 'var(--text-ink)', fontWeight: 600 }}>
-                {filteredCompanies.length} {filteredCompanies.length === 1 ? 'Eintrag' : 'Einträge'} gefunden
+                {filteredCompanies.length} {filteredCompanies.length === 1 ? t('dir_found_singular', 'Eintrag gefunden') : t('dir_found_plural', 'Einträge gefunden')}
               </span>
               
               <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                <span style={{ fontSize: '12px', color: 'var(--text-charcoal)' }}>Ansicht:</span>
+                <span style={{ fontSize: '12px', color: 'var(--text-charcoal)' }}>{t('dir_view', 'Ansicht:')}</span>
                 <div style={{ display: 'flex', gap: '4px', backgroundColor: 'var(--surface-warm)', padding: '2px', borderRadius: '4px' }}>
                   <button 
                     onClick={() => setViewMode('grid')}
@@ -381,21 +383,21 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
             {loading ? (
               <div style={{ textAlign: 'center', padding: '64px 0' }}>
                 <div style={{ width: '40px', height: '40px', border: '2px solid var(--light-border)', borderTopColor: 'var(--primary-red)', borderRadius: '50%', animation: 'spin 1s infinite linear', margin: '0 auto 16px' }} />
-                <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', color: 'var(--text-charcoal)' }}>Firmendaten werden geladen...</p>
+                <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', color: 'var(--text-charcoal)' }}>{t('dir_loading', 'Firmendaten werden geladen...')}</p>
               </div>
             ) : filteredCompanies.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '64px 24px', border: '0.5px solid var(--light-border)', borderRadius: '6px', backgroundColor: '#FFFFFF' }}>
                 <Map size={48} style={{ color: 'var(--primary-red)', margin: '0 auto 16px', opacity: 0.6 }} />
-                <h3 style={{ fontFamily: '"Playfair Display", serif', fontSize: '22px', color: 'var(--text-ink)', marginBottom: '8px' }}>Keine Ergebnisse gefunden</h3>
+                <h3 style={{ fontFamily: '"Playfair Display", serif', fontSize: '22px', color: 'var(--text-ink)', marginBottom: '8px' }}>{t('dir_no_results', 'Keine Ergebnisse gefunden')}</h3>
                 <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '14px', color: 'var(--text-charcoal)', maxWidth: '400px', margin: '0 auto' }}>
-                  Es wurden keine Unternehmen gefunden, die den gewählten Filtern entsprechen. Setzen Sie die Filter zurück oder passen Sie die Suche an.
+                  {t('dir_no_results_desc', 'Es wurden keine Unternehmen gefunden, die den gewählten Filtern entsprechen. Setzen Sie die Filter zurück oder passen Sie die Suche an.')}
                 </p>
                 <button 
                   className="btn btn-gold-fill" 
                   style={{ marginTop: '24px', fontSize: '12px' }}
                   onClick={handleResetAll}
                 >
-                  Filter zurücksetzen
+                  {t('dir_reset_filters', 'Filter zurücksetzen')}
                 </button>
               </div>
             ) : (
@@ -435,13 +437,13 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
                 {/* Minimal Editorial Pagination */}
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', marginTop: '48px', borderTop: '0.5px solid var(--light-border)', paddingTop: '24px' }}>
                   <button className="btn btn-gold-outline" style={{ minHeight: '36px', padding: '6px 16px', fontSize: '12px', opacity: 0.5, cursor: 'not-allowed' }} disabled>
-                    ← Zurück
+                    {t('dir_back', '← Zurück')}
                   </button>
                   <span style={{ fontSize: '13px', color: 'var(--text-charcoal)', fontFamily: 'var(--font-mono)' }}>
-                    Seite <strong style={{ color: 'var(--text-ink)' }}>1</strong> von 1
+                    {t('dir_page', 'Seite')} <strong style={{ color: 'var(--text-ink)' }}>1</strong> {t('dir_of', 'von')} 1
                   </span>
                   <button className="btn btn-gold-outline" style={{ minHeight: '36px', padding: '6px 16px', fontSize: '12px', opacity: 0.5, cursor: 'not-allowed' }} disabled>
-                    Vorwärts →
+                    {t('dir_next', 'Vorwärts →')}
                   </button>
                 </div>
               </div>

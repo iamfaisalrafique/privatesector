@@ -1,7 +1,9 @@
 import React from 'react';
 import { Calendar, Users, BarChart3 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function CompanyCard({ company, onClick }) {
+  const { t } = useLanguage();
   const logoInitial = company.name ? company.name.charAt(0) : 'C';
 
   const formatSwissNumber = (num) => {
@@ -20,7 +22,7 @@ export default function CompanyCard({ company, onClick }) {
       }}
     >
       {company.premium === 1 && (
-        <div className="premium-ribbon">Premium</div>
+        <div className="premium-ribbon">{t('Premium', 'Premium')}</div>
       )}
 
       {/* Top Details */}
@@ -64,12 +66,12 @@ export default function CompanyCard({ company, onClick }) {
 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '4px' }}>
             <span className="badge badge-canton">{company.canton}</span>
-            <span className="badge badge-industry">{company.industry}</span>
+            <span className="badge badge-industry">{t(company.industry, company.industry)}</span>
             {company.verified === 1 && (
-              <span className="badge badge-verified" style={{ fontSize: '9px', padding: '2px 6px' }}>✓ Verified</span>
+              <span className="badge badge-verified" style={{ fontSize: '9px', padding: '2px 6px' }}>{t('✓ Verified', '✓ Verified')}</span>
             )}
             {company.esg_rating >= 80 && (
-              <span className="badge" style={{ fontSize: '9px', padding: '2px 6px', backgroundColor: 'rgba(46, 125, 50, 0.1)', color: '#2E7D32', border: '0.5px solid rgba(46, 125, 50, 0.3)' }}>🍃 Eco-Leader</span>
+              <span className="badge" style={{ fontSize: '9px', padding: '2px 6px', backgroundColor: 'rgba(46, 125, 50, 0.1)', color: '#2E7D32', border: '0.5px solid rgba(46, 125, 50, 0.3)' }}>{t('🍃 Eco-Leader', '🍃 Eco-Leader')}</span>
             )}
           </div>
         </div>
@@ -90,7 +92,7 @@ export default function CompanyCard({ company, onClick }) {
           textOverflow: 'ellipsis'
         }}
       >
-        {company.description}
+        {t(company.description, company.description)}
       </p>
 
       {/* Info Row */}
@@ -108,7 +110,7 @@ export default function CompanyCard({ company, onClick }) {
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
           <Calendar size={12} style={{ color: 'var(--primary-gold)' }} />
-          <span>Gegr. {company.founded}</span>
+          <span>{t('card_founded', 'Est.')} {company.founded}</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
           <Users size={12} style={{ color: 'var(--primary-gold)' }} />
@@ -116,14 +118,14 @@ export default function CompanyCard({ company, onClick }) {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
           <BarChart3 size={12} style={{ color: 'var(--primary-gold)' }} />
-          <span className="mono-data">{company.revenue_band}</span>
+          <span className="mono-data">{t(company.revenue_band, company.revenue_band)}</span>
         </div>
       </div>
 
       {/* View profile CTA link */}
       <div style={{ marginTop: '12px', textAlign: 'right' }}>
         <span style={{ color: 'var(--primary-gold)', fontSize: '12px', fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>
-          Profile ansehen →
+          {t('card_view_profile', 'View Profile →')}
         </span>
       </div>
     </div>

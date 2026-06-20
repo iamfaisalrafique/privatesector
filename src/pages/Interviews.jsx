@@ -77,7 +77,7 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
     return (
       <div className="container" style={{ padding: '64px 0', textAlign: 'center' }}>
         <div style={{ width: '40px', height: '40px', border: '2px solid var(--light-border)', borderTopColor: 'var(--primary-red)', borderRadius: '50%', animation: 'spin 1s infinite linear', margin: '0 auto 16px' }} />
-        <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', color: 'var(--text-charcoal)' }}>Dossiers werden geladen...</p>
+        <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', color: 'var(--text-charcoal)' }}>{t('Dossiers werden geladen...', 'Dossiers werden geladen...')}</p>
       </div>
     );
   }
@@ -107,7 +107,7 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
               }}
             >
               <ArrowLeft size={16} />
-              <span>Zurück zur Übersicht</span>
+              <span>{t('Zurück zur Übersicht', 'Zurück zur Übersicht')}</span>
             </button>
 
             <div style={{ display: 'flex', gap: '32px', alignItems: 'center', flexWrap: 'wrap', flexDirection: isRtl ? 'row-reverse' : 'row' }}>
@@ -129,7 +129,7 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
               {/* Title & Metadata */}
               <div style={{ flex: 1, textAlign: isRtl ? 'right' : 'left' }}>
                 <span className="caps-label" style={{ color: 'var(--primary-red)', fontSize: '11px', fontWeight: 600, display: 'block', marginBottom: '8px' }}>
-                  CEO-Gespräch & Leader-Dossier
+                  {t('CEO-Gespräch & Leader-Dossier', 'CEO-Gespräch & Leader-Dossier')}
                 </span>
                 
                 <h1 style={{ fontFamily: '"Playfair Display", serif', fontSize: '40px', fontWeight: 700, color: '#FFFDF7', marginBottom: '8px' }}>
@@ -137,18 +137,18 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
                 </h1>
                 
                 <p style={{ color: 'var(--primary-red)', fontSize: '16px', fontWeight: 500, marginBottom: '16px', fontFamily: 'Inter, sans-serif' }}>
-                  {activeDossier.interviewee_title} — {activeDossier.company_name}
+                  {t(activeDossier.interviewee_title, activeDossier.interviewee_title)} — {t(activeDossier.company_name, activeDossier.company_name)}
                 </p>
 
                 <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', fontSize: '12px', color: '#888888', fontFamily: 'var(--font-mono)' }}>
                   <span>{activeDossier.date_published}</span>
                   <span>·</span>
-                  <span>{activeDossier.read_time_mins} Min. Lesezeit</span>
+                  <span>{activeDossier.read_time_mins} {t('Min. Lesezeit', 'Min. Lesezeit')}</span>
                   {activeDossier.audio_url && (
                     <>
                       <span>·</span>
                       <span style={{ color: 'var(--primary-red)', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <Mic size={12} /> PODCAST EPISODE
+                        <Mic size={12} /> {t('PODCAST EPISODE', 'PODCAST EPISODE')}
                       </span>
                     </>
                   )}
@@ -178,7 +178,7 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
                       style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--primary-red)' }}
                     />
                     <span style={{ fontSize: '11.5px', color: 'var(--primary-red)', fontWeight: 600 }}>
-                      Beitrag von {activeDossier.studentAuthor.name} ({activeDossier.studentAuthor.university})
+                      {t('Beitrag von', 'Beitrag von')} {activeDossier.studentAuthor.name} ({t(activeDossier.studentAuthor.university, activeDossier.studentAuthor.university)})
                     </span>
                   </div>
                 )}
@@ -227,8 +227,8 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
                       {isPlaying ? <Pause size={20} fill="#1A1A1A" /> : <Play size={20} fill="#1A1A1A" style={{ marginLeft: '4px' }} />}
                     </button>
                     <div>
-                      <span style={{ fontSize: '14px', fontWeight: 600, color: '#FFFDF7', display: 'block' }}>Audio-Podcast abspielen</span>
-                      <span style={{ fontSize: '11px', color: '#888' }}>Laurent Freixe im Gespräch mit der Redaktion</span>
+                      <span style={{ fontSize: '14px', fontWeight: 600, color: '#FFFDF7', display: 'block' }}>{t('Audio-Podcast abspielen', 'Audio-Podcast abspielen')}</span>
+                      <span style={{ fontSize: '11px', color: '#888' }}>{t(`${activeDossier.interviewee_name} im Gespräch mit der Redaktion`, `${activeDossier.interviewee_name} im Gespräch mit der Redaktion`)}</span>
                     </div>
                   </div>
                   <Volume2 size={20} style={{ color: 'var(--primary-red)' }} />
@@ -237,7 +237,7 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
 
               {/* Headline block */}
               <h2 style={{ fontFamily: '"Playfair Display", serif', fontSize: '28px', color: '#FFFDF7', marginBottom: '32px', fontStyle: 'italic', borderBottom: '0.5px solid #2A2A2A', paddingBottom: '16px' }}>
-                „{activeDossier.title}“
+                „{t(activeDossier.title, activeDossier.title)}“
               </h2>
 
               {/* Q&A dialogue stream */}
@@ -256,7 +256,7 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
                         textTransform: 'uppercase'
                       }}
                     >
-                      Q: {qa.q}
+                      Q: {t(qa.q, qa.q)}
                     </span>
 
                     {/* Answer (ivory) */}
@@ -268,7 +268,7 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
                         color: '#FFFDF7' 
                       }}
                     >
-                      {qa.a}
+                      {t(qa.a, qa.a)}
                     </p>
 
                     {/* Gold Divider */}
@@ -296,7 +296,7 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
                   }}
                 >
                   <span className="caps-label" style={{ fontSize: '11px', display: 'block', marginBottom: '16px' }}>
-                    Unternehmen im Fokus
+                    {t('Unternehmen im Fokus', 'Unternehmen im Fokus')}
                   </span>
                   
                   <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '16px' }}>
@@ -305,22 +305,22 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
                     </div>
                     <div>
                       <strong style={{ display: 'block', fontSize: '14px', color: 'var(--text-ink)' }}>{companyCardData.name}</strong>
-                      <span style={{ fontSize: '11px', color: 'var(--text-charcoal)' }}>Kanton {companyCardData.canton}</span>
+                      <span style={{ fontSize: '11px', color: 'var(--text-charcoal)' }}>{t('dir_canton', 'Kanton')} {companyCardData.canton}</span>
                     </div>
                   </div>
 
                   <p style={{ fontSize: '12px', color: 'var(--text-charcoal)', lineHeight: 1.5, marginBottom: '16px' }}>
-                    {companyCardData.description}
+                    {t(companyCardData.description, companyCardData.description)}
                   </p>
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '11px', borderTop: '0.5px solid var(--light-border)', paddingTop: '12px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ color: 'var(--text-charcoal)' }}>Mitarbeiter:</span>
+                      <span style={{ color: 'var(--text-charcoal)' }}>{t('Mitarbeiter:', 'Mitarbeiter:')}</span>
                       <strong style={{ color: 'var(--text-ink)', fontFamily: 'var(--font-mono)' }}>{formatSwissNumber(companyCardData.employees)}</strong>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ color: 'var(--text-charcoal)' }}>Umsatzklasse:</span>
-                      <strong style={{ color: 'var(--text-ink)', fontFamily: 'var(--font-mono)' }}>{companyCardData.revenue_band}</strong>
+                      <span style={{ color: 'var(--text-charcoal)' }}>{t('Umsatzklasse:', 'Umsatzklasse:')}</span>
+                      <strong style={{ color: 'var(--text-ink)', fontFamily: 'var(--font-mono)' }}>{t(companyCardData.revenue_band, companyCardData.revenue_band)}</strong>
                     </div>
                   </div>
 
@@ -329,7 +329,7 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
                     className="btn btn-gold-outline"
                     style={{ width: '100%', fontSize: '11px', padding: '8px', minHeight: '36px', marginTop: '16px' }}
                   >
-                    Dossier ansehen
+                    {t('Dossier ansehen', 'Dossier ansehen')}
                   </button>
                 </div>
               )}
@@ -354,13 +354,13 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
         {/* Header Title */}
         <div style={{ textAlign: 'center', marginBottom: '48px' }}>
           <span className="caps-label" style={{ display: 'block', marginBottom: '8px' }}>
-            {isPodcastOnly ? 'AUDIO BRIEFINGS' : 'REDENDE INHABER & EXECUTIVES'}
+            {isPodcastOnly ? t('AUDIO BRIEFINGS', 'AUDIO BRIEFINGS') : t('REDENDE INHABER & EXECUTIVES', 'REDENDE INHABER & EXECUTIVES')}
           </span>
           <h1 style={{ fontFamily: '"Playfair Display", serif', fontSize: '42px', fontWeight: 700, color: 'var(--text-ink)', margin: 0 }}>
-            {isPodcastOnly ? 'Swiss Private Sector Podcasts' : 'Unternehmer-Interviews'}
+            {isPodcastOnly ? t('Swiss Private Sector Podcasts', 'Swiss Private Sector Podcasts') : t('Unternehmer-Interviews', 'Unternehmer-Interviews')}
           </h1>
           <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '16px', color: 'var(--text-charcoal)', marginTop: '8px' }}>
-            Dossiers und vertiefende Audio-Gespräche mit CEOs, Gründern und Verwaltungsräten der Schweiz.
+            {t('Dossiers und vertiefende Audio-Gespräche mit CEOs, Gründern und Verwaltungsräten der Schweiz.', 'Dossiers und vertiefende Audio-Gespräche mit CEOs, Gründern und Verwaltungsräten der Schweiz.')}
           </p>
         </div>
 
@@ -387,9 +387,9 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
                   transition: 'all 0.15s ease-in-out'
                 }}
               >
-                {cat === 'All' ? 'Alle Beiträge' : 
-                 cat === 'Executive Briefing' ? 'Executive Briefings' : 
-                 cat === 'Street Briefing' ? 'Street Briefings 🎤' : 'University Perspectives 🎓'}
+                {cat === 'All' ? t('Alle Beiträge', 'Alle Beiträge') : 
+                 cat === 'Executive Briefing' ? t('Executive Briefings', 'Executive Briefings') : 
+                 cat === 'Street Briefing' ? t('Street Briefings 🎤', 'Street Briefings 🎤') : t('University Perspectives 🎓', 'University Perspectives 🎓')}
               </button>
             ))}
           </div>
@@ -404,7 +404,7 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
           if (filteredInterviews.length === 0) {
             return (
               <p style={{ textAlign: 'center', color: 'var(--text-charcoal)', marginTop: '48px', fontFamily: '"Playfair Display", serif', fontSize: '18px' }}>
-                Keine Beiträge in dieser Kategorie vorhanden.
+                {t('Keine Beiträge in dieser Kategorie vorhanden.', 'Keine Beiträge in dieser Kategorie vorhanden.')}
               </p>
             );
           }
@@ -442,7 +442,7 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
                     />
                     <div>
                       <span style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text-ink)', display: 'block' }}>{iv.interviewee_name}</span>
-                      <span style={{ fontSize: '11px', color: 'var(--text-charcoal)' }}>{iv.interviewee_title}</span>
+                      <span style={{ fontSize: '11px', color: 'var(--text-charcoal)' }}>{t(iv.interviewee_title, iv.interviewee_title)}</span>
                     </div>
                   </div>
 
@@ -456,7 +456,7 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
                       lineHeight: 1.3
                     }}
                   >
-                    {iv.title}
+                    {t(iv.title, iv.title)}
                   </h3>
                   
                   <p 
@@ -469,7 +469,7 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
                       flex: 1
                     }}
                   >
-                    {iv.subtitle}
+                    {t(iv.subtitle, iv.subtitle)}
                   </p>
 
                   <div 
@@ -490,7 +490,7 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
                     </span>
                     
                     <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      {iv.audio_url ? 'Podcast anhören' : 'Dossier lesen'} <ArrowRight size={14} />
+                      {iv.audio_url ? t('Podcast anhören', 'Podcast anhören') : t('Dossier lesen', 'Dossier lesen')} <ArrowRight size={14} />
                     </span>
                   </div>
                 </div>

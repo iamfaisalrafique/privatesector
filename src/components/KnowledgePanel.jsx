@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLanguage } from '../context/LanguageContext';
 import { 
   Building, 
   MapPin, 
@@ -13,6 +14,7 @@ import {
 } from 'lucide-react';
 
 export default function KnowledgePanel({ company }) {
+  const { t } = useLanguage();
   if (!company) return null;
 
   const logoInitial = company.name ? company.name.charAt(0) : 'C';
@@ -63,10 +65,10 @@ export default function KnowledgePanel({ company }) {
           </h2>
           <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
             {company.verified === 1 && (
-              <span className="badge badge-verified" style={{ fontSize: '10px' }}>Verified ✓</span>
+              <span className="badge badge-verified" style={{ fontSize: '10px' }}>{t('Verified ✓', 'Verified ✓')}</span>
             )}
-            <span className="badge badge-canton">{company.canton}</span>
-            <span className="badge badge-industry">{company.industry}</span>
+            <span className="badge badge-canton">{t(company.canton, company.canton)}</span>
+            <span className="badge badge-industry">{t(company.industry, company.industry)}</span>
           </div>
         </div>
       </div>
@@ -84,16 +86,16 @@ export default function KnowledgePanel({ company }) {
         }}
       >
         <div>
-          <span style={{ display: 'block', fontSize: '9px', color: 'var(--text-charcoal)', textTransform: 'uppercase', fontWeight: 500 }}>Founded</span>
+          <span style={{ display: 'block', fontSize: '9px', color: 'var(--text-charcoal)', textTransform: 'uppercase', fontWeight: 500 }}>{t('Founded', 'Founded')}</span>
           <span style={{ fontSize: '13px', fontFamily: 'var(--font-mono)', fontWeight: 600, color: 'var(--text-ink)' }}>{company.founded}</span>
         </div>
         <div>
-          <span style={{ display: 'block', fontSize: '9px', color: 'var(--text-charcoal)', textTransform: 'uppercase', fontWeight: 500 }}>Employees</span>
+          <span style={{ display: 'block', fontSize: '9px', color: 'var(--text-charcoal)', textTransform: 'uppercase', fontWeight: 500 }}>{t('Employees', 'Employees')}</span>
           <span style={{ fontSize: '13px', fontFamily: 'var(--font-mono)', fontWeight: 600, color: 'var(--text-ink)' }}>{formatSwissNumber(company.employees)}</span>
         </div>
         <div>
-          <span style={{ display: 'block', fontSize: '9px', color: 'var(--text-charcoal)', textTransform: 'uppercase', fontWeight: 500 }}>Revenue</span>
-          <span style={{ fontSize: '13px', fontFamily: 'var(--font-mono)', fontWeight: 600, color: 'var(--text-ink)' }}>{company.revenue_band}</span>
+          <span style={{ display: 'block', fontSize: '9px', color: 'var(--text-charcoal)', textTransform: 'uppercase', fontWeight: 500 }}>{t('Revenue', 'Revenue')}</span>
+          <span style={{ fontSize: '13px', fontFamily: 'var(--font-mono)', fontWeight: 600, color: 'var(--text-ink)' }}>{t(company.revenue_band, company.revenue_band)}</span>
         </div>
       </div>
 
@@ -108,33 +110,33 @@ export default function KnowledgePanel({ company }) {
             marginBottom: '12px' 
           }}
         >
-          Firmendaten
+          {t('Firmendaten', 'Firmendaten')}
         </span>
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px' }}>
           <div style={{ display: 'flex', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '8px' }}>
-            <span style={{ width: '120px', color: 'var(--text-charcoal)', fontWeight: 500 }}>📍 Standort</span>
-            <span style={{ color: 'var(--text-ink)', fontWeight: 600 }}>Canton {company.canton}</span>
+            <span style={{ width: '120px', color: 'var(--text-charcoal)', fontWeight: 500 }}>{t('📍 Standort', '📍 Standort')}</span>
+            <span style={{ color: 'var(--text-ink)', fontWeight: 600 }}>{t('Canton', 'Canton')} {t(company.canton, company.canton)}</span>
           </div>
           <div style={{ display: 'flex', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '8px' }}>
-            <span style={{ width: '120px', color: 'var(--text-charcoal)', fontWeight: 500 }}>📅 Gründung</span>
+            <span style={{ width: '120px', color: 'var(--text-charcoal)', fontWeight: 500 }}>{t('📅 Gründung', '📅 Gründung')}</span>
             <span style={{ color: 'var(--text-ink)', fontWeight: 600 }}>{company.founded}</span>
           </div>
           <div style={{ display: 'flex', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '8px' }}>
-            <span style={{ width: '120px', color: 'var(--text-charcoal)', fontWeight: 500 }}>👥 Mitarbeiter</span>
+            <span style={{ width: '120px', color: 'var(--text-charcoal)', fontWeight: 500 }}>{t('👥 Mitarbeiter', '👥 Mitarbeiter')}</span>
             <span style={{ color: 'var(--text-ink)', fontFamily: 'var(--font-mono)', fontWeight: 600 }}>{formatSwissNumber(company.employees)}</span>
           </div>
           <div style={{ display: 'flex', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '8px' }}>
-            <span style={{ width: '120px', color: 'var(--text-charcoal)', fontWeight: 500 }}>🏭 Branche</span>
-            <span style={{ color: 'var(--text-ink)', fontWeight: 600 }}>{company.industry}</span>
+            <span style={{ width: '120px', color: 'var(--text-charcoal)', fontWeight: 500 }}>{t('🏭 Branche', '🏭 Branche')}</span>
+            <span style={{ color: 'var(--text-ink)', fontWeight: 600 }}>{t(company.industry, company.industry)}</span>
           </div>
           <div style={{ display: 'flex', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '8px' }}>
-            <span style={{ width: '120px', color: 'var(--text-charcoal)', fontWeight: 500 }}>💰 Umsatz</span>
-            <span style={{ color: 'var(--text-ink)', fontFamily: 'var(--font-mono)', fontWeight: 600 }}>{company.revenue_band}</span>
+            <span style={{ width: '120px', color: 'var(--text-charcoal)', fontWeight: 500 }}>{t('💰 Umsatz', '💰 Umsatz')}</span>
+            <span style={{ color: 'var(--text-ink)', fontFamily: 'var(--font-mono)', fontWeight: 600 }}>{t(company.revenue_band, company.revenue_band)}</span>
           </div>
           <div style={{ display: 'flex', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '8px' }}>
-            <span style={{ width: '120px', color: 'var(--text-charcoal)', fontWeight: 500 }}>🌐 Sprachen</span>
-            <span style={{ color: 'var(--text-ink)', fontWeight: 600 }}>DE, FR, IT, EN</span>
+            <span style={{ width: '120px', color: 'var(--text-charcoal)', fontWeight: 500 }}>{t('🌐 Sprachen', '🌐 Sprachen')}</span>
+            <span style={{ color: 'var(--text-ink)', fontWeight: 600 }}>{t('DE, FR, IT, EN', 'DE, FR, IT, EN')}</span>
           </div>
         </div>
       </div>
@@ -158,7 +160,7 @@ export default function KnowledgePanel({ company }) {
             }}
           >
             <FileCode size={12} />
-            Structured Data ✓
+            {t('Structured Data ✓', 'Structured Data ✓')}
           </span>
         </div>
 
@@ -172,7 +174,7 @@ export default function KnowledgePanel({ company }) {
             style={{ display: 'flex', gap: '8px', fontSize: '13px', padding: '10px 16px', minHeight: '40px', width: '100%' }}
           >
             <Globe size={14} />
-            <span>Website ↗</span>
+            <span>{t('Website ↗', 'Website ↗')}</span>
           </a>
           
           <a 
@@ -183,7 +185,7 @@ export default function KnowledgePanel({ company }) {
             style={{ display: 'flex', gap: '8px', fontSize: '13px', padding: '10px 16px', minHeight: '40px', width: '100%' }}
           >
             <Link size={14} />
-            <span>LinkedIn ↗</span>
+            <span>{t('LinkedIn ↗', 'LinkedIn ↗')}</span>
           </a>
 
           <button 
@@ -200,10 +202,10 @@ export default function KnowledgePanel({ company }) {
               width: '100%',
               cursor: 'pointer' 
             }}
-            onClick={() => alert(`Kontakt mit ${company.name} wird initiiert. Ein Verifizierungscode wurde an ${company.contact_email} gesendet.`)}
+            onClick={() => alert(`${t('Kontakt mit', 'Kontakt mit')} ${company.name} ${t('wird initiiert. Ein Verifizierungscode wurde an', 'wird initiiert. Ein Verifizierungscode wurde an')} ${company.contact_email} ${t('gesendet.', 'gesendet.')}`)}
           >
             <Mail size={14} />
-            <span>Kontakt</span>
+            <span>{t('Kontakt', 'Kontakt')}</span>
           </button>
         </div>
       </div>

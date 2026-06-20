@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import AdSlot from '../components/AdSlot';
 import { Calendar, User, Clock, ArrowRight, Share2, MessageSquare } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function News({ selectedArticleId, selectArticle, navigate }) {
+  const { t } = useLanguage();
   const [articles, setArticles] = useState([]);
   const [activeArticle, setActiveArticle] = useState(null);
   const [relatedArticles, setRelatedArticles] = useState([]);
@@ -51,7 +53,7 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
     return (
       <div className="container" style={{ padding: '64px 0', textAlign: 'center' }}>
         <div style={{ width: '40px', height: '40px', border: '2px solid var(--light-border)', borderTopColor: 'var(--primary-red)', borderRadius: '50%', animation: 'spin 1s infinite linear', margin: '0 auto 16px' }} />
-        <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', color: 'var(--text-charcoal)' }}>Medienarchiv wird geladen...</p>
+        <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', color: 'var(--text-charcoal)' }}>{t('news_loading', 'Medienarchiv wird geladen...')}</p>
       </div>
     );
   }
@@ -75,18 +77,18 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
           
           {/* Breadcrumb + Category */}
           <div style={{ fontSize: '12px', color: 'var(--text-charcoal)', marginBottom: '20px', display: 'flex', gap: '8px' }}>
-            <span style={{ cursor: 'pointer' }} onClick={() => selectArticle(null)}>News</span>
+            <span style={{ cursor: 'pointer' }} onClick={() => selectArticle(null)}>{t('nav_news', 'News')}</span>
             <span>/</span>
-            <span style={{ cursor: 'pointer' }} onClick={() => selectArticle(null)}>{activeArticle.category}</span>
+            <span style={{ cursor: 'pointer' }} onClick={() => selectArticle(null)}>{t(activeArticle.category, activeArticle.category)}</span>
             <span>/</span>
-            <span style={{ fontWeight: 600, color: 'var(--text-ink)' }}>Artikel</span>
+            <span style={{ fontWeight: 600, color: 'var(--text-ink)' }}>{t('news_article', 'Artikel')}</span>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: '48px', alignItems: 'flex-start' }} className="news-layout-grid">
             
             {/* Left Side: Centered 720px Editorial Column */}
             <div style={{ maxWidth: '720px', margin: '0 auto', width: '100%' }}>
-              <span className="badge badge-industry" style={{ marginBottom: '16px' }}>{activeArticle.category}</span>
+              <span className="badge badge-industry" style={{ marginBottom: '16px' }}>{t(activeArticle.category, activeArticle.category)}</span>
               
               <h1 
                 style={{
@@ -98,7 +100,7 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
                   fontWeight: 700
                 }}
               >
-                {activeArticle.title}
+                {t(activeArticle.title, activeArticle.title)}
               </h1>
               
               <p 
@@ -110,7 +112,7 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
                   marginBottom: '24px'
                 }}
               >
-                {activeArticle.subtitle}
+                {t(activeArticle.subtitle, activeArticle.subtitle)}
               </p>
 
               {/* Byline */}
@@ -133,11 +135,11 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
                   style={{ width: '40px', height: '40px', borderRadius: '50%', border: '0.5px solid var(--primary-gold)' }} 
                 />
                 <div style={{ flex: 1 }}>
-                  <span style={{ fontWeight: 600, color: 'var(--text-ink)', display: 'block' }}>{activeArticle.author_name}</span>
+                  <span style={{ fontWeight: 600, color: 'var(--text-ink)', display: 'block' }}>{t(activeArticle.author_name, activeArticle.author_name)}</span>
                   <div style={{ display: 'flex', gap: '16px', marginTop: '2px', fontFamily: 'var(--font-mono)' }}>
                     <span>{activeArticle.date_published}</span>
                     <span>·</span>
-                    <span>{activeArticle.read_time_mins} Min. Lesezeit</span>
+                    <span>{activeArticle.read_time_mins} {t('news_read_time', 'Min. Lesezeit')}</span>
                   </div>
                 </div>
               </div>
@@ -157,30 +159,30 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
 
               {/* Body Text */}
               <div className="editorial-text">
-                {paragraphs[0] && <p style={{ marginBottom: '24px' }}>{paragraphs[0]}</p>}
-                {paragraphs[1] && <p style={{ marginBottom: '24px' }}>{paragraphs[1]}</p>}
+                {paragraphs[0] && <p style={{ marginBottom: '24px' }}>{t(paragraphs[0], paragraphs[0])}</p>}
+                {paragraphs[1] && <p style={{ marginBottom: '24px' }}>{t(paragraphs[1], paragraphs[1])}</p>}
                 
                 {/* Zone B Float Ad after paragraph 2 */}
                 <div style={{ overflow: 'hidden', margin: '24px 0' }}>
-                  {paragraphs[2] && <p style={{ marginBottom: '24px' }}>{paragraphs[2]}</p>}
+                  {paragraphs[2] && <p style={{ marginBottom: '24px' }}>{t(paragraphs[2], paragraphs[2])}</p>}
                 </div>
 
-                {paragraphs[3] && <p style={{ marginBottom: '24px' }}>{paragraphs[3]}</p>}
+                {paragraphs[3] && <p style={{ marginBottom: '24px' }}>{t(paragraphs[3], paragraphs[3])}</p>}
 
                 {/* Pull Quote */}
                 {activeArticle.pull_quote && (
                   <blockquote className="editorial-pullquote">
-                    „{activeArticle.pull_quote}“
+                    „{t(activeArticle.pull_quote, activeArticle.pull_quote)}“
                   </blockquote>
                 )}
 
-                {paragraphs[4] && <p style={{ marginBottom: '24px' }}>{paragraphs[4]}</p>}
+                {paragraphs[4] && <p style={{ marginBottom: '24px' }}>{t(paragraphs[4], paragraphs[4])}</p>}
 
                 {/* Zone E Native Ad */}
                 <AdSlot position="E" />
 
                 {paragraphs.slice(5).map((para, pIdx) => (
-                  <p key={pIdx} style={{ marginBottom: '24px' }}>{para}</p>
+                  <p key={pIdx} style={{ marginBottom: '24px' }}>{t(para, para)}</p>
                 ))}
               </div>
 
@@ -196,7 +198,7 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
                   alignItems: 'center'
                 }}
               >
-                <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-charcoal)', letterSpacing: '0.05em' }}>THEMEN:</span>
+                <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-charcoal)', letterSpacing: '0.05em' }}>{t('news_topics', 'THEMEN:')}</span>
                 {activeArticle.tags?.map(tag => (
                   <span 
                     key={tag} 
@@ -212,7 +214,7 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
               {/* Related Articles 3-Column */}
               <div style={{ borderTop: '1px solid var(--primary-gold)', paddingTop: '32px' }}>
                 <h3 style={{ fontFamily: '"Playfair Display", serif', fontSize: '22px', color: 'var(--text-ink)', marginBottom: '24px', fontWeight: 700 }}>
-                  Ähnliche Artikel
+                  {t('news_related', 'Ähnliche Artikel')}
                 </h3>
                 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px' }} className="news-related-grid">
@@ -242,13 +244,13 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
                           />
                         </div>
                       )}
-                      <span className="badge badge-industry" style={{ alignSelf: 'flex-start', marginBottom: '12px', fontSize: '9px' }}>{art.category}</span>
+                      <span className="badge badge-industry" style={{ alignSelf: 'flex-start', marginBottom: '12px', fontSize: '9px' }}>{t(art.category, art.category)}</span>
                       <h4 style={{ fontFamily: '"Playfair Display", serif', fontSize: '14px', color: 'var(--text-ink)', marginBottom: '16px', lineHeight: 1.4, flex: 1, fontWeight: 700 }}>
-                        {art.title}
+                        {t(art.title, art.title)}
                       </h4>
                       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'var(--text-charcoal)', fontFamily: 'var(--font-mono)' }}>
                         <span>{art.date_published}</span>
-                        <span>{art.read_time_mins} Min</span>
+                        <span>{art.read_time_mins} {t('news_min_abbr', 'Min')}</span>
                       </div>
                     </div>
                   ))}
@@ -263,7 +265,7 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
               {/* "Meist gelesen" Sidebar List */}
               <div style={{ backgroundColor: '#FFFFFF', border: '0.5px solid var(--light-border)', padding: '24px', borderRadius: '6px' }}>
                 <span className="caps-label" style={{ fontSize: '11px', display: 'block', marginBottom: '16px' }}>
-                  Meistgelesen
+                  {t('news_most_read', 'Meistgelesen')}
                 </span>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                   {mockMostRead.map((item, idx) => (
@@ -271,9 +273,9 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
                       <span style={{ fontSize: '20px', fontFamily: '"Playfair Display", serif', color: 'var(--primary-red)', fontWeight: 700, lineHeight: 1 }}>{idx + 1}</span>
                       <div>
                         <span style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: 'var(--text-ink)', lineHeight: 1.4, cursor: 'pointer' }} onClick={() => alert('Wird geladen...')}>
-                          {item.title}
+                          {t(item.title, item.title)}
                         </span>
-                        <span style={{ fontSize: '11px', color: 'var(--text-charcoal)', fontFamily: 'var(--font-mono)' }}>{item.views}</span>
+                        <span style={{ fontSize: '11px', color: 'var(--text-charcoal)', fontFamily: 'var(--font-mono)' }}>{t(item.views, item.views)}</span>
                       </div>
                     </div>
                   ))}
@@ -287,7 +289,7 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
               {relatedCompanies.length > 0 && (
                 <div style={{ backgroundColor: '#FFFFFF', border: '0.5px solid var(--light-border)', padding: '20px', borderRadius: '6px' }}>
                   <span className="caps-label" style={{ fontSize: '11px', display: 'block', marginBottom: '16px' }}>
-                    Erwähnte Unternehmen
+                    {t('news_mentioned_companies', 'Erwähnte Unternehmen')}
                   </span>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     {relatedCompanies.map(c => (
@@ -310,7 +312,7 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
                         </div>
                         <div style={{ minWidth: 0 }}>
                           <span style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: 'var(--text-ink)', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>{c.name}</span>
-                          <span style={{ fontSize: '11px', color: 'var(--text-charcoal)' }}>Kanton {c.canton}</span>
+                          <span style={{ fontSize: '11px', color: 'var(--text-charcoal)' }}>{t('dir_canton', 'Kanton')} {c.canton}</span>
                         </div>
                       </div>
                     ))}
@@ -329,14 +331,14 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
                 }}
               >
                 <h4 style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', color: '#FFFDF7', marginBottom: '8px', fontWeight: 700 }}>
-                  Wirtschafts-Briefing
+                  {t('news_briefing_title', 'Wirtschafts-Briefing')}
                 </h4>
                 <p style={{ fontSize: '12px', color: '#888888', lineHeight: 1.5, marginBottom: '16px' }}>
-                  Abonnieren Sie unseren Newsletter für die aktuellsten Unternehmensberichte.
+                  {t('news_briefing_desc', 'Abonnieren Sie unseren Newsletter für die aktuellsten Unternehmensberichte.')}
                 </p>
                 <input 
                   type="email" 
-                  placeholder="Ihre E-Mail-Adresse" 
+                  placeholder={t('news_email_placeholder', 'Ihre E-Mail-Adresse')} 
                   style={{ 
                     width: '100%', 
                     padding: '8px 12px', 
@@ -349,7 +351,7 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
                   }} 
                 />
                 <button className="btn btn-gold-fill" style={{ fontSize: '12px', padding: '8px', minHeight: '36px', width: '100%' }}>
-                  Abonnieren
+                  {t('news_subscribe', 'Abonnieren')}
                 </button>
               </div>
 
@@ -369,12 +371,12 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
         
         {/* Header Title */}
         <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-          <span className="caps-label" style={{ display: 'block', marginBottom: '8px' }}>INTELLIGENCE & ANALYSIS</span>
+          <span className="caps-label" style={{ display: 'block', marginBottom: '8px' }}>{t('INTELLIGENCE & ANALYSIS', 'INTELLIGENCE & ANALYSIS')}</span>
           <h1 style={{ fontFamily: '"Playfair Display", serif', fontSize: '42px', fontWeight: 700, color: 'var(--text-ink)', margin: 0 }}>
-            Schweizer Wirtschaftsnachrichten
+            {t('news_header', 'Schweizer Wirtschaftsnachrichten')}
           </h1>
           <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '16px', color: 'var(--text-charcoal)', marginTop: '8px' }}>
-            Unabhängiger, verifizierter B2B-Journalismus zu Strukturen, Transaktionen und Strategien.
+            {t('news_header_desc', 'Unabhängiger, verifizierter B2B-Journalismus zu Strukturen, Transaktionen und Strategien.')}
           </p>
         </div>
 
@@ -383,7 +385,7 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
 
         {/* Articles List Grid */}
         {articles.length === 0 ? (
-          <p style={{ textAlign: 'center', color: 'var(--text-charcoal)' }}>Keine Artikel im Archiv vorhanden.</p>
+          <p style={{ textAlign: 'center', color: 'var(--text-charcoal)' }}>{t('news_no_articles', 'Keine Artikel im Archiv vorhanden.')}</p>
         ) : (
           <div 
             style={{ 
@@ -421,7 +423,7 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
                   </div>
                 )}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                  <span className="badge badge-industry">{art.category}</span>
+                  <span className="badge badge-industry">{t(art.category, art.category)}</span>
                   <span style={{ fontSize: '11px', color: 'var(--text-charcoal)', fontFamily: 'var(--font-mono)' }}>{art.date_published}</span>
                 </div>
                 
@@ -435,7 +437,7 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
                     lineHeight: 1.3
                   }}
                 >
-                  {art.title}
+                  {t(art.title, art.title)}
                 </h3>
                 
                 <p 
@@ -448,7 +450,7 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
                     flex: 1
                   }}
                 >
-                  {art.subtitle}
+                  {t(art.subtitle, art.subtitle)}
                 </p>
 
                 <div 
@@ -466,10 +468,10 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
                 >
                   <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-ink)' }}>
                     <User size={12} style={{ color: 'var(--primary-gold)' }} />
-                    {art.author_name}
+                    {t(art.author_name, art.author_name)}
                   </span>
                   <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    Artikel lesen <ArrowRight size={14} />
+                    {t('news_read_article', 'Artikel lesen')} <ArrowRight size={14} />
                   </span>
                 </div>
               </div>

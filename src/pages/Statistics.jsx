@@ -110,34 +110,34 @@ export default function Statistics({ navigate }) {
           
           <div style={{ borderRight: isRtl ? 'none' : '0.5px solid #2A2A2A', borderLeft: isRtl ? '0.5px solid #2A2A2A' : 'none', padding: '0 16px' }}>
             <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#888888', display: 'block', marginBottom: '8px' }}>
-              BIP Wachstums-Prognose
+              {t('BIP Wachstums-Prognose', 'BIP Wachstums-Prognose')}
             </span>
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '56px', color: 'var(--primary-red)', fontWeight: 700 }}>+1.8%</span>
-            <span style={{ fontSize: '11px', color: 'var(--accent-green)', display: 'block', marginTop: '6px' }}>▲ Stabiler Ausblick</span>
+            <span style={{ fontSize: '11px', color: 'var(--accent-green)', display: 'block', marginTop: '6px' }}>{t('▲ Stabiler Ausblick', '▲ Stabiler Ausblick')}</span>
           </div>
 
           <div style={{ borderRight: isRtl ? 'none' : '0.5px solid #2A2A2A', borderLeft: isRtl ? '0.5px solid #2A2A2A' : 'none', padding: '0 16px' }}>
             <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#888888', display: 'block', marginBottom: '8px' }}>
-              Erwerbstätige Gesamt
+              {t('Erwerbstätige Gesamt', 'Erwerbstätige Gesamt')}
             </span>
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '56px', color: 'var(--primary-red)', fontWeight: 700 }}>5'400'000</span>
-            <span style={{ fontSize: '11px', color: '#888888', display: 'block', marginTop: '6px' }}>Inländische & Grenzgänger</span>
+            <span style={{ fontSize: '11px', color: '#888888', display: 'block', marginTop: '6px' }}>{t('Inländische & Grenzgänger', 'Inländische & Grenzgänger')}</span>
           </div>
 
           <div style={{ borderRight: isRtl ? 'none' : '0.5px solid #2A2A2A', borderLeft: isRtl ? '0.5px solid #2A2A2A' : 'none', padding: '0 16px' }}>
             <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#888888', display: 'block', marginBottom: '8px' }}>
-              Eingetragene Holdings
+              {t('Eingetragene Holdings', 'Eingetragene Holdings')}
             </span>
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '56px', color: 'var(--primary-red)', fontWeight: 700 }}>500'000+</span>
-            <span style={{ fontSize: '11px', color: 'var(--primary-red)', display: 'block', marginTop: '6px' }}>Zefix-registrierte Entitäten</span>
+            <span style={{ fontSize: '11px', color: 'var(--primary-red)', display: 'block', marginTop: '6px' }}>{t('Zefix-registrierte Entitäten', 'Zefix-registrierte Entitäten')}</span>
           </div>
 
           <div style={{ padding: '0 16px' }}>
             <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#888888', display: 'block', marginBottom: '8px' }}>
-              Nationale Teuerung (CPI)
+              {t('Nationale Teuerung (CPI)', 'Nationale Teuerung (CPI)')}
             </span>
             <span style={{ fontFamily: 'var(--font-mono)', fontSize: '56px', color: 'var(--primary-red)', fontWeight: 700 }}>1.2%</span>
-            <span style={{ fontSize: '11px', color: 'var(--accent-green)', display: 'block', marginTop: '6px' }}>Tiefstwert im Euroraum</span>
+            <span style={{ fontSize: '11px', color: 'var(--accent-green)', display: 'block', marginTop: '6px' }}>{t('Tiefstwert im Euroraum', 'Tiefstwert im Euroraum')}</span>
           </div>
 
         </div>
@@ -164,12 +164,12 @@ export default function Statistics({ navigate }) {
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Filter size={18} style={{ color: 'var(--primary-red)' }} />
-            <span style={{ fontWeight: 600, fontSize: '14px', fontFamily: 'Inter, sans-serif' }}>Kennzahlen filtern:</span>
+            <span style={{ fontWeight: 600, fontSize: '14px', fontFamily: 'Inter, sans-serif' }}>{t('Kennzahlen filtern:', 'Kennzahlen filtern:')}</span>
           </div>
           
           <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
             <div>
-              <label style={{ fontSize: '11px', color: 'var(--text-charcoal)', display: 'block', marginBottom: '4px' }}>Jahr: {yearFilter}</label>
+              <label style={{ fontSize: '11px', color: 'var(--text-charcoal)', display: 'block', marginBottom: '4px' }}>{t('Jahr:', 'Jahr:')} {yearFilter}</label>
               <input 
                 type="range" 
                 min="2018" 
@@ -181,13 +181,13 @@ export default function Statistics({ navigate }) {
             </div>
             
             <div>
-              <label style={{ fontSize: '11px', color: 'var(--text-charcoal)', display: 'block', marginBottom: '4px' }}>Wirtschaftssektor</label>
+              <label style={{ fontSize: '11px', color: 'var(--text-charcoal)', display: 'block', marginBottom: '4px' }}>{t('Wirtschaftssektor', 'Wirtschaftssektor')}</label>
               <select 
                 value={sectorFilter} 
                 onChange={(e) => setSectorFilter(e.target.value)}
                 style={{ padding: '6px 12px', borderColor: 'var(--light-border)', backgroundColor: '#FFFDF7', fontSize: '13px' }}
               >
-                <option value="All">Alle Sektoren</option>
+                <option value="All">{t('Alle Sektoren', 'Alle Sektoren')}</option>
                 <option value="financial">Financial Services</option>
                 <option value="pharma">Pharmaceuticals</option>
                 <option value="luxury">Luxury Goods</option>
@@ -195,13 +195,13 @@ export default function Statistics({ navigate }) {
             </div>
 
             <div>
-              <label style={{ fontSize: '11px', color: 'var(--text-charcoal)', display: 'block', marginBottom: '4px' }}>Kanton</label>
+              <label style={{ fontSize: '11px', color: 'var(--text-charcoal)', display: 'block', marginBottom: '4px' }}>{t('dir_canton', 'Kanton')}</label>
               <select 
                 value={cantonFilter} 
                 onChange={(e) => setCantonFilter(e.target.value)}
                 style={{ padding: '6px 12px', borderColor: 'var(--light-border)', backgroundColor: '#FFFDF7', fontSize: '13px' }}
               >
-                <option value="All">Ganzer Bund (CH)</option>
+                <option value="All">{t('Ganzer Bund (CH)', 'Ganzer Bund (CH)')}</option>
                 {CANTON_GRID.map(c => (
                   <option key={c.code} value={c.code}>{c.code} - {CANTON_NAMES[c.code]}</option>
                 ))}
@@ -219,7 +219,7 @@ export default function Statistics({ navigate }) {
           <div style={{ backgroundColor: '#FFFFFF', border: '0.5px solid var(--light-border)', padding: '24px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
               <h3 style={{ fontSize: '18px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: 'var(--text-ink)' }}>
-                BIP-Entwicklung (Milliarden CHF)
+                {t('BIP-Entwicklung (Milliarden CHF)', 'BIP-Entwicklung (Milliarden CHF)')}
               </h3>
               <button 
                 onClick={() => handleDownloadCSV('BIP Entwicklung', ['Year', 'GDP_Billion_CHF'], statsData.gdpTrend)}
@@ -267,14 +267,14 @@ export default function Statistics({ navigate }) {
                 })()}
               </svg>
             </div>
-            <span style={{ fontSize: '11px', color: 'var(--text-charcoal)', display: 'block', marginTop: '12px' }}>Quelle: BFS / SECO</span>
+            <span style={{ fontSize: '11px', color: 'var(--text-charcoal)', display: 'block', marginTop: '12px' }}>{t('Quelle: BFS / SECO', 'Quelle: BFS / SECO')}</span>
           </div>
 
           {/* Chart 2: Export vs Import Dual Line */}
           <div style={{ backgroundColor: '#FFFFFF', border: '0.5px solid var(--light-border)', padding: '24px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
               <h3 style={{ fontSize: '18px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: 'var(--text-ink)' }}>
-                Handelsbilanz: Exporte vs. Importe (Mrd. CHF)
+                {t('Handelsbilanz: Exporte vs. Importe (Mrd. CHF)', 'Handelsbilanz: Exporte vs. Importe (Mrd. CHF)')}
               </h3>
               <button 
                 onClick={() => handleDownloadCSV('Handelsbilanz', ['Year', 'Exports_Billion', 'Imports_Billion'], exportImportData)}
@@ -339,12 +339,12 @@ export default function Statistics({ navigate }) {
             </div>
             <div style={{ display: 'flex', gap: '16px', fontSize: '11px', marginTop: '12px' }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <span style={{ width: '10px', height: '10px', backgroundColor: 'var(--primary-gold)', display: 'inline-block' }} /> Exporte
+                <span style={{ width: '10px', height: '10px', backgroundColor: 'var(--primary-gold)', display: 'inline-block' }} /> {t('Exporte', 'Exporte')}
               </span>
               <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                <span style={{ width: '10px', height: '10px', backgroundColor: 'var(--accent-red)', display: 'inline-block' }} /> Importe
+                <span style={{ width: '10px', height: '10px', backgroundColor: 'var(--accent-red)', display: 'inline-block' }} /> {t('Importe', 'Importe')}
               </span>
-              <span style={{ color: 'var(--text-charcoal)', marginLeft: 'auto' }}>Quelle: Zollverwaltung (EZV)</span>
+              <span style={{ color: 'var(--text-charcoal)', marginLeft: 'auto' }}>{t('Quelle: Zollverwaltung (EZV)', 'Quelle: Zollverwaltung (EZV)')}</span>
             </div>
           </div>
 
@@ -352,7 +352,7 @@ export default function Statistics({ navigate }) {
           <div style={{ backgroundColor: '#FFFFFF', border: '0.5px solid var(--light-border)', padding: '24px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
               <h3 style={{ fontSize: '18px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: 'var(--text-ink)' }}>
-                Arbeitskräfteverteilung nach Sektor (%)
+                {t('Arbeitskräfteverteilung nach Sektor (%)', 'Arbeitskräfteverteilung nach Sektor (%)')}
               </h3>
               <button 
                 onClick={() => handleDownloadCSV('Arbeitskrafteverteilung', ['Sector', 'Share_Percent'], statsData.sectors)}
@@ -367,7 +367,7 @@ export default function Statistics({ navigate }) {
               {statsData.sectors.map((sec, idx) => (
                 <div key={idx}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '4px' }}>
-                    <span style={{ fontWeight: 600, color: 'var(--text-ink)' }}>{sec.name}</span>
+                    <span style={{ fontWeight: 600, color: 'var(--text-ink)' }}>{t(sec.name, sec.name)}</span>
                     <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--primary-gold)' }}>{sec.share}%</span>
                   </div>
                   <div style={{ width: '100%', height: '8px', backgroundColor: 'var(--surface-warm)', border: '0.5px solid var(--light-border)', borderRadius: '0px' }}>
@@ -382,20 +382,20 @@ export default function Statistics({ navigate }) {
                 </div>
               ))}
             </div>
-            <span style={{ fontSize: '11px', color: 'var(--text-charcoal)', display: 'block', marginTop: '20px' }}>Quelle: BFS / SECO</span>
+            <span style={{ fontSize: '11px', color: 'var(--text-charcoal)', display: 'block', marginTop: '20px' }}>{t('Quelle: BFS / SECO', 'Quelle: BFS / SECO')}</span>
           </div>
 
           {/* Chart 4: Switzerland Canton Choropleth Map Grid */}
           <div style={{ backgroundColor: '#FFFFFF', border: '0.5px solid var(--light-border)', padding: '24px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '20px' }}>
               <h3 style={{ fontSize: '18px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: 'var(--text-ink)', margin: 0 }}>
-                Unternehmensdichte nach Kanton
+                {t('Unternehmensdichte nach Kanton', 'Unternehmensdichte nach Kanton')}
               </h3>
-              <span style={{ fontSize: '11px', color: 'var(--text-charcoal)' }}>Kantonale Verteilung</span>
+              <span style={{ fontSize: '11px', color: 'var(--text-charcoal)' }}>{t('canton_distribution', 'Kantonale Verteilung')}</span>
             </div>
             
             <p style={{ fontSize: '12px', color: 'var(--text-charcoal)', lineHeight: 1.5, marginBottom: '20px' }}>
-              Klicken Sie auf ein Kantonskürzel, um im Verzeichnis nach Unternehmen in diesem Kanton zu filtern.
+              {t('Klicken Sie auf ein Kantonskürzel, um im Verzeichnis nach Unternehmen in diesem Kanton zu filtern.', 'Klicken Sie auf ein Kantonskürzel, um im Verzeichnis nach Unternehmen in diesem Kanton zu filtern.')}
             </p>
 
             {/* Grid Layout */}
@@ -462,11 +462,11 @@ export default function Statistics({ navigate }) {
             >
               {hoveredCanton ? (
                 <div>
-                  <strong style={{ color: 'var(--text-ink)' }}>Kanton {CANTON_NAMES[hoveredCanton]} ({hoveredCanton})</strong>
-                  <span style={{ color: 'var(--gold-hover)', marginLeft: '12px' }}>Dichteindex: {statsData.cantonWeights[hoveredCanton]}%</span>
+                  <strong style={{ color: 'var(--text-ink)' }}>{t('dir_canton', 'Kanton')} {t(CANTON_NAMES[hoveredCanton], CANTON_NAMES[hoveredCanton])} ({hoveredCanton})</strong>
+                  <span style={{ color: 'var(--gold-hover)', marginLeft: '12px' }}>{t('Dichteindex:', 'Dichteindex:')} {statsData.cantonWeights[hoveredCanton]}%</span>
                 </div>
               ) : (
-                <span style={{ color: 'var(--text-charcoal)' }}>Navigieren Sie über die Kantonskacheln für Live-Dossier-Metriken.</span>
+                <span style={{ color: 'var(--text-charcoal)' }}>{t('Navigieren Sie über die Kantonskacheln für Live-Dossier-Metriken.', 'Navigieren Sie über die Kantonskacheln für Live-Dossier-Metriken.')}</span>
               )}
             </div>
           </div>
@@ -475,7 +475,7 @@ export default function Statistics({ navigate }) {
           <div style={{ backgroundColor: '#FFFFFF', border: '0.5px solid var(--light-border)', padding: '24px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
               <h3 style={{ fontSize: '18px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: 'var(--text-ink)' }}>
-                Neugründungsrate (Holdings & SMEs)
+                {t('Neugründungsrate (Holdings & SMEs)', 'Neugründungsrate (Holdings & SMEs)')}
               </h3>
               <button 
                 onClick={() => handleDownloadCSV('Neugrundungen', ['Year', 'New_Formations'], formationRateData)}
@@ -510,13 +510,13 @@ export default function Statistics({ navigate }) {
                 })}
               </svg>
             </div>
-            <span style={{ fontSize: '11px', color: 'var(--text-charcoal)', display: 'block', marginTop: '12px' }}>Quelle: Zefix Handelsregister</span>
+            <span style={{ fontSize: '11px', color: 'var(--text-charcoal)', display: 'block', marginTop: '12px' }}>{t('Quelle: Zefix Handelsregister', 'Quelle: Zefix Handelsregister')}</span>
           </div>
 
           {/* Chart 6: Top Industries Revenue */}
           <div style={{ backgroundColor: '#FFFFFF', border: '0.5px solid var(--light-border)', padding: '24px' }}>
             <h3 style={{ fontSize: '18px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: 'var(--text-ink)', marginBottom: '20px' }}>
-              Branchenumsatz-Vergleich (Mrd. CHF)
+              {t('Branchenumsatz-Vergleich (Mrd. CHF)', 'Branchenumsatz-Vergleich (Mrd. CHF)')}
             </h3>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -528,12 +528,12 @@ export default function Statistics({ navigate }) {
                 { name: 'Uhren & Luxusgüter (Rolex, Richemont)', rev: '32B' }
               ].map((item, idx) => (
                 <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '10px' }}>
-                  <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-ink)' }}>{item.name}</span>
+                  <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-ink)' }}>{t(item.name, item.name)}</span>
                   <span style={{ fontSize: '14px', fontFamily: 'var(--font-mono)', fontWeight: 700, color: 'var(--primary-gold)' }}>CHF {item.rev.replace('B', "'000M")}</span>
                 </div>
               ))}
             </div>
-            <span style={{ fontSize: '11px', color: 'var(--text-charcoal)', display: 'block', marginTop: '24px' }}>Quelle: BFS / Eidg. Steuerverwaltung</span>
+            <span style={{ fontSize: '11px', color: 'var(--text-charcoal)', display: 'block', marginTop: '24px' }}>{t('Quelle: BFS / Eidg. Steuerverwaltung', 'Quelle: BFS / Eidg. Steuerverwaltung')}</span>
           </div>
 
         </div>
@@ -542,25 +542,25 @@ export default function Statistics({ navigate }) {
       {/* Downloadable Data Tables */}
       <div className="container" style={{ marginTop: '48px' }}>
         <h3 style={{ fontFamily: '"Playfair Display", serif', fontSize: '24px', fontWeight: 700, color: 'var(--text-ink)', marginBottom: '16px', borderBottom: '1px solid var(--primary-gold)', paddingBottom: '8px' }}>
-          Makroökonomische Datentabellen
+          {t('Makroökonomische Datentabellen', 'Makroökonomische Datentabellen')}
         </h3>
         
         <div style={{ backgroundColor: '#FFFFFF', border: '0.5px solid var(--light-border)', padding: '20px', borderRadius: '4px', overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', textAlign: 'left' }}>
             <thead>
               <tr style={{ borderBottom: '1.5px solid var(--light-border)', color: 'var(--text-charcoal)' }}>
-                <th style={{ padding: '12px 8px' }}>Kennzahl / Indikator</th>
+                <th style={{ padding: '12px 8px' }}>{t('Kennzahl / Indikator', 'Kennzahl / Indikator')}</th>
                 <th style={{ padding: '12px 8px' }}>2021</th>
                 <th style={{ padding: '12px 8px' }}>2022</th>
                 <th style={{ padding: '12px 8px' }}>2023</th>
                 <th style={{ padding: '12px 8px' }}>2024</th>
                 <th style={{ padding: '12px 8px' }}>2025</th>
-                <th style={{ padding: '12px 8px' }}>2026 (Prognose)</th>
+                <th style={{ padding: '12px 8px' }}>2026 ({t('Prognose', 'Prognose')})</th>
               </tr>
             </thead>
             <tbody>
               <tr style={{ borderBottom: '0.5px solid var(--light-border)' }}>
-                <td style={{ padding: '12px 8px', fontWeight: 600 }}>Nominales BIP (Mrd. CHF)</td>
+                <td style={{ padding: '12px 8px', fontWeight: 600 }}>{t('Nominales BIP (Mrd. CHF)', 'Nominales BIP (Mrd. CHF)')}</td>
                 <td style={{ padding: '12px 8px', fontFamily: 'var(--font-mono)' }}>735</td>
                 <td style={{ padding: '12px 8px', fontFamily: 'var(--font-mono)' }}>750</td>
                 <td style={{ padding: '12px 8px', fontFamily: 'var(--font-mono)' }}>765</td>
@@ -569,7 +569,7 @@ export default function Statistics({ navigate }) {
                 <td style={{ padding: '12px 8px', fontFamily: 'var(--font-mono)', color: 'var(--primary-gold)', fontWeight: 'bold' }}>805</td>
               </tr>
               <tr style={{ borderBottom: '0.5px solid var(--light-border)' }}>
-                <td style={{ padding: '12px 8px', fontWeight: 600 }}>Erwerbstätige (Milliarden)</td>
+                <td style={{ padding: '12px 8px', fontWeight: 600 }}>{t('Erwerbstätige (Milliarden)', 'Erwerbstätige (Milliarden)')}</td>
                 <td style={{ padding: '12px 8px', fontFamily: 'var(--font-mono)' }}>5.08M</td>
                 <td style={{ padding: '12px 8px', fontFamily: 'var(--font-mono)' }}>5.15M</td>
                 <td style={{ padding: '12px 8px', fontFamily: 'var(--font-mono)' }}>5.22M</td>
@@ -578,7 +578,7 @@ export default function Statistics({ navigate }) {
                 <td style={{ padding: '12px 8px', fontFamily: 'var(--font-mono)', color: 'var(--primary-gold)', fontWeight: 'bold' }}>5.40M</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px 8px', fontWeight: 600 }}>Aussenhandel Exporte (Mrd. CHF)</td>
+                <td style={{ padding: '12px 8px', fontWeight: 600 }}>{t('Aussenhandel Exporte (Mrd. CHF)', 'Aussenhandel Exporte (Mrd. CHF)')}</td>
                 <td style={{ padding: '12px 8px', fontFamily: 'var(--font-mono)' }}>250</td>
                 <td style={{ padding: '12px 8px', fontFamily: 'var(--font-mono)' }}>278</td>
                 <td style={{ padding: '12px 8px', fontFamily: 'var(--font-mono)' }}>285</td>
@@ -593,8 +593,8 @@ export default function Statistics({ navigate }) {
 
       {/* Attribution footer */}
       <div className="container" style={{ marginTop: '48px', borderTop: '0.5px solid var(--light-border)', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'var(--text-charcoal)', fontFamily: 'Inter, sans-serif' }}>
-        <span>Datenquelle: Bundesamt für Statistik (BFS) / Staatssekretariat für Wirtschaft (SECO) / Schweizerische Nationalbank (SNB)</span>
-        <span>Letztes Update: Q2 2026</span>
+        <span>{t('Datenquelle: Bundesamt für Statistik (BFS) / Staatssekretariat für Wirtschaft (SECO) / Schweizerische Nationalbank (SNB)', 'Datenquelle: Bundesamt für Statistik (BFS) / Staatssekretariat für Wirtschaft (SECO) / Schweizerische Nationalbank (SNB)')}</span>
+        <span>{t('Letztes Update:', 'Letztes Update:')} Q2 2026</span>
       </div>
 
     </div>

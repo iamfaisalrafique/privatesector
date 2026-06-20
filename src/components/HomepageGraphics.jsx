@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Landmark, AlertCircle, Network, TrendingUp, Users, Shield, Award, MapPin } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 const CANTON_DATA = [
   { code: 'ZH', name: 'Zürich', count: '124\'820', gdp: '21.5%', color: 'var(--primary-red)' },
@@ -31,6 +32,7 @@ const MOCK_REGISTER_TEMPLATES = [
 ];
 
 export default function HomepageGraphics({ navigate }) {
+  const { t } = useLanguage();
   const [registerEvents, setRegisterEvents] = useState(INITIAL_REGISTER_EVENTS);
   const [activeNetworkNode, setActiveNetworkNode] = useState(null);
 
@@ -88,11 +90,11 @@ export default function HomepageGraphics({ navigate }) {
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
               <MapPin size={22} style={{ color: 'var(--primary-gold)' }} />
               <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '22px', fontWeight: 700, margin: 0 }}>
-                Kantonale Verteilung
+                {t('canton_distribution', 'Canton Distribution')}
               </h3>
             </div>
             <p style={{ fontSize: '13px', color: 'var(--text-charcoal)', lineHeight: 1.6, marginBottom: '24px' }}>
-              Erkunden Sie Schweizer Unternehmen nach Kanton. Klicken Sie auf einen Kanton, um den B2B-Index direkt für diese Region zu öffnen.
+              {t('canton_desc', 'Explore Swiss companies by canton. Click on a canton to open the B2B index directly for that region.')}
             </p>
           </div>
 
@@ -119,12 +121,12 @@ export default function HomepageGraphics({ navigate }) {
                     {canton.code}
                   </span>
                   <span style={{ fontSize: '10px', color: 'var(--text-charcoal)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                    {canton.name}
+                    {t(canton.name, canton.name)}
                   </span>
                 </div>
                 
                 <div style={{ fontSize: '16px', fontWeight: 600, fontFamily: 'var(--font-sans)', color: 'var(--text-ink)', marginBottom: '8px' }}>
-                  {canton.count} <span style={{ fontSize: '10px', color: 'var(--text-charcoal)', fontWeight: 400 }}>Firmen</span>
+                  {canton.count} <span style={{ fontSize: '10px', color: 'var(--text-charcoal)', fontWeight: 400 }}>{t('companies_label', 'Companies')}</span>
                 </div>
 
                 {/* Density micro progress bar */}
@@ -140,7 +142,7 @@ export default function HomepageGraphics({ navigate }) {
                 </div>
                 
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px', fontSize: '9px', color: 'var(--text-charcoal)' }}>
-                  <span>Schweizer BIP Anteil:</span>
+                  <span>{t('gdp_share', 'Swiss GDP Share:')}</span>
                   <span style={{ fontWeight: 600 }}>{canton.gdp}</span>
                 </div>
               </div>
@@ -163,7 +165,7 @@ export default function HomepageGraphics({ navigate }) {
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <Landmark size={22} style={{ color: 'var(--primary-gold)' }} />
               <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '22px', fontWeight: 700, margin: 0 }}>
-                Handelsregister Live-Meldungen
+                {t('register_live_title', 'Commercial Register Live Feed')}
               </h3>
             </div>
             
@@ -176,7 +178,7 @@ export default function HomepageGraphics({ navigate }) {
           </div>
           
           <p style={{ fontSize: '13px', color: 'var(--text-charcoal)', lineHeight: 1.6, marginBottom: '24px' }}>
-            Echtzeit-Meldungen der kantonalen Handelsregisterämter (Zefix / SOGC Schnittstellen-Simulation).
+            {t('register_live_desc', 'Real-time notifications from cantonal commercial register offices (Zefix / SOGC interface simulation).')}
           </p>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', flex: 1 }}>
@@ -229,11 +231,11 @@ export default function HomepageGraphics({ navigate }) {
                       {event.company}
                     </span>
                     <span style={{ fontSize: '11px', color: 'var(--text-charcoal)', fontFamily: 'var(--font-mono)' }}>
-                      {event.time}
+                      {t(event.time, event.time)}
                     </span>
                   </div>
                   <p style={{ fontSize: '12px', color: 'var(--text-charcoal)', marginTop: '2px', lineHeight: 1.4 }}>
-                    {event.action}
+                    {t(event.action, event.action)}
                   </p>
                 </div>
               </div>
@@ -259,13 +261,13 @@ export default function HomepageGraphics({ navigate }) {
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
             <Network size={22} style={{ color: 'var(--primary-gold)' }} />
-            <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '22px', fontWeight: 700, margin: 0 }}>
-              Konzerne & Beteiligungen Mapping
-            </h3>
+              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '22px', fontWeight: 700, margin: 0 }}>
+                {t('network_title', 'Corporate Groups & Participations Map')}
+              </h3>
           </div>
-          <p style={{ fontSize: '13px', color: 'var(--text-charcoal)', lineHeight: 1.6, marginBottom: '24px' }}>
-            Interaktive Visualisierung von Firmenstrukturen. Bewegen Sie den Mauszeiger über eine Einheit, um Eigentumsverhältnisse und Stimmrechtsanteile aufzudecken.
-          </p>
+            <p style={{ fontSize: '13px', color: 'var(--text-charcoal)', lineHeight: 1.6, marginBottom: '24px' }}>
+              {t('network_desc', 'Interactive visualization of corporate structures. Hover over an entity to reveal ownership relationships and voting rights.')}
+            </p>
 
           {/* SVG Canvas Area */}
           <div 
@@ -293,8 +295,8 @@ export default function HomepageGraphics({ navigate }) {
               >
                 <circle cx="250" cy="150" r="32" fill="#FFFFFF" stroke="#003453" strokeWidth="3" />
                 <circle cx="250" cy="150" r="28" fill="rgba(0, 52, 83, 0.05)" />
-                <text x="250" y="153" fontFamily="Inter" fontSize="10" fontWeight="bold" fill="#003453" textAnchor="middle">Roche</text>
-                <text x="250" y="163" fontFamily="Inter" fontSize="7" fill="var(--primary-red)" textAnchor="middle">Holding AG</text>
+                <text x="250" y="153" fontFamily="Inter" fontSize="10" fontWeight="bold" fill="#003453" textAnchor="middle">{t('Roche', 'Roche')}</text>
+                <text x="250" y="163" fontFamily="Inter" fontSize="7" fill="var(--primary-red)" textAnchor="middle">{t('Holding AG', 'Holding AG')}</text>
               </g>
 
               {/* Node 2: Genentech */}
@@ -304,8 +306,8 @@ export default function HomepageGraphics({ navigate }) {
                 style={{ cursor: 'pointer' }}
               >
                 <circle cx="100" cy="70" r="22" fill="#FFFFFF" stroke={activeNetworkNode === 'genentech' ? 'var(--primary-red)' : '#E8E0C8'} strokeWidth="2" style={{ transition: 'stroke 0.2s' }} />
-                <text x="100" y="73" fontFamily="Inter" fontSize="8" fontWeight="600" fill="var(--text-ink)" textAnchor="middle">Genentech</text>
-                <text x="100" y="81" fontFamily="JetBrains Mono" fontSize="6" fill="var(--text-charcoal)" textAnchor="middle">100% (US)</text>
+                <text x="100" y="73" fontFamily="Inter" fontSize="8" fontWeight="600" fill="var(--text-ink)" textAnchor="middle">{t('Genentech', 'Genentech')}</text>
+                <text x="100" y="81" fontFamily="JetBrains Mono" fontSize="6" fill="var(--text-charcoal)" textAnchor="middle">{t('100% (US)', '100% (US)')}</text>
               </g>
 
               {/* Node 3: Chugai */}
@@ -315,8 +317,8 @@ export default function HomepageGraphics({ navigate }) {
                 style={{ cursor: 'pointer' }}
               >
                 <circle cx="400" cy="70" r="22" fill="#FFFFFF" stroke={activeNetworkNode === 'chugai' ? 'var(--primary-red)' : '#E8E0C8'} strokeWidth="2" style={{ transition: 'stroke 0.2s' }} />
-                <text x="400" y="73" fontFamily="Inter" fontSize="8" fontWeight="600" fill="var(--text-ink)" textAnchor="middle">Chugai</text>
-                <text x="400" y="81" fontFamily="JetBrains Mono" fontSize="6" fill="var(--text-charcoal)" textAnchor="middle">61.5% (JP)</text>
+                <text x="400" y="73" fontFamily="Inter" fontSize="8" fontWeight="600" fill="var(--text-ink)" textAnchor="middle">{t('Chugai', 'Chugai')}</text>
+                <text x="400" y="81" fontFamily="JetBrains Mono" fontSize="6" fill="var(--text-charcoal)" textAnchor="middle">{t('61.5% (JP)', '61.5% (JP)')}</text>
               </g>
 
               {/* Node 4: Roche Diagnostics */}
@@ -326,8 +328,8 @@ export default function HomepageGraphics({ navigate }) {
                 style={{ cursor: 'pointer' }}
               >
                 <circle cx="120" cy="230" r="22" fill="#FFFFFF" stroke={activeNetworkNode === 'diagnostics' ? 'var(--primary-red)' : '#E8E0C8'} strokeWidth="2" style={{ transition: 'stroke 0.2s' }} />
-                <text x="120" y="233" fontFamily="Inter" fontSize="8" fontWeight="600" fill="var(--text-ink)" textAnchor="middle">Diagnostics</text>
-                <text x="120" y="241" fontFamily="JetBrains Mono" fontSize="6" fill="var(--text-charcoal)" textAnchor="middle">100% (CH)</text>
+                <text x="120" y="233" fontFamily="Inter" fontSize="8" fontWeight="600" fill="var(--text-ink)" textAnchor="middle">{t('Diagnostics', 'Diagnostics')}</text>
+                <text x="120" y="241" fontFamily="JetBrains Mono" fontSize="6" fill="var(--text-charcoal)" textAnchor="middle">{t('100% (CH)', '100% (CH)')}</text>
               </g>
 
               {/* Node 5: Foundation Medicine */}
@@ -337,8 +339,8 @@ export default function HomepageGraphics({ navigate }) {
                 style={{ cursor: 'pointer' }}
               >
                 <circle cx="380" cy="230" r="22" fill="#FFFFFF" stroke={activeNetworkNode === 'foundation' ? 'var(--primary-red)' : '#E8E0C8'} strokeWidth="2" style={{ transition: 'stroke 0.2s' }} />
-                <text x="380" y="233" fontFamily="Inter" fontSize="8" fontWeight="600" fill="var(--text-ink)" textAnchor="middle">Foundation</text>
-                <text x="380" y="241" fontFamily="JetBrains Mono" fontSize="6" fill="var(--text-charcoal)" textAnchor="middle">100% (US)</text>
+                <text x="380" y="233" fontFamily="Inter" fontSize="8" fontWeight="600" fill="var(--text-ink)" textAnchor="middle">{t('Foundation', 'Foundation')}</text>
+                <text x="380" y="241" fontFamily="JetBrains Mono" fontSize="6" fill="var(--text-charcoal)" textAnchor="middle">{t('100% (US)', '100% (US)')}</text>
               </g>
             </svg>
 
@@ -362,27 +364,27 @@ export default function HomepageGraphics({ navigate }) {
             >
               <div>
                 <strong style={{ color: 'var(--text-ink)', fontFamily: 'var(--font-sans)', display: 'block' }}>
-                  {activeNetworkNode === 'roche' && 'Roche Holding AG (Muttergesellschaft)'}
-                  {activeNetworkNode === 'genentech' && 'Genentech Inc. (San Francisco, USA)'}
-                  {activeNetworkNode === 'chugai' && 'Chugai Pharmaceutical Co., Ltd. (Tokio, Japan)'}
-                  {activeNetworkNode === 'diagnostics' && 'Roche Diagnostics International AG (Rotkreuz, CH)'}
-                  {activeNetworkNode === 'foundation' && 'Foundation Medicine Inc. (Cambridge, USA)'}
-                  {!activeNetworkNode && 'Fokusieren Sie einen Knoten'}
+                  {activeNetworkNode === 'roche' && t('Roche Holding AG (Parent Company)', 'Roche Holding AG (Parent Company)')}
+                  {activeNetworkNode === 'genentech' && t('Genentech Inc. (San Francisco, USA)', 'Genentech Inc. (San Francisco, USA)')}
+                  {activeNetworkNode === 'chugai' && t('Chugai Pharmaceutical Co., Ltd. (Tokyo, Japan)', 'Chugai Pharmaceutical Co., Ltd. (Tokyo, Japan)')}
+                  {activeNetworkNode === 'diagnostics' && t('Roche Diagnostics International AG (Rotkreuz, CH)', 'Roche Diagnostics International AG (Rotkreuz, CH)')}
+                  {activeNetworkNode === 'foundation' && t('Foundation Medicine Inc. (Cambridge, USA)', 'Foundation Medicine Inc. (Cambridge, USA)')}
+                  {!activeNetworkNode && t('Focus a node to see details', 'Focus a node to see details')}
                 </strong>
                 <span style={{ color: 'var(--text-charcoal)', fontSize: '11px' }}>
-                  {activeNetworkNode === 'roche' && 'Konsolidiert 273\'000 Mitarbeiter weltweit.'}
-                  {activeNetworkNode === 'genentech' && '100% im Besitz. F&D Center für Onkologie.'}
-                  {activeNetworkNode === 'chugai' && 'Strategische Beteiligung (61.5% Kapitalanteile).'}
-                  {activeNetworkNode === 'diagnostics' && 'Zentraler Schweizer Produktions- und Entwicklungsstandort.'}
-                  {activeNetworkNode === 'foundation' && 'Übernahme 2018. Genomische Profilierung.'}
-                  {!activeNetworkNode && 'Zeigt Eigentumsketten und Direktbeteiligungen.'}
+                  {activeNetworkNode === 'roche' && t('Consolidates 273,000 employees worldwide.', 'Consolidates 273,000 employees worldwide.')}
+                  {activeNetworkNode === 'genentech' && t('100% owned. R&D center for oncology.', '100% owned. R&D center for oncology.')}
+                  {activeNetworkNode === 'chugai' && t('Strategic partnership (61.5% capital shares).', 'Strategic partnership (61.5% capital shares).')}
+                  {activeNetworkNode === 'diagnostics' && t('Central Swiss production and development site.', 'Central Swiss production and development site.')}
+                  {activeNetworkNode === 'foundation' && t('Acquisition 2018. Genomic profiling.', 'Acquisition 2018. Genomic profiling.')}
+                  {!activeNetworkNode && t('Shows ownership chains and direct participations.', 'Shows ownership chains and direct participations.')}
                 </span>
               </div>
               
               {activeNetworkNode && (
                 <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
                   <Shield size={14} style={{ color: 'var(--accent-green)' }} />
-                  <span style={{ fontSize: '10px', fontWeight: 600, color: 'var(--accent-green)', textTransform: 'uppercase' }}>Zefix Verifiziert</span>
+                  <span style={{ fontSize: '10px', fontWeight: 600, color: 'var(--accent-green)', textTransform: 'uppercase' }}>{t('Zefix Verified', 'Zefix Verified')}</span>
                 </div>
               )}
             </div>
@@ -405,11 +407,11 @@ export default function HomepageGraphics({ navigate }) {
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
               <TrendingUp size={22} style={{ color: 'var(--primary-gold)' }} />
               <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '22px', fontWeight: 700, margin: 0 }}>
-                Schweizer Marktindikatoren
+                {t('market_indicators', 'Swiss Market Indicators')}
               </h3>
             </div>
             <p style={{ fontSize: '13px', color: 'var(--text-charcoal)', lineHeight: 1.6, marginBottom: '24px' }}>
-              Wirtschaftliche Kennzahlen und Vertrauensindizes der eingetragenen Schweizer Kapitalgesellschaften.
+              {t('market_indicators_desc', 'Key economic figures and trust indices of registered Swiss corporations.')}
             </p>
           </div>
 
@@ -430,10 +432,10 @@ export default function HomepageGraphics({ navigate }) {
               
               <div>
                 <span style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-charcoal)', display: 'block', fontWeight: 600 }}>
-                  B2B Vertrauensindex (Verifiziert)
+                  {t('stat_b2b_trust_title', 'B2B Trust Index (Verified)')}
                 </span>
                 <span style={{ fontSize: '13px', color: 'var(--text-ink)', lineHeight: 1.4 }}>
-                  94% aller Premium-Profile verfügen über vollständig verifizierte Zefix-Dossiers.
+                  {t('stat_b2b_trust_desc', '94% of all premium profiles have fully verified Zefix dossiers.')}
                 </span>
               </div>
             </div>
@@ -453,10 +455,10 @@ export default function HomepageGraphics({ navigate }) {
 
               <div>
                 <span style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-charcoal)', display: 'block', fontWeight: 600 }}>
-                  Nachhaltigkeits-Reporting
+                  {t('stat_sustainability_title', 'Sustainability Reporting')}
                 </span>
                 <span style={{ fontSize: '13px', color: 'var(--text-ink)', lineHeight: 1.4 }}>
-                  78% der Top-100 Schweizer Grosskonzerne weisen validierte ESG-Scores über 75/100 auf.
+                  {t('stat_sustainability_desc', '78% of the top 100 Swiss corporations have validated ESG scores above 75/100.')}
                 </span>
               </div>
             </div>
@@ -476,10 +478,10 @@ export default function HomepageGraphics({ navigate }) {
 
               <div>
                 <span style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-charcoal)', display: 'block', fontWeight: 600 }}>
-                  R&D Standortattraktivität
+                  {t('stat_rd_title', 'R&D Location Attractiveness')}
                 </span>
                 <span style={{ fontSize: '13px', color: 'var(--text-ink)', lineHeight: 1.4 }}>
-                  85% der Schweizer R&D-Hubs erhalten Bestbewertungen für steuerliche Rahmenbedingungen.
+                  {t('stat_rd_desc', '85% of Swiss R&D hubs receive top ratings for tax frameworks.')}
                 </span>
               </div>
             </div>
