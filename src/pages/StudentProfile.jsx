@@ -27,7 +27,7 @@ export default function StudentProfile({ studentId, navigate }) {
     return (
       <div className="container" style={{ padding: '64px 0', textAlign: 'center' }}>
         <div style={{ width: '40px', height: '40px', border: '2px solid var(--light-border)', borderTopColor: 'var(--primary-red)', borderRadius: '50%', animation: 'spin 1s infinite linear', margin: '0 auto 16px' }} />
-        <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', color: 'var(--text-charcoal)' }}>Studenten-Profil wird geladen...</p>
+        <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', color: 'var(--text-charcoal)' }}>{t('Studenten-Profil wird geladen...', 'Studenten-Profil wird geladen...')}</p>
       </div>
     );
   }
@@ -36,10 +36,10 @@ export default function StudentProfile({ studentId, navigate }) {
     return (
       <div className="container" style={{ padding: '64px 0', textAlign: 'center' }}>
         <h2 style={{ fontFamily: '"Playfair Display", serif', fontSize: '24px', color: 'var(--text-ink)', marginBottom: '16px' }}>
-          Profil nicht gefunden
+          {t('Profil nicht gefunden', 'Profil nicht gefunden')}
         </h2>
         <button className="btn btn-gold-fill" onClick={() => navigate('/karriere')}>
-          Zurück zur Karriere-Plattform
+          {t('Zurück zur Karriere-Plattform', 'Zurück zur Karriere-Plattform')}
         </button>
       </div>
     );
@@ -68,7 +68,7 @@ export default function StudentProfile({ studentId, navigate }) {
             }}
           >
             <ArrowLeft size={16} />
-            <span>Zurück zur Übersicht</span>
+            <span>{t('Zurück zur Übersicht', 'Zurück zur Übersicht')}</span>
           </button>
 
           <div style={{ display: 'flex', gap: '32px', alignItems: 'center', flexWrap: 'wrap', flexDirection: isRtl ? 'row-reverse' : 'row' }}>
@@ -86,7 +86,7 @@ export default function StudentProfile({ studentId, navigate }) {
 
             <div style={{ flex: 1, textAlign: isRtl ? 'right' : 'left' }}>
               <span className="caps-label" style={{ color: 'var(--primary-red)', fontSize: '11px', fontWeight: 600, display: 'block', marginBottom: '8px' }}>
-                Zertifizierter Student Contributor
+                {t('Zertifizierter Student Contributor', 'Zertifizierter Student Contributor')}
               </span>
               
               <h1 style={{ fontFamily: '"Playfair Display", serif', fontSize: '38px', fontWeight: 700, color: '#FFFDF7', marginBottom: '8px' }}>
@@ -94,13 +94,13 @@ export default function StudentProfile({ studentId, navigate }) {
               </h1>
               
               <p style={{ color: 'var(--primary-red)', fontSize: '16px', fontWeight: 500, marginBottom: '16px', fontFamily: 'Inter, sans-serif', display: 'flex', alignItems: 'center', gap: '6px', justifyContent: isRtl ? 'flex-end' : 'flex-start' }}>
-                <GraduationCap size={18} /> {profile.university}
+                <GraduationCap size={18} /> {t(profile.university, profile.university)}
               </p>
 
               <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', fontSize: '12px', color: '#888888', fontFamily: 'var(--font-mono)' }}>
-                <span>Fachbereich: {profile.study_field}</span>
+                <span>{t('Fachbereich:', 'Fachbereich:')} {t(profile.study_field, profile.study_field)}</span>
                 <span>·</span>
-                <span>Abschlussklasse {profile.grad_year}</span>
+                <span>{t('Abschlussklasse', 'Abschlussklasse')} {profile.grad_year}</span>
               </div>
             </div>
           </div>
@@ -111,53 +111,107 @@ export default function StudentProfile({ studentId, navigate }) {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '48px', alignItems: 'flex-start' }} className="student-profile-layout">
           
           {/* Left Panel: Bio & Contact */}
-          <div style={{ backgroundColor: '#FFFFFF', border: '0.5px solid var(--light-border)', borderRadius: '6px', padding: '32px' }}>
-            <h3 style={{ fontFamily: '"Playfair Display", serif', fontSize: '20px', fontWeight: 700, color: 'var(--text-ink)', marginBottom: '16px', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '8px' }}>
-              Über mich
-            </h3>
-            
-            <p style={{ fontSize: '13.5px', color: 'var(--text-charcoal)', lineHeight: 1.6, marginBottom: '24px' }}>
-              {profile.bio}
-            </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <div style={{ backgroundColor: '#FFFFFF', border: '0.5px solid var(--light-border)', borderRadius: '6px', padding: '32px' }}>
+              <h3 style={{ fontFamily: '"Playfair Display", serif', fontSize: '20px', fontWeight: 700, color: 'var(--text-ink)', marginBottom: '16px', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '8px' }}>
+                {t('Über mich', 'Über mich')}
+              </h3>
+              
+              <p style={{ fontSize: '13.5px', color: 'var(--text-charcoal)', lineHeight: 1.6, marginBottom: '24px' }}>
+                {t(profile.bio, profile.bio)}
+              </p>
 
-            <a 
-              href={profile.portfolio_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                color: 'var(--primary-red)',
-                fontSize: '13px',
-                fontWeight: 600,
-                textDecoration: 'none'
-              }}
-              className="portfolio-link"
-            >
-              <Globe size={16} />
-              <span>Externes Universitäts-Portfolio</span>
-              <ArrowRight size={14} />
-            </a>
+              {/* Contact Details */}
+              <div style={{ marginBottom: '24px', borderTop: '0.5px solid var(--light-border)', paddingTop: '16px', fontSize: '13px', color: 'var(--text-charcoal)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {profile.email && <div><strong>Email:</strong> {profile.email}</div>}
+                {profile.phone_number && <div><strong>Phone:</strong> {profile.phone_number}</div>}
+                {profile.birth_date && <div><strong>Birth Date:</strong> {profile.birth_date}</div>}
+              </div>
+              
+              <a 
+                href={profile.portfolio_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  color: 'var(--primary-red)',
+                  fontSize: '13px',
+                  fontWeight: 600,
+                  textDecoration: 'none'
+                }}
+                className="portfolio-link"
+              >
+                <Globe size={16} />
+                <span>{t('Externes Universitäts-Portfolio', 'Externes Universitäts-Portfolio')}</span>
+                <ArrowRight size={14} />
+              </a>
+            </div>
+
+            {/* Skills */}
+            {profile.skills && (
+              <div style={{ backgroundColor: '#FFFFFF', border: '0.5px solid var(--light-border)', borderRadius: '6px', padding: '32px' }}>
+                <h3 style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', fontWeight: 700, color: 'var(--text-ink)', marginBottom: '16px', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '8px' }}>
+                  {t('Fähigkeiten', 'Skills & Endorsements')}
+                </h3>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  {(() => {
+                    try {
+                      const parsed = JSON.parse(profile.skills || '[]');
+                      return parsed.map(s => (
+                        <span key={s} style={{ backgroundColor: 'var(--bg-ivory)', border: '0.5px solid var(--light-border)', padding: '4px 10px', borderRadius: '16px', fontSize: '11px', fontWeight: 500, color: 'var(--text-charcoal)' }}>
+                          {s}
+                        </span>
+                      ));
+                    } catch (e) { return null; }
+                  })()}
+                </div>
+              </div>
+            )}
 
             {/* Sidebar ad Zone C */}
             <AdSlot position="C" />
           </div>
 
-          {/* Right Panel: Authored Publications Portfolio */}
+          {/* Right Panel: Authored Publications Portfolio & Experience */}
           <div>
             
+            {/* Experience Section */}
+            {profile.experience && (
+              <div style={{ marginBottom: '40px', backgroundColor: '#FFFFFF', border: '0.5px solid var(--light-border)', borderRadius: '6px', padding: '32px' }}>
+                <h3 style={{ fontSize: '20px', fontFamily: '"Playfair Display", serif', fontWeight: 700, borderBottom: '0.5px solid var(--light-border)', paddingBottom: '12px', marginBottom: '20px' }}>
+                  {t('Berufserfahrung', 'Experience')}
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                  {(() => {
+                    try {
+                      const parsed = JSON.parse(profile.experience || '[]');
+                      if (parsed.length === 0) return <p style={{ fontSize: '13px', color: 'var(--text-charcoal)', fontStyle: 'italic' }}>No experiences listed yet.</p>;
+                      return parsed.map((exp, idx) => (
+                        <div key={idx}>
+                          <strong style={{ fontSize: '15px', color: 'var(--text-ink)', display: 'block' }}>{exp.role}</strong>
+                          <span style={{ fontSize: '12px', color: 'var(--primary-red)', fontWeight: 600, display: 'block', marginTop: '2px' }}>{exp.company} · {exp.duration}</span>
+                          {exp.description && <p style={{ fontSize: '13px', color: 'var(--text-charcoal)', margin: '8px 0 0', lineHeight: 1.5 }}>{exp.description}</p>}
+                        </div>
+                      ));
+                    } catch (e) { return null; }
+                  })()}
+                </div>
+              </div>
+            )}
+
             {/* Written Publications */}
             <div style={{ marginBottom: '40px' }}>
               <div style={{ borderBottom: '0.5px solid var(--light-border)', paddingBottom: '12px', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <BookOpen size={18} style={{ color: 'var(--primary-red)' }} />
                 <h3 style={{ fontSize: '20px', fontFamily: '"Playfair Display", serif', fontWeight: 700, margin: 0 }}>
-                  Publikationen & Analysen
+                  {t('Publikationen & Analysen', 'Publikationen & Analysen')}
                 </h3>
               </div>
 
               {profile.articles.length === 0 ? (
-                <p style={{ fontSize: '13px', color: 'var(--text-charcoal)', fontStyle: 'italic' }}>Noch keine schriftlichen Wirtschaftsanalysen veröffentlicht.</p>
+                <p style={{ fontSize: '13px', color: 'var(--text-charcoal)', fontStyle: 'italic' }}>{t('Noch keine schriftlichen Wirtschaftsanalysen veröffentlicht.', 'Noch keine schriftlichen Wirtschaftsanalysen veröffentlicht.')}</p>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                   {profile.articles.map(art => (
@@ -178,10 +232,10 @@ export default function StudentProfile({ studentId, navigate }) {
                     >
                       <div>
                         <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--primary-red)', letterSpacing: '0.05em', fontWeight: 600, display: 'block', marginBottom: '4px' }}>
-                          {art.category}
+                          {t(art.category, art.category)}
                         </span>
                         <h4 style={{ fontSize: '15px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: 'var(--text-ink)', margin: 0 }}>
-                          {art.title}
+                          {t(art.title, art.title)}
                         </h4>
                         <span style={{ fontSize: '11px', color: 'var(--text-charcoal)', fontFamily: 'var(--font-mono)', display: 'block', marginTop: '6px' }}>
                           {art.date_published}
@@ -199,12 +253,12 @@ export default function StudentProfile({ studentId, navigate }) {
               <div style={{ borderBottom: '0.5px solid var(--light-border)', paddingBottom: '12px', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Mic size={18} style={{ color: 'var(--primary-red)' }} />
                 <h3 style={{ fontSize: '20px', fontFamily: '"Playfair Display", serif', fontWeight: 700, margin: 0 }}>
-                  Audio Briefings & Podcasts
+                  {t('Audio Briefings & Podcasts', 'Audio Briefings & Podcasts')}
                 </h3>
               </div>
 
               {profile.podcasts.length === 0 ? (
-                <p style={{ fontSize: '13px', color: 'var(--text-charcoal)', fontStyle: 'italic' }}>Noch keine Audio-Podcasts oder Interviews aufgezeichnet.</p>
+                <p style={{ fontSize: '13px', color: 'var(--text-charcoal)', fontStyle: 'italic' }}>{t('Noch keine Audio-Podcasts oder Interviews aufgezeichnet.', 'Noch keine Audio-Podcasts oder Interviews aufgezeichnet.')}</p>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                   {profile.podcasts.map(pod => (
@@ -225,13 +279,13 @@ export default function StudentProfile({ studentId, navigate }) {
                     >
                       <div>
                         <span style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--primary-red)', letterSpacing: '0.05em', fontWeight: 600, display: 'block', marginBottom: '4px' }}>
-                          {pod.category}
+                          {t(pod.category, pod.category)}
                         </span>
                         <h4 style={{ fontSize: '15px', fontFamily: '"Playfair Display", serif', fontWeight: 700, color: 'var(--text-ink)', margin: 0 }}>
-                          {pod.title}
+                          {t(pod.title, pod.title)}
                         </h4>
                         <p style={{ fontSize: '12px', color: 'var(--text-charcoal)', margin: '4px 0 8px', lineHeight: 1.4 }}>
-                          {pod.subtitle}
+                          {t(pod.subtitle, pod.subtitle)}
                         </p>
                         <span style={{ fontSize: '11px', color: 'var(--text-charcoal)', fontFamily: 'var(--font-mono)' }}>
                           {pod.date_published}

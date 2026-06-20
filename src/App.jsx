@@ -13,16 +13,20 @@ import Interviews from './pages/Interviews';
 import Auth from './pages/Auth';
 import Careers from './pages/Careers';
 import StudentProfile from './pages/StudentProfile';
+import StudentDashboard from './pages/StudentDashboard';
 import CompanyCard from './components/CompanyCard';
 import HomepageGraphics from './components/HomepageGraphics';
 import { Landmark, ArrowRight, ShieldCheck } from 'lucide-react';
 
 function AppContent() {
-  const { t, isRtl } = useLanguage();
+  const { t, isRtl, switchLanguage } = useLanguage();
   const [hash, setHash] = useState(window.location.hash || '#/');
   const [transitioning, setTransitioning] = useState(false);
   const [homeFeatured, setHomeFeatured] = useState([]);
   const [homeNews, setHomeNews] = useState([]);
+
+  // Mock logged-in student session state (e.g. Lukas Keller with ID 2)
+  const [currentStudentId, setCurrentStudentId] = useState('2');
 
   // Hash Routing Parser
   useEffect(() => {
@@ -99,6 +103,7 @@ function AppContent() {
     }
     if (path === '/podcasts') return { route: 'podcasts', params: query };
     if (path === '/karriere') return { route: 'careers', params: query };
+    if (path === '/student-dashboard') return { route: 'student-dashboard', params: query };
     if (path.startsWith('/student/')) {
       const id = path.split('/')[2];
       return { route: 'student-profile', id, params: query };
@@ -137,9 +142,9 @@ function AppContent() {
       {routeInfo.route === 'home' && (
         <div className="breaking-banner">
           <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <span className="breaking-label">Eilmeldung</span>
+            <span className="breaking-label">{t('breaking_news', 'Eilmeldung')}</span>
             <marquee scrollamount="4" style={{ fontFamily: 'Inter, sans-serif', fontSize: '12px' }}>
-              +++ Schweizer Bundesrat kündigt steuerliche Entlastungen für private R&D-Hubs an +++ Nestlé weitet Nachhaltigkeitsaudits in landwirtschaftlichen Lieferketten aus +++ UBS erhält Freigabe für Pilotprojekt zu tokenisierten Anleihen in Genf +++
+              {t('marquee_text', '+++ Swiss Federal Council announces tax relief for private R&D hubs +++ Nestlé expands sustainability audits across agricultural supply chains +++ UBS receives approval for tokenized bond pilot project in Geneva +++')}
             </marquee>
           </div>
         </div>
@@ -171,14 +176,14 @@ function AppContent() {
               <div style={{ marginTop: '48px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '12px', marginBottom: '24px' }}>
                   <h2 style={{ fontSize: '24px', fontFamily: '"Playfair Display", serif', fontWeight: 700 }}>
-                    Premium Business Spotlight
+                    {t('spotlight_title', 'Premium Business Spotlight')}
                   </h2>
                   <a 
                     href="#/unternehmen" 
                     onClick={(e) => { e.preventDefault(); navigate('/unternehmen'); }}
                     style={{ fontSize: '13px', color: 'var(--primary-red)', textDecoration: 'none', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}
                   >
-                    <span>Verzeichnis öffnen</span>
+                    <span>{t('open_directory', 'Verzeichnis öffnen')}</span>
                     <ArrowRight size={14} />
                   </a>
                 </div>
@@ -205,7 +210,7 @@ function AppContent() {
                 {/* News feed column */}
                 <div>
                   <h2 style={{ fontSize: '24px', fontFamily: '"Playfair Display", serif', fontWeight: 700, borderBottom: '0.5px solid var(--light-border)', paddingBottom: '12px', marginBottom: '24px' }}>
-                    Wirtschaftsanalysen & Berichte
+                    {t('news_title', 'Wirtschaftsanalysen & Berichte')}
                   </h2>
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -245,17 +250,17 @@ function AppContent() {
                   >
                     <Landmark size={32} style={{ color: 'var(--primary-red)', marginBottom: '16px' }} />
                     <h3 style={{ fontFamily: '"Playfair Display", serif', fontSize: '20px', color: '#FFFDF7', marginBottom: '8px', fontWeight: 700 }}>
-                      B2B Vertrauensindex
+                      {t('b2b_index_title', 'B2B Vertrauensindex')}
                     </h3>
                     <p style={{ fontSize: '12px', color: '#888888', lineHeight: 1.6, marginBottom: '20px' }}>
-                      Zefix-verifizierte Profile sorgen für Transparenz und direkte Vertrauensbildung mit internationalen Handelspartnern im Schweizer B2B-Markt.
+                      {t('b2b_index_desc', 'Zefix-verifizierte Profile sorgen für Transparenz und direkte Vertrauensbildung mit internationalen Handelspartnern im Schweizer B2B-Markt.')}
                     </p>
                     <button 
                       className="btn btn-gold-fill" 
                       style={{ fontSize: '11px', padding: '8px 16px', width: '100%', minHeight: '36px' }}
                       onClick={() => navigate('/unternehmen')}
                     >
-                      Dossier-Index durchsuchen
+                      {t('search_dossier', 'Dossier-Index durchsuchen')}
                     </button>
                   </div>
                   
@@ -362,6 +367,11 @@ function AppContent() {
           <StudentProfile studentId={routeInfo.id} navigate={navigate} />
         )}
 
+        {/* ROUTE: STUDENT DASHBOARD */}
+        {routeInfo.route === 'student-dashboard' && (
+          <StudentDashboard studentId={currentStudentId} navigate={navigate} />
+        )}
+
         {/* ROUTE: LOGIN */}
         {routeInfo.route === 'login' && (
           <Auth mode="login" navigate={navigate} />
@@ -407,36 +417,36 @@ function AppContent() {
                 privatesector<span style={{ color: '#8B0000' }}>.ch</span>
               </div>
               <p style={{ color: '#888888', fontSize: '12px', lineHeight: 1.5 }}>
-                Schweizer Wirtschafts- und B2B-Datenplattform. Verifizierte Informationen zu Unternehmen, Marktzahlen und Analysen.
+                {t('footer_desc', 'Swiss business and B2B data platform. Verified information on companies, market data, and analyses.')}
               </p>
             </div>
             
             <div>
-              <strong style={{ color: 'var(--primary-red)', display: 'block', marginBottom: '16px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Verzeichnis</strong>
-              <a href="#/unternehmen" onClick={(e) => { e.preventDefault(); navigate('/unternehmen'); }} style={{ color: '#888888', textDecoration: 'none', display: 'block', margin: '8px 0' }}>Unternehmen suchen</a>
-              <a href="#/unternehmen" onClick={(e) => { e.preventDefault(); navigate('/unternehmen?verified=true'); }} style={{ color: '#888888', textDecoration: 'none', display: 'block', margin: '8px 0' }}>Verifizierte Partner</a>
+              <strong style={{ color: 'var(--primary-red)', display: 'block', marginBottom: '16px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{t('footer_directory', 'Directory')}</strong>
+              <a href="#/unternehmen" onClick={(e) => { e.preventDefault(); navigate('/unternehmen'); }} style={{ color: '#888888', textDecoration: 'none', display: 'block', margin: '8px 0' }}>{t('footer_search_companies', 'Search Companies')}</a>
+              <a href="#/unternehmen" onClick={(e) => { e.preventDefault(); navigate('/unternehmen?verified=true'); }} style={{ color: '#888888', textDecoration: 'none', display: 'block', margin: '8px 0' }}>{t('footer_verified_partners', 'Verified Partners')}</a>
             </div>
 
             <div>
-              <strong style={{ color: 'var(--primary-red)', display: 'block', marginBottom: '16px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Redaktion</strong>
-              <a href="#/news" onClick={(e) => { e.preventDefault(); navigate('/news'); }} style={{ color: '#888888', textDecoration: 'none', display: 'block', margin: '8px 0' }}>Wirtschaftsberichte</a>
-              <a href="#/interviews" onClick={(e) => { e.preventDefault(); navigate('/interviews'); }} style={{ color: '#888888', textDecoration: 'none', display: 'block', margin: '8px 0' }}>CEO-Interviews</a>
-              <a href="#/podcasts" onClick={(e) => { e.preventDefault(); navigate('/podcasts'); }} style={{ color: '#888888', textDecoration: 'none', display: 'block', margin: '8px 0' }}>Wirtschafts-Podcasts</a>
+              <strong style={{ color: 'var(--primary-red)', display: 'block', marginBottom: '16px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{t('footer_editorial', 'Editorial')}</strong>
+              <a href="#/news" onClick={(e) => { e.preventDefault(); navigate('/news'); }} style={{ color: '#888888', textDecoration: 'none', display: 'block', margin: '8px 0' }}>{t('footer_reports', 'Business Reports')}</a>
+              <a href="#/interviews" onClick={(e) => { e.preventDefault(); navigate('/interviews'); }} style={{ color: '#888888', textDecoration: 'none', display: 'block', margin: '8px 0' }}>{t('footer_ceo_interviews', 'CEO Interviews')}</a>
+              <a href="#/podcasts" onClick={(e) => { e.preventDefault(); navigate('/podcasts'); }} style={{ color: '#888888', textDecoration: 'none', display: 'block', margin: '8px 0' }}>{t('footer_podcasts', 'Business Podcasts')}</a>
             </div>
 
             <div>
-              <strong style={{ color: 'var(--primary-red)', display: 'block', marginBottom: '16px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Konsole</strong>
+              <strong style={{ color: 'var(--primary-red)', display: 'block', marginBottom: '16px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{t('footer_console', 'Console')}</strong>
               <a href="#/admin" onClick={(e) => { e.preventDefault(); navigate('/admin'); }} style={{ color: '#888888', textDecoration: 'none', display: 'block', margin: '8px 0' }}>Admin Dashboard</a>
-              <a href="#/statistiken" onClick={(e) => { e.preventDefault(); navigate('/statistiken'); }} style={{ color: '#888888', textDecoration: 'none', display: 'block', margin: '8px 0' }}>Statistiken & heatmaps</a>
+              <a href="#/statistiken" onClick={(e) => { e.preventDefault(); navigate('/statistiken'); }} style={{ color: '#888888', textDecoration: 'none', display: 'block', margin: '8px 0' }}>{t('footer_stats_heatmaps', 'Statistics & Heatmaps')}</a>
             </div>
           </div>
 
           {/* 18 Languages Flag Grid */}
           <div style={{ maxWidth: '1280px', margin: '0 auto 32px', borderTop: '0.5px solid #2A2A2A', paddingTop: '24px' }}>
-            <span style={{ fontSize: '10px', color: '#888888', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '12px' }}>Supported Languages</span>
+            <span style={{ fontSize: '10px', color: '#888888', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '12px' }}>{t('footer_supported_langs', 'Supported Languages')}</span>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px 18px', fontSize: '11px', color: '#888888' }}>
               {footerFlags.map(f => (
-                <div key={f.code} style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }} onClick={() => navigate('/register')}>
+                <div key={f.code} style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }} onClick={() => switchLanguage(f.code.toLowerCase())}>
                   <span>{f.flag}</span>
                   <span>{f.code}</span>
                 </div>
@@ -445,8 +455,8 @@ function AppContent() {
           </div>
 
           <div style={{ maxWidth: '1280px', margin: '0 auto', borderTop: '0.5px solid #2A2A2A', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', color: '#666666', fontSize: '11px' }}>
-            <span>&copy; 2026 privatesector.vitalswiss.ch. Alle Rechte vorbehalten.</span>
-            <span>Konform mit DSGVO & Schweizer Datenschutzgesetz 🇨🇭</span>
+            <span>{t('footer_rights', '© 2026 privatesector.vitalswiss.ch. All rights reserved.')}</span>
+            <span>{t('footer_compliance', 'GDPR & Swiss Data Protection Act compliant 🇨🇭')}</span>
           </div>
         </footer>
       )}

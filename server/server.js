@@ -406,6 +406,11 @@ app.post('/api/admin/translations/auto-translate-all', async (req, res) => {
       const engRow = await dbGet('SELECT translated_text FROM translations WHERE language_code = "en" AND key = ?', [row.key]);
       const engText = engRow ? engRow.translated_text : row.translated_text;
       
+      // Skip if we already have a real translation (different from English fallback)
+      if (row.translated_text && row.translated_text !== engText) {
+        continue;
+      }
+      
       let translated = engText;
       // Mock translations to look realistic
       if (row.language_code === 'ar') translated = `[ar-auto] ${engText}`;
@@ -480,6 +485,49 @@ app.get('/api/students/:id', async (req, res) => {
       articles,
       podcasts
     });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Update student profile
+app.put('/api/students/:id', async (req, res) => {
+  try {
+    const { bio, university, study_field, grad_year, email, phone_number, birth_date, skills, experience, portfolio_url, avatar } = req.body;
+    await dbRun(
+      `UPDATE student_profiles SET bio = ?, university = ?, study_field = ?, grad_year = ?, email = ?, phone_number = ?, birth_date = ?, skills = ?, experience = ?, portfolio_url = ?, avatar = ? WHERE id = ?`,
+      [bio, university, study_field, parseInt(grad_year), email, phone_number, birth_date, JSON.stringify(skills), JSON.stringify(experience), portfolio_url, avatar, req.params.id]
+    );
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Create new news article by a student
+app.post('/api/news', async (req, res) => {
+  try {
+    const { title, subtitle, category, author_name, author_avatar, content_body, pull_quote, tags, image_url, student_author_id } = req.body;
+    
+    const result = await dbRun(
+      `INSERT INTO news (title, subtitle, category, author_name, author_avatar, date_published, read_time_mins, content_body, pull_quote, tags, image_url, student_author_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        title, 
+        subtitle, 
+        category || 'University Perspective', 
+        author_name, 
+        author_avatar || 'https://i.pravatar.cc/100?img=33', 
+        new Date().toISOString().split('T')[0], 
+        Math.max(1, Math.round(content_body.split(/\s+/).length / 200)), 
+        content_body, 
+        pull_quote || '', 
+        JSON.stringify(tags || []), 
+        image_url || 'https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?auto=format&fit=crop&q=80&w=600',
+        student_author_id
+      ]
+    );
+    res.json({ success: true, id: result.id });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
