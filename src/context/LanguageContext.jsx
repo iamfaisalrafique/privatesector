@@ -6,21 +6,7 @@ export const LANGUAGES = [
   { code: 'de', label: 'Deutsch', native: 'Deutsch', flag: '🇩🇪' },
   { code: 'fr', label: 'Français', native: 'Français', flag: '🇫🇷' },
   { code: 'en', label: 'English', native: 'English', flag: '🇬🇧' },
-  { code: 'it', label: 'Italiano', native: 'Italiano', flag: '🇮🇹' },
-  { code: 'rm', label: 'Rumantsch', native: 'Rumantsch', flag: '🇨🇭' },
-  { code: 'es', label: 'Español', native: 'Español', flag: '🇪🇸' },
-  { code: 'pt', label: 'Português', native: 'Português', flag: '🇵🇹' },
-  { code: 'ar', label: 'العربية', native: 'العربية', flag: '🇸🇦', rtl: true },
-  { code: 'zh', label: 'Chinese', native: '中文', flag: '🇨🇳' },
-  { code: 'ru', label: 'Russian', native: 'Русский', flag: '🇷🇺' },
-  { code: 'ja', label: 'Japanese', native: '日本語', flag: '🇯🇵' },
-  { code: 'tr', label: 'Turkish', native: 'Türkçe', flag: '🇹🇷' },
-  { code: 'nl', label: 'Dutch', native: 'Nederlands', flag: '🇳🇱' },
-  { code: 'pl', label: 'Polish', native: 'Polski', flag: '🇵🇱' },
-  { code: 'ko', label: 'Korean', native: '한국어', flag: '🇰🇷' },
-  { code: 'sv', label: 'Swedish', native: 'Svenska', flag: '🇸🇪' },
-  { code: 'da', label: 'Danish', native: 'Dansk', flag: '🇩🇰' },
-  { code: 'fi', label: 'Finnish', native: 'Suomi', flag: '🇫🇮' }
+  { code: 'ar', label: 'العربية', native: 'العربية', flag: '🇸🇦', rtl: true }
 ];
 
 export const LanguageProvider = ({ children }) => {

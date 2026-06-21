@@ -2131,7 +2131,7 @@ async function autoTranslateDatabaseContent() {
 
   console.log(`Auto-translation scanner found ${stringsToTranslate.size} unique database strings to translate.`);
 
-  const languages = ['de', 'fr', 'en', 'it', 'rm', 'es', 'pt', 'ar', 'zh', 'ru', 'ja', 'tr', 'nl', 'pl', 'ko', 'sv', 'da', 'fi'];
+  const languages = ['de', 'fr', 'en', 'ar'];
 
   // 1. Gather all API translation tasks that are not yet cached
   const apiTasks = [];

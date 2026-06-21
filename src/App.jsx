@@ -14,6 +14,7 @@ import Auth from './pages/Auth';
 import Careers from './pages/Careers';
 import StudentProfile from './pages/StudentProfile';
 import StudentDashboard from './pages/StudentDashboard';
+import Rankings from './pages/Rankings';
 import CompanyCard from './components/CompanyCard';
 import HomepageGraphics from './components/HomepageGraphics';
 import { Landmark, ArrowRight, ShieldCheck } from 'lucide-react';
@@ -103,6 +104,7 @@ function AppContent() {
     }
     if (path === '/podcasts') return { route: 'podcasts', params: query };
     if (path === '/karriere') return { route: 'careers', params: query };
+    if (path === '/ranking') return { route: 'ranking', params: query };
     if (path === '/student-dashboard') return { route: 'student-dashboard', params: query };
     if (path.startsWith('/student/')) {
       const id = path.split('/')[2];
@@ -117,13 +119,9 @@ function AppContent() {
 
   const routeInfo = getRouteInfo();
 
-  // Flag grid list for 18 languages in footer
+  // Flag grid list for 4 languages in footer
   const footerFlags = [
-    { code: 'DE', flag: '🇩🇪' }, { code: 'FR', flag: '🇫🇷' }, { code: 'EN', flag: '🇬🇧' }, { code: 'IT', flag: '🇮🇹' },
-    { code: 'RM', flag: '🇨🇭' }, { code: 'ES', flag: '🇪🇸' }, { code: 'PT', flag: '🇵🇹' }, { code: 'AR', flag: '🇸🇦' },
-    { code: 'ZH', flag: '🇨🇳' }, { code: 'RU', flag: '🇷🇺' }, { code: 'JA', flag: '🇯🇵' }, { code: 'TR', flag: '🇹🇷' },
-    { code: 'NL', flag: '🇳🇱' }, { code: 'PL', flag: '🇵🇱' }, { code: 'KO', flag: '🇰🇷' }, { code: 'SV', flag: '🇸🇪' },
-    { code: 'DA', flag: '🇩🇰' }, { code: 'FI', flag: '🇫🇮' }
+    { code: 'DE', flag: '🇩🇪' }, { code: 'FR', flag: '🇫🇷' }, { code: 'EN', flag: '🇬🇧' }, { code: 'AR', flag: '🇸🇦' }
   ];
 
   const hideHeaderFooter = routeInfo.route === 'admin' || routeInfo.route === 'login' || routeInfo.route === 'register';
@@ -360,6 +358,11 @@ function AppContent() {
         {/* ROUTE: CAREERS */}
         {routeInfo.route === 'careers' && (
           <Careers navigate={navigate} />
+        )}
+
+        {/* ROUTE: RANKINGS */}
+        {routeInfo.route === 'ranking' && (
+          <Rankings selectCompany={(id) => navigate(`/unternehmen/${id}`)} />
         )}
 
         {/* ROUTE: STUDENT PROFILE */}

@@ -27,7 +27,8 @@ export default function Navbar({ currentPath, navigate }) {
     { label: t('nav_statistics', 'Statistiken'), path: '/statistiken' },
     { label: t('nav_interviews', 'Interviews'), path: '/interviews' },
     { label: t('nav_podcasts', 'Podcasts'), path: '/podcasts' },
-    { label: t('nav_careers', 'Talent & Ranking'), path: '/karriere' }
+    { label: t('nav_talent', 'Talent'), path: '/karriere' },
+    { label: t('nav_ranking', 'Ranking'), path: '/ranking' }
   ];
 
   const handleSearchSubmit = (e) => {
@@ -360,7 +361,7 @@ export default function Navbar({ currentPath, navigate }) {
           style={{ background: 'none', border: 'none', color: currentPath === '/karriere' ? 'var(--primary-red)' : '#888888', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '9px', gap: '3px', cursor: 'pointer' }}
         >
           <GraduationCap size={18} />
-          <span>{t('nav_careers', 'Talent & Ranking')}</span>
+          <span>{t('nav_talent', 'Talent')}</span>
         </button>
       </div>
     </>
