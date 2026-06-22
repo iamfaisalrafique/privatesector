@@ -33,16 +33,34 @@ function AppContent() {
   useEffect(() => {
     const handleHashChange = () => {
       setTransitioning(true);
+      const currentHash = window.location.hash || '#/';
+      let cleanHash = currentHash.replace('#', '');
+      if (!cleanHash.startsWith('/')) {
+        cleanHash = '/' + cleanHash;
+      }
+      const [rawPath] = cleanHash.split('?');
+      const parts = rawPath.split('/').filter(Boolean);
+      const validLangs = ['de', 'fr', 'en', 'ar'];
+      
+      if (parts.length === 0 || !validLangs.includes(parts[0])) {
+        const cleanPath = rawPath === '/' ? '' : rawPath;
+        const q = currentHash.includes('?') ? '?' + currentHash.split('?')[1] : '';
+        window.location.hash = `#/${currentLang}${cleanPath}${q}`;
+        return;
+      }
+
       setTimeout(() => {
-        setHash(window.location.hash || '#/');
+        setHash(currentHash);
         setTransitioning(false);
         window.scrollTo(0, 0);
       }, 150);
     };
 
     window.addEventListener('hashchange', handleHashChange);
+    handleHashChange();
+    
     return () => window.removeEventListener('hashchange', handleHashChange);
-  }, []);
+  }, [currentLang]);
 
   // Fetch Homepage feeds
   useEffect(() => {
@@ -67,13 +85,17 @@ function AppContent() {
   }, []);
 
   const navigate = (path) => {
-    window.location.hash = `#${path}`;
+    const cleanPath = path.startsWith('/') ? path : '/' + path;
+    window.location.hash = `#/${currentLang}${cleanPath === '/' ? '' : cleanPath}`;
   };
 
   // Helper route decoders
   const getRouteInfo = () => {
-    const cleanHash = hash.replace('#', '');
-    const [path, queryStr] = cleanHash.split('?');
+    let cleanHash = hash.replace('#', '');
+    if (!cleanHash.startsWith('/')) {
+      cleanHash = '/' + cleanHash;
+    }
+    const [rawPath, queryStr] = cleanHash.split('?');
     
     // Parse query params
     const query = {};
@@ -82,6 +104,14 @@ function AppContent() {
         const [k, v] = param.split('=');
         query[k] = decodeURIComponent(v || '');
       });
+    }
+
+    // Extract language code prefix if present
+    const parts = rawPath.split('/').filter(Boolean);
+    const validLangs = ['de', 'fr', 'en', 'ar'];
+    let path = rawPath;
+    if (parts.length > 0 && validLangs.includes(parts[0])) {
+      path = '/' + parts.slice(1).join('/');
     }
 
     // Match patterns
