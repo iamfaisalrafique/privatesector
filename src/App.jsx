@@ -20,7 +20,7 @@ import HomepageGraphics from './components/HomepageGraphics';
 import { Landmark, ArrowRight, ShieldCheck } from 'lucide-react';
 
 function AppContent() {
-  const { t, isRtl, switchLanguage } = useLanguage();
+  const { t, isRtl, switchLanguage, currentLang } = useLanguage();
   const [hash, setHash] = useState(window.location.hash || '#/');
   const [transitioning, setTransitioning] = useState(false);
   const [homeFeatured, setHomeFeatured] = useState([]);
