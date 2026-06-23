@@ -30,3 +30,7 @@ dist-ssr
 *.ogg
 *.wav
 *.mp3
+
+# Cache files
+server/translations_cache.json
+
