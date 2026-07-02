@@ -44,7 +44,7 @@ export default function Navbar({ currentPath, navigate }) {
       {/* Top Sticky Dark Navbar */}
       <nav 
         style={{
-          backgroundColor: '#0A0A0A',
+          backgroundColor: '#f3f4f6',
           height: '64px',
           display: 'flex',
           alignItems: 'center',
@@ -104,7 +104,7 @@ export default function Navbar({ currentPath, navigate }) {
                 }}
                 className={`nav-link ${currentPath === item.path ? 'active' : ''}`}
                 style={{
-                  color: currentPath === item.path ? 'var(--primary-red)' : '#888888',
+                  color: currentPath === item.path ? 'var(--primary-red)' : '#4b5563',
                   fontFamily: 'Inter, sans-serif',
                   fontSize: '14px',
                   fontWeight: 500
@@ -161,7 +161,7 @@ export default function Navbar({ currentPath, navigate }) {
               style={{ 
                 background: 'none', 
                 border: 'none', 
-                color: '#FFFFFF', 
+                color: '#374151', 
                 cursor: 'pointer', 
                 fontFamily: 'Inter, sans-serif',
                 fontSize: '13px',

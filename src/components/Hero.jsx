@@ -329,10 +329,9 @@ export default function Hero({ navigate }) {
         </div>
       </div>
 
-      {/* Bottom Ticker Stats Strip */}
       <div 
         style={{
-          backgroundColor: '#000000',
+          backgroundColor: '#e5e7eb',
           padding: '16px 0',
           borderTop: '1.5px solid var(--primary-red)'
         }}
@@ -352,7 +351,7 @@ export default function Hero({ navigate }) {
               <span 
                 style={{ 
                   fontFamily: 'var(--font-mono)', 
-                  color: '#FFFFFF', 
+                  color: '#111827', 
                   fontSize: '16px', 
                   fontWeight: 700 
                 }}
@@ -372,7 +371,7 @@ export default function Hero({ navigate }) {
                 {st.label}
               </span>
               {idx < stats.length - 1 && (
-                <span style={{ color: 'rgba(255, 255, 255, 0.2)', marginLeft: '16px' }} className="desktop-only">·</span>
+                <span style={{ color: 'rgba(0, 0, 0, 0.2)', marginLeft: '16px' }} className="desktop-only">·</span>
               )}
             </div>
           ))}

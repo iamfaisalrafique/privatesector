@@ -269,18 +269,19 @@ function AppContent() {
                 <div className="desktop-only">
                   <div 
                     style={{ 
-                      backgroundColor: '#1A1A1A', 
-                      color: '#FFFFFF', 
+                      backgroundColor: '#ffffff', 
+                      color: '#374151', 
                       padding: '24px', 
                       borderRadius: '6px',
-                      borderTop: '4px solid var(--primary-red)'
+                      borderTop: '4px solid var(--primary-red)',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
                     }}
                   >
                     <Landmark size={32} style={{ color: 'var(--primary-red)', marginBottom: '16px' }} />
-                    <h3 style={{ fontFamily: '"Playfair Display", serif', fontSize: '20px', color: '#FFFDF7', marginBottom: '8px', fontWeight: 700 }}>
+                    <h3 style={{ fontFamily: '"Playfair Display", serif', fontSize: '20px', color: '#111827', marginBottom: '8px', fontWeight: 700 }}>
                       {t('b2b_index_title', 'B2B Vertrauensindex')}
                     </h3>
-                    <p style={{ fontSize: '12px', color: '#888888', lineHeight: 1.6, marginBottom: '20px' }}>
+                    <p style={{ fontSize: '12px', color: '#4b5563', lineHeight: 1.6, marginBottom: '20px' }}>
                       {t('b2b_index_desc', 'Zefix-verifizierte Profile sorgen für Transparenz und direkte Vertrauensbildung mit internationalen Handelspartnern im Schweizer B2B-Markt.')}
                     </p>
                     <button 
@@ -426,9 +427,9 @@ function AppContent() {
       {!hideHeaderFooter && (
         <footer 
           style={{
-            backgroundColor: '#0A0A0A',
+            backgroundColor: '#f3f4f6',
             borderTop: '1px solid rgba(191, 155, 48, 0.4)',
-            color: '#FFFDF7',
+            color: '#374151',
             padding: '64px 24px 80px',
             fontSize: '13px',
             fontFamily: 'Inter, sans-serif'
@@ -449,35 +450,35 @@ function AppContent() {
               <div style={{ fontFamily: '"Playfair Display", serif', fontSize: '22px', fontWeight: 700, color: 'var(--primary-red)', marginBottom: '12px' }}>
                 privatesector<span style={{ color: '#8B0000' }}>.ch</span>
               </div>
-              <p style={{ color: '#888888', fontSize: '12px', lineHeight: 1.5 }}>
+              <p style={{ color: '#4b5563', fontSize: '12px', lineHeight: 1.5 }}>
                 {t('footer_desc', 'Swiss business and B2B data platform. Verified information on companies, market data, and analyses.')}
               </p>
             </div>
             
             <div>
               <strong style={{ color: 'var(--primary-red)', display: 'block', marginBottom: '16px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{t('footer_directory', 'Directory')}</strong>
-              <a href="#/unternehmen" onClick={(e) => { e.preventDefault(); navigate('/unternehmen'); }} style={{ color: '#888888', textDecoration: 'none', display: 'block', margin: '8px 0' }}>{t('footer_search_companies', 'Search Companies')}</a>
-              <a href="#/unternehmen" onClick={(e) => { e.preventDefault(); navigate('/unternehmen?verified=true'); }} style={{ color: '#888888', textDecoration: 'none', display: 'block', margin: '8px 0' }}>{t('footer_verified_partners', 'Verified Partners')}</a>
+              <a href="#/unternehmen" onClick={(e) => { e.preventDefault(); navigate('/unternehmen'); }} style={{ color: '#4b5563', textDecoration: 'none', display: 'block', margin: '8px 0' }}>{t('footer_search_companies', 'Search Companies')}</a>
+              <a href="#/unternehmen" onClick={(e) => { e.preventDefault(); navigate('/unternehmen?verified=true'); }} style={{ color: '#4b5563', textDecoration: 'none', display: 'block', margin: '8px 0' }}>{t('footer_verified_partners', 'Verified Partners')}</a>
             </div>
 
             <div>
               <strong style={{ color: 'var(--primary-red)', display: 'block', marginBottom: '16px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{t('footer_editorial', 'Editorial')}</strong>
-              <a href="#/news" onClick={(e) => { e.preventDefault(); navigate('/news'); }} style={{ color: '#888888', textDecoration: 'none', display: 'block', margin: '8px 0' }}>{t('footer_reports', 'Business Reports')}</a>
-              <a href="#/interviews" onClick={(e) => { e.preventDefault(); navigate('/interviews'); }} style={{ color: '#888888', textDecoration: 'none', display: 'block', margin: '8px 0' }}>{t('footer_ceo_interviews', 'CEO Interviews')}</a>
-              <a href="#/podcasts" onClick={(e) => { e.preventDefault(); navigate('/podcasts'); }} style={{ color: '#888888', textDecoration: 'none', display: 'block', margin: '8px 0' }}>{t('footer_podcasts', 'Business Podcasts')}</a>
+              <a href="#/news" onClick={(e) => { e.preventDefault(); navigate('/news'); }} style={{ color: '#4b5563', textDecoration: 'none', display: 'block', margin: '8px 0' }}>{t('footer_reports', 'Business Reports')}</a>
+              <a href="#/interviews" onClick={(e) => { e.preventDefault(); navigate('/interviews'); }} style={{ color: '#4b5563', textDecoration: 'none', display: 'block', margin: '8px 0' }}>{t('footer_ceo_interviews', 'CEO Interviews')}</a>
+              <a href="#/podcasts" onClick={(e) => { e.preventDefault(); navigate('/podcasts'); }} style={{ color: '#4b5563', textDecoration: 'none', display: 'block', margin: '8px 0' }}>{t('footer_podcasts', 'Business Podcasts')}</a>
             </div>
 
             <div>
               <strong style={{ color: 'var(--primary-red)', display: 'block', marginBottom: '16px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{t('footer_console', 'Console')}</strong>
-              <a href="#/admin" onClick={(e) => { e.preventDefault(); navigate('/admin'); }} style={{ color: '#888888', textDecoration: 'none', display: 'block', margin: '8px 0' }}>Admin Dashboard</a>
-              <a href="#/statistiken" onClick={(e) => { e.preventDefault(); navigate('/statistiken'); }} style={{ color: '#888888', textDecoration: 'none', display: 'block', margin: '8px 0' }}>{t('footer_stats_heatmaps', 'Statistics & Heatmaps')}</a>
+              <a href="#/admin" onClick={(e) => { e.preventDefault(); navigate('/admin'); }} style={{ color: '#4b5563', textDecoration: 'none', display: 'block', margin: '8px 0' }}>Admin Dashboard</a>
+              <a href="#/statistiken" onClick={(e) => { e.preventDefault(); navigate('/statistiken'); }} style={{ color: '#4b5563', textDecoration: 'none', display: 'block', margin: '8px 0' }}>{t('footer_stats_heatmaps', 'Statistics & Heatmaps')}</a>
             </div>
           </div>
 
           {/* 18 Languages Flag Grid */}
-          <div style={{ maxWidth: '1280px', margin: '0 auto 32px', borderTop: '0.5px solid #2A2A2A', paddingTop: '24px' }}>
-            <span style={{ fontSize: '10px', color: '#888888', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '12px' }}>{t('footer_supported_langs', 'Supported Languages')}</span>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px 18px', fontSize: '11px', color: '#888888' }}>
+          <div style={{ maxWidth: '1280px', margin: '0 auto 32px', borderTop: '0.5px solid #d1d5db', paddingTop: '24px' }}>
+            <span style={{ fontSize: '10px', color: '#4b5563', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '12px' }}>{t('footer_supported_langs', 'Supported Languages')}</span>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px 18px', fontSize: '11px', color: '#4b5563' }}>
               {footerFlags.map(f => (
                 <div key={f.code} style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }} onClick={() => switchLanguage(f.code.toLowerCase())}>
                   <span>{f.flag}</span>
@@ -487,7 +488,7 @@ function AppContent() {
             </div>
           </div>
 
-          <div style={{ maxWidth: '1280px', margin: '0 auto', borderTop: '0.5px solid #2A2A2A', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', color: '#666666', fontSize: '11px' }}>
+          <div style={{ maxWidth: '1280px', margin: '0 auto', borderTop: '0.5px solid #d1d5db', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', color: '#4b5563', fontSize: '11px' }}>
             <span>{t('footer_rights', '© 2026 privatesector.vitalswiss.ch. All rights reserved.')}</span>
             <span>{t('footer_compliance', 'GDPR & Swiss Data Protection Act compliant 🇨🇭')}</span>
           </div>
