@@ -195,7 +195,7 @@ export default function Statistics({ navigate }) {
             </div>
 
             <div>
-              <label style={{ fontSize: '11px', color: 'var(--text-charcoal)', display: 'block', marginBottom: '4px' }}>{t('dir_canton', 'Kanton')}</label>
+              <label style={{ fontSize: '11px', color: 'var(--text-charcoal)', display: 'block', marginBottom: '4px' }}>{t('Kanton', 'Kanton')}</label>
               <select 
                 value={cantonFilter} 
                 onChange={(e) => setCantonFilter(e.target.value)}
@@ -462,7 +462,7 @@ export default function Statistics({ navigate }) {
             >
               {hoveredCanton ? (
                 <div>
-                  <strong style={{ color: 'var(--text-ink)' }}>{t('dir_canton', 'Kanton')} {t(CANTON_NAMES[hoveredCanton], CANTON_NAMES[hoveredCanton])} ({hoveredCanton})</strong>
+                  <strong style={{ color: 'var(--text-ink)' }}>{t('Kanton', 'Kanton')} {t(CANTON_NAMES[hoveredCanton], CANTON_NAMES[hoveredCanton])} ({hoveredCanton})</strong>
                   <span style={{ color: 'var(--gold-hover)', marginLeft: '12px' }}>{t('Dichteindex:', 'Dichteindex:')} {statsData.cantonWeights[hoveredCanton]}%</span>
                 </div>
               ) : (

@@ -148,7 +148,7 @@ export default function Hero({ navigate }) {
               <Search size={18} style={{ color: 'var(--primary-red)', marginLeft: '12px' }} />
               <input 
                 type="text"
-                placeholder={t('search_placeholder', "Firma suchen (z.B. Nestlé, Roche, UBS)...")}
+                placeholder={t('Firma suchen (z.B. Nestlé, Roche, UBS)...', 'Firma suchen (z.B. Nestlé, Roche, UBS)...')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 style={{
@@ -171,7 +171,7 @@ export default function Hero({ navigate }) {
                   fontSize: '13px'
                 }}
               >
-                {t('search_button', 'Suchen')}
+                {t('Suchen', 'Suchen')}
               </button>
             </form>
 

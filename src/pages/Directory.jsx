@@ -118,9 +118,9 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
       {/* Top Breadcrumbs & Leaderboard Zone A */}
       <div className="container" style={{ paddingTop: '24px' }}>
         <div style={{ fontSize: '12px', color: 'var(--text-charcoal)', marginBottom: '16px', display: 'flex', gap: '6px' }}>
-          <span style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>{t('dir_home', 'Home')}</span>
+          <span style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>{t('Home', 'Home')}</span>
           <span>/</span>
-          <span style={{ fontWeight: 600, color: 'var(--text-ink)' }}>{t('dir_directory', 'Directory')}</span>
+          <span style={{ fontWeight: 600, color: 'var(--text-ink)' }}>{t('Directory', 'Directory')}</span>
         </div>
         <AdSlot position="A" />
       </div>
@@ -141,7 +141,7 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
           <div style={{ position: 'relative', flex: 1 }}>
             <input 
               type="text" 
-              placeholder={t('search_placeholder', "Firma suchen (z.B. Nestlé, Roche)...")} 
+              placeholder={t('Firma suchen (z.B. Nestlé, Roche)...', 'Firma suchen (z.B. Nestlé, Roche)...')} 
               value={searchVal}
               onChange={(e) => setSearchVal(e.target.value)}
               className="input-field"
@@ -160,7 +160,7 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
             className="btn btn-gold-fill" 
             style={{ height: '56px', padding: '0 32px', fontSize: '15px' }}
           >
-            {t('search_button', 'Suchen')}
+            {t('Suchen', 'Suchen')}
           </button>
         </div>
       </div>
@@ -183,12 +183,12 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '12px' }}>
                 <Filter size={18} style={{ color: 'var(--primary-red)' }} />
-                <h2 style={{ fontSize: '18px', fontFamily: '"Playfair Display", serif', color: 'var(--text-ink)', margin: 0, fontWeight: 700 }}>{t('dir_filterpanel', 'Filterpanel')}</h2>
+                <h2 style={{ fontSize: '18px', fontFamily: '"Playfair Display", serif', color: 'var(--text-ink)', margin: 0, fontWeight: 700 }}>{t('Filterpanel', 'Filterpanel')}</h2>
               </div>
 
               {/* Verified Toggle */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0' }}>
-                <span className="caps-label" style={{ color: 'var(--text-ink)', fontSize: '11px', fontWeight: 600 }}>{t('dir_verified_only', 'Verified Only')}</span>
+                <span className="caps-label" style={{ color: 'var(--text-ink)', fontSize: '11px', fontWeight: 600 }}>{t('Verified Only', 'Verified Only')}</span>
                 <button
                   onClick={() => setVerifiedOnly(!verifiedOnly)}
                   style={{
@@ -218,7 +218,7 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
 
               {/* Eco-Leader Toggle */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 0', borderTop: '0.5px solid var(--light-border)', paddingTop: '12px' }}>
-                <span className="caps-label" style={{ color: 'var(--text-ink)', fontSize: '11px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>🍃 {t('dir_eco_only', 'Eco-Leader Only')}</span>
+                <span className="caps-label" style={{ color: 'var(--text-ink)', fontSize: '11px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>🍃 {t('Eco-Leader Only', 'Eco-Leader Only')}</span>
                 <button
                   onClick={() => setEcoOnly(!ecoOnly)}
                   style={{
@@ -249,7 +249,7 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
               {/* Canton Filter */}
               <div>
                 <div className="filter-header" onClick={() => setCantonsExpanded(!cantonsExpanded)}>
-                  <span className="caps-label" style={{ color: 'var(--text-ink)' }}>{t('dir_canton', 'Kanton')} ({CANTONS.length})</span>
+                  <span className="caps-label" style={{ color: 'var(--text-ink)' }}>{t('Kanton', 'Kanton')} ({CANTONS.length})</span>
                   {cantonsExpanded ? <ChevronUp size={16} style={{ color: 'var(--primary-red)' }} /> : <ChevronDown size={16} style={{ color: 'var(--primary-red)' }} />}
                 </div>
                 {cantonsExpanded && (
@@ -276,7 +276,7 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
               {/* Industry Filter */}
               <div>
                 <div className="filter-header" onClick={() => setIndustriesExpanded(!industriesExpanded)}>
-                  <span className="caps-label" style={{ color: 'var(--text-ink)' }}>{t('dir_industry', 'Industrie')} ({INDUSTRIES.length})</span>
+                  <span className="caps-label" style={{ color: 'var(--text-ink)' }}>{t('Industrie', 'Industrie')} ({INDUSTRIES.length})</span>
                   {industriesExpanded ? <ChevronUp size={16} style={{ color: 'var(--primary-red)' }} /> : <ChevronDown size={16} style={{ color: 'var(--primary-red)' }} />}
                 </div>
                 {industriesExpanded && (
@@ -301,13 +301,13 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
               {/* Size Filter */}
               <div>
                 <div className="filter-header" onClick={() => setSizeExpanded(!sizeExpanded)}>
-                  <span className="caps-label" style={{ color: 'var(--text-ink)' }}>{t('dir_company_size', 'Firmengrösse')}</span>
+                  <span className="caps-label" style={{ color: 'var(--text-ink)' }}>{t('Firmengrösse', 'Firmengrösse')}</span>
                   {sizeExpanded ? <ChevronUp size={16} style={{ color: 'var(--primary-red)' }} /> : <ChevronDown size={16} style={{ color: 'var(--primary-red)' }} />}
                 </div>
                 {sizeExpanded && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
                     {['All', 'Small', 'Medium', 'Large'].map(size => (
-                      <label key={size} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '13px', color: sizeClass === size ? 'var(--text-ink)' : 'var(--text-charcoal)' }}>
+                       <label key={size} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '13px', color: sizeClass === size ? 'var(--text-ink)' : 'var(--text-charcoal)' }}>
                         <input 
                           type="radio" 
                           name="sizeClass" 
@@ -316,7 +316,7 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
                           onChange={() => setSizeClass(size)}
                           style={{ accentColor: 'var(--primary-red)' }}
                         />
-                        <span>{size === 'All' ? t('dir_all_sizes', 'Alle Grössen') : `${t(size, size)} ${t('dir_enterprise', 'Enterprise')}`}</span>
+                        <span>{size === 'All' ? t('Alle Grössen', 'Alle Grössen') : `${t(size, size)} ${t('Enterprise', 'Enterprise')}`}</span>
                       </label>
                     ))}
                   </div>
@@ -329,7 +329,7 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
                   onClick={handleResetAll} 
                   style={{ background: 'none', border: 'none', color: '#8B0000', fontSize: '13px', fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}
                 >
-                  {t('dir_reset_filters', 'Filter zurücksetzen')}
+                  {t('Filter zurücksetzen', 'Filter zurücksetzen')}
                 </button>
               </div>
 
@@ -344,11 +344,11 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
             {/* Sort Bar + Grid/List Toggle */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '12px' }}>
               <span className="caps-label" style={{ color: 'var(--text-ink)', fontWeight: 600 }}>
-                {filteredCompanies.length} {filteredCompanies.length === 1 ? t('dir_found_singular', 'Eintrag gefunden') : t('dir_found_plural', 'Einträge gefunden')}
+                {filteredCompanies.length} {filteredCompanies.length === 1 ? t('Eintrag gefunden', 'Eintrag gefunden') : t('Einträge gefunden', 'Einträge gefunden')}
               </span>
               
               <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                <span style={{ fontSize: '12px', color: 'var(--text-charcoal)' }}>{t('dir_view', 'Ansicht:')}</span>
+                <span style={{ fontSize: '12px', color: 'var(--text-charcoal)' }}>{t('Ansicht:', 'Ansicht:')}</span>
                 <div style={{ display: 'flex', gap: '4px', backgroundColor: 'var(--surface-warm)', padding: '2px', borderRadius: '4px' }}>
                   <button 
                     onClick={() => setViewMode('grid')}
@@ -383,21 +383,21 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
             {loading ? (
               <div style={{ textAlign: 'center', padding: '64px 0' }}>
                 <div style={{ width: '40px', height: '40px', border: '2px solid var(--light-border)', borderTopColor: 'var(--primary-red)', borderRadius: '50%', animation: 'spin 1s infinite linear', margin: '0 auto 16px' }} />
-                <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', color: 'var(--text-charcoal)' }}>{t('dir_loading', 'Firmendaten werden geladen...')}</p>
+                <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', color: 'var(--text-charcoal)' }}>{t('Firmendaten werden geladen...', 'Firmendaten werden geladen...')}</p>
               </div>
             ) : filteredCompanies.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '64px 24px', border: '0.5px solid var(--light-border)', borderRadius: '6px', backgroundColor: '#FFFFFF' }}>
                 <Map size={48} style={{ color: 'var(--primary-red)', margin: '0 auto 16px', opacity: 0.6 }} />
-                <h3 style={{ fontFamily: '"Playfair Display", serif', fontSize: '22px', color: 'var(--text-ink)', marginBottom: '8px' }}>{t('dir_no_results', 'Keine Ergebnisse gefunden')}</h3>
+                <h3 style={{ fontFamily: '"Playfair Display", serif', fontSize: '22px', color: 'var(--text-ink)', marginBottom: '8px' }}>{t('Keine Ergebnisse gefunden', 'Keine Ergebnisse gefunden')}</h3>
                 <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '14px', color: 'var(--text-charcoal)', maxWidth: '400px', margin: '0 auto' }}>
-                  {t('dir_no_results_desc', 'Es wurden keine Unternehmen gefunden, die den gewählten Filtern entsprechen. Setzen Sie die Filter zurück oder passen Sie die Suche an.')}
+                  {t('Es wurden keine Unternehmen gefunden, die den gewählten Filtern entsprechen. Setzen Sie die Filter zurück oder passen Sie die Suche an.', 'Es wurden keine Unternehmen gefunden, die den gewählten Filtern entsprechen. Setzen Sie die Filter zurück oder passen Sie die Suche an.')}
                 </p>
                 <button 
                   className="btn btn-gold-fill" 
                   style={{ marginTop: '24px', fontSize: '12px' }}
                   onClick={handleResetAll}
                 >
-                  {t('dir_reset_filters', 'Filter zurücksetzen')}
+                  {t('Filter zurücksetzen', 'Filter zurücksetzen')}
                 </button>
               </div>
             ) : (
@@ -437,13 +437,13 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
                 {/* Minimal Editorial Pagination */}
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', marginTop: '48px', borderTop: '0.5px solid var(--light-border)', paddingTop: '24px' }}>
                   <button className="btn btn-gold-outline" style={{ minHeight: '36px', padding: '6px 16px', fontSize: '12px', opacity: 0.5, cursor: 'not-allowed' }} disabled>
-                    {t('dir_back', '← Zurück')}
+                    {t('← Zurück', '← Zurück')}
                   </button>
                   <span style={{ fontSize: '13px', color: 'var(--text-charcoal)', fontFamily: 'var(--font-mono)' }}>
-                    {t('dir_page', 'Seite')} <strong style={{ color: 'var(--text-ink)' }}>1</strong> {t('dir_of', 'von')} 1
+                    {t('Seite', 'Seite')} <strong style={{ color: 'var(--text-ink)' }}>1</strong> {t('von', 'von')} 1
                   </span>
                   <button className="btn btn-gold-outline" style={{ minHeight: '36px', padding: '6px 16px', fontSize: '12px', opacity: 0.5, cursor: 'not-allowed' }} disabled>
-                    {t('dir_next', 'Vorwärts →')}
+                    {t('Vorwärts →', 'Vorwärts →')}
                   </button>
                 </div>
               </div>

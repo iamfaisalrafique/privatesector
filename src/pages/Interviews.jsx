@@ -305,7 +305,7 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
                     </div>
                     <div>
                       <strong style={{ display: 'block', fontSize: '14px', color: 'var(--text-ink)' }}>{companyCardData.name}</strong>
-                      <span style={{ fontSize: '11px', color: 'var(--text-charcoal)' }}>{t('dir_canton', 'Kanton')} {companyCardData.canton}</span>
+                      <span style={{ fontSize: '11px', color: 'var(--text-charcoal)' }}>{t('Kanton', 'Kanton')} {companyCardData.canton}</span>
                     </div>
                   </div>
 

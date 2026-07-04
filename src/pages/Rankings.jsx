@@ -93,9 +93,9 @@ export default function Rankings({ selectCompany, navigate }) {
         
         {/* Breadcrumb */}
         <div style={{ fontSize: '12px', color: 'var(--text-charcoal)', marginBottom: '16px', display: 'flex', gap: '6px' }}>
-          <span style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>{t('dir_home', 'Home')}</span>
+          <span style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>{t('Home', 'Home')}</span>
           <span>/</span>
-          <span style={{ fontWeight: 600, color: 'var(--text-ink)' }}>{t('nav_ranking', 'Ranking')}</span>
+          <span style={{ fontWeight: 600, color: 'var(--text-ink)' }}>{t('Ranking', 'Ranking')}</span>
         </div>
 
         <AdSlot position="A" />

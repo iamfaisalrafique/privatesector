@@ -23,13 +23,13 @@ export default function Navbar({ currentPath, navigate }) {
   const [searchVal, setSearchVal] = useState('');
 
   const navItems = [
-    { label: t('nav_companies', 'Unternehmen'), path: '/unternehmen' },
-    { label: t('nav_news', 'News'), path: '/news' },
-    { label: t('nav_statistics', 'Statistiken'), path: '/statistiken' },
-    { label: t('nav_interviews', 'Interviews'), path: '/interviews' },
-    { label: t('nav_podcasts', 'Podcasts'), path: '/podcasts' },
-    { label: t('nav_talent', 'Talent'), path: '/karriere' },
-    { label: t('nav_ranking', 'Ranking'), path: '/ranking' }
+    { label: t('Unternehmen', 'Unternehmen'), path: '/unternehmen' },
+    { label: t('News', 'News'), path: '/news' },
+    { label: t('Statistiken', 'Statistiken'), path: '/statistiken' },
+    { label: t('Interviews', 'Interviews'), path: '/interviews' },
+    { label: t('Podcasts', 'Podcasts'), path: '/podcasts' },
+    { label: t('Talent', 'Talent'), path: '/karriere' },
+    { label: t('Ranking', 'Ranking'), path: '/ranking' }
   ];
 
   const handleSearchSubmit = (e) => {
@@ -176,7 +176,7 @@ export default function Navbar({ currentPath, navigate }) {
               }}
               onClick={() => navigate('/login')}
             >
-              {t('nav_login', 'Login')}
+              {t('Anmelden', 'Anmelden')}
             </button>
             
             <button 
@@ -184,7 +184,7 @@ export default function Navbar({ currentPath, navigate }) {
               style={{ padding: '6px 14px', fontSize: '12px', minHeight: '36px' }}
               onClick={() => navigate('/register')}
             >
-              {t('nav_register', 'Register')}
+              {t('Konto erstellen', 'Konto erstellen')}
             </button>
 
             <button
@@ -221,7 +221,7 @@ export default function Navbar({ currentPath, navigate }) {
           <form onSubmit={handleSearchSubmit} style={{ maxWidth: '600px', margin: '0 auto', display: 'flex', gap: '12px', flexDirection: isRtl ? 'row-reverse' : 'row' }}>
             <input 
               type="text" 
-              placeholder={t('search_placeholder_short', 'Search...')} 
+              placeholder={t('Search...', 'Search...')} 
               value={searchVal}
               onChange={(e) => setSearchVal(e.target.value)}
               className="input-field"
@@ -229,7 +229,7 @@ export default function Navbar({ currentPath, navigate }) {
               autoFocus
             />
             <button type="submit" className="btn btn-gold-fill" style={{ fontSize: '13px', padding: '8px 16px', minHeight: '44px' }}>
-              {t('search_button', 'Search')}
+              {t('Search', 'Search')}
             </button>
           </form>
         </div>
@@ -300,7 +300,7 @@ export default function Navbar({ currentPath, navigate }) {
             style={{ width: '100%', marginTop: '24px' }}
             onClick={() => { navigate('/register'); setMobileMenuOpen(false); }}
           >
-            {t('nav_register', 'Register')}
+            {t('Konto erstellen', 'Konto erstellen')}
           </button>
         </div>
       )}
@@ -339,35 +339,35 @@ export default function Navbar({ currentPath, navigate }) {
           style={{ background: 'none', border: 'none', color: currentPath === '/' ? 'var(--primary-red)' : '#888888', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '9px', gap: '3px', cursor: 'pointer' }}
         >
           <Home size={18} />
-          <span>{t('dir_home', 'Home')}</span>
+          <span>{t('Home', 'Home')}</span>
         </button>
         <button 
           onClick={() => navigate('/unternehmen')}
           style={{ background: 'none', border: 'none', color: currentPath === '/unternehmen' ? 'var(--primary-red)' : '#888888', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '9px', gap: '3px', cursor: 'pointer' }}
         >
           <Building2 size={18} />
-          <span>{t('dir_directory', 'Directory')}</span>
+          <span>{t('Directory', 'Directory')}</span>
         </button>
         <button 
           onClick={() => navigate('/news')}
           style={{ background: 'none', border: 'none', color: currentPath === '/news' ? 'var(--primary-red)' : '#888888', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '9px', gap: '3px', cursor: 'pointer' }}
         >
           <Newspaper size={18} />
-          <span>{t('nav_news', 'News')}</span>
+          <span>{t('News', 'News')}</span>
         </button>
         <button 
           onClick={() => navigate('/interviews')}
           style={{ background: 'none', border: 'none', color: currentPath === '/interviews' ? 'var(--primary-red)' : '#888888', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '9px', gap: '3px', cursor: 'pointer' }}
         >
           <MessageSquare size={18} />
-          <span>{t('nav_interviews', 'Interviews')}</span>
+          <span>{t('Interviews', 'Interviews')}</span>
         </button>
         <button 
           onClick={() => navigate('/karriere')}
           style={{ background: 'none', border: 'none', color: currentPath === '/karriere' ? 'var(--primary-red)' : '#888888', display: 'flex', flexDirection: 'column', alignItems: 'center', fontSize: '9px', gap: '3px', cursor: 'pointer' }}
         >
           <GraduationCap size={18} />
-          <span>{t('nav_talent', 'Talent')}</span>
+          <span>{t('Talent', 'Talent')}</span>
         </button>
       </div>
     </>

@@ -305,17 +305,17 @@ function AppContent() {
                   >
                     <Landmark size={32} style={{ color: 'var(--primary-red)', marginBottom: '16px' }} />
                     <h3 style={{ fontFamily: '"Playfair Display", serif', fontSize: '20px', color: '#111827', marginBottom: '8px', fontWeight: 700 }}>
-                      {t('b2b_index_title', 'B2B Vertrauensindex')}
+                      {t('B2B Vertrauensindex', 'B2B Vertrauensindex')}
                     </h3>
                     <p style={{ fontSize: '12px', color: '#4b5563', lineHeight: 1.6, marginBottom: '20px' }}>
-                      {t('b2b_index_desc', 'Zefix-verifizierte Profile sorgen für Transparenz und direkte Vertrauensbildung mit internationalen Handelspartnern im Schweizer B2B-Markt.')}
+                      {t('Zefix-verifizierte Profile sorgen für Transparenz und direkte Vertrauensbildung mit internationalen Handelspartnern im Schweizer B2B-Markt.', 'Zefix-verifizierte Profile sorgen für Transparenz und direkte Vertrauensbildung mit internationalen Handelspartnern im Schweizer B2B-Markt.')}
                     </p>
                     <button 
                       className="btn btn-gold-fill" 
                       style={{ fontSize: '11px', padding: '8px 16px', width: '100%', minHeight: '36px' }}
                       onClick={() => navigate('/unternehmen')}
                     >
-                      {t('search_dossier', 'Dossier-Index durchsuchen')}
+                      {t('Dossier-Index durchsuchen', 'Dossier-Index durchsuchen')}
                     </button>
                   </div>
                   
