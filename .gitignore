@@ -24,7 +24,7 @@ dist-ssr
 *.sw?
 
 # SQLite databases
-*.sqlite
+# *.sqlite
 
 # Audio / temporary files
 *.ogg
@@ -32,5 +32,5 @@ dist-ssr
 *.mp3
 
 # Cache files
-server/translations_cache.json
+# server/translations_cache.json
 
