@@ -33,9 +33,7 @@ export default function KnowledgePanel({ company }) {
         padding: '24px',
         display: 'flex',
         flexDirection: 'column',
-        gap: '24px',
-        position: 'sticky',
-        top: '88px'
+        gap: '24px'
       }}
     >
       {/* Logo and Name Section */}

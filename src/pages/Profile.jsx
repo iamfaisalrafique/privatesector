@@ -100,7 +100,7 @@ export default function Profile({ companyId, onBack, navigate }) {
         <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr 280px', gap: '32px', alignItems: 'flex-start' }} className="profile-layout-grid">
           
           {/* Column 1: Left Knowledge Panel (320px sticky) */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }} className="profile-left-col">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', position: 'sticky', top: '88px' }} className="profile-left-col">
             <KnowledgePanel company={data} />
             <AdSlot position="C" />
           </div>
