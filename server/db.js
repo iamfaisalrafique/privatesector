@@ -87,7 +87,7 @@ export async function dbRun(sql, params = []) {
     let converted = convertSql(sql);
     const isInsert = converted.trim().toUpperCase().startsWith('INSERT');
     if (isInsert && !converted.toUpperCase().includes('RETURNING')) {
-      converted = `${converted} RETURNING id`;
+      converted = `${converted} RETURNING *`;
     }
     const res = await pool.query(converted, params);
     return {
