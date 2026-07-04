@@ -206,7 +206,7 @@ function AppContent() {
 
       {/* 2. Global Navigation Header */}
       {!hideHeaderFooter && (
-        <Navbar currentPath={hash.replace('#', '').split('?')[0]} navigate={navigate} />
+        <Navbar currentPath={pathState.split('?')[0]} navigate={navigate} />
       )}
 
       {/* 3. Page Content Area with Transition Wrapper */}
@@ -347,6 +347,7 @@ function AppContent() {
             initialCanton={routeInfo.params.canton || ''}
             initialIndustry={routeInfo.params.industry || ''}
             selectCompany={(id) => navigate(`/unternehmen/${id}`)}
+            navigate={navigate}
           />
         )}
 
@@ -419,7 +420,7 @@ function AppContent() {
 
         {/* ROUTE: RANKINGS */}
         {routeInfo.route === 'ranking' && (
-          <Rankings selectCompany={(id) => navigate(`/unternehmen/${id}`)} />
+          <Rankings selectCompany={(id) => navigate(`/unternehmen/${id}`)} navigate={navigate} />
         )}
 
         {/* ROUTE: STUDENT PROFILE */}

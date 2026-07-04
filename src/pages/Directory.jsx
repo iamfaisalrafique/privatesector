@@ -118,7 +118,7 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
       {/* Top Breadcrumbs & Leaderboard Zone A */}
       <div className="container" style={{ paddingTop: '24px' }}>
         <div style={{ fontSize: '12px', color: 'var(--text-charcoal)', marginBottom: '16px', display: 'flex', gap: '6px' }}>
-          <span style={{ cursor: 'pointer' }} onClick={() => window.location.hash = '#'}>{t('dir_home', 'Home')}</span>
+          <span style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>{t('dir_home', 'Home')}</span>
           <span>/</span>
           <span style={{ fontWeight: 600, color: 'var(--text-ink)' }}>{t('dir_directory', 'Directory')}</span>
         </div>

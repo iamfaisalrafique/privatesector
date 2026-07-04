@@ -3,7 +3,7 @@ import { useLanguage } from '../context/LanguageContext';
 import AdSlot from '../components/AdSlot';
 import { Medal, Search, Filter, ShieldCheck, ArrowRight, Star, ArrowUpRight } from 'lucide-react';
 
-export default function Rankings({ selectCompany }) {
+export default function Rankings({ selectCompany, navigate }) {
   const { t, isRtl } = useLanguage();
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -93,7 +93,7 @@ export default function Rankings({ selectCompany }) {
         
         {/* Breadcrumb */}
         <div style={{ fontSize: '12px', color: 'var(--text-charcoal)', marginBottom: '16px', display: 'flex', gap: '6px' }}>
-          <span style={{ cursor: 'pointer' }} onClick={() => window.location.hash = '#'}>{t('dir_home', 'Home')}</span>
+          <span style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>{t('dir_home', 'Home')}</span>
           <span>/</span>
           <span style={{ fontWeight: 600, color: 'var(--text-ink)' }}>{t('nav_ranking', 'Ranking')}</span>
         </div>
