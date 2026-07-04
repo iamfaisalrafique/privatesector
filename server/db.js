@@ -408,10 +408,10 @@ const GERMAN_UI_KEYS = new Set([
   'Dossier lesen'
 ]);
 
-// Google Translate integration helper
+// Static Translation Integration (No Google Translate API)
 async function translateText(text, targetLang) {
   if (!text) return '';
-  if (targetLang === 'rm') return text; // Romansh is not supported by Google Translate API
+  if (targetLang === 'rm') return text; 
   
   const isGermanUiKey = GERMAN_UI_KEYS.has(text);
   const sourceLang = isGermanUiKey ? 'de' : 'en';
@@ -423,34 +423,8 @@ async function translateText(text, targetLang) {
     return translationCache[cacheKey];
   }
   
-  let attempts = 3;
-  while (attempts > 0) {
-    try {
-      // Throttle to avoid rate limits
-      await new Promise(resolve => setTimeout(resolve, 50));
-      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
-      const res = await fetch(url);
-      if (res.ok) {
-        const data = await res.json();
-        if (data && data[0]) {
-          const translatedText = data[0].map(part => part[0]).join('');
-          
-          translationCache[cacheKey] = translatedText;
-          return translatedText;
-        }
-      } else {
-        console.error(`Google Translate error (${res.status}) for: "${text.substring(0, 20)}..."`);
-      }
-    } catch (e) {
-      console.error(`Google Translate exception:`, e);
-    }
-    attempts--;
-    if (attempts > 0) {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-    }
-  }
-  
-  return text; // fallback
+  // Return the original text if no static translation is found in server/translations_cache.json
+  return text; 
 }
 
 
