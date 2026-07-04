@@ -1,16 +1,23 @@
 import React, { useState, useEffect } from 'react';
+import SidebarLayout from '../components/SidebarLayout';
+import Breadcrumbs from '../components/Breadcrumbs';
+import TableOfContents from '../components/TableOfContents';
 import AdSlot from '../components/AdSlot';
-import { Calendar, User, Clock, ArrowRight, Share2, MessageSquare } from 'lucide-react';
+import { Calendar, User, Clock, Share2 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function News({ selectedArticleId, selectArticle, navigate }) {
   const { t } = useLanguage();
   const [articles, setArticles] = useState([]);
   const [activeArticle, setActiveArticle] = useState(null);
-  const [relatedArticles, setRelatedArticles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [relatedCompanies, setRelatedCompanies] = useState([]);
 
+  // Filter States
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedTag, setSelectedTag] = useState('');
+
+  // Fetch News data
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
@@ -20,17 +27,6 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
           if (res.ok) {
             const data = await res.json();
             setActiveArticle(data.article);
-            setRelatedArticles(data.related);
-
-            // Fetch related companies based on tags or category
-            const compRes = await fetch('/api/companies');
-            if (compRes.ok) {
-              const compList = await compRes.json();
-              const matched = compList.filter(
-                c => data.article.tags?.some(t => c.name.includes(t)) || c.industry === data.article.category
-              ).slice(0, 3);
-              setRelatedCompanies(matched);
-            }
           }
         } else {
           const res = await fetch('/api/news');
@@ -49,463 +45,273 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
     fetchData();
   }, [selectedArticleId]);
 
+  // Handle Dynamic Meta & Schema Injection on Active Article Change
+  useEffect(() => {
+    if (activeArticle) {
+      document.title = activeArticle.meta_title || `${activeArticle.title} — privatesector.ch`;
+      
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) {
+        metaDesc.setAttribute('content', activeArticle.meta_description || activeArticle.subtitle || '');
+      }
+
+      // Inject Schema Markup if present
+      const existingSchema = document.getElementById('seo-jsonld-schema');
+      if (existingSchema) existingSchema.remove();
+
+      if (activeArticle.schema_markup) {
+        const script = document.createElement('script');
+        script.id = 'seo-jsonld-schema';
+        script.type = 'application/ld+json';
+        script.innerHTML = activeArticle.schema_markup;
+        document.head.appendChild(script);
+      }
+    } else {
+      document.title = 'News & Market Analysis — privatesector.ch';
+    }
+  }, [activeArticle]);
+
   if (loading) {
     return (
       <div className="container" style={{ padding: '64px 0', textAlign: 'center' }}>
         <div style={{ width: '40px', height: '40px', border: '2px solid var(--light-border)', borderTopColor: 'var(--primary-red)', borderRadius: '50%', animation: 'spin 1s infinite linear', margin: '0 auto 16px' }} />
-        <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', color: 'var(--text-charcoal)' }}>{t('news_loading', 'Medienarchiv wird geladen...')}</p>
+        <p style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', color: 'var(--text-charcoal)' }}>Medienarchiv wird geladen...</p>
       </div>
     );
   }
 
-  // --- Mock "Meist gelesen" (Most Read) sidebar data for news article ---
-  const mockMostRead = [
-    { title: 'Grossbanken verschärfen die Richtlinien für Immobilienkredite', views: '1.2k views' },
-    { title: 'SGS meldet Umsatzsteigerung von 4.5% im ersten Quartal', views: '980 views' },
-    { title: 'Wie Fintechs den Schweizer Vermögensverwaltungsmarkt aufmischen', views: '850 views' },
-    { title: 'Bedeutende Investitionen in grüne Energie im Kanton Aargau', views: '760 views' },
-    { title: 'Die wichtigsten Startup-Exits der Westschweiz im Rückblick', views: '620 views' }
-  ];
+  // Categories & Tags Extractor
+  const uniqueCategories = [...new Set(articles.map(art => art.category))].map(cat => ({
+    name: cat,
+    count: articles.filter(art => art.category === cat).length
+  }));
+
+  const uniqueTags = [...new Set(articles.flatMap(art => {
+    try {
+      return JSON.parse(art.tags || '[]');
+    } catch {
+      return [];
+    }
+  }))];
+
+  // Filtering Logic
+  const filteredArticles = articles.filter(art => {
+    const matchesSearch = searchQuery === '' || 
+      art.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      art.content_body.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    const matchesCategory = selectedCategory === '' || art.category === selectedCategory;
+    
+    let articleTags = [];
+    try {
+      articleTags = JSON.parse(art.tags || '[]');
+    } catch (e) {}
+    const matchesTag = selectedTag === '' || articleTags.includes(selectedTag);
+
+    return matchesSearch && matchesCategory && matchesTag;
+  });
 
   // --- 1. SINGLE ARTICLE VIEW ---
   if (selectedArticleId && activeArticle) {
     const paragraphs = activeArticle.content_body?.split('\n\n') || [];
-    
+
+    // Parse tag array
+    let tagsList = [];
+    try {
+      tagsList = JSON.parse(activeArticle.tags || '[]');
+    } catch (e) {}
+
     return (
       <div style={{ backgroundColor: 'var(--bg-ivory)', minHeight: 'calc(100vh - 120px)', padding: '32px 0 64px' }}>
         <div className="container">
           
-          {/* Breadcrumb + Category */}
-          <div style={{ fontSize: '12px', color: 'var(--text-charcoal)', marginBottom: '20px', display: 'flex', gap: '8px' }}>
-            <span style={{ cursor: 'pointer' }} onClick={() => selectArticle(null)}>{t('nav_news', 'News')}</span>
-            <span>/</span>
-            <span style={{ cursor: 'pointer' }} onClick={() => selectArticle(null)}>{t(activeArticle.category, activeArticle.category)}</span>
-            <span>/</span>
-            <span style={{ fontWeight: 600, color: 'var(--text-ink)' }}>{t('news_article', 'Artikel')}</span>
-          </div>
+          {/* Breadcrumbs */}
+          <Breadcrumbs 
+            paths={[
+              { name: 'News', url: '/news' },
+              { name: activeArticle.category },
+              { name: activeArticle.title }
+            ]} 
+            navigate={(path) => {
+              if (path === '/news') selectArticle(null);
+              else navigate(path);
+            }} 
+          />
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: '48px', alignItems: 'flex-start' }} className="news-layout-grid">
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 320px',
+            gap: '40px',
+            alignItems: 'start'
+          }} className="sidebar-grid-layout">
             
-            {/* Left Side: Centered 720px Editorial Column */}
-            <div style={{ maxWidth: '720px', margin: '0 auto', width: '100%' }}>
-              <span className="badge badge-industry" style={{ marginBottom: '16px' }}>{t(activeArticle.category, activeArticle.category)}</span>
+            {/* Left Column: Article Body */}
+            <article style={{ maxWidth: '720px', width: '100%' }}>
+              <span className="badge badge-industry" style={{ marginBottom: '16px', backgroundColor: 'var(--primary-red)', color: '#FFF', padding: '4px 8px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                {activeArticle.category}
+              </span>
               
-              <h1 
-                style={{
-                  fontFamily: '"Playfair Display", Georgia, serif',
-                  fontSize: '44px',
-                  lineHeight: 1.2,
-                  color: 'var(--text-ink)',
-                  marginBottom: '16px',
-                  fontWeight: 700
-                }}
-              >
-                {t(activeArticle.title, activeArticle.title)}
+              <h1 style={{ fontFamily: '"Playfair Display", Georgia, serif', fontSize: '38px', lineHeight: 1.2, color: 'var(--text-ink)', marginBottom: '16px', fontWeight: 700 }}>
+                {activeArticle.title}
               </h1>
               
-              <p 
-                style={{
-                  fontFamily: 'Inter, sans-serif',
-                  fontSize: '18px',
-                  lineHeight: 1.5,
-                  color: 'var(--text-charcoal)',
-                  marginBottom: '24px'
-                }}
-              >
-                {t(activeArticle.subtitle, activeArticle.subtitle)}
+              <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '18px', lineHeight: 1.5, color: 'var(--text-charcoal)', marginBottom: '24px' }}>
+                {activeArticle.subtitle}
               </p>
 
               {/* Byline */}
-              <div 
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  borderTop: '0.5px solid var(--light-border)',
-                  borderBottom: '0.5px solid var(--light-border)',
-                  padding: '16px 0',
-                  fontSize: '13px',
-                  color: 'var(--text-charcoal)',
-                  marginBottom: '24px'
-                }}
-              >
-                <img 
-                  src={activeArticle.author_avatar} 
-                  alt={activeArticle.author_name} 
-                  style={{ width: '40px', height: '40px', borderRadius: '50%', border: '0.5px solid var(--primary-gold)' }} 
-                />
-                <div style={{ flex: 1 }}>
-                  <span style={{ fontWeight: 600, color: 'var(--text-ink)', display: 'block' }}>{t(activeArticle.author_name, activeArticle.author_name)}</span>
-                  <div style={{ display: 'flex', gap: '16px', marginTop: '2px', fontFamily: 'var(--font-mono)' }}>
-                    <span>{activeArticle.date_published}</span>
-                    <span>·</span>
-                    <span>{activeArticle.read_time_mins} {t('news_read_time', 'Min. Lesezeit')}</span>
-                  </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', alignItems: 'center', padding: '16px 0', borderTop: '0.5px solid var(--light-border)', borderBottom: '0.5px solid var(--light-border)', marginBottom: '32px', fontSize: '13px', color: '#6B7280' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <img src={activeArticle.author_avatar} alt="" style={{ width: '28px', height: '28px', borderRadius: '50%' }} />
+                  <strong>{activeArticle.author_name}</strong>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Calendar size={14} />
+                  <span>{activeArticle.date_published}</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Clock size={14} />
+                  <span>{activeArticle.read_time_mins} min read</span>
                 </div>
               </div>
 
+              {/* Featured Image */}
               {activeArticle.image_url && (
-                <div style={{ width: '100%', height: '380px', overflow: 'hidden', borderRadius: '6px', marginBottom: '32px' }}>
-                  <img 
-                    src={activeArticle.image_url} 
-                    alt={activeArticle.title} 
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                  />
+                <div style={{ width: '100%', maxHeight: '420px', overflow: 'hidden', borderRadius: '6px', marginBottom: '32px' }}>
+                  <img src={activeArticle.image_url} alt={activeArticle.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
               )}
 
-              {/* Zone A Leaderboard */}
-              <AdSlot position="A" />
-
-              {/* Body Text */}
-              <div className="editorial-text">
-                {paragraphs[0] && <p style={{ marginBottom: '24px' }}>{t(paragraphs[0], paragraphs[0])}</p>}
-                {paragraphs[1] && <p style={{ marginBottom: '24px' }}>{t(paragraphs[1], paragraphs[1])}</p>}
-                
-                {/* Zone B Float Ad after paragraph 2 */}
-                <div style={{ overflow: 'hidden', margin: '24px 0' }}>
-                  {paragraphs[2] && <p style={{ marginBottom: '24px' }}>{t(paragraphs[2], paragraphs[2])}</p>}
-                </div>
-
-                {paragraphs[3] && <p style={{ marginBottom: '24px' }}>{t(paragraphs[3], paragraphs[3])}</p>}
-
-                {/* Pull Quote */}
-                {activeArticle.pull_quote && (
-                  <blockquote className="editorial-pullquote">
-                    „{t(activeArticle.pull_quote, activeArticle.pull_quote)}“
-                  </blockquote>
-                )}
-
-                {paragraphs[4] && <p style={{ marginBottom: '24px' }}>{t(paragraphs[4], paragraphs[4])}</p>}
-
-                {/* Zone E Native Ad */}
-                <AdSlot position="E" />
-
-                {paragraphs.slice(5).map((para, pIdx) => (
-                  <p key={pIdx} style={{ marginBottom: '24px' }}>{t(para, para)}</p>
-                ))}
+              {/* Editorial Body Content */}
+              <div className="editorial-content-body" style={{ fontSize: '16px', lineHeight: 1.8, color: 'var(--text-ink)' }}>
+                {paragraphs.map((p, index) => {
+                  // Auto insert anchor IDs on headings for Table of Contents
+                  if (p.startsWith('## ')) {
+                    const text = p.replace('## ', '');
+                    const slug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+                    return <h2 key={index} id={slug} style={{ fontFamily: '"Playfair Display", serif', fontSize: '24px', marginTop: '32px', marginBottom: '16px', color: '#111827' }}>{text}</h2>;
+                  }
+                  if (p.startsWith('### ')) {
+                    const text = p.replace('### ', '');
+                    const slug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+                    return <h3 key={index} id={slug} style={{ fontFamily: '"Playfair Display", serif', fontSize: '20px', marginTop: '24px', marginBottom: '12px', color: '#191919' }}>{text}</h3>;
+                  }
+                  return <p key={index} style={{ marginBottom: '20px' }}>{p}</p>;
+                })}
               </div>
 
-              {/* Footer Tags */}
-              <div 
-                style={{ 
-                  borderTop: '0.5px solid var(--light-border)', 
-                  paddingTop: '24px', 
-                  marginBottom: '48px',
-                  display: 'flex',
-                  flexWrap: 'wrap',
-                  gap: '8px',
-                  alignItems: 'center'
-                }}
-              >
-                <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--text-charcoal)', letterSpacing: '0.05em' }}>{t('news_topics', 'THEMEN:')}</span>
-                {activeArticle.tags?.map(tag => (
-                  <span 
-                    key={tag} 
-                    className="badge badge-canton"
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => navigate(`/unternehmen?search=${tag}`)}
-                  >
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-
-              {/* Related Articles 3-Column */}
-              <div style={{ borderTop: '1px solid var(--primary-gold)', paddingTop: '32px' }}>
-                <h3 style={{ fontFamily: '"Playfair Display", serif', fontSize: '22px', color: 'var(--text-ink)', marginBottom: '24px', fontWeight: 700 }}>
-                  {t('news_related', 'Ähnliche Artikel')}
-                </h3>
-                
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px' }} className="news-related-grid">
-                  {relatedArticles.map(art => (
-                    <div 
-                      key={art.id}
-                      style={{
-                        backgroundColor: '#FFFFFF',
-                        border: '0.5px solid var(--light-border)',
-                        padding: '16px',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        height: '100%',
-                        transition: 'border-color 0.2s'
-                      }}
-                      onClick={() => selectArticle(art.id)}
-                      className="related-news-card"
-                    >
-                      {art.image_url && (
-                        <div style={{ width: '100%', height: '110px', overflow: 'hidden', borderRadius: '4px', marginBottom: '12px' }}>
-                          <img 
-                            src={art.image_url} 
-                            alt={art.title} 
-                            style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s' }}
-                            className="card-img"
-                          />
-                        </div>
-                      )}
-                      <span className="badge badge-industry" style={{ alignSelf: 'flex-start', marginBottom: '12px', fontSize: '9px' }}>{t(art.category, art.category)}</span>
-                      <h4 style={{ fontFamily: '"Playfair Display", serif', fontSize: '14px', color: 'var(--text-ink)', marginBottom: '16px', lineHeight: 1.4, flex: 1, fontWeight: 700 }}>
-                        {t(art.title, art.title)}
-                      </h4>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'var(--text-charcoal)', fontFamily: 'var(--font-mono)' }}>
-                        <span>{art.date_published}</span>
-                        <span>{art.read_time_mins} {t('news_min_abbr', 'Min')}</span>
-                      </div>
-                    </div>
+              {/* Tag Badges Cloud */}
+              {tagsList.length > 0 && (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '40px', borderTop: '0.5px solid var(--light-border)', paddingTop: '24px' }}>
+                  {tagsList.map((tag, idx) => (
+                    <span key={idx} style={{ backgroundColor: '#F3F4F6', color: '#4B5563', padding: '4px 10px', borderRadius: '16px', fontSize: '12px', fontWeight: 500 }}>
+                      #{tag}
+                    </span>
                   ))}
                 </div>
-              </div>
+              )}
+            </article>
 
-            </div>
-
-            {/* Right Side: Sticky Right Rail (300px) */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }} className="news-right-col">
-              
-              {/* "Meist gelesen" Sidebar List */}
-              <div style={{ backgroundColor: '#FFFFFF', border: '0.5px solid var(--light-border)', padding: '24px', borderRadius: '6px' }}>
-                <span className="caps-label" style={{ fontSize: '11px', display: 'block', marginBottom: '16px' }}>
-                  {t('news_most_read', 'Meistgelesen')}
-                </span>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  {mockMostRead.map((item, idx) => (
-                    <div key={idx} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                      <span style={{ fontSize: '20px', fontFamily: '"Playfair Display", serif', color: 'var(--primary-red)', fontWeight: 700, lineHeight: 1 }}>{idx + 1}</span>
-                      <div>
-                        <span style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: 'var(--text-ink)', lineHeight: 1.4, cursor: 'pointer' }} onClick={() => alert('Wird geladen...')}>
-                          {t(item.title, item.title)}
-                        </span>
-                        <span style={{ fontSize: '11px', color: 'var(--text-charcoal)', fontFamily: 'var(--font-mono)' }}>{t(item.views, item.views)}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Zone D Ad Slot 300x600 */}
+            {/* Right Column: Sticky Table of Contents & Sidebar widgets */}
+            <aside style={{ display: 'flex', flexDirection: 'column', gap: '32px', position: 'sticky', top: '120px' }}>
+              <TableOfContents contentHtml={activeArticle.content_body} />
               <AdSlot position="D" />
-
-              {/* Related Companies Mini Cards */}
-              {relatedCompanies.length > 0 && (
-                <div style={{ backgroundColor: '#FFFFFF', border: '0.5px solid var(--light-border)', padding: '20px', borderRadius: '6px' }}>
-                  <span className="caps-label" style={{ fontSize: '11px', display: 'block', marginBottom: '16px' }}>
-                    {t('news_mentioned_companies', 'Erwähnte Unternehmen')}
-                  </span>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    {relatedCompanies.map(c => (
-                      <div 
-                        key={c.id}
-                        onClick={() => navigate(`/unternehmen/${c.id}`)}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '12px',
-                          cursor: 'pointer',
-                          padding: '8px',
-                          border: '0.5px solid transparent'
-                        }}
-                        onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--light-border)'}
-                        onMouseLeave={e => e.currentTarget.style.borderColor = 'transparent'}
-                      >
-                        <div style={{ width: '32px', height: '32px', backgroundColor: c.logo_bg || 'var(--surface-warm)', borderRadius: '2px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#FFF', fontWeight: 'bold', fontSize: '12px', flexShrink: 0 }}>
-                          {c.name.charAt(0)}
-                        </div>
-                        <div style={{ minWidth: 0 }}>
-                          <span style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: 'var(--text-ink)', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>{c.name}</span>
-                          <span style={{ fontSize: '11px', color: 'var(--text-charcoal)' }}>{t('dir_canton', 'Kanton')} {c.canton}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Dark Newsletter CTA */}
-              <div 
-                style={{
-                  backgroundColor: '#1A1A1A',
-                  color: '#FFFFFF',
-                  padding: '24px',
-                  borderRadius: '6px',
-                  textAlign: 'center'
-                }}
-              >
-                <h4 style={{ fontFamily: '"Playfair Display", serif', fontSize: '18px', color: '#FFFDF7', marginBottom: '8px', fontWeight: 700 }}>
-                  {t('news_briefing_title', 'Wirtschafts-Briefing')}
-                </h4>
-                <p style={{ fontSize: '12px', color: '#888888', lineHeight: 1.5, marginBottom: '16px' }}>
-                  {t('news_briefing_desc', 'Abonnieren Sie unseren Newsletter für die aktuellsten Unternehmensberichte.')}
-                </p>
-                <input 
-                  type="email" 
-                  placeholder={t('news_email_placeholder', 'Ihre E-Mail-Adresse')} 
-                  style={{ 
-                    width: '100%', 
-                    padding: '8px 12px', 
-                    border: '0.5px solid #2A2A2A', 
-                    backgroundColor: '#0A0A0A', 
-                    color: '#FFFFFF',
-                    fontSize: '13px',
-                    marginBottom: '8px',
-                    boxSizing: 'border-box'
-                  }} 
-                />
-                <button className="btn btn-gold-fill" style={{ fontSize: '12px', padding: '8px', minHeight: '36px', width: '100%' }}>
-                  {t('news_subscribe', 'Abonnieren')}
-                </button>
-              </div>
-
-            </div>
+            </aside>
 
           </div>
-
         </div>
       </div>
     );
   }
 
-  // --- 2. NEWS FEED INDEX VIEW ---
+  // --- 2. MULTI-ARTICLE LIST VIEW ---
   return (
-    <div style={{ backgroundColor: 'var(--bg-ivory)', minHeight: 'calc(100vh - 120px)', padding: '48px 0 64px' }}>
+    <div style={{ backgroundColor: '#F9FAFB', minHeight: 'calc(100vh - 120px)', padding: '48px 0 80px' }}>
       <div className="container">
         
-        {/* Header Title */}
-        <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-          <span className="caps-label" style={{ display: 'block', marginBottom: '8px' }}>{t('INTELLIGENCE & ANALYSIS', 'INTELLIGENCE & ANALYSIS')}</span>
-          <h1 style={{ fontFamily: '"Playfair Display", serif', fontSize: '42px', fontWeight: 700, color: 'var(--text-ink)', margin: 0 }}>
-            {t('news_header', 'Schweizer Wirtschaftsnachrichten')}
+        <div style={{ marginBottom: '32px' }}>
+          <h1 style={{ fontFamily: '"Playfair Display", serif', fontSize: '36px', color: 'var(--text-ink)', margin: '0 0 8px 0', fontWeight: 700 }}>
+            Market News & Analysis
           </h1>
-          <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '16px', color: 'var(--text-charcoal)', marginTop: '8px' }}>
-            {t('news_header_desc', 'Unabhängiger, verifizierter B2B-Journalismus zu Strukturen, Transaktionen und Strategien.')}
+          <p style={{ margin: 0, color: '#6B7280', fontSize: '15px' }}>
+            Verified financial reports, corporate actions, and industrial insights.
           </p>
         </div>
 
-        {/* Zone A Leaderboard */}
-        <AdSlot position="A" />
-
-        {/* Articles List Grid */}
-        {articles.length === 0 ? (
-          <p style={{ textAlign: 'center', color: 'var(--text-charcoal)' }}>{t('news_no_articles', 'Keine Artikel im Archiv vorhanden.')}</p>
-        ) : (
-          <div 
-            style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', 
-              gap: '32px',
-              marginTop: '32px'
-            }}
-          >
-            {articles.map((art) => (
-              <div 
-                key={art.id}
-                style={{
-                  backgroundColor: '#FFFFFF',
-                  border: '0.5px solid var(--light-border)',
-                  borderRadius: '6px',
-                  padding: '24px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  cursor: 'pointer',
-                  position: 'relative',
-                  transition: 'border-color 0.2s'
-                }}
-                onClick={() => selectArticle(art.id)}
-                className="feed-article-card"
-              >
-                {art.image_url && (
-                  <div style={{ width: '100%', height: '180px', overflow: 'hidden', borderRadius: '4px', marginBottom: '16px' }}>
+        <SidebarLayout
+          entityType="Articles"
+          categories={uniqueCategories}
+          tags={uniqueTags}
+          selectedCategory={selectedCategory}
+          selectedTag={selectedTag}
+          recentItems={articles}
+          onSearch={(val) => setSearchQuery(val)}
+          onSelectCategory={(cat) => setSelectedCategory(cat)}
+          onSelectTag={(tag) => setSelectedTag(tag)}
+          onItemClick={(item) => selectArticle(item.id)}
+        >
+          {/* Main Grid content list */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            {filteredArticles.length === 0 ? (
+              <div style={{ padding: '48px', backgroundColor: '#FFF', textAlign: 'center', borderRadius: '6px', border: '1px solid #E5E7EB' }}>
+                <span style={{ fontSize: '14px', color: '#6B7280' }}>No articles match your selection.</span>
+              </div>
+            ) : (
+              filteredArticles.map(art => (
+                <div 
+                  key={art.id}
+                  onClick={() => selectArticle(art.id)}
+                  style={{
+                    backgroundColor: '#FFFFFF',
+                    border: '1px solid #E5E7EB',
+                    borderRadius: '6px',
+                    padding: '24px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    gap: '24px',
+                    transition: 'transform 150ms ease, box-shadow 150ms ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.05)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
+                >
+                  {art.image_url && (
                     <img 
                       src={art.image_url} 
-                      alt={art.title} 
-                      style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s' }}
-                      className="card-img"
+                      alt="" 
+                      style={{ width: '200px', height: '140px', objectFit: 'cover', borderRadius: '4px', flexShrink: 0 }} 
                     />
+                  )}
+                  <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flex: 1 }}>
+                    <div>
+                      <span style={{ color: 'var(--primary-red)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '8px' }}>
+                        {art.category}
+                      </span>
+                      <h3 style={{ margin: '0 0 8px 0', fontFamily: '"Playfair Display", serif', fontSize: '20px', color: '#111827', fontWeight: 700 }}>
+                        {art.title}
+                      </h3>
+                      <p style={{ margin: '0 0 16px 0', fontSize: '13px', color: '#4B5563', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                        {art.subtitle}
+                      </p>
+                    </div>
+                    <div style={{ display: 'flex', gap: '16px', fontSize: '11px', color: '#9CA3AF' }}>
+                      <span>{art.date_published}</span>
+                      <span>•</span>
+                      <span>{art.read_time_mins} min read</span>
+                    </div>
                   </div>
-                )}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                  <span className="badge badge-industry">{t(art.category, art.category)}</span>
-                  <span style={{ fontSize: '11px', color: 'var(--text-charcoal)', fontFamily: 'var(--font-mono)' }}>{art.date_published}</span>
                 </div>
-                
-                <h3 
-                  style={{ 
-                    fontFamily: '"Playfair Display", serif', 
-                    fontSize: '19px', 
-                    color: 'var(--text-ink)', 
-                    marginBottom: '12px',
-                    fontWeight: 700,
-                    lineHeight: 1.3
-                  }}
-                >
-                  {t(art.title, art.title)}
-                </h3>
-                
-                <p 
-                  style={{ 
-                    fontFamily: 'Inter, sans-serif', 
-                    fontSize: '13px', 
-                    color: 'var(--text-charcoal)', 
-                    lineHeight: 1.5,
-                    marginBottom: '20px',
-                    flex: 1
-                  }}
-                >
-                  {t(art.subtitle, art.subtitle)}
-                </p>
-
-                <div 
-                  style={{ 
-                    marginTop: 'auto',
-                    borderTop: '0.5px solid var(--light-border)',
-                    paddingTop: '16px',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    fontSize: '12px',
-                    color: 'var(--primary-gold)',
-                    fontWeight: 600
-                  }}
-                >
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-ink)' }}>
-                    <User size={12} style={{ color: 'var(--primary-gold)' }} />
-                    {t(art.author_name, art.author_name)}
-                  </span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                    {t('news_read_article', 'Artikel lesen')} <ArrowRight size={14} />
-                  </span>
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
-        )}
+        </SidebarLayout>
 
       </div>
-      
-      <style>{`
-        .feed-article-card:hover {
-          border-color: var(--primary-gold) !important;
-        }
-        .feed-article-card:hover .card-img {
-          transform: scale(1.05);
-        }
-        .related-news-card:hover {
-          border-color: var(--primary-gold) !important;
-        }
-        .related-news-card:hover .card-img {
-          transform: scale(1.05);
-        }
-        @media (max-width: 768px) {
-          .news-layout-grid {
-            grid-template-columns: 1fr !important;
-          }
-          .news-right-col {
-            width: 100% !important;
-          }
-          .news-related-grid {
-            grid-template-columns: 1fr !important;
-          }
-        }
-      `}</style>
     </div>
   );
 }

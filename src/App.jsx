@@ -27,8 +27,38 @@ function AppContent() {
   const [homeFeatured, setHomeFeatured] = useState([]);
   const [homeNews, setHomeNews] = useState([]);
 
-  // Mock logged-in student session state (e.g. Lukas Keller with ID 2)
+  // Session and scroll to top state
+  const [currentUser, setCurrentUser] = useState(() => {
+    const sessionStr = localStorage.getItem('userSession');
+    return sessionStr ? JSON.parse(sessionStr) : null;
+  });
+
+  const [showScrollTop, setShowScrollTop] = useState(false);
   const [currentStudentId, setCurrentStudentId] = useState('2');
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 300);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    // Dynamic Canonical Link Tag for SEO Compliance
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonical);
+    }
+    canonical.setAttribute('href', window.location.href.split('?')[0]);
+  }, [hash]);
+
 
   // Hash Routing Parser
   useEffect(() => {
@@ -409,12 +439,12 @@ function AppContent() {
 
         {/* ROUTE: LOGIN */}
         {routeInfo.route === 'login' && (
-          <Auth mode="login" navigate={navigate} />
+          <Auth mode="login" navigate={navigate} onLoginSuccess={(u) => setCurrentUser(u)} />
         )}
 
         {/* ROUTE: REGISTER */}
         {routeInfo.route === 'register' && (
-          <Auth mode="register" navigate={navigate} />
+          <Auth mode="register" navigate={navigate} onLoginSuccess={(u) => setCurrentUser(u)} />
         )}
 
         {/* ROUTE: ADMIN DASHBOARD */}
@@ -516,6 +546,36 @@ function AppContent() {
 
       {/* 5. Cookie Consent Banner */}
       <CookieBanner />
+
+      {/* Floating Scroll to Top Button */}
+      {showScrollTop && (
+        <button
+          onClick={scrollToTop}
+          style={{
+            position: 'fixed',
+            bottom: '40px',
+            right: '40px',
+            width: '44px',
+            height: '44px',
+            borderRadius: '50%',
+            backgroundColor: 'var(--primary-red)',
+            color: '#FFFFFF',
+            border: 'none',
+            boxShadow: '0 4px 10px rgba(0,0,0,0.15)',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '18px',
+            zIndex: 9999,
+            transition: 'all 150ms ease'
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-3px)'}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+        >
+          ▲
+        </button>
+      )}
     </div>
   );
 }

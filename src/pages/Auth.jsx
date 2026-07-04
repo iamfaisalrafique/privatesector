@@ -1,48 +1,78 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { Check, Shield, Globe, Lock } from 'lucide-react';
+import { Check, Shield, Lock } from 'lucide-react';
 
-export default function Auth({ mode = 'login', navigate }) {
-  const { t, isRtl, language, setLanguage } = useLanguage();
+export default function Auth({ mode = 'login', navigate, onLoginSuccess }) {
+  const { t, isRtl, language } = useLanguage();
   const [authMode, setAuthMode] = useState(mode); // login or register
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const [preferredLang, setPreferredLang] = useState(language);
+  const [role, setRole] = useState('student'); // student or company
+  
+  // Extra fields for Student signup
+  const [university, setUniversity] = useState('');
+  const [studyField, setStudyField] = useState('');
+  
+  // Extra fields for Company signup
+  const [canton, setCanton] = useState('ZH');
+  const [industry, setIndustry] = useState('Consumer Goods');
+  const [sizeClass, setSizeClass] = useState('Medium');
 
-  const handleAuthSubmit = (e) => {
+  const cantonList = ['ZH', 'BE', 'LU', 'UR', 'SZ', 'OW', 'NW', 'GL', 'ZG', 'FR', 'SO', 'BS', 'BL', 'SH', 'AR', 'AI', 'SG', 'GR', 'AG', 'TG', 'TI', 'VD', 'VS', 'NE', 'GE', 'JU'];
+  const industriesList = ['Consumer Goods', 'Financial Services', 'Technology', 'Healthcare', 'Consulting', 'Services', 'Retail', 'Logistics', 'Manufacturing'];
+
+  const handleAuthSubmit = async (e) => {
     e.preventDefault();
-    alert(
-      authMode === 'login' 
-        ? `${t('Erfolgreich angemeldet als', 'Erfolgreich angemeldet als')} ${email}!` 
-        : `${t('Konto erfolgreich registriert für', 'Konto erfolgreich registriert für')} ${name} (${email}) ${t('mit Sprache', 'mit Sprache')} ${preferredLang}!`
-    );
-    navigate('/');
+
+    const endpoint = authMode === 'login' ? '/api/auth/login' : '/api/auth/signup';
+    
+    // Prepare payload
+    const payload = {
+      email,
+      password,
+      role: authMode === 'login' ? undefined : role,
+      name: authMode === 'login' ? undefined : name,
+      extraData: authMode === 'login' ? undefined : {
+        university: role === 'student' ? university : undefined,
+        study_field: role === 'student' ? studyField : undefined,
+        canton: role === 'company' ? canton : undefined,
+        industry: role === 'company' ? industry : undefined,
+        size_class: role === 'company' ? sizeClass : undefined
+      }
+    };
+
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        alert(data.error || 'Authentication failed');
+        return;
+      }
+
+      if (data.success && data.user) {
+        localStorage.setItem('userSession', JSON.stringify(data.user));
+        if (onLoginSuccess) {
+          onLoginSuccess(data.user);
+        }
+        alert(authMode === 'login' ? 'Successfully logged in!' : 'Successfully registered!');
+        navigate('/');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Network error. Please try again.');
+    }
   };
 
-  const languagesList = [
-    { code: 'de', label: 'Deutsch', native: 'Deutsch', flag: '🇩🇪' },
-    { code: 'fr', label: 'Français', native: 'Français', flag: '🇫🇷' },
-    { code: 'en', label: 'English', native: 'English', flag: '🇬🇧' },
-    { code: 'it', label: 'Italiano', native: 'Italiano', flag: '🇮🇹' },
-    { code: 'rm', label: 'Rumantsch', native: 'Rumantsch', flag: '🇨🇭' },
-    { code: 'es', label: 'Español', native: 'Español', flag: '🇪🇸' },
-    { code: 'pt', label: 'Português', native: 'Português', flag: '🇵🇹' },
-    { code: 'ar', label: 'العربية', native: 'العربية', flag: '🇸🇦' },
-    { code: 'zh', label: 'Chinese', native: '中文', flag: '🇨🇳' },
-    { code: 'ru', label: 'Russian', native: 'Русский', flag: '🇷🇺' },
-    { code: 'ja', label: 'Japanese', native: '日本語', flag: '🇯🇵' },
-    { code: 'tr', label: 'Turkish', native: 'Türkçe', flag: '🇹🇷' },
-    { code: 'nl', label: 'Dutch', native: 'Nederlands', flag: '🇳🇱' },
-    { code: 'pl', label: 'Polish', native: 'Polski', flag: '🇵🇱' },
-    { code: 'ko', label: 'Korean', native: '한국어', flag: '🇰🇷' },
-    { code: 'sv', label: 'Swedish', native: 'Svenska', flag: '🇸🇪' },
-    { code: 'da', label: 'Danish', native: 'Dansk', flag: '🇩🇰' },
-    { code: 'fi', label: 'Finnish', native: 'Suomi', flag: '🇫🇮' }
-  ];
-
   return (
-    <div style={{ display: 'flex', minHeight: 'calc(100vh - 64px)', backgroundColor: 'var(--bg-ivory)' }} className="auth-split-screen">
+    <div style={{ display: 'flex', minHeight: 'calc(100vh - 100px)', backgroundColor: 'var(--bg-ivory)' }} className="auth-split-screen">
       
       {/* Left 50% Panel - Dark #0A0A0A */}
       <div 
@@ -58,23 +88,6 @@ export default function Auth({ mode = 'login', navigate }) {
         }}
         className="auth-left-col"
       >
-        {/* Brand Logo */}
-        <div 
-          onClick={() => navigate('/')} 
-          style={{ 
-            cursor: 'pointer', 
-            fontFamily: '"Playfair Display", Georgia, serif', 
-            fontSize: '24px', 
-            fontWeight: 700, 
-            letterSpacing: '-0.02em',
-            display: 'inline-flex',
-            alignItems: 'baseline'
-          }}
-        >
-          <span style={{ color: 'var(--primary-red)' }}>privatesector</span>
-          <span style={{ color: '#8B0000', fontSize: '18px', fontWeight: 800 }}>.ch</span>
-        </div>
-
         {/* Value Proposition */}
         <div style={{ maxWidth: '440px', margin: '40px 0' }}>
           <h2 style={{ fontFamily: '"Playfair Display", serif', fontSize: '36px', fontWeight: 700, lineHeight: 1.3, marginBottom: '24px', color: '#FFFDF7' }}>
@@ -83,7 +96,7 @@ export default function Auth({ mode = 'login', navigate }) {
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
-              <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: 'rgba(191, 155, 48, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: 'rgba(213, 43, 30, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <Check size={14} style={{ color: 'var(--primary-red)' }} />
               </div>
               <div>
@@ -93,7 +106,7 @@ export default function Auth({ mode = 'login', navigate }) {
             </div>
 
             <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
-              <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: 'rgba(191, 155, 48, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: 'rgba(213, 43, 30, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <Shield size={14} style={{ color: 'var(--primary-red)' }} />
               </div>
               <div>
@@ -103,7 +116,7 @@ export default function Auth({ mode = 'login', navigate }) {
             </div>
 
             <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
-              <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: 'rgba(191, 155, 48, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: 'rgba(213, 43, 30, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <Lock size={14} style={{ color: 'var(--primary-red)' }} />
               </div>
               <div>
@@ -136,59 +149,78 @@ export default function Auth({ mode = 'login', navigate }) {
         }}
         className="auth-right-col"
       >
-        <div style={{ width: '100%', maxWidth: '380px' }}>
+        <div style={{ width: '100%', maxWidth: '400px' }}>
           
           <h2 style={{ fontFamily: '"Playfair Display", serif', fontSize: '32px', fontWeight: 700, color: 'var(--text-ink)', marginBottom: '8px', textAlign: 'center' }}>
             {authMode === 'login' ? t('Anmelden', 'Anmelden') : t('Konto erstellen', 'Konto erstellen')}
           </h2>
           
-          <p style={{ fontSize: '13px', color: 'var(--text-charcoal)', marginBottom: '32px', textAlign: 'center' }}>
+          <p style={{ fontSize: '13px', color: 'var(--text-charcoal)', marginBottom: '24px', textAlign: 'center' }}>
             {authMode === 'login' ? t('Willkommen zurück im Schweizer B2B Portal', 'Willkommen zurück im Schweizer B2B Portal') : t('Erhalten Sie unbegrenzten Zugriff auf Firmendaten', 'Erhalten Sie unbegrenzten Zugriff auf Firmendaten')}
           </p>
-
-          {/* Social Logins */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '24px' }}>
-            <button 
-              onClick={() => alert('LinkedIn Social Login wird geladen...')}
-              className="btn btn-gold-outline"
-              style={{ width: '100%', display: 'flex', gap: '12px', color: 'var(--text-ink)', border: '0.5px solid var(--light-border)', backgroundColor: '#FFFFFF', minHeight: '44px' }}
-            >
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style={{ color: '#0077B5' }}><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-              <span>{t('Mit LinkedIn anmelden', 'Mit LinkedIn anmelden')}</span>
-            </button>
-
-            <button 
-              onClick={() => alert('Google Social Login wird geladen...')}
-              className="btn btn-gold-outline"
-              style={{ width: '100%', display: 'flex', gap: '12px', color: 'var(--text-ink)', border: '0.5px solid var(--light-border)', backgroundColor: '#FFFFFF', minHeight: '44px' }}
-            >
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style={{ color: '#EA4335' }}><path d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.114-5.136 4.114-3.466 0-6.277-2.85-6.277-6.36s2.81-6.36 6.277-6.36c1.554 0 2.969.57 4.072 1.505l3.056-3.082C18.96 2.265 15.82 1 12.24 1 6.033 1 1 6.06 1 12.3s5.033 11.3 11.24 11.3c5.962 0 10.635-4.22 10.635-10.82 0-.665-.06-1.165-.18-1.495H12.24z"/></svg>
-              <span>{t('Mit Google anmelden', 'Mit Google anmelden')}</span>
-            </button>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', margin: '24px 0', width: '100%' }}>
-            <div style={{ flex: 1, height: '0.5px', backgroundColor: 'var(--light-border)' }} />
-            <span style={{ fontSize: '11px', color: 'var(--text-charcoal)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t('oder mit E-Mail', 'oder mit E-Mail')}</span>
-            <div style={{ flex: 1, height: '0.5px', backgroundColor: 'var(--light-border)' }} />
-          </div>
 
           {/* Form */}
           <form onSubmit={handleAuthSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             
             {authMode === 'register' && (
-              <div>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, marginBottom: '6px', color: 'var(--text-ink)' }}>{t('Name', 'Name')}</label>
-                <input 
-                  type="text" 
-                  required 
-                  placeholder={t('Ihr vollständiger Name', 'Ihr vollständiger Name')}
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="input-field" 
-                  style={{ border: '0.5px solid var(--light-border)', borderRadius: '4px' }}
-                />
-              </div>
+              <>
+                {/* Role Tabs */}
+                <div style={{ display: 'flex', gap: '8px', backgroundColor: '#F3F4F6', padding: '4px', borderRadius: '6px', marginBottom: '8px' }}>
+                  <button
+                    type="button"
+                    onClick={() => setRole('student')}
+                    style={{
+                      flex: 1,
+                      padding: '8px',
+                      fontSize: '13px',
+                      fontWeight: 600,
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      backgroundColor: role === 'student' ? '#FFFFFF' : 'transparent',
+                      color: role === 'student' ? 'var(--primary-red)' : '#4B5563',
+                      boxShadow: role === 'student' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                      transition: 'all 150ms ease'
+                    }}
+                  >
+                    Student
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRole('company')}
+                    style={{
+                      flex: 1,
+                      padding: '8px',
+                      fontSize: '13px',
+                      fontWeight: 600,
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      backgroundColor: role === 'company' ? '#FFFFFF' : 'transparent',
+                      color: role === 'company' ? 'var(--primary-red)' : '#4B5563',
+                      boxShadow: role === 'company' ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                      transition: 'all 150ms ease'
+                    }}
+                  >
+                    Company
+                  </button>
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, marginBottom: '6px', color: 'var(--text-ink)' }}>
+                    {role === 'student' ? 'Student Full Name' : 'Company Brand Name'}
+                  </label>
+                  <input 
+                    type="text" 
+                    required 
+                    placeholder={role === 'student' ? 'e.g. Lukas Keller' : 'e.g. Acme Corporation'}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="input-field" 
+                    style={{ border: '0.5px solid var(--light-border)', borderRadius: '4px', width: '100%', padding: '10px', boxSizing: 'border-box' }}
+                  />
+                </div>
+              </>
             )}
 
             <div>
@@ -200,7 +232,7 @@ export default function Auth({ mode = 'login', navigate }) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="input-field" 
-                style={{ border: '0.5px solid var(--light-border)', borderRadius: '4px' }}
+                style={{ border: '0.5px solid var(--light-border)', borderRadius: '4px', width: '100%', padding: '10px', boxSizing: 'border-box' }}
               />
             </div>
 
@@ -213,33 +245,82 @@ export default function Auth({ mode = 'login', navigate }) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="input-field" 
-                style={{ border: '0.5px solid var(--light-border)', borderRadius: '4px' }}
+                style={{ border: '0.5px solid var(--light-border)', borderRadius: '4px', width: '100%', padding: '10px', boxSizing: 'border-box' }}
               />
             </div>
 
-            {/* Language Preference Selector (Onboarding) */}
-            {authMode === 'register' && (
-              <div>
-                <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, marginBottom: '6px', color: 'var(--text-ink)' }}>{t('Bevorzugte Sprache', 'Bevorzugte Sprache')}</label>
-                <select
-                  value={preferredLang}
-                  onChange={(e) => setPreferredLang(e.target.value)}
-                  className="input-field"
-                  style={{ border: '0.5px solid var(--light-border)', borderRadius: '4px', backgroundColor: '#FFFFFF' }}
-                >
-                  {languagesList.map(l => (
-                    <option key={l.code} value={l.code}>
-                      {l.flag} {l.native}
-                    </option>
-                  ))}
-                </select>
+            {/* Extra Role Fields */}
+            {authMode === 'register' && role === 'student' && (
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <div style={{ flex: 1 }}>
+                  <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, marginBottom: '6px', color: 'var(--text-ink)' }}>University</label>
+                  <input 
+                    type="text" 
+                    required 
+                    placeholder="e.g. ETH Zürich"
+                    value={university}
+                    onChange={(e) => setUniversity(e.target.value)}
+                    style={{ border: '0.5px solid var(--light-border)', borderRadius: '4px', width: '100%', padding: '10px', boxSizing: 'border-box' }}
+                  />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, marginBottom: '6px', color: 'var(--text-ink)' }}>Study Field</label>
+                  <input 
+                    type="text" 
+                    required 
+                    placeholder="e.g. Computer Science"
+                    value={studyField}
+                    onChange={(e) => setStudyField(e.target.value)}
+                    style={{ border: '0.5px solid var(--light-border)', borderRadius: '4px', width: '100%', padding: '10px', boxSizing: 'border-box' }}
+                  />
+                </div>
               </div>
+            )}
+
+            {authMode === 'register' && role === 'company' && (
+              <>
+                <div style={{ display: 'flex', gap: '12px' }}>
+                  <div style={{ flex: 1 }}>
+                    <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, marginBottom: '6px', color: 'var(--text-ink)' }}>Canton</label>
+                    <select
+                      value={canton}
+                      onChange={(e) => setCanton(e.target.value)}
+                      style={{ border: '0.5px solid var(--light-border)', borderRadius: '4px', width: '100%', padding: '10px', boxSizing: 'border-box', backgroundColor: '#FFFFFF' }}
+                    >
+                      {cantonList.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, marginBottom: '6px', color: 'var(--text-ink)' }}>Industry</label>
+                    <select
+                      value={industry}
+                      onChange={(e) => setIndustry(e.target.value)}
+                      style={{ border: '0.5px solid var(--light-border)', borderRadius: '4px', width: '100%', padding: '10px', boxSizing: 'border-box', backgroundColor: '#FFFFFF' }}
+                    >
+                      {industriesList.map(i => <option key={i} value={i}>{i}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, marginBottom: '6px', color: 'var(--text-ink)' }}>Company Size</label>
+                  <select
+                    value={sizeClass}
+                    onChange={(e) => setSizeClass(e.target.value)}
+                    style={{ border: '0.5px solid var(--light-border)', borderRadius: '4px', width: '100%', padding: '10px', boxSizing: 'border-box', backgroundColor: '#FFFFFF' }}
+                  >
+                    <option value="Micro">Micro (1-9 employees)</option>
+                    <option value="Small">Small (10-49 employees)</option>
+                    <option value="Medium">Medium (50-249 employees)</option>
+                    <option value="Large">Large (250+ employees)</option>
+                  </select>
+                </div>
+              </>
             )}
 
             <button 
               type="submit" 
               className="btn btn-gold-fill" 
-              style={{ width: '100%', height: '48px', fontSize: '14px', marginTop: '12px' }}
+              style={{ width: '100%', height: '48px', fontSize: '14px', marginTop: '12px', cursor: 'pointer', backgroundColor: 'var(--primary-red)', color: '#FFFFFF', border: 'none', borderRadius: '4px', fontWeight: 600 }}
             >
               {authMode === 'login' ? t('Anmelden', 'Anmelden') : t('Konto erstellen', 'Konto erstellen')}
             </button>
@@ -252,7 +333,7 @@ export default function Auth({ mode = 'login', navigate }) {
                 {t('Noch kein Konto?', 'Noch kein Konto?')}{' '}
                 <button 
                   onClick={() => setAuthMode('register')} 
-                  style={{ background: 'none', border: 'none', color: 'var(--primary-gold)', fontWeight: 600, cursor: 'pointer', textDecoration: 'underline' }}
+                  style={{ background: 'none', border: 'none', color: 'var(--primary-red)', fontWeight: 600, cursor: 'pointer', textDecoration: 'underline' }}
                 >
                   {t('Jetzt registrieren', 'Jetzt registrieren')}
                 </button>
@@ -262,7 +343,7 @@ export default function Auth({ mode = 'login', navigate }) {
                 {t('Bereits registriert?', 'Bereits registriert?')}{' '}
                 <button 
                   onClick={() => setAuthMode('login')} 
-                  style={{ background: 'none', border: 'none', color: 'var(--primary-gold)', fontWeight: 600, cursor: 'pointer', textDecoration: 'underline' }}
+                  style={{ background: 'none', border: 'none', color: 'var(--primary-red)', fontWeight: 600, cursor: 'pointer', textDecoration: 'underline' }}
                 >
                   {t('Hier anmelden', 'Hier anmelden')}
                 </button>

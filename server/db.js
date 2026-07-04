@@ -543,6 +543,61 @@ export async function initializeDatabase() {
     )
   `);
 
+  // Create users table
+  await dbRun(`
+    CREATE TABLE IF NOT EXISTS users (
+      id SERIAL PRIMARY KEY,
+      email TEXT UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      role TEXT NOT NULL, -- 'admin', 'student', 'company'
+      profile_id INTEGER
+    )
+  `);
+
+  // Add SEO columns, category, and tags to all tables
+  await dbRun(`ALTER TABLE news ADD COLUMN IF NOT EXISTS focus_keyword TEXT DEFAULT ''`);
+  await dbRun(`ALTER TABLE news ADD COLUMN IF NOT EXISTS meta_title TEXT DEFAULT ''`);
+  await dbRun(`ALTER TABLE news ADD COLUMN IF NOT EXISTS meta_description TEXT DEFAULT ''`);
+  await dbRun(`ALTER TABLE news ADD COLUMN IF NOT EXISTS slug TEXT DEFAULT ''`);
+  await dbRun(`ALTER TABLE news ADD COLUMN IF NOT EXISTS schema_markup TEXT DEFAULT ''`);
+  await dbRun(`ALTER TABLE news ADD COLUMN IF NOT EXISTS tags TEXT DEFAULT '[]'`);
+
+  await dbRun(`ALTER TABLE companies ADD COLUMN IF NOT EXISTS focus_keyword TEXT DEFAULT ''`);
+  await dbRun(`ALTER TABLE companies ADD COLUMN IF NOT EXISTS meta_title TEXT DEFAULT ''`);
+  await dbRun(`ALTER TABLE companies ADD COLUMN IF NOT EXISTS meta_description TEXT DEFAULT ''`);
+  await dbRun(`ALTER TABLE companies ADD COLUMN IF NOT EXISTS slug TEXT DEFAULT ''`);
+  await dbRun(`ALTER TABLE companies ADD COLUMN IF NOT EXISTS schema_markup TEXT DEFAULT ''`);
+  await dbRun(`ALTER TABLE companies ADD COLUMN IF NOT EXISTS tags TEXT DEFAULT '[]'`);
+
+  await dbRun(`ALTER TABLE interviews ADD COLUMN IF NOT EXISTS focus_keyword TEXT DEFAULT ''`);
+  await dbRun(`ALTER TABLE interviews ADD COLUMN IF NOT EXISTS meta_title TEXT DEFAULT ''`);
+  await dbRun(`ALTER TABLE interviews ADD COLUMN IF NOT EXISTS meta_description TEXT DEFAULT ''`);
+  await dbRun(`ALTER TABLE interviews ADD COLUMN IF NOT EXISTS slug TEXT DEFAULT ''`);
+  await dbRun(`ALTER TABLE interviews ADD COLUMN IF NOT EXISTS schema_markup TEXT DEFAULT ''`);
+  await dbRun(`ALTER TABLE interviews ADD COLUMN IF NOT EXISTS tags TEXT DEFAULT '[]'`);
+
+  await dbRun(`ALTER TABLE jobs ADD COLUMN IF NOT EXISTS focus_keyword TEXT DEFAULT ''`);
+  await dbRun(`ALTER TABLE jobs ADD COLUMN IF NOT EXISTS meta_title TEXT DEFAULT ''`);
+  await dbRun(`ALTER TABLE jobs ADD COLUMN IF NOT EXISTS meta_description TEXT DEFAULT ''`);
+  await dbRun(`ALTER TABLE jobs ADD COLUMN IF NOT EXISTS slug TEXT DEFAULT ''`);
+  await dbRun(`ALTER TABLE jobs ADD COLUMN IF NOT EXISTS schema_markup TEXT DEFAULT ''`);
+  await dbRun(`ALTER TABLE jobs ADD COLUMN IF NOT EXISTS category TEXT DEFAULT ''`);
+  await dbRun(`ALTER TABLE jobs ADD COLUMN IF NOT EXISTS tags TEXT DEFAULT '[]'`);
+
+  // Seed Default Users
+  try {
+    const userCount = await dbGet('SELECT COUNT(*) as count FROM users');
+    if (Number(userCount.count) === 0) {
+      console.log('Seeding default authentication users...');
+      await dbRun(`INSERT INTO users (email, password_hash, role) VALUES ('admin@privatesector.ch', 'AdminSecret2026!', 'admin')`);
+      await dbRun(`INSERT INTO users (email, password_hash, role) VALUES ('student@privatesector.ch', 'StudentPassword!', 'student')`);
+      await dbRun(`INSERT INTO users (email, password_hash, role) VALUES ('company@privatesector.ch', 'CompanyPassword!', 'company')`);
+    }
+  } catch (err) {
+    console.error('Error seeding users:', err);
+  }
+
+
   // Count checks to decide if we need to clean and seed
   const companyCount = await dbGet('SELECT COUNT(*) as count FROM companies');
   const newsCount = await dbGet('SELECT COUNT(*) as count FROM news');

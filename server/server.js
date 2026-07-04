@@ -504,19 +504,118 @@ app.put('/api/students/:id', async (req, res) => {
   }
 });
 
-// Create new news article by a student
+// ================= AUTHENTICATION ENDPOINTS =================
+
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await dbGet('SELECT * FROM users WHERE email = ?', [email]);
+    if (!user || user.password_hash !== password) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
+    res.json({
+      success: true,
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        profile_id: user.profile_id
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/auth/signup', async (req, res) => {
+  try {
+    const { email, password, role, name, extraData } = req.body;
+    
+    // Check if user exists
+    const existing = await dbGet('SELECT * FROM users WHERE email = ?', [email]);
+    if (existing) {
+      return res.status(400).json({ error: 'Email already registered' });
+    }
+
+    let profile_id = null;
+
+    // Create profile depending on role
+    if (role === 'student') {
+      const studentResult = await dbRun(
+        `INSERT INTO student_profiles (name, university, study_field, avatar, grad_year, portfolio_url, bio, email)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          name,
+          extraData?.university || 'University of Zurich',
+          extraData?.study_field || 'Business Administration',
+          'https://i.pravatar.cc/150?img=12',
+          extraData?.grad_year || 2027,
+          extraData?.portfolio_url || '',
+          extraData?.bio || 'Swiss private sector analyst student.',
+          email
+        ]
+      );
+      profile_id = studentResult.id;
+    } else if (role === 'company') {
+      const companyResult = await dbRun(
+        `INSERT INTO companies (name, logo_bg, canton, industry, size_class, description, founded, employees, revenue_band, website, linkedin, contact_email, about_text, structured_data)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          name,
+          '#1F2937',
+          extraData?.canton || 'ZH',
+          extraData?.industry || 'Services',
+          extraData?.size_class || 'Medium',
+          extraData?.description || 'Registered Swiss business enterprise.',
+          extraData?.founded || 2020,
+          extraData?.employees || 10,
+          extraData?.revenue_band || 'CHF 1M - 5M',
+          extraData?.website || '',
+          extraData?.linkedin || '',
+          email,
+          extraData?.description || 'Registered Swiss business enterprise.',
+          '{}'
+        ]
+      );
+      profile_id = companyResult.id;
+    }
+
+    // Insert user
+    const userResult = await dbRun(
+      'INSERT INTO users (email, password_hash, role, profile_id) VALUES (?, ?, ?, ?)',
+      [email, password, role, profile_id]
+    );
+
+    res.json({
+      success: true,
+      user: {
+        id: userResult.id,
+        email,
+        role,
+        profile_id
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+// ================= CRUD ENDPOINTS FOR NEWS/BLOGS =================
+
+// Create
 app.post('/api/news', async (req, res) => {
   try {
-    const { title, subtitle, category, author_name, author_avatar, content_body, pull_quote, tags, image_url, student_author_id } = req.body;
-    
+    const { title, subtitle, category, author_name, author_avatar, content_body, pull_quote, tags, image_url, student_author_id, focus_keyword, meta_title, meta_description, slug, schema_markup } = req.body;
+    const cleanSlug = slug || title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
     const result = await dbRun(
-      `INSERT INTO news (title, subtitle, category, author_name, author_avatar, date_published, read_time_mins, content_body, pull_quote, tags, image_url, student_author_id)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO news (title, subtitle, category, author_name, author_avatar, date_published, read_time_mins, content_body, pull_quote, tags, image_url, student_author_id, focus_keyword, meta_title, meta_description, slug, schema_markup)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         title, 
         subtitle, 
         category || 'University Perspective', 
-        author_name, 
+        author_name || 'Editorial Team', 
         author_avatar || 'https://i.pravatar.cc/100?img=33', 
         new Date().toISOString().split('T')[0], 
         Math.max(1, Math.round(content_body.split(/\s+/).length / 200)), 
@@ -524,12 +623,371 @@ app.post('/api/news', async (req, res) => {
         pull_quote || '', 
         JSON.stringify(tags || []), 
         image_url || 'https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?auto=format&fit=crop&q=80&w=600',
-        student_author_id
+        student_author_id || null,
+        focus_keyword || '',
+        meta_title || '',
+        meta_description || '',
+        cleanSlug,
+        schema_markup || ''
       ]
     );
     res.json({ success: true, id: result.id });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+// Update
+app.put('/api/news/:id', async (req, res) => {
+  try {
+    const { title, subtitle, category, author_name, author_avatar, content_body, pull_quote, tags, image_url, student_author_id, focus_keyword, meta_title, meta_description, slug, schema_markup } = req.body;
+    const cleanSlug = slug || title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    await dbRun(
+      `UPDATE news 
+       SET title = ?, subtitle = ?, category = ?, author_name = ?, author_avatar = ?, read_time_mins = ?, content_body = ?, pull_quote = ?, tags = ?, image_url = ?, student_author_id = ?, focus_keyword = ?, meta_title = ?, meta_description = ?, slug = ?, schema_markup = ?
+       WHERE id = ?`,
+      [
+        title,
+        subtitle,
+        category,
+        author_name,
+        author_avatar,
+        Math.max(1, Math.round(content_body.split(/\s+/).length / 200)),
+        content_body,
+        pull_quote,
+        JSON.stringify(tags || []),
+        image_url,
+        student_author_id || null,
+        focus_keyword,
+        meta_title,
+        meta_description,
+        cleanSlug,
+        schema_markup,
+        req.params.id
+      ]
+    );
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Delete
+app.delete('/api/news/:id', async (req, res) => {
+  try {
+    await dbRun('DELETE FROM news WHERE id = ?', [req.params.id]);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+// ================= CRUD ENDPOINTS FOR COMPANIES =================
+
+// Create
+app.post('/api/companies', async (req, res) => {
+  try {
+    const { name, logo_bg, canton, industry, size_class, description, premium, verified, founded, employees, revenue_band, website, linkedin, contact_email, about_text, structured_data, focus_keyword, meta_title, meta_description, slug, schema_markup, tags } = req.body;
+    const cleanSlug = slug || name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    const result = await dbRun(
+      `INSERT INTO companies (name, logo_bg, canton, industry, size_class, description, premium, verified, founded, employees, revenue_band, website, linkedin, contact_email, about_text, structured_data, focus_keyword, meta_title, meta_description, slug, schema_markup, tags)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        name,
+        logo_bg || '#1A365D',
+        canton,
+        industry,
+        size_class,
+        description,
+        premium ? 1 : 0,
+        verified ? 1 : 0,
+        founded || 2026,
+        employees || 0,
+        revenue_band || 'N/A',
+        website || '',
+        linkedin || '',
+        contact_email || '',
+        about_text || '',
+        structured_data || '{}',
+        focus_keyword || '',
+        meta_title || '',
+        meta_description || '',
+        cleanSlug,
+        schema_markup || '',
+        JSON.stringify(tags || [])
+      ]
+    );
+    res.json({ success: true, id: result.id });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Update
+app.put('/api/companies/:id', async (req, res) => {
+  try {
+    const { name, logo_bg, canton, industry, size_class, description, premium, verified, founded, employees, revenue_band, website, linkedin, contact_email, about_text, structured_data, focus_keyword, meta_title, meta_description, slug, schema_markup, tags } = req.body;
+    const cleanSlug = slug || name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    await dbRun(
+      `UPDATE companies 
+       SET name = ?, logo_bg = ?, canton = ?, industry = ?, size_class = ?, description = ?, premium = ?, verified = ?, founded = ?, employees = ?, revenue_band = ?, website = ?, linkedin = ?, contact_email = ?, about_text = ?, structured_data = ?, focus_keyword = ?, meta_title = ?, meta_description = ?, slug = ?, schema_markup = ?, tags = ?
+       WHERE id = ?`,
+      [
+        name,
+        logo_bg,
+        canton,
+        industry,
+        size_class,
+        description,
+        premium ? 1 : 0,
+        verified ? 1 : 0,
+        founded,
+        employees,
+        revenue_band,
+        website,
+        linkedin,
+        contact_email,
+        about_text,
+        structured_data,
+        focus_keyword,
+        meta_title,
+        meta_description,
+        cleanSlug,
+        schema_markup,
+        JSON.stringify(tags || []),
+        req.params.id
+      ]
+    );
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Delete
+app.delete('/api/companies/:id', async (req, res) => {
+  try {
+    await dbRun('DELETE FROM companies WHERE id = ?', [req.params.id]);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+// ================= CRUD ENDPOINTS FOR INTERVIEWS/PODCASTS =================
+
+// Create
+app.post('/api/interviews', async (req, res) => {
+  try {
+    const { title, subtitle, interviewee_name, interviewee_title, interviewee_avatar, company_id, company_name, read_time_mins, audio_url, qa_content, student_author_id, category, focus_keyword, meta_title, meta_description, slug, schema_markup, tags } = req.body;
+    const cleanSlug = slug || title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    const result = await dbRun(
+      `INSERT INTO interviews (title, subtitle, interviewee_name, interviewee_title, interviewee_avatar, company_id, company_name, date_published, read_time_mins, audio_url, qa_content, student_author_id, category, focus_keyword, meta_title, meta_description, slug, schema_markup, tags)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        title,
+        subtitle,
+        interviewee_name,
+        interviewee_title,
+        interviewee_avatar || 'https://i.pravatar.cc/100?img=59',
+        company_id || null,
+        company_name || 'Independent',
+        new Date().toISOString().split('T')[0],
+        read_time_mins || 5,
+        audio_url || '',
+        qa_content || '[]',
+        student_author_id || null,
+        category || 'Executive Briefing',
+        focus_keyword || '',
+        meta_title || '',
+        meta_description || '',
+        cleanSlug,
+        schema_markup || '',
+        JSON.stringify(tags || [])
+      ]
+    );
+    res.json({ success: true, id: result.id });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Update
+app.put('/api/interviews/:id', async (req, res) => {
+  try {
+    const { title, subtitle, interviewee_name, interviewee_title, interviewee_avatar, company_id, company_name, read_time_mins, audio_url, qa_content, student_author_id, category, focus_keyword, meta_title, meta_description, slug, schema_markup, tags } = req.body;
+    const cleanSlug = slug || title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    await dbRun(
+      `UPDATE interviews 
+       SET title = ?, subtitle = ?, interviewee_name = ?, interviewee_title = ?, interviewee_avatar = ?, company_id = ?, company_name = ?, read_time_mins = ?, audio_url = ?, qa_content = ?, student_author_id = ?, category = ?, focus_keyword = ?, meta_title = ?, meta_description = ?, slug = ?, schema_markup = ?, tags = ?
+       WHERE id = ?`,
+      [
+        title,
+        subtitle,
+        interviewee_name,
+        interviewee_title,
+        interviewee_avatar,
+        company_id || null,
+        company_name,
+        read_time_mins,
+        audio_url,
+        qa_content,
+        student_author_id || null,
+        category,
+        focus_keyword,
+        meta_title,
+        meta_description,
+        cleanSlug,
+        schema_markup,
+        JSON.stringify(tags || []),
+        req.params.id
+      ]
+    );
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Delete
+app.delete('/api/interviews/:id', async (req, res) => {
+  try {
+    await dbRun('DELETE FROM interviews WHERE id = ?', [req.params.id]);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+// ================= CRUD ENDPOINTS FOR JOBS/TALENT =================
+
+// Create
+app.post('/api/jobs', async (req, res) => {
+  try {
+    const { title, type, description, company_id, company_name, location, apply_url, focus_keyword, meta_title, meta_description, slug, schema_markup, category, tags } = req.body;
+    const cleanSlug = slug || title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    const result = await dbRun(
+      `INSERT INTO jobs (title, type, description, company_id, company_name, location, apply_url, date_posted, focus_keyword, meta_title, meta_description, slug, schema_markup, category, tags)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        title,
+        type || 'Full-time',
+        description,
+        company_id || null,
+        company_name || 'Confidential',
+        location || 'Switzerland',
+        apply_url || '',
+        new Date().toISOString().split('T')[0],
+        focus_keyword || '',
+        meta_title || '',
+        meta_description || '',
+        cleanSlug,
+        schema_markup || '',
+        category || 'Engineering',
+        JSON.stringify(tags || [])
+      ]
+    );
+    res.json({ success: true, id: result.id });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Update
+app.put('/api/jobs/:id', async (req, res) => {
+  try {
+    const { title, type, description, company_id, company_name, location, apply_url, focus_keyword, meta_title, meta_description, slug, schema_markup, category, tags } = req.body;
+    const cleanSlug = slug || title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    await dbRun(
+      `UPDATE jobs 
+       SET title = ?, type = ?, description = ?, company_id = ?, company_name = ?, location = ?, apply_url = ?, focus_keyword = ?, meta_title = ?, meta_description = ?, slug = ?, schema_markup = ?, category = ?, tags = ?
+       WHERE id = ?`,
+      [
+        title,
+        type,
+        description,
+        company_id || null,
+        company_name,
+        location,
+        apply_url,
+        focus_keyword,
+        meta_title,
+        meta_description,
+        cleanSlug,
+        schema_markup,
+        category,
+        JSON.stringify(tags || []),
+        req.params.id
+      ]
+    );
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Delete
+app.delete('/api/jobs/:id', async (req, res) => {
+  try {
+    await dbRun('DELETE FROM jobs WHERE id = ?', [req.params.id]);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+// ================= SITEMAP XML GENERATOR =================
+
+app.get('/sitemap.xml', async (req, res) => {
+  try {
+    const companies = await dbQuery('SELECT id, slug FROM companies');
+    const news = await dbQuery('SELECT id, slug FROM news');
+    const interviews = await dbQuery('SELECT id, slug FROM interviews');
+    const jobs = await dbQuery('SELECT id, slug FROM jobs');
+
+    let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
+    xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
+
+    // Static pages
+    const staticPages = ['', '/unternehmen', '/news', '/statistiken', '/interviews', '/podcasts', '/karriere', '/ranking', '/login', '/register'];
+    staticPages.forEach(p => {
+      xml += `  <url>\n    <loc>https://privatesector.vitalswiss.ch/#${p}</loc>\n    <changefreq>daily</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
+    });
+
+    // Companies
+    companies.forEach(c => {
+      const slug = c.slug || `company-${c.id}`;
+      xml += `  <url>\n    <loc>https://privatesector.vitalswiss.ch/#/unternehmen/${slug}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
+    });
+
+    // News
+    news.forEach(n => {
+      const slug = n.slug || `news-${n.id}`;
+      xml += `  <url>\n    <loc>https://privatesector.vitalswiss.ch/#/news/${slug}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.6</priority>\n  </url>\n`;
+    });
+
+    // Interviews & Podcasts
+    interviews.forEach(i => {
+      const slug = i.slug || `interview-${i.id}`;
+      xml += `  <url>\n    <loc>https://privatesector.vitalswiss.ch/#/interviews/${slug}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.6</priority>\n  </url>\n`;
+    });
+
+    // Jobs
+    jobs.forEach(j => {
+      const slug = j.slug || `job-${j.id}`;
+      xml += `  <url>\n    <loc>https://privatesector.vitalswiss.ch/#/karriere/${slug}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.5</priority>\n  </url>\n`;
+    });
+
+    xml += `</urlset>`;
+
+    res.header('Content-Type', 'application/xml');
+    res.status(200).send(xml);
+  } catch (error) {
+    res.status(500).send(`<error>${error.message}</error>`);
   }
 });
 

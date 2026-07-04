@@ -24,9 +24,9 @@ export default function LanguageSwitcher() {
       <button 
         onClick={() => setIsOpen(!isOpen)}
         style={{
-          background: 'none',
-          border: '1px solid #E8E0C8',
-          color: '#FFFFFF',
+          backgroundColor: '#FFFFFF',
+          border: '1px solid rgba(213, 43, 30, 0.25)',
+          color: '#374151',
           padding: '6px 12px',
           borderRadius: '4px',
           cursor: 'pointer',
@@ -34,12 +34,21 @@ export default function LanguageSwitcher() {
           alignItems: 'center',
           gap: '6px',
           fontSize: '13px',
-          fontFamily: 'Inter, sans-serif'
+          fontFamily: 'Inter, sans-serif',
+          transition: 'all 150ms ease'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.borderColor = 'var(--primary-red)';
+          e.currentTarget.style.backgroundColor = '#FFF5F5';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.borderColor = 'rgba(213, 43, 30, 0.25)';
+          e.currentTarget.style.backgroundColor = '#FFFFFF';
         }}
       >
         <span>{activeLangObj.flag}</span>
         <span style={{ fontWeight: 600 }}>{activeLangObj.code.toUpperCase()}</span>
-        <span style={{ fontSize: '9px', opacity: 0.7 }}>▼</span>
+        <span style={{ fontSize: '9px', opacity: 0.7, color: 'var(--primary-red)' }}>▼</span>
       </button>
 
       {isOpen && (
@@ -49,15 +58,15 @@ export default function LanguageSwitcher() {
             top: 'calc(100% + 8px)',
             right: 0,
             backgroundColor: '#FFFFFF',
-            border: '1px solid #E8E0C8',
-            borderRadius: '4px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-            padding: '8px',
+            border: '1px solid rgba(213, 43, 30, 0.15)',
+            borderRadius: '6px',
+            boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05)',
+            padding: '10px',
             zIndex: 1000,
             width: '280px',
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',
-            gap: '4px'
+            gap: '6px'
           }}
         >
           {LANGUAGES.map((lang) => {
@@ -75,21 +84,28 @@ export default function LanguageSwitcher() {
                   gap: '8px',
                   padding: '6px 8px',
                   border: 'none',
-                  borderRadius: '3px',
-                  backgroundColor: isActive ? '#FAF4E5' : 'transparent',
-                  color: isActive ? 'var(--primary-red)' : '#1A1A1A',
+                  borderRadius: '4px',
+                  backgroundColor: isActive ? '#FFF5F5' : 'transparent',
+                  color: isActive ? 'var(--primary-red)' : '#374151',
                   cursor: 'pointer',
                   textAlign: 'left',
                   fontSize: '12px',
                   width: '100%',
-                  fontFamily: 'Inter, sans-serif'
+                  fontFamily: 'Inter, sans-serif',
+                  transition: 'background-color 150ms ease'
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) e.currentTarget.style.backgroundColor = '#F9FAFB';
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) e.currentTarget.style.backgroundColor = 'transparent';
                 }}
                 className="lang-option-btn"
               >
                 <span>{lang.flag}</span>
                 <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   <span style={{ fontWeight: isActive ? 600 : 400 }}>{lang.native}</span>
-                  <span style={{ fontSize: '10px', color: '#666666', display: 'block' }}>{lang.label}</span>
+                  <span style={{ fontSize: '10px', color: '#6B7280', display: 'block' }}>{lang.label}</span>
                 </div>
               </button>
             );
