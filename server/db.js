@@ -586,10 +586,13 @@ export async function initializeDatabase() {
 
   // Seed Default Users
   try {
+    const adminExists = await dbGet('SELECT id FROM users WHERE email = ?', ['admin@private.com']);
+    if (!adminExists) {
+      console.log('Seeding super admin user...');
+      await dbRun(`INSERT INTO users (email, password_hash, role) VALUES ('admin@private.com', 'Admin2026', 'admin')`);
+    }
     const userCount = await dbGet('SELECT COUNT(*) as count FROM users');
-    if (Number(userCount.count) === 0) {
-      console.log('Seeding default authentication users...');
-      await dbRun(`INSERT INTO users (email, password_hash, role) VALUES ('admin@privatesector.ch', 'AdminSecret2026!', 'admin')`);
+    if (Number(userCount.count) <= 1) {
       await dbRun(`INSERT INTO users (email, password_hash, role) VALUES ('student@privatesector.ch', 'StudentPassword!', 'student')`);
       await dbRun(`INSERT INTO users (email, password_hash, role) VALUES ('company@privatesector.ch', 'CompanyPassword!', 'company')`);
     }
