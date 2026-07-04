@@ -110,7 +110,7 @@ export default function CompanyCard({ company, onClick }) {
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
           <Calendar size={12} style={{ color: 'var(--primary-gold)' }} />
-          <span>{t('card_founded', 'Est.')} {company.founded}</span>
+          <span>{t('Est.', 'Est.')} {company.founded}</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
           <Users size={12} style={{ color: 'var(--primary-gold)' }} />
@@ -125,7 +125,7 @@ export default function CompanyCard({ company, onClick }) {
       {/* View profile CTA link */}
       <div style={{ marginTop: '12px', textAlign: 'right' }}>
         <span style={{ color: 'var(--primary-gold)', fontSize: '12px', fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>
-          {t('card_view_profile', 'View Profile →')}
+          {t('View Profile →', 'View Profile →')}
         </span>
       </div>
     </div>
