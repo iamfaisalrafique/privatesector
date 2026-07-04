@@ -22,7 +22,7 @@ import { Landmark, ArrowRight, ShieldCheck } from 'lucide-react';
 
 function AppContent() {
   const { t, isRtl, switchLanguage, currentLang } = useLanguage();
-  const [hash, setHash] = useState(window.location.hash || '#/');
+  const [pathState, setPathState] = useState(window.location.pathname + window.location.search);
   const [transitioning, setTransitioning] = useState(false);
   const [homeFeatured, setHomeFeatured] = useState([]);
   const [homeNews, setHomeNews] = useState([]);
@@ -57,40 +57,37 @@ function AppContent() {
       document.head.appendChild(canonical);
     }
     canonical.setAttribute('href', window.location.href.split('?')[0]);
-  }, [hash]);
+  }, [pathState]);
 
 
-  // Hash Routing Parser
+  // Path Routing Parser
   useEffect(() => {
-    const handleHashChange = () => {
+    const handlePopState = () => {
       setTransitioning(true);
-      const currentHash = window.location.hash || '#/';
-      let cleanHash = currentHash.replace('#', '');
-      if (!cleanHash.startsWith('/')) {
-        cleanHash = '/' + cleanHash;
-      }
-      const [rawPath] = cleanHash.split('?');
-      const parts = rawPath.split('/').filter(Boolean);
+      const currentPath = window.location.pathname || '/';
+      const currentSearch = window.location.search || '';
+      const parts = currentPath.split('/').filter(Boolean);
       const validLangs = ['de', 'fr', 'en', 'ar'];
       
       if (parts.length === 0 || !validLangs.includes(parts[0])) {
-        const cleanPath = rawPath === '/' ? '' : rawPath;
-        const q = currentHash.includes('?') ? '?' + currentHash.split('?')[1] : '';
-        window.location.hash = `#/${currentLang}${cleanPath}${q}`;
+        const cleanPath = currentPath === '/' ? '' : currentPath;
+        window.history.replaceState(null, '', `/${currentLang}${cleanPath}${currentSearch}`);
+        setPathState(`/${currentLang}${cleanPath}${currentSearch}`);
+        setTransitioning(false);
         return;
       }
 
       setTimeout(() => {
-        setHash(currentHash);
+        setPathState(currentPath + currentSearch);
         setTransitioning(false);
         window.scrollTo(0, 0);
       }, 150);
     };
 
-    window.addEventListener('hashchange', handleHashChange);
-    handleHashChange();
+    window.addEventListener('popstate', handlePopState);
+    handlePopState();
     
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('popstate', handlePopState);
   }, [currentLang]);
 
   // Fetch Homepage feeds
@@ -117,16 +114,14 @@ function AppContent() {
 
   const navigate = (path) => {
     const cleanPath = path.startsWith('/') ? path : '/' + path;
-    window.location.hash = `#/${currentLang}${cleanPath === '/' ? '' : cleanPath}`;
+    const newUrl = `/${currentLang}${cleanPath === '/' ? '' : cleanPath}`;
+    window.history.pushState(null, '', newUrl);
+    window.dispatchEvent(new Event('popstate'));
   };
 
   // Helper route decoders
   const getRouteInfo = () => {
-    let cleanHash = hash.replace('#', '');
-    if (!cleanHash.startsWith('/')) {
-      cleanHash = '/' + cleanHash;
-    }
-    const [rawPath, queryStr] = cleanHash.split('?');
+    const [rawPath, queryStr] = pathState.split('?');
     
     // Parse query params
     const query = {};

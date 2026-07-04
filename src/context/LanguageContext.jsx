@@ -9,23 +9,18 @@ export const LANGUAGES = [
   { code: 'ar', label: 'العربية', native: 'العربية', flag: '🇸🇦', rtl: true }
 ];
 
-const getHashLanguage = () => {
-  const hash = window.location.hash || '';
-  let cleanHash = hash.replace('#', '');
-  if (!cleanHash.startsWith('/')) {
-    cleanHash = '/' + cleanHash;
-  }
-  const [rawPath] = cleanHash.split('?');
-  const parts = rawPath.split('/').filter(Boolean);
+const getPathnameLanguage = () => {
+  const path = window.location.pathname || '';
+  const parts = path.split('/').filter(Boolean);
   const exists = LANGUAGES.some(l => l.code === parts[0]);
   return exists ? parts[0] : null;
 };
 
 export const LanguageProvider = ({ children }) => {
   const [currentLang, setCurrentLang] = useState(() => {
-    // 1. Check URL hash
-    const hashLang = getHashLanguage();
-    if (hashLang) return hashLang;
+    // 1. Check URL path
+    const pathLang = getPathnameLanguage();
+    if (pathLang) return pathLang;
 
     // 2. Check local storage
     const saved = localStorage.getItem('privatesector_lang');
@@ -34,7 +29,7 @@ export const LanguageProvider = ({ children }) => {
     // 3. Check browser locale
     const browserLang = navigator.language.split('-')[0];
     const exists = LANGUAGES.some(l => l.code === browserLang);
-    return exists ? browserLang : 'en'; // default to English (en)
+    return exists ? browserLang : 'en'; // default to English
   });
 
   const [translations, setTranslations] = useState({});
@@ -56,7 +51,7 @@ export const LanguageProvider = ({ children }) => {
     }
   };
 
-  // Sync state to local storage, documents, and URL hash
+  // Sync state to local storage, documents, and URL path
   useEffect(() => {
     fetchTranslations(currentLang);
     
@@ -68,38 +63,36 @@ export const LanguageProvider = ({ children }) => {
     
     localStorage.setItem('privatesector_lang', currentLang);
 
-    // Sync to hash prefix if it differs
-    const hash = window.location.hash || '';
-    let cleanHash = hash.replace('#', '');
-    if (!cleanHash.startsWith('/')) {
-      cleanHash = '/' + cleanHash;
-    }
-    const [rawPath, queryStr] = cleanHash.split('?');
-    const parts = rawPath.split('/').filter(Boolean);
+    // Sync to path prefix if it differs
+    const path = window.location.pathname || '';
+    const queryStr = window.location.search || '';
+    const parts = path.split('/').filter(Boolean);
     
     let urlLang = null;
-    let pathPart = rawPath;
+    let pathPart = path;
     if (parts.length > 0 && LANGUAGES.some(l => l.code === parts[0])) {
       urlLang = parts[0];
       pathPart = '/' + parts.slice(1).join('/');
     }
     
     if (urlLang !== currentLang) {
-      const q = queryStr ? `?${queryStr}` : '';
-      window.location.hash = `#/${currentLang}${pathPart === '/' ? '' : pathPart}${q}`;
+      const cleanPathPart = pathPart === '/' ? '' : pathPart;
+      window.history.replaceState(null, '', `/${currentLang}${cleanPathPart}${queryStr}`);
+      // Dispatch popstate event to let routing listeners know path changed
+      window.dispatchEvent(new Event('popstate'));
     }
   }, [currentLang]);
 
-  // Handle hash changes externally
+  // Handle pathname changes externally (browser Back/Forward)
   useEffect(() => {
-    const handleHashChange = () => {
-      const hashLang = getHashLanguage();
-      if (hashLang && hashLang !== currentLang) {
-        setCurrentLang(hashLang);
+    const handlePopState = () => {
+      const pathLang = getPathnameLanguage();
+      if (pathLang && pathLang !== currentLang) {
+        setCurrentLang(pathLang);
       }
     };
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
   }, [currentLang]);
 
   const switchLanguage = (langCode) => {
@@ -133,4 +126,3 @@ export const LanguageProvider = ({ children }) => {
 };
 
 export const useLanguage = () => useContext(LanguageContext);
-
