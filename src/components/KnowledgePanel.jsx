@@ -167,7 +167,7 @@ export default function KnowledgePanel({ company }) {
           <a 
             href={company.website} 
             target="_blank" 
-            rel="noreferrer" 
+            rel="nofollow noopener noreferrer" 
             className="btn btn-gold-fill"
             style={{ display: 'flex', gap: '8px', fontSize: '13px', padding: '10px 16px', minHeight: '40px', width: '100%' }}
           >
@@ -178,7 +178,7 @@ export default function KnowledgePanel({ company }) {
           <a 
             href={company.linkedin} 
             target="_blank" 
-            rel="noreferrer" 
+            rel="nofollow noopener noreferrer" 
             className="btn btn-gold-outline"
             style={{ display: 'flex', gap: '8px', fontSize: '13px', padding: '10px 16px', minHeight: '40px', width: '100%' }}
           >

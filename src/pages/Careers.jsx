@@ -242,7 +242,7 @@ export default function Careers({ navigate }) {
                       <a 
                         href={j.apply_url}
                         target="_blank"
-                        rel="noopener noreferrer"
+                        rel="nofollow noopener noreferrer"
                         className="btn btn-gold-fill"
                         style={{ fontSize: '11px', padding: '6px 14px', minHeight: '32px', display: 'flex', alignItems: 'center', gap: '4px', textDecoration: 'none' }}
                       >

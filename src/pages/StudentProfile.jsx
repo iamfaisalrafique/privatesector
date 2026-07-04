@@ -131,7 +131,7 @@ export default function StudentProfile({ studentId, navigate }) {
               <a 
                 href={profile.portfolio_url}
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="nofollow noopener noreferrer"
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',

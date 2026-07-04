@@ -221,7 +221,7 @@ export default function AdSlot({ position, adData, adminPreview = false }) {
   // 1. Leaderboard (Zone A & B) or Mobile sticky banner (Zone H)
   if (zoneLetter === 'A' || zoneLetter === 'B' || zoneLetter === 'H') {
     return (
-      <a 
+      <a rel="nofollow noopener noreferrer" 
         href={ad.company_id ? `#/unternehmen/${ad.company_id}` : '#'}
         onClick={handleAdClick}
         style={{ display: 'block', textDecoration: 'none', margin: '24px auto', maxWidth: width }}
@@ -256,7 +256,7 @@ export default function AdSlot({ position, adData, adminPreview = false }) {
   // 2. Rectangle (Zone C & D)
   if (zoneLetter === 'C' || zoneLetter === 'D') {
     return (
-      <a 
+      <a rel="nofollow noopener noreferrer" 
         href={ad.company_id ? `#/unternehmen/${ad.company_id}` : '#'}
         onClick={handleAdClick}
         style={{ display: 'block', textDecoration: 'none', margin: '24px auto', width: width }}
@@ -320,7 +320,7 @@ export default function AdSlot({ position, adData, adminPreview = false }) {
           {t('Learn more about the leading B2B financial and reinsurance structures operating out of Zurich.', 'Learn more about the leading B2B financial and reinsurance structures operating out of Zurich.')}
         </p>
         <div style={{ marginTop: 'auto' }}>
-          <a 
+          <a rel="nofollow noopener noreferrer" 
             href={ad.company_id ? `#/unternehmen/${ad.company_id}` : '#'}
             onClick={handleAdClick}
             className="btn btn-gold-fill"
@@ -351,7 +351,7 @@ export default function AdSlot({ position, adData, adminPreview = false }) {
         <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '13px', color: 'var(--text-charcoal)', lineHeight: 1.6, marginBottom: '12px' }}>
           {t('Sponsored by', 'Sponsored by')} {t(ad.name || 'Google B2B Services', ad.name || 'Google B2B Services')}. {t("Learn about modern cloud compliance infrastructures designed to align with FINMA's latest technical directives.", "Learn about modern cloud compliance infrastructures designed to align with FINMA's latest technical directives.")}
         </p>
-        <a 
+        <a rel="nofollow noopener noreferrer" 
           href={ad.company_id ? `#/unternehmen/${ad.company_id}` : '#'} 
           style={{ color: 'var(--primary-gold)', fontSize: '12px', fontWeight: 600, textDecoration: 'none' }}
           onClick={handleAdClick}
