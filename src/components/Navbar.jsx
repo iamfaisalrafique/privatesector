@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useLanguage } from '../context/LanguageContext';
+import logo from '../assets/logo_highres.png';
 
 export default function Navbar({ currentPath, navigate }) {
   const { t, isRtl } = useLanguage();
@@ -45,7 +46,7 @@ export default function Navbar({ currentPath, navigate }) {
       <nav 
         style={{
           backgroundColor: '#f3f4f6',
-          height: '64px',
+          height: '100px',
           display: 'flex',
           alignItems: 'center',
           borderBottom: '1.5px solid rgba(213, 43, 30, 0.25)',
@@ -72,16 +73,21 @@ export default function Navbar({ currentPath, navigate }) {
             onClick={() => navigate('/')} 
             style={{ 
               cursor: 'pointer', 
-              fontFamily: '"Playfair Display", Georgia, serif', 
-              fontSize: '22px', 
-              fontWeight: 700, 
-              letterSpacing: '-0.02em',
               display: 'flex',
-              alignItems: 'baseline'
+              alignItems: 'center',
+              height: '100px'
             }}
           >
-            <span style={{ color: 'var(--primary-red)' }}>privatesector</span>
-            <span style={{ color: '#8B0000', fontSize: '18px', fontWeight: 800 }}>.ch</span>
+            <img 
+              src={logo} 
+              alt="privatesector.ch Logo" 
+              style={{ 
+                height: '70px', 
+                width: 'auto',
+                objectFit: 'contain',
+                display: 'block'
+              }} 
+            />
           </div>
 
           {/* Nav Links Center */}

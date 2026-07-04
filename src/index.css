@@ -428,3 +428,13 @@ p, li, .sans-font {
     padding: 0 16px;
   }
 }
+
+/* Logo SVG Resizing Rules */
+.navbar-logo-wrapper svg,
+.footer-logo-wrapper svg {
+  height: 100%;
+  width: auto;
+  max-height: 70px;
+  display: block;
+}
+

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import Navbar from './components/Navbar';
+import logo from './assets/logo_highres.png';
 import Hero from './components/Hero';
 import CookieBanner from './components/CookieBanner';
 import AdSlot from './components/AdSlot';
@@ -447,8 +448,26 @@ function AppContent() {
             }}
           >
             <div>
-              <div style={{ fontFamily: '"Playfair Display", serif', fontSize: '22px', fontWeight: 700, color: 'var(--primary-red)', marginBottom: '12px' }}>
-                privatesector<span style={{ color: '#8B0000' }}>.ch</span>
+              <div 
+                onClick={() => navigate('/')} 
+                style={{ 
+                  cursor: 'pointer', 
+                  marginBottom: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  height: '70px'
+                }}
+              >
+                <img 
+                  src={logo} 
+                  alt="privatesector.ch Logo" 
+                  style={{ 
+                    height: '70px', 
+                    width: 'auto',
+                    objectFit: 'contain',
+                    display: 'block'
+                  }} 
+                />
               </div>
               <p style={{ color: '#4b5563', fontSize: '12px', lineHeight: 1.5 }}>
                 {t('footer_desc', 'Swiss business and B2B data platform. Verified information on companies, market data, and analyses.')}
