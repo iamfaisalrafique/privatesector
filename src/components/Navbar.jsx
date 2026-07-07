@@ -228,49 +228,7 @@ export default function Navbar({ currentPath, navigate }) {
             {/* Language Switcher */}
             <LanguageSwitcher />
 
-            {/* Admin Quick Entry */}
-            <button
-              onClick={() => navigate('/admin')}
-              style={{
-                background: 'none',
-                border: '0.5px solid var(--primary-red)',
-                color: 'var(--primary-red)',
-                padding: '6px 12px',
-                cursor: 'pointer',
-                fontSize: '12px',
-                fontWeight: 600,
-                fontFamily: 'Inter, sans-serif'
-              }}
-              className="desktop-only"
-            >
-              {t('Admin', 'Admin')}
-            </button>
 
-            {/* Login & Register (Desktop Only) */}
-            <button 
-              className="desktop-only" 
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: '#374151', 
-                cursor: 'pointer', 
-                fontFamily: 'Inter, sans-serif',
-                fontSize: '13px',
-                fontWeight: 500,
-                padding: '6px 12px'
-              }}
-              onClick={() => navigate('/login')}
-            >
-              {t('Anmelden', 'Anmelden')}
-            </button>
-            
-            <button 
-              className="btn btn-gold-fill desktop-only" 
-              style={{ padding: '6px 14px', fontSize: '12px', minHeight: '36px' }}
-              onClick={() => navigate('/register')}
-            >
-              {t('Konto erstellen', 'Konto erstellen')}
-            </button>
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -413,34 +371,7 @@ export default function Navbar({ currentPath, navigate }) {
             )}
           </div>
 
-          <a
-            href="#/admin"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate('/admin');
-              setMobileMenuOpen(false);
-            }}
-            style={{
-              color: 'var(--primary-red)',
-              fontSize: '16px',
-              textDecoration: 'none',
-              fontFamily: 'Inter, sans-serif',
-              padding: '10px 0',
-              borderBottom: '0.5px solid #2A2A2A',
-              display: 'block',
-              textAlign: isRtl ? 'right' : 'left'
-            }}
-          >
-            {t('Admin Dashboard', 'Admin Dashboard')}
-          </a>
 
-          <button 
-            className="btn btn-gold-fill" 
-            style={{ width: '100%', marginTop: '16px' }}
-            onClick={() => { navigate('/register'); setMobileMenuOpen(false); }}
-          >
-            {t('Konto erstellen', 'Konto erstellen')}
-          </button>
         </div>
       )}
 
