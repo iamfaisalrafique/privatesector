@@ -15,12 +15,16 @@ import {
   Compass,
   Briefcase,
   Mic,
-  PlusCircle
+  PlusCircle,
+  ArrowRight
 } from 'lucide-react';
 
 export default function Admin({ navigate }) {
   const { refreshTranslations } = useLanguage();
   const [activeTab, setActiveTab] = useState('overview'); // overview, pages, ads, translations, news, companies, interviews, jobs
+  const [subTab, setSubTab] = useState('all'); // all, categories, tags
+  const [blogsExpanded, setBlogsExpanded] = useState(false);
+  const [newsExpanded, setNewsExpanded] = useState(false);
 
   // Verify Admin Session
   const sessionStr = localStorage.getItem('userSession');
@@ -38,6 +42,7 @@ export default function Admin({ navigate }) {
   const [companies, setCompanies] = useState([]);
   const [interviews, setInterviews] = useState([]);
   const [jobs, setJobs] = useState([]);
+  const [blogs, setBlogs] = useState([]);
   const [ads, setAds] = useState([]);
   const [pages, setPages] = useState([]);
   const [selectedPage, setSelectedPage] = useState(null);
@@ -66,6 +71,9 @@ export default function Admin({ navigate }) {
 
       const resJobs = await fetch('/api/jobs');
       if (resJobs.ok) setJobs(await resJobs.json());
+
+      const resBlogs = await fetch('/api/blogs');
+      if (resBlogs.ok) setBlogs(await resBlogs.json());
 
       const resAds = await fetch('/api/admin/ads');
       if (resAds.ok) setAds(await resAds.json());
@@ -220,6 +228,8 @@ export default function Admin({ navigate }) {
       emptyData = { title: '', subtitle: '', interviewee_name: '', interviewee_title: '', interviewee_avatar: '', company_name: '', read_time_mins: 5, audio_url: '', qa_content: '[]', category: 'Executive Briefing', focus_keyword: '', meta_title: '', meta_description: '', slug: '', schema_markup: '', tags: [] };
     } else if (type === 'jobs') {
       emptyData = { title: '', type: 'Full-time', description: '', company_name: '', location: 'Switzerland', apply_url: '', focus_keyword: '', meta_title: '', meta_description: '', slug: '', schema_markup: '', category: 'Engineering', tags: [] };
+    } else if (type === 'blogs') {
+      emptyData = { title: '', subtitle: '', category: 'Guides', content_body: '', pull_quote: '', tags: [], image_url: '', focus_keyword: '', meta_title: '', meta_description: '', slug: '', schema_markup: '' };
     }
 
     setEditingItem({ type, data: emptyData });
@@ -228,51 +238,131 @@ export default function Admin({ navigate }) {
 
   if (!user || user.role !== 'admin') {
     return (
-      <div style={{ padding: '64px', textAlign: 'center', backgroundColor: '#0D0D0D', color: '#FFFDF7', minHeight: '100vh' }}>
+      <div style={{ padding: '64px', textAlign: 'center', backgroundColor: 'var(--bg-ivory)', color: 'var(--text-charcoal)', minHeight: '100vh' }}>
         <h2>Access Denied</h2>
         <p>Admin privileges required.</p>
       </div>
     );
   }
+  const getSubtabData = () => {
+    const items = activeTab === 'blogs' ? blogs : news;
+    if (subTab === 'categories') {
+      const counts = {};
+      items.forEach(item => {
+        const cat = item.category || 'Uncategorized';
+        counts[cat] = (counts[cat] || 0) + 1;
+      });
+      return Object.entries(counts).map(([name, count]) => ({ name, count }));
+    } else if (subTab === 'tags') {
+      const counts = {};
+      items.forEach(item => {
+        let tagList = [];
+        try {
+          tagList = typeof item.tags === 'string' ? JSON.parse(item.tags || '[]') : (Array.isArray(item.tags) ? item.tags : []);
+        } catch(e) {}
+        tagList.forEach(t => {
+          counts[t] = (counts[t] || 0) + 1;
+        });
+      });
+      return Object.entries(counts).map(([name, count]) => ({ name, count }));
+    }
+    return [];
+  };
+
+  const isBlogsOpen = activeTab === 'blogs' || blogsExpanded;
+  const isNewsOpen = activeTab === 'news' || newsExpanded;
 
   return (
-    <div style={{ display: 'flex', minHeight: 'calc(100vh - 100px)', backgroundColor: '#0D0D0D', color: '#FFFDF7', fontFamily: 'Inter, sans-serif' }}>
+    <div className="admin-dashboard-container" style={{ display: 'flex', minHeight: 'calc(100vh - 100px)', backgroundColor: 'var(--bg-ivory)', color: 'var(--text-ink)', fontFamily: 'Inter, sans-serif' }}>
       
       {/* Sidebar Nav */}
-      <aside style={{ width: '240px', backgroundColor: '#111111', borderRight: '1.5px solid #2A2A2A', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
+      <aside style={{ width: '240px', backgroundColor: 'var(--surface-warm)', borderRight: '1.5px solid var(--light-border)', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '24px 0' }}>
           
           {[
             { id: 'overview', label: 'Overview', icon: <LayoutDashboard size={18} /> },
-            { id: 'news', label: 'Blogs & Articles', icon: <Files size={18} /> },
+            { id: 'blogs', label: 'Blogs', icon: <Files size={18} />, hasSubmenu: true },
+            { id: 'news', label: 'News & Articles', icon: <Files size={18} />, hasSubmenu: true },
             { id: 'companies', label: 'Companies', icon: <Compass size={18} /> },
             { id: 'interviews', label: 'Interviews & Podcasts', icon: <Mic size={18} /> },
             { id: 'jobs', label: 'Jobs & Careers', icon: <Briefcase size={18} /> },
             { id: 'ads', label: 'Ads Campaigns', icon: <Tv size={18} /> },
             { id: 'translations', label: 'Translations', icon: <Languages size={18} /> }
-          ].map(tab => (
-            <button 
-              key={tab.id}
-              onClick={() => { setActiveTab(tab.id); setEditingItem(null); }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                padding: '14px 24px',
-                background: 'none',
-                border: 'none',
-                color: activeTab === tab.id ? 'var(--primary-red)' : '#888888',
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: activeTab === tab.id ? 700 : 500,
-                textAlign: 'left',
-                borderLeft: activeTab === tab.id ? '4px solid var(--primary-red)' : '4px solid transparent'
-              }}
-            >
-              {tab.icon}
-              {tab.label}
-            </button>
-          ))}
+          ].map(tab => {
+            const isOpen = tab.id === 'blogs' ? isBlogsOpen : (tab.id === 'news' ? isNewsOpen : false);
+            return (
+              <div 
+                key={tab.id}
+                onMouseEnter={() => tab.id === 'blogs' ? setBlogsExpanded(true) : tab.id === 'news' ? setNewsExpanded(true) : null}
+                onMouseLeave={() => tab.id === 'blogs' ? setBlogsExpanded(false) : tab.id === 'news' ? setNewsExpanded(false) : null}
+                style={{ display: 'flex', flexDirection: 'column' }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                  <button 
+                    onClick={() => { setActiveTab(tab.id); setSubTab('all'); setEditingItem(null); }}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      padding: '14px 24px',
+                      background: 'none',
+                      border: 'none',
+                      color: activeTab === tab.id ? 'var(--primary-red)' : 'var(--text-charcoal)',
+                      cursor: 'pointer',
+                      fontSize: '14px',
+                      fontWeight: activeTab === tab.id ? 700 : 500,
+                      textAlign: 'left',
+                      borderLeft: activeTab === tab.id ? '4px solid var(--primary-red)' : '4px solid transparent',
+                      flex: 1
+                    }}
+                  >
+                    {tab.icon}
+                    {tab.label}
+                  </button>
+                  {tab.hasSubmenu && (
+                    <span 
+                      onClick={() => {
+                        if (tab.id === 'blogs') setBlogsExpanded(!blogsExpanded);
+                        if (tab.id === 'news') setNewsExpanded(!newsExpanded);
+                      }}
+                      style={{ paddingRight: '20px', cursor: 'pointer', color: 'var(--text-charcoal)', display: 'flex', alignItems: 'center' }}
+                    >
+                      <ArrowRight size={14} style={{ transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />
+                    </span>
+                  )}
+                </div>
+                
+                {tab.hasSubmenu && isOpen && (
+                  <div style={{ backgroundColor: '#F3F4F6', display: 'flex', flexDirection: 'column', paddingLeft: '40px', borderLeft: '4px solid transparent' }}>
+                    <button 
+                      onClick={() => { setActiveTab(tab.id); setSubTab('all'); setEditingItem(null); }}
+                      style={{ background: 'none', border: 'none', color: (activeTab === tab.id && subTab === 'all' && !editingItem) ? 'var(--primary-red)' : '#555555', cursor: 'pointer', padding: '8px 0', fontSize: '13px', textAlign: 'left', fontWeight: (activeTab === tab.id && subTab === 'all' && !editingItem) ? 600 : 400 }}
+                    >
+                      — All {tab.label}
+                    </button>
+                    <button 
+                      onClick={() => { setActiveTab(tab.id); handleCreateClick(tab.id); }}
+                      style={{ background: 'none', border: 'none', color: (activeTab === tab.id && editingItem && isCreatingNew) ? 'var(--primary-red)' : '#555555', cursor: 'pointer', padding: '8px 0', fontSize: '13px', textAlign: 'left', fontWeight: (activeTab === tab.id && editingItem && isCreatingNew) ? 600 : 400 }}
+                    >
+                      — Add New
+                    </button>
+                    <button 
+                      onClick={() => { setActiveTab(tab.id); setSubTab('categories'); setEditingItem(null); }}
+                      style={{ background: 'none', border: 'none', color: (activeTab === tab.id && subTab === 'categories') ? 'var(--primary-red)' : '#555555', cursor: 'pointer', padding: '8px 0', fontSize: '13px', textAlign: 'left', fontWeight: (activeTab === tab.id && subTab === 'categories') ? 600 : 400 }}
+                    >
+                      — Categories
+                    </button>
+                    <button 
+                      onClick={() => { setActiveTab(tab.id); setSubTab('tags'); setEditingItem(null); }}
+                      style={{ background: 'none', border: 'none', color: (activeTab === tab.id && subTab === 'tags') ? 'var(--primary-red)' : '#555555', cursor: 'pointer', padding: '8px 0', fontSize: '13px', textAlign: 'left', fontWeight: (activeTab === tab.id && subTab === 'tags') ? 600 : 400 }}
+                    >
+                      — Tags
+                    </button>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </aside>
 
@@ -298,7 +388,7 @@ export default function Admin({ navigate }) {
               </div>
 
               {/* Dynamic Inputs for different schemas */}
-              {editingItem.type === 'news' && (
+              {(editingItem.type === 'news' || editingItem.type === 'blogs') && (
                 <>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                     <div>
@@ -307,16 +397,58 @@ export default function Admin({ navigate }) {
                     </div>
                     <div>
                       <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Category</label>
-                      <select value={editingItem.data.category} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, category: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }}>
-                        <option value="University Perspective">University Perspective</option>
-                        <option value="Swiss Economics">Swiss Economics</option>
-                        <option value="Corporation News">Corporation News</option>
-                      </select>
+                      {editingItem.type === 'news' ? (
+                        <select value={editingItem.data.category} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, category: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }}>
+                          <option value="University Perspective">University Perspective</option>
+                          <option value="Swiss Economics">Swiss Economics</option>
+                          <option value="Corporation News">Corporation News</option>
+                        </select>
+                      ) : (
+                        <select value={editingItem.data.category} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, category: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }}>
+                          <option value="Guides">Guides</option>
+                          <option value="Market Trends">Market Trends</option>
+                          <option value="Analysis">Analysis</option>
+                        </select>
+                      )}
                     </div>
                   </div>
                   <div>
                     <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Subtitle</label>
                     <input type="text" value={editingItem.data.subtitle} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, subtitle: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }} />
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Image URL</label>
+                      <input type="text" value={editingItem.data.image_url || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, image_url: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }} />
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Tags (comma separated)</label>
+                      <input 
+                        type="text" 
+                        value={Array.isArray(editingItem.data.tags) ? editingItem.data.tags.join(', ') : (() => {
+                          try {
+                            return JSON.parse(editingItem.data.tags || '[]').join(', ');
+                          } catch (e) {
+                            return typeof editingItem.data.tags === 'string' ? editingItem.data.tags : '';
+                          }
+                        })()} 
+                        onChange={(e) => {
+                          const tagsArr = e.target.value.split(',').map(t => t.trim()).filter(Boolean);
+                          setEditingItem({ ...editingItem, data: { ...editingItem.data, tags: tagsArr } });
+                        }} 
+                        style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }} 
+                      />
+                    </div>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Author Name</label>
+                      <input type="text" value={editingItem.data.author_name || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, author_name: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }} />
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Pull Quote (Optional)</label>
+                      <input type="text" value={editingItem.data.pull_quote || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, pull_quote: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }} />
+                    </div>
                   </div>
                   <div>
                     <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Article Content (HTML/Markdown)</label>
@@ -479,7 +611,7 @@ export default function Admin({ navigate }) {
                     { label: 'Interviews & Podcasts', val: interviews.length, color: '#8B5CF6' },
                     { label: 'Active Careers / Jobs', val: jobs.length, color: 'var(--primary-red)' }
                   ].map((stat, idx) => (
-                    <div key={idx} style={{ backgroundColor: '#111', padding: '24px', borderRadius: '8px', borderLeft: `4px solid ${stat.color}` }}>
+                    <div key={idx} className="admin-stat-card" style={{ backgroundColor: '#111', padding: '24px', borderRadius: '8px', borderLeft: `4px solid ${stat.color}` }}>
                       <span style={{ fontSize: '12px', color: '#888', textTransform: 'uppercase' }}>{stat.label}</span>
                       <h2 style={{ fontSize: '36px', margin: '8px 0 0 0', fontWeight: 800, color: '#FFF' }}>{stat.val}</h2>
                     </div>
@@ -489,18 +621,55 @@ export default function Admin({ navigate }) {
             )}
 
             {/* Entity management lists */}
-            {['news', 'companies', 'interviews', 'jobs'].includes(activeTab) && (
+            {['blogs', 'news', 'companies', 'interviews', 'jobs'].includes(activeTab) && (
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-                  <h1 style={{ fontFamily: '"Playfair Display", serif', fontSize: '32px', textTransform: 'capitalize' }}>Manage {activeTab}</h1>
-                  <button onClick={() => handleCreateClick(activeTab)} style={{ padding: '10px 20px', backgroundColor: 'var(--primary-red)', border: 'none', color: '#FFF', borderRadius: '4px', cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <PlusCircle size={18} /> Add New {activeTab.slice(0, -1)}
-                  </button>
+                  <h1 style={{ fontFamily: '"Playfair Display", serif', fontSize: '32px', textTransform: 'capitalize' }}>
+                    Manage {activeTab} {subTab !== 'all' ? ` > ${subTab}` : ''}
+                  </h1>
+                  {subTab === 'all' && (
+                    <button onClick={() => handleCreateClick(activeTab)} style={{ padding: '10px 20px', backgroundColor: 'var(--primary-red)', border: 'none', color: '#FFF', borderRadius: '4px', cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <PlusCircle size={18} /> Add New {activeTab.slice(0, -1)}
+                    </button>
+                  )}
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {subTab !== 'all' && ['blogs', 'news'].includes(activeTab) ? (
+                  <div style={{ backgroundColor: '#111', padding: '24px', borderRadius: '8px', border: '1px solid #222' }}>
+                    <h3 style={{ margin: '0 0 16px 0', color: 'var(--primary-red)', fontSize: '18px', textTransform: 'capitalize' }}>
+                      All {subTab} in {activeTab}
+                    </h3>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '16px' }}>
+                      {getSubtabData().length === 0 ? (
+                        <div style={{ color: '#888', fontSize: '14px' }}>No {subTab} found.</div>
+                      ) : (
+                        getSubtabData().map((item, idx) => (
+                          <div key={idx} style={{ backgroundColor: '#1C1C1C', padding: '16px', borderRadius: '6px', border: '1px solid #333', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontWeight: 600, color: '#FFF' }}>{item.name}</span>
+                            <span style={{ fontSize: '12px', backgroundColor: '#333', color: '#FFF', padding: '2px 8px', borderRadius: '12px' }}>{item.count} posts</span>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    
+                    {activeTab === 'blogs' && blogs.map(item => (
+                    <div key={item.id} className="admin-list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#111', padding: '16px 24px', borderRadius: '6px', border: '1px solid #222' }}>
+                      <div>
+                        <strong style={{ fontSize: '15px', color: '#FFF', display: 'block' }}>{item.title}</strong>
+                        <span style={{ fontSize: '12px', color: '#666' }}>Category: {item.category} | Keyword: {item.focus_keyword || 'None'}</span>
+                      </div>
+                      <div style={{ display: 'flex', gap: '12px' }}>
+                        <button onClick={() => handleEditClick('blogs', item)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', backgroundColor: '#222', border: '1px solid #444', color: '#FFF', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}><Edit3 size={14} /> Edit</button>
+                        <button onClick={() => handleDeleteEntity('blogs', item.id)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', backgroundColor: 'transparent', border: '1px solid var(--primary-red)', color: 'var(--primary-red)', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}><Trash2 size={14} /> Delete</button>
+                      </div>
+                    </div>
+                  ))}
+                  
                   {activeTab === 'news' && news.map(item => (
-                    <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#111', padding: '16px 24px', borderRadius: '6px', border: '1px solid #222' }}>
+                    <div key={item.id} className="admin-list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#111', padding: '16px 24px', borderRadius: '6px', border: '1px solid #222' }}>
                       <div>
                         <strong style={{ fontSize: '15px', color: '#FFF', display: 'block' }}>{item.title}</strong>
                         <span style={{ fontSize: '12px', color: '#666' }}>Category: {item.category} | Keyword: {item.focus_keyword || 'None'}</span>
@@ -513,7 +682,7 @@ export default function Admin({ navigate }) {
                   ))}
 
                   {activeTab === 'companies' && companies.map(item => (
-                    <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#111', padding: '16px 24px', borderRadius: '6px', border: '1px solid #222' }}>
+                    <div key={item.id} className="admin-list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#111', padding: '16px 24px', borderRadius: '6px', border: '1px solid #222' }}>
                       <div>
                         <strong style={{ fontSize: '15px', color: '#FFF', display: 'block' }}>{item.name}</strong>
                         <span style={{ fontSize: '12px', color: '#666' }}>Industry: {item.industry} | Canton: {item.canton}</span>
@@ -526,7 +695,7 @@ export default function Admin({ navigate }) {
                   ))}
 
                   {activeTab === 'interviews' && interviews.map(item => (
-                    <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#111', padding: '16px 24px', borderRadius: '6px', border: '1px solid #222' }}>
+                    <div key={item.id} className="admin-list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#111', padding: '16px 24px', borderRadius: '6px', border: '1px solid #222' }}>
                       <div>
                         <strong style={{ fontSize: '15px', color: '#FFF', display: 'block' }}>{item.title}</strong>
                         <span style={{ fontSize: '12px', color: '#666' }}>Category: {item.category} | Guest: {item.interviewee_name}</span>
@@ -539,7 +708,7 @@ export default function Admin({ navigate }) {
                   ))}
 
                   {activeTab === 'jobs' && jobs.map(item => (
-                    <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#111', padding: '16px 24px', borderRadius: '6px', border: '1px solid #222' }}>
+                    <div key={item.id} className="admin-list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#111', padding: '16px 24px', borderRadius: '6px', border: '1px solid #222' }}>
                       <div>
                         <strong style={{ fontSize: '15px', color: '#FFF', display: 'block' }}>{item.title}</strong>
                         <span style={{ fontSize: '12px', color: '#666' }}>Type: {item.type} | Category: {item.category}</span>
@@ -551,8 +720,9 @@ export default function Admin({ navigate }) {
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
+              )}
+            </div>
+          )}
 
             {/* Ads Manager tab */}
             {activeTab === 'ads' && (
@@ -560,7 +730,7 @@ export default function Admin({ navigate }) {
                 <h1 style={{ fontFamily: '"Playfair Display", serif', fontSize: '32px', marginBottom: '24px' }}>Advertising Manager</h1>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                   {ads.map(ad => (
-                    <div key={ad.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#111', padding: '16px 24px', borderRadius: '6px', border: '1px solid #222' }}>
+                    <div key={ad.id} className="admin-list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#111', padding: '16px 24px', borderRadius: '6px', border: '1px solid #222' }}>
                       <div>
                         <strong style={{ fontSize: '15px', color: '#FFF', display: 'block' }}>{ad.name}</strong>
                         <span style={{ fontSize: '12px', color: '#666' }}>Zone: {ad.position} | Impressions: {ad.impressions} | Clicks: {ad.clicks}</span>
@@ -593,7 +763,7 @@ export default function Admin({ navigate }) {
                 ) : (
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px' }}>
                     {['de', 'fr', 'en', 'ar'].map(lang => (
-                      <div key={lang} style={{ backgroundColor: '#111', padding: '24px', borderRadius: '6px', border: '1px solid #222', textAlign: 'center' }}>
+                      <div key={lang} className="admin-list-item" style={{ backgroundColor: '#111', padding: '24px', borderRadius: '6px', border: '1px solid #222', textAlign: 'center' }}>
                         <h4 style={{ margin: '0 0 16px 0', textTransform: 'uppercase' }}>{lang}</h4>
                         <button onClick={() => handleOpenLanguageEdit(lang)} style={{ padding: '6px 16px', backgroundColor: '#222', border: '1px solid #444', color: '#FFF', borderRadius: '4px', cursor: 'pointer', fontSize: '13px' }}>Edit Grid</button>
                       </div>
@@ -605,6 +775,40 @@ export default function Admin({ navigate }) {
           </>
         )}
       </main>
+      <style>{`
+        .admin-dashboard-container input, 
+        .admin-dashboard-container select, 
+        .admin-dashboard-container textarea {
+          background-color: #FFFFFF !important;
+          border: 1px solid var(--light-border) !important;
+          color: var(--text-charcoal) !important;
+        }
+        .admin-dashboard-container label {
+          color: var(--text-charcoal) !important;
+        }
+        .admin-dashboard-container h1,
+        .admin-dashboard-container h2,
+        .admin-dashboard-container h3,
+        .admin-dashboard-container h4,
+        .admin-dashboard-container h5,
+        .admin-dashboard-container h6,
+        .admin-dashboard-container strong {
+          color: var(--text-ink) !important;
+        }
+        .admin-dashboard-container span {
+          color: var(--text-charcoal) !important;
+        }
+        .admin-dashboard-container .admin-stat-card,
+        .admin-dashboard-container .admin-list-item {
+          background-color: #FFFFFF !important;
+          border: 1px solid var(--light-border) !important;
+        }
+        .admin-dashboard-container button[style*="backgroundColor: '#222'"] {
+          background-color: #F3F4F6 !important;
+          border: 1px solid var(--light-border) !important;
+          color: var(--text-charcoal) !important;
+        }
+      `}</style>
     </div>
   );
 }

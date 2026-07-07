@@ -26,10 +26,8 @@ export const LanguageProvider = ({ children }) => {
     const saved = localStorage.getItem('privatesector_lang');
     if (saved) return saved;
 
-    // 3. Check browser locale
-    const browserLang = navigator.language.split('-')[0];
-    const exists = LANGUAGES.some(l => l.code === browserLang);
-    return exists ? browserLang : 'en'; // default to English
+    // 3. Default to English
+    return 'en';
   });
 
   const [translations, setTranslations] = useState({});

@@ -8,6 +8,7 @@ import AdSlot from './components/AdSlot';
 import Directory from './pages/Directory';
 import Profile from './pages/Profile';
 import News from './pages/News';
+import Blogs from './pages/Blogs';
 import Statistics from './pages/Statistics';
 import Admin from './pages/Admin';
 import Interviews from './pages/Interviews';
@@ -18,6 +19,12 @@ import StudentDashboard from './pages/StudentDashboard';
 import Rankings from './pages/Rankings';
 import CompanyCard from './components/CompanyCard';
 import HomepageGraphics from './components/HomepageGraphics';
+import TranslaticTranscript from './pages/TranslaticTranscript';
+import SoCalGateway from './pages/SoCalGateway';
+import TradePolicyPulse from './pages/TradePolicyPulse';
+import CrossBorderRanking from './pages/CrossBorderRanking';
+import About from './pages/About';
+import Contact from './pages/Contact';
 import { Landmark, ArrowRight, ShieldCheck } from 'lucide-react';
 
 function AppContent() {
@@ -70,9 +77,13 @@ function AppContent() {
       const validLangs = ['de', 'fr', 'en', 'ar'];
       
       if (parts.length === 0 || !validLangs.includes(parts[0])) {
-        const cleanPath = currentPath === '/' ? '' : currentPath;
-        window.history.replaceState(null, '', `/${currentLang}${cleanPath}${currentSearch}`);
-        setPathState(`/${currentLang}${cleanPath}${currentSearch}`);
+        if (currentLang !== 'en') {
+          const cleanPath = currentPath === '/' ? '' : currentPath;
+          window.history.replaceState(null, '', `/${currentLang}${cleanPath}${currentSearch}`);
+          setPathState(`/${currentLang}${cleanPath}${currentSearch}`);
+        } else {
+          setPathState(currentPath + currentSearch);
+        }
         setTransitioning(false);
         return;
       }
@@ -114,7 +125,9 @@ function AppContent() {
 
   const navigate = (path) => {
     const cleanPath = path.startsWith('/') ? path : '/' + path;
-    const newUrl = `/${currentLang}${cleanPath === '/' ? '' : cleanPath}`;
+    const newUrl = currentLang === 'en' 
+      ? `${cleanPath}`
+      : `/${currentLang}${cleanPath === '/' ? '' : cleanPath}`;
     window.history.pushState(null, '', newUrl);
     window.dispatchEvent(new Event('popstate'));
   };
@@ -152,6 +165,11 @@ function AppContent() {
       const id = path.split('/')[2];
       return { route: 'news-detail', id, params: query };
     }
+    if (path === '/blogs') return { route: 'blogs', params: query };
+    if (path.startsWith('/blogs/')) {
+      const id = path.split('/')[2];
+      return { route: 'blogs-detail', id, params: query };
+    }
     if (path === '/statistiken') return { route: 'statistics', params: query };
     if (path === '/interviews') return { route: 'interviews', params: query };
     if (path.startsWith('/interviews/')) {
@@ -169,6 +187,12 @@ function AppContent() {
     if (path === '/login') return { route: 'login', params: query };
     if (path === '/register') return { route: 'register', params: query };
     if (path === '/admin') return { route: 'admin', params: query };
+    if (path === '/translatic-transcript') return { route: 'translatic-transcript', params: query };
+    if (path === '/socal-gateway') return { route: 'socal-gateway', params: query };
+    if (path === '/trade-policy-pulse') return { route: 'trade-policy-pulse', params: query };
+    if (path === '/cross-border-ranking') return { route: 'cross-border-ranking', params: query };
+    if (path === '/about') return { route: 'about', params: query };
+    if (path === '/contact') return { route: 'contact', params: query };
 
     return { route: 'home', params: query };
   };
@@ -378,6 +402,24 @@ function AppContent() {
           />
         )}
 
+        {/* ROUTE: BLOGS LIST */}
+        {routeInfo.route === 'blogs' && (
+          <Blogs 
+            selectedArticleId={null} 
+            selectArticle={(id) => id ? navigate(`/blogs/${id}`) : navigate('/blogs')}
+            navigate={navigate}
+          />
+        )}
+
+        {/* ROUTE: BLOGS DETAILS */}
+        {routeInfo.route === 'blogs-detail' && (
+          <Blogs 
+            selectedArticleId={routeInfo.id} 
+            selectArticle={(id) => id ? navigate(`/blogs/${id}`) : navigate('/blogs')}
+            navigate={navigate}
+          />
+        )}
+
         {/* ROUTE: STATISTICS */}
         {routeInfo.route === 'statistics' && (
           <Statistics navigate={navigate} />
@@ -431,6 +473,36 @@ function AppContent() {
         {/* ROUTE: STUDENT DASHBOARD */}
         {routeInfo.route === 'student-dashboard' && (
           <StudentDashboard studentId={currentStudentId} navigate={navigate} />
+        )}
+
+        {/* ROUTE: TRANSLATIC TRANSCRIPT */}
+        {routeInfo.route === 'translatic-transcript' && (
+          <TranslaticTranscript navigate={navigate} />
+        )}
+
+        {/* ROUTE: SOCAL GATEWAY */}
+        {routeInfo.route === 'socal-gateway' && (
+          <SoCalGateway navigate={navigate} />
+        )}
+
+        {/* ROUTE: TRADE POLICY PULSE */}
+        {routeInfo.route === 'trade-policy-pulse' && (
+          <TradePolicyPulse navigate={navigate} />
+        )}
+
+        {/* ROUTE: CROSS-BORDER RANKING */}
+        {routeInfo.route === 'cross-border-ranking' && (
+          <CrossBorderRanking navigate={navigate} />
+        )}
+
+        {/* ROUTE: ABOUT */}
+        {routeInfo.route === 'about' && (
+          <About navigate={navigate} />
+        )}
+
+        {/* ROUTE: CONTACT */}
+        {routeInfo.route === 'contact' && (
+          <Contact navigate={navigate} />
         )}
 
         {/* ROUTE: LOGIN */}

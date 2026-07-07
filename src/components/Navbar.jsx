@@ -10,7 +10,8 @@ import {
   X,
   Mic,
   MessageSquare,
-  GraduationCap
+  GraduationCap,
+  ChevronDown
 } from 'lucide-react';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useLanguage } from '../context/LanguageContext';
@@ -21,10 +22,23 @@ export default function Navbar({ currentPath, navigate }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchBarOpen, setSearchBarOpen] = useState(false);
   const [searchVal, setSearchVal] = useState('');
+  const [resourcesDropdownOpen, setResourcesDropdownOpen] = useState(false);
+  const [mobileResourcesOpen, setMobileResourcesOpen] = useState(false);
 
-  const navItems = [
+  const topNavItems = [
+    { label: t('Home', 'Home'), path: '/' },
+    { label: t('Translatic Transcript', 'Translatic Transcript'), path: '/translatic-transcript' },
+    { label: t('The SoCal Gateway', 'The SoCal Gateway'), path: '/socal-gateway' },
+    { label: t('Trade & Policy Pulse', 'Trade & Policy Pulse'), path: '/trade-policy-pulse' },
+    { label: t('Cross-Border Ranking', 'Cross-Border Ranking'), path: '/cross-border-ranking' },
+    { label: t('About', 'About'), path: '/about' },
+    { label: t('Contact', 'Contact'), path: '/contact' }
+  ];
+
+  const resourceItems = [
     { label: t('Unternehmen', 'Unternehmen'), path: '/unternehmen' },
     { label: t('News', 'News'), path: '/news' },
+    { label: t('Blog', 'Blog'), path: '/blogs' },
     { label: t('Statistiken', 'Statistiken'), path: '/statistiken' },
     { label: t('Interviews', 'Interviews'), path: '/interviews' },
     { label: t('Podcasts', 'Podcasts'), path: '/podcasts' },
@@ -95,12 +109,12 @@ export default function Navbar({ currentPath, navigate }) {
             className="desktop-only"
             style={{ 
               display: 'flex', 
-              gap: '28px', 
+              gap: '20px', 
               alignItems: 'center',
               flexDirection: isRtl ? 'row-reverse' : 'row'
             }}
           >
-            {navItems.map((item) => (
+            {topNavItems.map((item) => (
               <a
                 key={item.path}
                 href={`#${item.path}`}
@@ -112,13 +126,84 @@ export default function Navbar({ currentPath, navigate }) {
                 style={{
                   color: currentPath === item.path ? 'var(--primary-red)' : '#4b5563',
                   fontFamily: 'Inter, sans-serif',
-                  fontSize: '14px',
-                  fontWeight: 500
+                  fontSize: '13px',
+                  fontWeight: 500,
+                  textDecoration: 'none',
+                  whiteSpace: 'nowrap'
                 }}
               >
                 {item.label}
               </a>
             ))}
+
+            {/* Resources Dropdown Trigger */}
+            <div 
+              style={{ position: 'relative' }}
+              onMouseEnter={() => setResourcesDropdownOpen(true)}
+              onMouseLeave={() => setResourcesDropdownOpen(false)}
+            >
+              <button
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: resourceItems.some(i => currentPath === i.path) ? 'var(--primary-red)' : '#4b5563',
+                  fontFamily: 'Inter, sans-serif',
+                  fontSize: '13px',
+                  fontWeight: 500,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  padding: '8px 0'
+                }}
+              >
+                <span>{t('Resources', 'Resources')}</span>
+                <ChevronDown size={14} />
+              </button>
+
+              {resourcesDropdownOpen && (
+                <div 
+                  style={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: isRtl ? 'auto' : 0,
+                    right: isRtl ? 0 : 'auto',
+                    backgroundColor: '#FFFFFF',
+                    border: '1px solid var(--light-border)',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                    padding: '8px 0',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    minWidth: '160px',
+                    zIndex: 1000
+                  }}
+                >
+                  {resourceItems.map((item) => (
+                    <a
+                      key={item.path}
+                      href={`#${item.path}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigate(item.path);
+                        setResourcesDropdownOpen(false);
+                      }}
+                      style={{
+                        padding: '8px 16px',
+                        color: currentPath === item.path ? 'var(--primary-red)' : '#4b5563',
+                        textDecoration: 'none',
+                        fontFamily: 'Inter, sans-serif',
+                        fontSize: '13px',
+                        fontWeight: 500
+                      }}
+                      onMouseEnter={(e) => e.target.style.backgroundColor = '#F9F9F9'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                    >
+                      {item.label}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Right Actions Deck */}
@@ -249,10 +334,11 @@ export default function Navbar({ currentPath, navigate }) {
             padding: '24px',
             display: 'flex',
             flexDirection: 'column',
-            gap: '16px'
+            gap: '12px',
+            overflowY: 'auto'
           }}
         >
-          {navItems.map((item) => (
+          {topNavItems.map((item) => (
             <a
               key={item.path}
               href={`#${item.path}`}
@@ -263,10 +349,10 @@ export default function Navbar({ currentPath, navigate }) {
               }}
               style={{
                 color: '#FFFFFF',
-                fontSize: '18px',
+                fontSize: '16px',
                 textDecoration: 'none',
-                fontFamily: '"Playfair Display", serif',
-                padding: '12px 0',
+                fontFamily: 'Inter, sans-serif',
+                padding: '10px 0',
                 borderBottom: '0.5px solid #2A2A2A',
                 display: 'block',
                 textAlign: isRtl ? 'right' : 'left'
@@ -275,6 +361,58 @@ export default function Navbar({ currentPath, navigate }) {
               {item.label}
             </a>
           ))}
+
+          {/* Resources Accordion (Mobile) */}
+          <div>
+            <button
+              onClick={() => setMobileResourcesOpen(!mobileResourcesOpen)}
+              style={{
+                background: 'none',
+                border: 'none',
+                width: '100%',
+                color: '#FFFFFF',
+                fontSize: '16px',
+                fontFamily: 'Inter, sans-serif',
+                padding: '10px 0',
+                borderBottom: '0.5px solid #2A2A2A',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                cursor: 'pointer'
+              }}
+            >
+              <span>{t('Resources', 'Resources')}</span>
+              <ChevronDown size={16} style={{ transform: mobileResourcesOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />
+            </button>
+
+            {mobileResourcesOpen && (
+              <div style={{ paddingLeft: '16px', paddingRight: '16px', display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
+                {resourceItems.map((item) => (
+                  <a
+                    key={item.path}
+                    href={`#${item.path}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate(item.path);
+                      setMobileMenuOpen(false);
+                    }}
+                    style={{
+                      color: '#CCC',
+                      fontSize: '14px',
+                      textDecoration: 'none',
+                      fontFamily: 'Inter, sans-serif',
+                      padding: '8px 0',
+                      display: 'block',
+                      textAlign: isRtl ? 'right' : 'left'
+                    }}
+                  >
+                    {item.label}
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+
           <a
             href="#/admin"
             onClick={(e) => {
@@ -284,10 +422,10 @@ export default function Navbar({ currentPath, navigate }) {
             }}
             style={{
               color: 'var(--primary-red)',
-              fontSize: '18px',
+              fontSize: '16px',
               textDecoration: 'none',
-              fontFamily: '"Playfair Display", serif',
-              padding: '12px 0',
+              fontFamily: 'Inter, sans-serif',
+              padding: '10px 0',
               borderBottom: '0.5px solid #2A2A2A',
               display: 'block',
               textAlign: isRtl ? 'right' : 'left'
@@ -295,9 +433,10 @@ export default function Navbar({ currentPath, navigate }) {
           >
             {t('Admin Dashboard', 'Admin Dashboard')}
           </a>
+
           <button 
             className="btn btn-gold-fill" 
-            style={{ width: '100%', marginTop: '24px' }}
+            style={{ width: '100%', marginTop: '16px' }}
             onClick={() => { navigate('/register'); setMobileMenuOpen(false); }}
           >
             {t('Konto erstellen', 'Konto erstellen')}
