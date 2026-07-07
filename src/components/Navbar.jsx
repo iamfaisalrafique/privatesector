@@ -151,10 +151,12 @@ export default function Navbar({ currentPath, navigate }) {
                   fontSize: '13px',
                   fontWeight: 500,
                   cursor: 'pointer',
-                  display: 'flex',
+                  display: 'inline-flex',
                   alignItems: 'center',
                   gap: '4px',
-                  padding: '8px 0'
+                  padding: 0,
+                  margin: 0,
+                  lineHeight: 'inherit'
                 }}
               >
                 <span>{t('Resources', 'Resources')}</span>
