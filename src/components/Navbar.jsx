@@ -30,9 +30,7 @@ export default function Navbar({ currentPath, navigate }) {
     { label: t('Translatic Transcript', 'Translatic Transcript'), path: '/translatic-transcript' },
     { label: t('The SoCal Gateway', 'The SoCal Gateway'), path: '/socal-gateway' },
     { label: t('Trade & Policy Pulse', 'Trade & Policy Pulse'), path: '/trade-policy-pulse' },
-    { label: t('Cross-Border Ranking', 'Cross-Border Ranking'), path: '/cross-border-ranking' },
-    { label: t('About', 'About'), path: '/about' },
-    { label: t('Contact', 'Contact'), path: '/contact' }
+    { label: t('Cross-Border Ranking', 'Cross-Border Ranking'), path: '/cross-border-ranking' }
   ];
 
   const resourceItems = [
@@ -43,7 +41,9 @@ export default function Navbar({ currentPath, navigate }) {
     { label: t('Interviews', 'Interviews'), path: '/interviews' },
     { label: t('Podcasts', 'Podcasts'), path: '/podcasts' },
     { label: t('Talent', 'Talent'), path: '/karriere' },
-    { label: t('Ranking', 'Ranking'), path: '/ranking' }
+    { label: t('Ranking', 'Ranking'), path: '/ranking' },
+    { label: t('About', 'About'), path: '/about' },
+    { label: t('Contact', 'Contact'), path: '/contact' }
   ];
 
   const handleSearchSubmit = (e) => {
