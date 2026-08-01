@@ -66,16 +66,19 @@ export const LanguageProvider = ({ children }) => {
     const queryStr = window.location.search || '';
     const parts = path.split('/').filter(Boolean);
     
-    let urlLang = null;
     let pathPart = path;
     if (parts.length > 0 && LANGUAGES.some(l => l.code === parts[0])) {
-      urlLang = parts[0];
       pathPart = '/' + parts.slice(1).join('/');
     }
     
-    if (urlLang !== currentLang) {
-      const cleanPathPart = pathPart === '/' ? '' : pathPart;
-      window.history.replaceState(null, '', `/${currentLang}${cleanPathPart}${queryStr}`);
+    // For English ('en'), default URL is clean without /en prefix
+    // For non-English ('de', 'fr', 'ar'), URL includes /lang prefix
+    const targetPath = currentLang === 'en'
+      ? (pathPart === '' ? '/' : pathPart)
+      : `/${currentLang}${pathPart === '/' ? '' : pathPart}`;
+
+    if (path !== targetPath) {
+      window.history.replaceState(null, '', `${targetPath}${queryStr}`);
       // Dispatch popstate event to let routing listeners know path changed
       window.dispatchEvent(new Event('popstate'));
     }

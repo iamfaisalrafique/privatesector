@@ -76,6 +76,15 @@ function AppContent() {
       const parts = currentPath.split('/').filter(Boolean);
       const validLangs = ['de', 'fr', 'en', 'ar'];
       
+      if (parts.length > 0 && parts[0] === 'en') {
+        const cleanPath = '/' + parts.slice(1).join('/');
+        const target = (cleanPath === '' || cleanPath === '//') ? '/' : cleanPath;
+        window.history.replaceState(null, '', `${target}${currentSearch}`);
+        setPathState(target + currentSearch);
+        setTransitioning(false);
+        return;
+      }
+
       if (parts.length === 0 || !validLangs.includes(parts[0])) {
         if (currentLang !== 'en') {
           const cleanPath = currentPath === '/' ? '' : currentPath;
