@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../../../context/LanguageContext';
 import SeoAnalyzer from '../../../shared/components/SeoAnalyzer';
+import RichTextEditor from '../../../shared/components/RichTextEditor';
+import RankMathSeoBox from '../../../shared/components/RankMathSeoBox';
 import { 
   LayoutDashboard, 
   Files, 

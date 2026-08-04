@@ -114,40 +114,87 @@ app.get('/api/pages/by-path', async (req, res) => {
   }
 });
 
-// XML Sitemap Generator
+// Dynamic Real-Time XML Sitemap Generator (Supports Companies, News, Blogs, Interviews, Jobs, Students & Custom Builder Pages)
 app.get('/sitemap.xml', async (req, res) => {
   try {
-    const companies = await dbQuery('SELECT id, slug FROM companies');
-    const news = await dbQuery('SELECT id, slug FROM news');
-    const interviews = await dbQuery('SELECT id, slug FROM interviews');
-    const jobs = await dbQuery('SELECT id, slug FROM jobs');
+    const companies = await dbQuery('SELECT id, slug, name FROM companies');
+    const news = await dbQuery('SELECT id, slug, title, date_published FROM news');
+    const blogs = await dbQuery('SELECT id, slug, title, date_published FROM blogs');
+    const interviews = await dbQuery('SELECT id, slug, title, date_published FROM interviews');
+    const jobs = await dbQuery('SELECT id, slug, title, date_posted FROM jobs');
+    const students = await dbQuery('SELECT id, name FROM student_profiles');
+    const customPages = await dbQuery('SELECT path FROM pages');
+
+    const today = new Date().toISOString().split('T')[0];
 
     let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
-    xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
+    xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">\n`;
 
-    const staticPages = ['', '/unternehmen', '/news', '/statistiken', '/interviews', '/podcasts', '/karriere', '/ranking', '/login', '/register'];
+    // 1. Core Platform Static Pages
+    const staticPages = [
+      { path: '', priority: '1.0', freq: 'daily' },
+      { path: '/unternehmen', priority: '0.9', freq: 'daily' },
+      { path: '/news', priority: '0.9', freq: 'daily' },
+      { path: '/blogs', priority: '0.8', freq: 'daily' },
+      { path: '/statistiken', priority: '0.8', freq: 'weekly' },
+      { path: '/interviews', priority: '0.8', freq: 'weekly' },
+      { path: '/podcasts', priority: '0.7', freq: 'weekly' },
+      { path: '/karriere', priority: '0.8', freq: 'daily' },
+      { path: '/ranking', priority: '0.8', freq: 'weekly' },
+      { path: '/about', priority: '0.5', freq: 'monthly' },
+      { path: '/contact', priority: '0.5', freq: 'monthly' },
+      { path: '/login', priority: '0.3', freq: 'monthly' },
+      { path: '/register', priority: '0.3', freq: 'monthly' }
+    ];
+
     staticPages.forEach(p => {
-      xml += `  <url>\n    <loc>https://privatesector.ch/#${p}</loc>\n    <changefreq>daily</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
+      xml += `  <url>\n    <loc>https://privatesector.ch/#${p.path}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${p.freq}</changefreq>\n    <priority>${p.priority}</priority>\n  </url>\n`;
     });
 
-    companies.forEach(c => {
-      const slug = c.slug || `company-${c.id}`;
-      xml += `  <url>\n    <loc>https://privatesector.ch/#/unternehmen/${slug}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
+    // 2. Custom Page Builder Pages
+    (customPages || []).forEach(cp => {
+      if (cp.path && !staticPages.some(s => s.path === cp.path)) {
+        xml += `  <url>\n    <loc>https://privatesector.ch/#${cp.path}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
+      }
     });
 
-    news.forEach(n => {
-      const slug = n.slug || `news-${n.id}`;
-      xml += `  <url>\n    <loc>https://privatesector.ch/#/news/${slug}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.6</priority>\n  </url>\n`;
+    // 3. Dynamic Company Listings
+    (companies || []).forEach(c => {
+      const targetSlug = c.slug || c.id;
+      xml += `  <url>\n    <loc>https://privatesector.ch/#/unternehmen/${targetSlug}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
     });
 
-    interviews.forEach(i => {
-      const slug = i.slug || `interview-${i.id}`;
-      xml += `  <url>\n    <loc>https://privatesector.ch/#/interviews/${slug}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.6</priority>\n  </url>\n`;
+    // 4. Dynamic News & Press Releases (with Google News extensions)
+    (news || []).forEach(n => {
+      const targetSlug = n.slug || n.id;
+      const pubDate = n.date_published || today;
+      xml += `  <url>\n    <loc>https://privatesector.ch/#/news/${targetSlug}</loc>\n    <lastmod>${pubDate}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
     });
 
-    jobs.forEach(j => {
-      const slug = j.slug || `job-${j.id}`;
-      xml += `  <url>\n    <loc>https://privatesector.ch/#/karriere/${slug}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.5</priority>\n  </url>\n`;
+    // 5. Dynamic Blogs & Market Insights
+    (blogs || []).forEach(b => {
+      const targetSlug = b.slug || b.id;
+      const pubDate = b.date_published || today;
+      xml += `  <url>\n    <loc>https://privatesector.ch/#/blogs/${targetSlug}</loc>\n    <lastmod>${pubDate}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
+    });
+
+    // 6. Dynamic Interviews & Executive Briefings
+    (interviews || []).forEach(i => {
+      const targetSlug = i.slug || i.id;
+      const pubDate = i.date_published || today;
+      xml += `  <url>\n    <loc>https://privatesector.ch/#/interviews/${targetSlug}</loc>\n    <lastmod>${pubDate}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.6</priority>\n  </url>\n`;
+    });
+
+    // 7. Dynamic Job Listings & Careers
+    (jobs || []).forEach(j => {
+      const targetSlug = j.slug || j.id;
+      const pubDate = j.date_posted || today;
+      xml += `  <url>\n    <loc>https://privatesector.ch/#/karriere/${targetSlug}</loc>\n    <lastmod>${pubDate}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.6</priority>\n  </url>\n`;
+    });
+
+    // 8. Dynamic Student Talent Profiles
+    (students || []).forEach(s => {
+      xml += `  <url>\n    <loc>https://privatesector.ch/#/student/${s.id}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.5</priority>\n  </url>\n`;
     });
 
     xml += `</urlset>`;
