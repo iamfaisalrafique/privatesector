@@ -11,13 +11,16 @@ import {
   Mic,
   MessageSquare,
   GraduationCap,
-  ChevronDown
+  ChevronDown,
+  LogOut,
+  User,
+  Shield
 } from 'lucide-react';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useLanguage } from '../context/LanguageContext';
 import logo from '../assets/logo_highres.png';
 
-export default function Navbar({ currentPath, navigate }) {
+export default function Navbar({ currentPath, navigate, currentUser, onLogout }) {
   const { t, isRtl } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchBarOpen, setSearchBarOpen] = useState(false);
@@ -230,7 +233,70 @@ export default function Navbar({ currentPath, navigate }) {
             {/* Language Switcher */}
             <LanguageSwitcher />
 
-
+            {/* Auth Actions (Login / Logout / Admin) */}
+            {currentUser ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                {currentUser.role === 'admin' && (
+                  <button
+                    onClick={() => navigate('/admin')}
+                    title="Admin Dashboard"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      padding: '6px 12px',
+                      backgroundColor: '#0A0A0A',
+                      color: '#FFFDF7',
+                      border: '1px solid rgba(213, 43, 30, 0.5)',
+                      borderRadius: '4px',
+                      fontSize: '12px',
+                      fontWeight: '600',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <Shield size={14} style={{ color: 'var(--primary-red)' }} /> Admin
+                  </button>
+                )}
+                <button
+                  onClick={onLogout}
+                  title={`Logged in as ${currentUser.email}`}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '6px 12px',
+                    backgroundColor: 'var(--primary-red)',
+                    color: '#FFFFFF',
+                    border: 'none',
+                    borderRadius: '4px',
+                    fontSize: '12px',
+                    fontWeight: '600',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <LogOut size={14} /> {t('logout', 'Logout')}
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => navigate('/login')}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '6px 12px',
+                  backgroundColor: '#0A0A0A',
+                  color: '#FFFDF7',
+                  border: '1px solid rgba(213, 43, 30, 0.4)',
+                  borderRadius: '4px',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                <User size={14} /> {t('login', 'Login')}
+              </button>
+            )}
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

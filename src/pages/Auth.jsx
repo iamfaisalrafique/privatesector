@@ -63,7 +63,11 @@ export default function Auth({ mode = 'login', navigate, onLoginSuccess }) {
           onLoginSuccess(data.user);
         }
         alert(authMode === 'login' ? 'Successfully logged in!' : 'Successfully registered!');
-        navigate('/');
+        if (data.user.role === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/');
+        }
       }
     } catch (err) {
       console.error(err);

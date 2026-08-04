@@ -16,13 +16,22 @@ import {
   Briefcase,
   Mic,
   PlusCircle,
-  ArrowRight
+  ArrowRight,
+  LogOut,
+  Globe,
+  Shield
 } from 'lucide-react';
 
-export default function Admin({ navigate }) {
+export default function Admin({ navigate, onLogout }) {
   const { refreshTranslations } = useLanguage();
   const [activeTab, setActiveTab] = useState('overview'); // overview, pages, ads, translations, news, companies, interviews, jobs
   const [subTab, setSubTab] = useState('all'); // all, categories, tags
+
+  const handleLogout = () => {
+    localStorage.removeItem('userSession');
+    if (onLogout) onLogout();
+    navigate('/login');
+  };
   const [blogsExpanded, setBlogsExpanded] = useState(false);
   const [newsExpanded, setNewsExpanded] = useState(false);
 
@@ -276,93 +285,149 @@ export default function Admin({ navigate }) {
     <div className="admin-dashboard-container" style={{ display: 'flex', minHeight: 'calc(100vh - 100px)', backgroundColor: 'var(--bg-ivory)', color: 'var(--text-ink)', fontFamily: 'Inter, sans-serif' }}>
       
       {/* Sidebar Nav */}
-      <aside style={{ width: '240px', backgroundColor: 'var(--surface-warm)', borderRight: '1.5px solid var(--light-border)', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '24px 0' }}>
-          
-          {[
-            { id: 'overview', label: 'Overview', icon: <LayoutDashboard size={18} /> },
-            { id: 'blogs', label: 'Blogs', icon: <Files size={18} />, hasSubmenu: true },
-            { id: 'news', label: 'News & Articles', icon: <Files size={18} />, hasSubmenu: true },
-            { id: 'companies', label: 'Companies', icon: <Compass size={18} /> },
-            { id: 'interviews', label: 'Interviews & Podcasts', icon: <Mic size={18} /> },
-            { id: 'jobs', label: 'Jobs & Careers', icon: <Briefcase size={18} /> },
-            { id: 'ads', label: 'Ads Campaigns', icon: <Tv size={18} /> },
-            { id: 'translations', label: 'Translations', icon: <Languages size={18} /> }
-          ].map(tab => {
-            const isOpen = tab.id === 'blogs' ? isBlogsOpen : (tab.id === 'news' ? isNewsOpen : false);
-            return (
-              <div 
-                key={tab.id}
-                onMouseEnter={() => tab.id === 'blogs' ? setBlogsExpanded(true) : tab.id === 'news' ? setNewsExpanded(true) : null}
-                onMouseLeave={() => tab.id === 'blogs' ? setBlogsExpanded(false) : tab.id === 'news' ? setNewsExpanded(false) : null}
-                style={{ display: 'flex', flexDirection: 'column' }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-                  <button 
-                    onClick={() => { setActiveTab(tab.id); setSubTab('all'); setEditingItem(null); }}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                      padding: '14px 24px',
-                      background: 'none',
-                      border: 'none',
-                      color: activeTab === tab.id ? 'var(--primary-red)' : 'var(--text-charcoal)',
-                      cursor: 'pointer',
-                      fontSize: '14px',
-                      fontWeight: activeTab === tab.id ? 700 : 500,
-                      textAlign: 'left',
-                      borderLeft: activeTab === tab.id ? '4px solid var(--primary-red)' : '4px solid transparent',
-                      flex: 1
-                    }}
-                  >
-                    {tab.icon}
-                    {tab.label}
-                  </button>
-                  {tab.hasSubmenu && (
-                    <span 
-                      onClick={() => {
-                        if (tab.id === 'blogs') setBlogsExpanded(!blogsExpanded);
-                        if (tab.id === 'news') setNewsExpanded(!newsExpanded);
-                      }}
-                      style={{ paddingRight: '20px', cursor: 'pointer', color: 'var(--text-charcoal)', display: 'flex', alignItems: 'center' }}
-                    >
-                      <ArrowRight size={14} style={{ transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />
-                    </span>
-                  )}
-                </div>
-                
-                {tab.hasSubmenu && isOpen && (
-                  <div style={{ backgroundColor: '#F3F4F6', display: 'flex', flexDirection: 'column', paddingLeft: '40px', borderLeft: '4px solid transparent' }}>
+      <aside style={{ width: '250px', backgroundColor: 'var(--surface-warm)', borderRight: '1.5px solid var(--light-border)', display: 'flex', flexDirection: 'column', flexShrink: 0, justifyContent: 'space-between' }}>
+        <div>
+          {/* Admin Header info */}
+          <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--light-border)', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <h2 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-ink)', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Shield size={18} style={{ color: 'var(--primary-red)' }} /> Admin Console
+            </h2>
+            <span style={{ fontSize: '11px', color: '#6b7280' }}>
+              Signed in as: <strong style={{ color: 'var(--text-ink)' }}>{user?.email || 'admin@private.com'}</strong>
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '16px 0' }}>
+            {[
+              { id: 'overview', label: 'Overview', icon: <LayoutDashboard size={18} /> },
+              { id: 'blogs', label: 'Blogs', icon: <Files size={18} />, hasSubmenu: true },
+              { id: 'news', label: 'News & Articles', icon: <Files size={18} />, hasSubmenu: true },
+              { id: 'companies', label: 'Companies', icon: <Compass size={18} /> },
+              { id: 'interviews', label: 'Interviews & Podcasts', icon: <Mic size={18} /> },
+              { id: 'jobs', label: 'Jobs & Careers', icon: <Briefcase size={18} /> },
+              { id: 'ads', label: 'Ads Campaigns', icon: <Tv size={18} /> },
+              { id: 'translations', label: 'Translations', icon: <Languages size={18} /> }
+            ].map(tab => {
+              const isOpen = tab.id === 'blogs' ? isBlogsOpen : (tab.id === 'news' ? isNewsOpen : false);
+              return (
+                <div 
+                  key={tab.id}
+                  onMouseEnter={() => tab.id === 'blogs' ? setBlogsExpanded(true) : tab.id === 'news' ? setNewsExpanded(true) : null}
+                  onMouseLeave={() => tab.id === 'blogs' ? setBlogsExpanded(false) : tab.id === 'news' ? setNewsExpanded(false) : null}
+                  style={{ display: 'flex', flexDirection: 'column' }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
                     <button 
                       onClick={() => { setActiveTab(tab.id); setSubTab('all'); setEditingItem(null); }}
-                      style={{ background: 'none', border: 'none', color: (activeTab === tab.id && subTab === 'all' && !editingItem) ? 'var(--primary-red)' : '#555555', cursor: 'pointer', padding: '8px 0', fontSize: '13px', textAlign: 'left', fontWeight: (activeTab === tab.id && subTab === 'all' && !editingItem) ? 600 : 400 }}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        padding: '14px 24px',
+                        background: 'none',
+                        border: 'none',
+                        color: activeTab === tab.id ? 'var(--primary-red)' : 'var(--text-charcoal)',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        fontWeight: activeTab === tab.id ? 700 : 500,
+                        textAlign: 'left',
+                        borderLeft: activeTab === tab.id ? '4px solid var(--primary-red)' : '4px solid transparent',
+                        flex: 1
+                      }}
                     >
-                      — All {tab.label}
+                      {tab.icon}
+                      {tab.label}
                     </button>
-                    <button 
-                      onClick={() => { setActiveTab(tab.id); handleCreateClick(tab.id); }}
-                      style={{ background: 'none', border: 'none', color: (activeTab === tab.id && editingItem && isCreatingNew) ? 'var(--primary-red)' : '#555555', cursor: 'pointer', padding: '8px 0', fontSize: '13px', textAlign: 'left', fontWeight: (activeTab === tab.id && editingItem && isCreatingNew) ? 600 : 400 }}
-                    >
-                      — Add New
-                    </button>
-                    <button 
-                      onClick={() => { setActiveTab(tab.id); setSubTab('categories'); setEditingItem(null); }}
-                      style={{ background: 'none', border: 'none', color: (activeTab === tab.id && subTab === 'categories') ? 'var(--primary-red)' : '#555555', cursor: 'pointer', padding: '8px 0', fontSize: '13px', textAlign: 'left', fontWeight: (activeTab === tab.id && subTab === 'categories') ? 600 : 400 }}
-                    >
-                      — Categories
-                    </button>
-                    <button 
-                      onClick={() => { setActiveTab(tab.id); setSubTab('tags'); setEditingItem(null); }}
-                      style={{ background: 'none', border: 'none', color: (activeTab === tab.id && subTab === 'tags') ? 'var(--primary-red)' : '#555555', cursor: 'pointer', padding: '8px 0', fontSize: '13px', textAlign: 'left', fontWeight: (activeTab === tab.id && subTab === 'tags') ? 600 : 400 }}
-                    >
-                      — Tags
-                    </button>
+                    {tab.hasSubmenu && (
+                      <span 
+                        onClick={() => {
+                          if (tab.id === 'blogs') setBlogsExpanded(!blogsExpanded);
+                          if (tab.id === 'news') setNewsExpanded(!newsExpanded);
+                        }}
+                        style={{ paddingRight: '20px', cursor: 'pointer', color: 'var(--text-charcoal)', display: 'flex', alignItems: 'center' }}
+                      >
+                        <ArrowRight size={14} style={{ transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />
+                      </span>
+                    )}
                   </div>
-                )}
-              </div>
-            );
-          })}
+                  
+                  {tab.hasSubmenu && isOpen && (
+                    <div style={{ backgroundColor: '#F3F4F6', display: 'flex', flexDirection: 'column', paddingLeft: '40px', borderLeft: '4px solid transparent' }}>
+                      <button 
+                        onClick={() => { setActiveTab(tab.id); setSubTab('all'); setEditingItem(null); }}
+                        style={{ background: 'none', border: 'none', color: (activeTab === tab.id && subTab === 'all' && !editingItem) ? 'var(--primary-red)' : '#555555', cursor: 'pointer', padding: '8px 0', fontSize: '13px', textAlign: 'left', fontWeight: (activeTab === tab.id && subTab === 'all' && !editingItem) ? 600 : 400 }}
+                      >
+                        — All {tab.label}
+                      </button>
+                      <button 
+                        onClick={() => { setActiveTab(tab.id); handleCreateClick(tab.id); }}
+                        style={{ background: 'none', border: 'none', color: (activeTab === tab.id && editingItem && isCreatingNew) ? 'var(--primary-red)' : '#555555', cursor: 'pointer', padding: '8px 0', fontSize: '13px', textAlign: 'left', fontWeight: (activeTab === tab.id && editingItem && isCreatingNew) ? 600 : 400 }}
+                      >
+                        — Add New
+                      </button>
+                      <button 
+                        onClick={() => { setActiveTab(tab.id); setSubTab('categories'); setEditingItem(null); }}
+                        style={{ background: 'none', border: 'none', color: (activeTab === tab.id && subTab === 'categories') ? 'var(--primary-red)' : '#555555', cursor: 'pointer', padding: '8px 0', fontSize: '13px', textAlign: 'left', fontWeight: (activeTab === tab.id && subTab === 'categories') ? 600 : 400 }}
+                      >
+                        — Categories
+                      </button>
+                      <button 
+                        onClick={() => { setActiveTab(tab.id); setSubTab('tags'); setEditingItem(null); }}
+                        style={{ background: 'none', border: 'none', color: (activeTab === tab.id && subTab === 'tags') ? 'var(--primary-red)' : '#555555', cursor: 'pointer', padding: '8px 0', fontSize: '13px', textAlign: 'left', fontWeight: (activeTab === tab.id && subTab === 'tags') ? 600 : 400 }}
+                      >
+                        — Tags
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Sidebar Footer Controls */}
+        <div style={{ padding: '20px 20px', borderTop: '1px solid var(--light-border)', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <button
+            onClick={() => navigate('/')}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justify: 'center',
+              gap: '8px',
+              width: '100%',
+              padding: '10px 14px',
+              backgroundColor: '#FFFFFF',
+              color: 'var(--text-ink)',
+              border: '1px solid #D1D5DB',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontSize: '13px',
+              fontWeight: 500
+            }}
+          >
+            <Globe size={16} /> View Website
+          </button>
+
+          <button
+            onClick={handleLogout}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justify: 'center',
+              gap: '8px',
+              width: '100%',
+              padding: '10px 14px',
+              backgroundColor: 'var(--primary-red)',
+              color: '#FFFFFF',
+              border: 'none',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontSize: '13px',
+              fontWeight: 600
+            }}
+          >
+            <LogOut size={16} /> Log Out
+          </button>
         </div>
       </aside>
 

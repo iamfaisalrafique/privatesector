@@ -141,6 +141,12 @@ function AppContent() {
     window.dispatchEvent(new Event('popstate'));
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('userSession');
+    setCurrentUser(null);
+    navigate('/login');
+  };
+
   // Helper route decoders
   const getRouteInfo = () => {
     const [rawPath, queryStr] = pathState.split('?');
@@ -239,7 +245,7 @@ function AppContent() {
 
       {/* 2. Global Navigation Header */}
       {!hideHeaderFooter && (
-        <Navbar currentPath={pathState.split('?')[0]} navigate={navigate} />
+        <Navbar currentPath={pathState.split('?')[0]} navigate={navigate} currentUser={currentUser} onLogout={handleLogout} />
       )}
 
       {/* 3. Page Content Area with Transition Wrapper */}
@@ -526,7 +532,7 @@ function AppContent() {
 
         {/* ROUTE: ADMIN DASHBOARD */}
         {routeInfo.route === 'admin' && (
-          <Admin navigate={navigate} />
+          <Admin navigate={navigate} onLogout={handleLogout} />
         )}
 
       </div>
