@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useLanguage } from '../../../context/LanguageContext';
-import SeoAnalyzer from '../../../shared/components/SeoAnalyzer';
 import RichTextEditor from '../../../shared/components/RichTextEditor';
 import RankMathSeoBox from '../../../shared/components/RankMathSeoBox';
 import { 
@@ -8,19 +7,14 @@ import {
   Files, 
   Tv, 
   Languages, 
-  Plus, 
   Save, 
   Trash2,
   Edit3,
-  FileCode, 
-  FolderPlus,
   Compass,
   Briefcase,
   Mic,
   PlusCircle,
-  ArrowRight,
   LogOut,
-  Globe,
   Shield
 } from 'lucide-react';
 
@@ -34,11 +28,12 @@ export default function Admin({ navigate, onLogout }) {
     if (onLogout) onLogout();
     navigate('/login');
   };
+
   const [blogsExpanded, setBlogsExpanded] = useState(false);
   const [newsExpanded, setNewsExpanded] = useState(false);
 
   // Verify Admin Session
-  const sessionStr = localStorage.getItem('userSession');
+  const sessionStr = typeof window !== 'undefined' ? localStorage.getItem('userSession') : null;
   const user = sessionStr ? JSON.parse(sessionStr) : null;
 
   useEffect(() => {
@@ -55,8 +50,8 @@ export default function Admin({ navigate, onLogout }) {
   const [jobs, setJobs] = useState([]);
   const [blogs, setBlogs] = useState([]);
   const [ads, setAds] = useState([]);
-  const [pages, setPages] = useState([]);
-  const [selectedPage, setSelectedPage] = useState(null);
+  const [, setPages] = useState([]);
+  const [, setSelectedPage] = useState(null);
   const [transList, setTransList] = useState([]);
   const [selectedTransLang, setSelectedTransLang] = useState(null);
   const [editingTranslations, setEditingTranslations] = useState([]);
@@ -68,8 +63,26 @@ export default function Admin({ navigate, onLogout }) {
   // Schema builder options
   const [schemaType, setSchemaType] = useState('Article');
 
+  const loadPageLayout = useCallback(async (path) => {
+    try {
+      const res = await fetch(`/api/pages/by-path?path=${encodeURIComponent(path)}`);
+      if (res.ok) setSelectedPage(await res.json());
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
+
+  const loadTranslationsGrid = useCallback(async () => {
+    try {
+      const transRes = await fetch('/api/admin/translations');
+      if (transRes.ok) setTransList(await transRes.json());
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
+
   // Load All Entities
-  const loadEntities = async () => {
+  const loadEntities = useCallback(async () => {
     try {
       const resNews = await fetch('/api/news');
       if (resNews.ok) setNews(await resNews.json());
@@ -93,7 +106,7 @@ export default function Admin({ navigate, onLogout }) {
       if (pagesRes.ok) {
         const list = await pagesRes.json();
         setPages(list);
-        if (list.length > 0 && !selectedPage) {
+        if (list.length > 0) {
           loadPageLayout(list[0].path);
         }
       }
@@ -102,31 +115,13 @@ export default function Admin({ navigate, onLogout }) {
     } catch (e) {
       console.error(e);
     }
-  };
+  }, [loadPageLayout, loadTranslationsGrid]);
 
   useEffect(() => {
     if (user && user.role === 'admin') {
       loadEntities();
     }
-  }, []);
-
-  async function loadPageLayout(path) {
-    try {
-      const res = await fetch(`/api/pages/by-path?path=${encodeURIComponent(path)}`);
-      if (res.ok) setSelectedPage(await res.json());
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  async function loadTranslationsGrid() {
-    try {
-      const transRes = await fetch('/api/admin/translations');
-      if (transRes.ok) setTransList(await transRes.json());
-    } catch (e) {
-      console.error(e);
-    }
-  }
+  }, [user, loadEntities]);
 
   // Handle Schema Auto-generation
   const generateSchema = (type, data) => {
@@ -184,16 +179,16 @@ export default function Admin({ navigate, onLogout }) {
     const method = isNew ? 'POST' : 'PUT';
 
     try {
-      // Auto build schema if empty
-      if (!data.schema_markup) {
+      const finalData = { ...data };
+      if (!finalData.schema_markup) {
         const generatedType = type === 'companies' ? 'LocalBusiness' : 'Article';
-        data.schema_markup = generateSchema(generatedType, data);
+        finalData.schema_markup = generateSchema(generatedType, finalData);
       }
 
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+        body: JSON.stringify(finalData)
       });
 
       if (res.ok) {
@@ -247,6 +242,39 @@ export default function Admin({ navigate, onLogout }) {
     setIsCreatingNew(true);
   };
 
+  // Translations Handlers
+  const handleOpenLanguageEdit = (lang) => {
+    setSelectedTransLang(lang);
+    const items = transList.map(t => ({
+      key: t.translation_key,
+      translated_text: t[lang] || ''
+    }));
+    setEditingTranslations(items);
+  };
+
+  const handleUpdateTranslationKey = (key, text) => {
+    setEditingTranslations(prev => prev.map(item => item.key === key ? { ...item, translated_text: text } : item));
+  };
+
+  const handleSaveTranslations = async () => {
+    if (!selectedTransLang) return;
+    try {
+      const res = await fetch('/api/admin/translations', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ lang: selectedTransLang, translations: editingTranslations })
+      });
+      if (res.ok) {
+        alert('Translations grid saved successfully!');
+        if (refreshTranslations) refreshTranslations();
+        setSelectedTransLang(null);
+        loadTranslationsGrid();
+      }
+    } catch (e) {
+      console.error('Translation save failed:', e);
+    }
+  };
+
   if (!user || user.role !== 'admin') {
     return (
       <div style={{ padding: '64px', textAlign: 'center', backgroundColor: 'var(--bg-ivory)', color: 'var(--text-charcoal)', minHeight: '100vh' }}>
@@ -255,6 +283,7 @@ export default function Admin({ navigate, onLogout }) {
       </div>
     );
   }
+
   const getSubtabData = () => {
     const items = activeTab === 'blogs' ? blogs : news;
     if (subTab === 'categories') {
@@ -270,7 +299,7 @@ export default function Admin({ navigate, onLogout }) {
         let tagList = [];
         try {
           tagList = typeof item.tags === 'string' ? JSON.parse(item.tags || '[]') : (Array.isArray(item.tags) ? item.tags : []);
-        } catch(e) {}
+        } catch {}
         tagList.forEach(t => {
           counts[t] = (counts[t] || 0) + 1;
         });
@@ -318,67 +347,61 @@ export default function Admin({ navigate, onLogout }) {
                   onMouseLeave={() => tab.id === 'blogs' ? setBlogsExpanded(false) : tab.id === 'news' ? setNewsExpanded(false) : null}
                   style={{ display: 'flex', flexDirection: 'column' }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-                    <button 
-                      onClick={() => { setActiveTab(tab.id); setSubTab('all'); setEditingItem(null); }}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '12px',
-                        padding: '14px 24px',
-                        background: 'none',
-                        border: 'none',
-                        color: activeTab === tab.id ? 'var(--primary-red)' : 'var(--text-charcoal)',
-                        cursor: 'pointer',
-                        fontSize: '14px',
-                        fontWeight: activeTab === tab.id ? 700 : 500,
-                        textAlign: 'left',
-                        borderLeft: activeTab === tab.id ? '4px solid var(--primary-red)' : '4px solid transparent',
-                        flex: 1
-                      }}
-                    >
-                      {tab.icon}
-                      {tab.label}
-                    </button>
-                    {tab.hasSubmenu && (
-                      <span 
-                        onClick={() => {
-                          if (tab.id === 'blogs') setBlogsExpanded(!blogsExpanded);
-                          if (tab.id === 'news') setNewsExpanded(!newsExpanded);
-                        }}
-                        style={{ paddingRight: '20px', cursor: 'pointer', color: 'var(--text-charcoal)', display: 'flex', alignItems: 'center' }}
-                      >
-                        <ArrowRight size={14} style={{ transform: isOpen ? 'rotate(90deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />
-                      </span>
-                    )}
-                  </div>
-                  
+                  <button
+                    onClick={() => {
+                      setActiveTab(tab.id);
+                      setSubTab('all');
+                      setEditingItem(null);
+                    }}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      padding: '12px 24px',
+                      backgroundColor: activeTab === tab.id ? 'var(--primary-red)' : 'transparent',
+                      color: activeTab === tab.id ? '#FFFFFF' : 'var(--text-charcoal)',
+                      border: 'none',
+                      borderLeft: activeTab === tab.id ? '4px solid #000' : '4px solid transparent',
+                      cursor: 'pointer',
+                      fontSize: '14px',
+                      fontWeight: activeTab === tab.id ? 700 : 500,
+                      textAlign: 'left',
+                      transition: 'all 0.15s ease'
+                    }}
+                  >
+                    {tab.icon}
+                    <span>{tab.label}</span>
+                  </button>
+
+                  {/* Submenu for Blogs / News */}
                   {tab.hasSubmenu && isOpen && (
-                    <div style={{ backgroundColor: '#F3F4F6', display: 'flex', flexDirection: 'column', paddingLeft: '40px', borderLeft: '4px solid transparent' }}>
-                      <button 
-                        onClick={() => { setActiveTab(tab.id); setSubTab('all'); setEditingItem(null); }}
-                        style={{ background: 'none', border: 'none', color: (activeTab === tab.id && subTab === 'all' && !editingItem) ? 'var(--primary-red)' : '#555555', cursor: 'pointer', padding: '8px 0', fontSize: '13px', textAlign: 'left', fontWeight: (activeTab === tab.id && subTab === 'all' && !editingItem) ? 600 : 400 }}
-                      >
-                        — All {tab.label}
-                      </button>
-                      <button 
-                        onClick={() => { setActiveTab(tab.id); handleCreateClick(tab.id); }}
-                        style={{ background: 'none', border: 'none', color: (activeTab === tab.id && editingItem && isCreatingNew) ? 'var(--primary-red)' : '#555555', cursor: 'pointer', padding: '8px 0', fontSize: '13px', textAlign: 'left', fontWeight: (activeTab === tab.id && editingItem && isCreatingNew) ? 600 : 400 }}
-                      >
-                        — Add New
-                      </button>
-                      <button 
-                        onClick={() => { setActiveTab(tab.id); setSubTab('categories'); setEditingItem(null); }}
-                        style={{ background: 'none', border: 'none', color: (activeTab === tab.id && subTab === 'categories') ? 'var(--primary-red)' : '#555555', cursor: 'pointer', padding: '8px 0', fontSize: '13px', textAlign: 'left', fontWeight: (activeTab === tab.id && subTab === 'categories') ? 600 : 400 }}
-                      >
-                        — Categories
-                      </button>
-                      <button 
-                        onClick={() => { setActiveTab(tab.id); setSubTab('tags'); setEditingItem(null); }}
-                        style={{ background: 'none', border: 'none', color: (activeTab === tab.id && subTab === 'tags') ? 'var(--primary-red)' : '#555555', cursor: 'pointer', padding: '8px 0', fontSize: '13px', textAlign: 'left', fontWeight: (activeTab === tab.id && subTab === 'tags') ? 600 : 400 }}
-                      >
-                        — Tags
-                      </button>
+                    <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: 'rgba(0,0,0,0.03)', paddingLeft: '44px' }}>
+                      {[
+                        { id: 'all', label: `— All ${tab.label}` },
+                        { id: 'categories', label: '— Categories' },
+                        { id: 'tags', label: '— Tags' }
+                      ].map(sub => (
+                        <button
+                          key={sub.id}
+                          onClick={() => {
+                            setActiveTab(tab.id);
+                            setSubTab(sub.id);
+                            setEditingItem(null);
+                          }}
+                          style={{
+                            padding: '8px 12px',
+                            backgroundColor: 'transparent',
+                            color: (activeTab === tab.id && subTab === sub.id) ? 'var(--primary-red)' : '#666',
+                            border: 'none',
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                            fontWeight: (activeTab === tab.id && subTab === sub.id) ? 700 : 400,
+                            textAlign: 'left'
+                          }}
+                        >
+                          {sub.label}
+                        </button>
+                      ))}
                     </div>
                   )}
                 </div>
@@ -387,68 +410,43 @@ export default function Admin({ navigate, onLogout }) {
           </div>
         </div>
 
-        {/* Sidebar Footer Controls */}
-        <div style={{ padding: '20px 20px', borderTop: '1px solid var(--light-border)', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          <button
-            onClick={() => navigate('/')}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justify: 'center',
-              gap: '8px',
-              width: '100%',
-              padding: '10px 14px',
-              backgroundColor: '#FFFFFF',
-              color: 'var(--text-ink)',
-              border: '1px solid #D1D5DB',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontSize: '13px',
-              fontWeight: 500
-            }}
-          >
-            <Globe size={16} /> View Website
-          </button>
-
-          <button
+        {/* Footer Logout */}
+        <div style={{ padding: '20px 24px', borderTop: '1px solid var(--light-border)' }}>
+          <button 
             onClick={handleLogout}
             style={{
               display: 'flex',
               alignItems: 'center',
-              justify: 'center',
               gap: '8px',
               width: '100%',
               padding: '10px 14px',
-              backgroundColor: 'var(--primary-red)',
-              color: '#FFFFFF',
-              border: 'none',
+              backgroundColor: 'transparent',
+              border: '1.5px solid #CBD5E1',
+              color: '#0F172A',
               borderRadius: '6px',
               cursor: 'pointer',
               fontSize: '13px',
               fontWeight: 600
             }}
           >
-            <LogOut size={16} /> Log Out
+            <LogOut size={16} /> Sign Out
           </button>
         </div>
       </aside>
 
-      {/* Main Panel Content */}
+      {/* Main Admin Content View */}
       <main style={{ flex: 1, padding: '40px', overflowY: 'auto' }}>
-        
-        {/* CRUD Editor Mode */}
         {editingItem ? (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '40px' }}>
-            
-            {/* Form Column */}
+          /* Form for Editing or Creating items */
+          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '32px' }}>
             <form onSubmit={handleSaveEntity} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h2 style={{ margin: 0, fontFamily: '"Playfair Display", serif', fontSize: '28px' }}>
-                  {isCreatingNew ? 'Create New' : 'Edit'} {editingItem.type.slice(0, -1)}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1.5px solid #CBD5E1', paddingBottom: '16px' }}>
+                <h2 style={{ fontSize: '24px', margin: 0, textTransform: 'capitalize', fontWeight: 800, color: '#0F172A' }}>
+                  {isCreatingNew ? 'Create New' : 'Edit'} {editingItem.type}
                 </h2>
                 <div style={{ display: 'flex', gap: '12px' }}>
-                  <button type="button" onClick={() => setEditingItem(null)} style={{ padding: '8px 16px', backgroundColor: 'transparent', border: '1px solid #444', color: '#FFF', borderRadius: '4px', cursor: 'pointer' }}>Cancel</button>
-                  <button type="submit" style={{ padding: '8px 20px', backgroundColor: 'var(--primary-red)', border: 'none', color: '#FFF', borderRadius: '4px', cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <button type="button" onClick={() => setEditingItem(null)} style={{ padding: '8px 16px', backgroundColor: '#F1F5F9', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}>Cancel</button>
+                  <button type="submit" style={{ padding: '8px 20px', backgroundColor: 'var(--primary-red)', border: 'none', color: '#FFF', borderRadius: '6px', cursor: 'pointer', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <Save size={16} /> Save Changes
                   </button>
                 </div>
@@ -495,7 +493,7 @@ export default function Admin({ navigate, onLogout }) {
                         value={Array.isArray(editingItem.data.tags) ? editingItem.data.tags.join(', ') : (() => {
                           try {
                             return JSON.parse(editingItem.data.tags || '[]').join(', ');
-                          } catch (e) {
+                          } catch {
                             return typeof editingItem.data.tags === 'string' ? editingItem.data.tags : '';
                           }
                         })()} 
@@ -695,9 +693,9 @@ export default function Admin({ navigate, onLogout }) {
                     { label: 'Interviews & Podcasts', val: interviews.length, color: '#8B5CF6' },
                     { label: 'Active Careers / Jobs', val: jobs.length, color: 'var(--primary-red)' }
                   ].map((stat, idx) => (
-                    <div key={idx} className="admin-stat-card" style={{ backgroundColor: '#111', padding: '24px', borderRadius: '8px', borderLeft: `4px solid ${stat.color}` }}>
-                      <span style={{ fontSize: '12px', color: '#888', textTransform: 'uppercase' }}>{stat.label}</span>
-                      <h2 style={{ fontSize: '36px', margin: '8px 0 0 0', fontWeight: 800, color: '#FFF' }}>{stat.val}</h2>
+                    <div key={idx} className="admin-stat-card" style={{ backgroundColor: '#FFFFFF', padding: '24px', borderRadius: '8px', borderLeft: `4px solid ${stat.color}` }}>
+                      <span style={{ fontSize: '12px', color: '#64748B', textTransform: 'uppercase', fontWeight: 700 }}>{stat.label}</span>
+                      <h2 style={{ fontSize: '36px', margin: '8px 0 0 0', fontWeight: 800, color: '#0F172A' }}>{stat.val}</h2>
                     </div>
                   ))}
                 </div>
@@ -712,25 +710,25 @@ export default function Admin({ navigate, onLogout }) {
                     Manage {activeTab} {subTab !== 'all' ? ` > ${subTab}` : ''}
                   </h1>
                   {subTab === 'all' && (
-                    <button onClick={() => handleCreateClick(activeTab)} style={{ padding: '10px 20px', backgroundColor: 'var(--primary-red)', border: 'none', color: '#FFF', borderRadius: '4px', cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <button onClick={() => handleCreateClick(activeTab)} style={{ padding: '10px 20px', backgroundColor: 'var(--primary-red)', border: 'none', color: '#FFF', borderRadius: '6px', cursor: 'pointer', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <PlusCircle size={18} /> Add New {activeTab.slice(0, -1)}
                     </button>
                   )}
                 </div>
 
                 {subTab !== 'all' && ['blogs', 'news'].includes(activeTab) ? (
-                  <div style={{ backgroundColor: '#111', padding: '24px', borderRadius: '8px', border: '1px solid #222' }}>
-                    <h3 style={{ margin: '0 0 16px 0', color: 'var(--primary-red)', fontSize: '18px', textTransform: 'capitalize' }}>
+                  <div style={{ backgroundColor: '#FFFFFF', padding: '24px', borderRadius: '8px', border: '1.5px solid #CBD5E1' }}>
+                    <h3 style={{ margin: '0 0 16px 0', color: 'var(--primary-red)', fontSize: '18px', textTransform: 'capitalize', fontWeight: 800 }}>
                       All {subTab} in {activeTab}
                     </h3>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '16px' }}>
                       {getSubtabData().length === 0 ? (
-                        <div style={{ color: '#888', fontSize: '14px' }}>No {subTab} found.</div>
+                        <div style={{ color: '#64748B', fontSize: '14px' }}>No {subTab} found.</div>
                       ) : (
                         getSubtabData().map((item, idx) => (
-                          <div key={idx} style={{ backgroundColor: '#1C1C1C', padding: '16px', borderRadius: '6px', border: '1px solid #333', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <span style={{ fontWeight: 600, color: '#FFF' }}>{item.name}</span>
-                            <span style={{ fontSize: '12px', backgroundColor: '#333', color: '#FFF', padding: '2px 8px', borderRadius: '12px' }}>{item.count} posts</span>
+                          <div key={idx} style={{ backgroundColor: '#F8FAFC', padding: '16px', borderRadius: '6px', border: '1.5px solid #CBD5E1', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontWeight: 700, color: '#0F172A' }}>{item.name}</span>
+                            <span style={{ fontSize: '12px', backgroundColor: '#E2E8F0', color: '#0F172A', padding: '2px 8px', borderRadius: '12px', fontWeight: 600 }}>{item.count} posts</span>
                           </div>
                         ))
                       )}
@@ -740,66 +738,66 @@ export default function Admin({ navigate, onLogout }) {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     
                     {activeTab === 'blogs' && blogs.map(item => (
-                    <div key={item.id} className="admin-list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#111', padding: '16px 24px', borderRadius: '6px', border: '1px solid #222' }}>
+                    <div key={item.id} className="admin-list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#FFFFFF', padding: '16px 24px', borderRadius: '8px', border: '1.5px solid #CBD5E1' }}>
                       <div>
-                        <strong style={{ fontSize: '15px', color: '#FFF', display: 'block' }}>{item.title}</strong>
-                        <span style={{ fontSize: '12px', color: '#666' }}>Category: {item.category} | Keyword: {item.focus_keyword || 'None'}</span>
+                        <strong style={{ fontSize: '15px', color: '#0F172A', display: 'block', fontWeight: 700 }}>{item.title}</strong>
+                        <span style={{ fontSize: '12px', color: '#64748B' }}>Category: {item.category} | Keyword: {item.focus_keyword || 'None'}</span>
                       </div>
                       <div style={{ display: 'flex', gap: '12px' }}>
-                        <button onClick={() => handleEditClick('blogs', item)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', backgroundColor: '#222', border: '1px solid #444', color: '#FFF', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}><Edit3 size={14} /> Edit</button>
-                        <button onClick={() => handleDeleteEntity('blogs', item.id)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', backgroundColor: 'transparent', border: '1px solid var(--primary-red)', color: 'var(--primary-red)', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}><Trash2 size={14} /> Delete</button>
+                        <button onClick={() => handleEditClick('blogs', item)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 14px', backgroundColor: '#F1F5F9', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: 600 }}><Edit3 size={14} /> Edit</button>
+                        <button onClick={() => handleDeleteEntity('blogs', item.id)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 14px', backgroundColor: 'transparent', border: '1.5px solid var(--primary-red)', color: 'var(--primary-red)', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: 600 }}><Trash2 size={14} /> Delete</button>
                       </div>
                     </div>
                   ))}
                   
                   {activeTab === 'news' && news.map(item => (
-                    <div key={item.id} className="admin-list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#111', padding: '16px 24px', borderRadius: '6px', border: '1px solid #222' }}>
+                    <div key={item.id} className="admin-list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#FFFFFF', padding: '16px 24px', borderRadius: '8px', border: '1.5px solid #CBD5E1' }}>
                       <div>
-                        <strong style={{ fontSize: '15px', color: '#FFF', display: 'block' }}>{item.title}</strong>
-                        <span style={{ fontSize: '12px', color: '#666' }}>Category: {item.category} | Keyword: {item.focus_keyword || 'None'}</span>
+                        <strong style={{ fontSize: '15px', color: '#0F172A', display: 'block', fontWeight: 700 }}>{item.title}</strong>
+                        <span style={{ fontSize: '12px', color: '#64748B' }}>Category: {item.category} | Keyword: {item.focus_keyword || 'None'}</span>
                       </div>
                       <div style={{ display: 'flex', gap: '12px' }}>
-                        <button onClick={() => handleEditClick('news', item)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', backgroundColor: '#222', border: '1px solid #444', color: '#FFF', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}><Edit3 size={14} /> Edit</button>
-                        <button onClick={() => handleDeleteEntity('news', item.id)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', backgroundColor: 'transparent', border: '1px solid var(--primary-red)', color: 'var(--primary-red)', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}><Trash2 size={14} /> Delete</button>
+                        <button onClick={() => handleEditClick('news', item)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 14px', backgroundColor: '#F1F5F9', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: 600 }}><Edit3 size={14} /> Edit</button>
+                        <button onClick={() => handleDeleteEntity('news', item.id)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 14px', backgroundColor: 'transparent', border: '1.5px solid var(--primary-red)', color: 'var(--primary-red)', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: 600 }}><Trash2 size={14} /> Delete</button>
                       </div>
                     </div>
                   ))}
 
                   {activeTab === 'companies' && companies.map(item => (
-                    <div key={item.id} className="admin-list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#111', padding: '16px 24px', borderRadius: '6px', border: '1px solid #222' }}>
+                    <div key={item.id} className="admin-list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#FFFFFF', padding: '16px 24px', borderRadius: '8px', border: '1.5px solid #CBD5E1' }}>
                       <div>
-                        <strong style={{ fontSize: '15px', color: '#FFF', display: 'block' }}>{item.name}</strong>
-                        <span style={{ fontSize: '12px', color: '#666' }}>Industry: {item.industry} | Canton: {item.canton}</span>
+                        <strong style={{ fontSize: '15px', color: '#0F172A', display: 'block', fontWeight: 700 }}>{item.name}</strong>
+                        <span style={{ fontSize: '12px', color: '#64748B' }}>Industry: {item.industry} | Canton: {item.canton}</span>
                       </div>
                       <div style={{ display: 'flex', gap: '12px' }}>
-                        <button onClick={() => handleEditClick('companies', item)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', backgroundColor: '#222', border: '1px solid #444', color: '#FFF', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}><Edit3 size={14} /> Edit</button>
-                        <button onClick={() => handleDeleteEntity('companies', item.id)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', backgroundColor: 'transparent', border: '1px solid var(--primary-red)', color: 'var(--primary-red)', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}><Trash2 size={14} /> Delete</button>
+                        <button onClick={() => handleEditClick('companies', item)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 14px', backgroundColor: '#F1F5F9', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: 600 }}><Edit3 size={14} /> Edit</button>
+                        <button onClick={() => handleDeleteEntity('companies', item.id)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 14px', backgroundColor: 'transparent', border: '1.5px solid var(--primary-red)', color: 'var(--primary-red)', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: 600 }}><Trash2 size={14} /> Delete</button>
                       </div>
                     </div>
                   ))}
 
                   {activeTab === 'interviews' && interviews.map(item => (
-                    <div key={item.id} className="admin-list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#111', padding: '16px 24px', borderRadius: '6px', border: '1px solid #222' }}>
+                    <div key={item.id} className="admin-list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#FFFFFF', padding: '16px 24px', borderRadius: '8px', border: '1.5px solid #CBD5E1' }}>
                       <div>
-                        <strong style={{ fontSize: '15px', color: '#FFF', display: 'block' }}>{item.title}</strong>
-                        <span style={{ fontSize: '12px', color: '#666' }}>Category: {item.category} | Guest: {item.interviewee_name}</span>
+                        <strong style={{ fontSize: '15px', color: '#0F172A', display: 'block', fontWeight: 700 }}>{item.title}</strong>
+                        <span style={{ fontSize: '12px', color: '#64748B' }}>Category: {item.category} | Guest: {item.interviewee_name}</span>
                       </div>
                       <div style={{ display: 'flex', gap: '12px' }}>
-                        <button onClick={() => handleEditClick('interviews', item)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', backgroundColor: '#222', border: '1px solid #444', color: '#FFF', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}><Edit3 size={14} /> Edit</button>
-                        <button onClick={() => handleDeleteEntity('interviews', item.id)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', backgroundColor: 'transparent', border: '1px solid var(--primary-red)', color: 'var(--primary-red)', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}><Trash2 size={14} /> Delete</button>
+                        <button onClick={() => handleEditClick('interviews', item)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 14px', backgroundColor: '#F1F5F9', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: 600 }}><Edit3 size={14} /> Edit</button>
+                        <button onClick={() => handleDeleteEntity('interviews', item.id)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 14px', backgroundColor: 'transparent', border: '1.5px solid var(--primary-red)', color: 'var(--primary-red)', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: 600 }}><Trash2 size={14} /> Delete</button>
                       </div>
                     </div>
                   ))}
 
                   {activeTab === 'jobs' && jobs.map(item => (
-                    <div key={item.id} className="admin-list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#111', padding: '16px 24px', borderRadius: '6px', border: '1px solid #222' }}>
+                    <div key={item.id} className="admin-list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#FFFFFF', padding: '16px 24px', borderRadius: '8px', border: '1.5px solid #CBD5E1' }}>
                       <div>
-                        <strong style={{ fontSize: '15px', color: '#FFF', display: 'block' }}>{item.title}</strong>
-                        <span style={{ fontSize: '12px', color: '#666' }}>Type: {item.type} | Category: {item.category}</span>
+                        <strong style={{ fontSize: '15px', color: '#0F172A', display: 'block', fontWeight: 700 }}>{item.title}</strong>
+                        <span style={{ fontSize: '12px', color: '#64748B' }}>Type: {item.type} | Category: {item.category}</span>
                       </div>
                       <div style={{ display: 'flex', gap: '12px' }}>
-                        <button onClick={() => handleEditClick('jobs', item)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', backgroundColor: '#222', border: '1px solid #444', color: '#FFF', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}><Edit3 size={14} /> Edit</button>
-                        <button onClick={() => handleDeleteEntity('jobs', item.id)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', backgroundColor: 'transparent', border: '1px solid var(--primary-red)', color: 'var(--primary-red)', borderRadius: '4px', cursor: 'pointer', fontSize: '12px' }}><Trash2 size={14} /> Delete</button>
+                        <button onClick={() => handleEditClick('jobs', item)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 14px', backgroundColor: '#F1F5F9', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: 600 }}><Edit3 size={14} /> Edit</button>
+                        <button onClick={() => handleDeleteEntity('jobs', item.id)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 14px', backgroundColor: 'transparent', border: '1.5px solid var(--primary-red)', color: 'var(--primary-red)', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: 600 }}><Trash2 size={14} /> Delete</button>
                       </div>
                     </div>
                   ))}
@@ -814,10 +812,10 @@ export default function Admin({ navigate, onLogout }) {
                 <h1 style={{ fontFamily: '"Playfair Display", serif', fontSize: '32px', marginBottom: '24px' }}>Advertising Manager</h1>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                   {ads.map(ad => (
-                    <div key={ad.id} className="admin-list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#111', padding: '16px 24px', borderRadius: '6px', border: '1px solid #222' }}>
+                    <div key={ad.id} className="admin-list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#FFFFFF', padding: '16px 24px', borderRadius: '8px', border: '1.5px solid #CBD5E1' }}>
                       <div>
-                        <strong style={{ fontSize: '15px', color: '#FFF', display: 'block' }}>{ad.name}</strong>
-                        <span style={{ fontSize: '12px', color: '#666' }}>Zone: {ad.position} | Impressions: {ad.impressions} | Clicks: {ad.clicks}</span>
+                        <strong style={{ fontSize: '15px', color: '#0F172A', display: 'block', fontWeight: 700 }}>{ad.name}</strong>
+                        <span style={{ fontSize: '12px', color: '#64748B' }}>Zone: {ad.position} | Impressions: {ad.impressions} | Clicks: {ad.clicks}</span>
                       </div>
                     </div>
                   ))}
@@ -828,18 +826,18 @@ export default function Admin({ navigate, onLogout }) {
             {/* Translations tab */}
             {activeTab === 'translations' && (
               <div>
-                <h1 style={{ fontFamily: '"Playfair Display", serif', fontSize: '32px', marginBottom: '24px' }}>Translations Management</h1>
+                <h1 style={{ fontFamily: '"Playfair Display", serif', fontSize: '32px', marginBottom: '24px' }}>Translations Management Grid</h1>
                 {selectedTransLang ? (
                   <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
-                      <h3>Editing Language: {selectedTransLang.toUpperCase()}</h3>
-                      <button onClick={handleSaveTranslations} style={{ padding: '8px 20px', backgroundColor: 'var(--primary-red)', border: 'none', color: '#FFF', borderRadius: '4px', cursor: 'pointer' }}>Save Grid</button>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                      <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#0F172A' }}>Editing Language: {selectedTransLang.toUpperCase()}</h3>
+                      <button onClick={handleSaveTranslations} style={{ padding: '10px 20px', backgroundColor: 'var(--primary-red)', border: 'none', color: '#FFF', borderRadius: '6px', cursor: 'pointer', fontWeight: 700 }}>Save Grid Translations</button>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                       {editingTranslations.map(item => (
                         <div key={item.key}>
-                          <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>{item.key}</label>
-                          <input type="text" value={item.translated_text} onChange={(e) => handleUpdateTranslationKey(item.key, e.target.value)} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }} />
+                          <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '6px' }}>{item.key}</label>
+                          <input type="text" value={item.translated_text} onChange={(e) => handleUpdateTranslationKey(item.key, e.target.value)} style={{ width: '100%', padding: '10px 14px', backgroundColor: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', fontSize: '14px' }} />
                         </div>
                       ))}
                     </div>
@@ -847,9 +845,9 @@ export default function Admin({ navigate, onLogout }) {
                 ) : (
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '16px' }}>
                     {['de', 'fr', 'en', 'ar'].map(lang => (
-                      <div key={lang} className="admin-list-item" style={{ backgroundColor: '#111', padding: '24px', borderRadius: '6px', border: '1px solid #222', textAlign: 'center' }}>
-                        <h4 style={{ margin: '0 0 16px 0', textTransform: 'uppercase' }}>{lang}</h4>
-                        <button onClick={() => handleOpenLanguageEdit(lang)} style={{ padding: '6px 16px', backgroundColor: '#222', border: '1px solid #444', color: '#FFF', borderRadius: '4px', cursor: 'pointer', fontSize: '13px' }}>Edit Grid</button>
+                      <div key={lang} className="admin-list-item" style={{ backgroundColor: '#FFFFFF', padding: '24px', borderRadius: '8px', border: '1.5px solid #CBD5E1', textAlign: 'center' }}>
+                        <h4 style={{ margin: '0 0 16px 0', textTransform: 'uppercase', fontWeight: 800, color: '#0F172A' }}>{lang} Language</h4>
+                        <button onClick={() => handleOpenLanguageEdit(lang)} style={{ padding: '8px 18px', backgroundColor: '#F1F5F9', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: 700 }}>Edit Translation Grid</button>
                       </div>
                     ))}
                   </div>
