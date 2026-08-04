@@ -1,16 +1,13 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { 
   Bold, 
   Italic, 
-  Heading1, 
   Heading2, 
   Heading3, 
   List, 
   ListOrdered, 
   Quote, 
   Code, 
-  Link, 
-  Image as ImageIcon, 
   Eye, 
   Code2 
 } from 'lucide-react';
@@ -19,7 +16,26 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Write d
   const [mode, setMode] = useState('visual'); // 'visual' | 'code'
   const editorRef = useRef(null);
 
+  // Synchronize incoming value into contentEditable DOM element only when not focused or when value changes externally
+  useEffect(() => {
+    if (editorRef.current && mode === 'visual') {
+      if (document.activeElement !== editorRef.current && editorRef.current.innerHTML !== (value || '')) {
+        editorRef.current.innerHTML = value || '';
+      }
+    }
+  }, [value, mode]);
+
+  const handleRef = (node) => {
+    editorRef.current = node;
+    if (node && !node.innerHTML && value) {
+      node.innerHTML = value;
+    }
+  };
+
   const executeCommand = (command, val = null) => {
+    if (editorRef.current) {
+      editorRef.current.focus();
+    }
     document.execCommand(command, false, val);
     if (editorRef.current) {
       onChange(editorRef.current.innerHTML);
@@ -34,11 +50,12 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Write d
 
   return (
     <div style={{
-      border: '0.5px solid #CBD5E1',
+      border: '1.5px solid #CBD5E1',
       borderRadius: '8px',
       overflow: 'hidden',
       backgroundColor: '#FFFFFF',
-      fontFamily: 'Inter, sans-serif'
+      fontFamily: 'Inter, sans-serif',
+      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
     }}>
       {/* Editor Formatting Toolbar */}
       <div style={{
@@ -48,7 +65,7 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Write d
         gap: '4px',
         padding: '8px 12px',
         backgroundColor: '#F8FAFC',
-        borderBottom: '0.5px solid #E2E8F0'
+        borderBottom: '1.5px solid #E2E8F0'
       }}>
         {mode === 'visual' && (
           <>
@@ -58,7 +75,7 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Write d
               title="Bold"
               style={toolbarButtonStyle}
             >
-              <Bold size={14} />
+              <Bold size={15} />
             </button>
             <button
               type="button"
@@ -66,10 +83,10 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Write d
               title="Italic"
               style={toolbarButtonStyle}
             >
-              <Italic size={14} />
+              <Italic size={15} />
             </button>
 
-            <div style={{ width: '1px', height: '16px', backgroundColor: '#CBD5E1', margin: '0 4px' }} />
+            <div style={{ width: '1px', height: '18px', backgroundColor: '#CBD5E1', margin: '0 4px' }} />
 
             <button
               type="button"
@@ -77,7 +94,7 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Write d
               title="Heading 2"
               style={toolbarButtonStyle}
             >
-              <Heading2 size={14} />
+              <Heading2 size={15} />
             </button>
             <button
               type="button"
@@ -85,10 +102,10 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Write d
               title="Heading 3"
               style={toolbarButtonStyle}
             >
-              <Heading3 size={14} />
+              <Heading3 size={15} />
             </button>
 
-            <div style={{ width: '1px', height: '16px', backgroundColor: '#CBD5E1', margin: '0 4px' }} />
+            <div style={{ width: '1px', height: '18px', backgroundColor: '#CBD5E1', margin: '0 4px' }} />
 
             <button
               type="button"
@@ -96,7 +113,7 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Write d
               title="Bullet List"
               style={toolbarButtonStyle}
             >
-              <List size={14} />
+              <List size={15} />
             </button>
             <button
               type="button"
@@ -104,7 +121,7 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Write d
               title="Numbered List"
               style={toolbarButtonStyle}
             >
-              <ListOrdered size={14} />
+              <ListOrdered size={15} />
             </button>
             <button
               type="button"
@@ -112,7 +129,7 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Write d
               title="Quote"
               style={toolbarButtonStyle}
             >
-              <Quote size={14} />
+              <Quote size={15} />
             </button>
             <button
               type="button"
@@ -120,7 +137,7 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Write d
               title="Code Block"
               style={toolbarButtonStyle}
             >
-              <Code size={14} />
+              <Code size={15} />
             </button>
           </>
         )}
@@ -132,14 +149,14 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Write d
             style={{
               ...toolbarButtonStyle,
               backgroundColor: mode === 'code' ? '#E2E8F0' : 'transparent',
-              color: mode === 'code' ? 'var(--primary-red)' : '#475569',
-              fontWeight: 600,
-              fontSize: '11px',
-              padding: '4px 8px'
+              color: mode === 'code' ? 'var(--primary-red)' : '#0F172A',
+              fontWeight: 700,
+              fontSize: '12px',
+              padding: '4px 10px'
             }}
           >
-            {mode === 'visual' ? <Code2 size={13} /> : <Eye size={13} />}
-            <span style={{ marginLeft: '4px' }}>{mode === 'visual' ? 'HTML Code' : 'Visual Mode'}</span>
+            {mode === 'visual' ? <Code2 size={14} /> : <Eye size={14} />}
+            <span style={{ marginLeft: '6px' }}>{mode === 'visual' ? 'HTML Code' : 'Visual Mode'}</span>
           </button>
         </div>
       </div>
@@ -147,17 +164,16 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Write d
       {/* Editor Body */}
       {mode === 'visual' ? (
         <div
-          ref={editorRef}
+          ref={handleRef}
           contentEditable
           onInput={handleInput}
-          dangerouslySetInnerHTML={{ __html: value || '' }}
           style={{
             minHeight: '220px',
             padding: '16px',
             outline: 'none',
             fontSize: '14px',
             lineHeight: 1.6,
-            color: '#1E293B'
+            color: '#0F172A'
           }}
           data-placeholder={placeholder}
         />
@@ -184,11 +200,12 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Write d
 }
 
 const toolbarButtonStyle = {
-  padding: '6px 8px',
+  padding: '6px 10px',
   backgroundColor: 'transparent',
   border: 'none',
   borderRadius: '4px',
-  color: '#475569',
+  color: '#0F172A',
+  fontWeight: 600,
   cursor: 'pointer',
   display: 'inline-flex',
   alignItems: 'center',
