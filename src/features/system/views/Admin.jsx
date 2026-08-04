@@ -118,9 +118,17 @@ export default function Admin({ navigate, onLogout }) {
   }, [loadPageLayout, loadTranslationsGrid]);
 
   useEffect(() => {
+    let isMounted = true;
     if (user && user.role === 'admin') {
-      loadEntities();
+      (async () => {
+        if (isMounted) {
+          await loadEntities();
+        }
+      })();
     }
+    return () => {
+      isMounted = false;
+    };
   }, [user, loadEntities]);
 
   // Handle Schema Auto-generation
@@ -299,7 +307,9 @@ export default function Admin({ navigate, onLogout }) {
         let tagList = [];
         try {
           tagList = typeof item.tags === 'string' ? JSON.parse(item.tags || '[]') : (Array.isArray(item.tags) ? item.tags : []);
-        } catch {}
+        } catch (err) {
+          console.warn('Tag parsing warning:', err);
+        }
         tagList.forEach(t => {
           counts[t] = (counts[t] || 0) + 1;
         });
