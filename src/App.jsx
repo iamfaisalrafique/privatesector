@@ -25,6 +25,7 @@ import TradePolicyPulse from './pages/TradePolicyPulse';
 import CrossBorderRanking from './pages/CrossBorderRanking';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import ErrorBoundary from './components/ErrorBoundary';
 import { Landmark, ArrowRight, ShieldCheck } from 'lucide-react';
 
 function AppContent() {
@@ -665,8 +666,10 @@ function AppContent() {
 
 export default function App() {
   return (
-    <LanguageProvider>
-      <AppContent />
-    </LanguageProvider>
+    <ErrorBoundary>
+      <LanguageProvider>
+        <AppContent />
+      </LanguageProvider>
+    </ErrorBoundary>
   );
 }
