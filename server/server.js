@@ -127,27 +127,27 @@ app.get('/sitemap.xml', async (req, res) => {
 
     const staticPages = ['', '/unternehmen', '/news', '/statistiken', '/interviews', '/podcasts', '/karriere', '/ranking', '/login', '/register'];
     staticPages.forEach(p => {
-      xml += `  <url>\n    <loc>https://privatesector.vitalswiss.ch/#${p}</loc>\n    <changefreq>daily</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
+      xml += `  <url>\n    <loc>https://privatesector.ch/#${p}</loc>\n    <changefreq>daily</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
     });
 
     companies.forEach(c => {
       const slug = c.slug || `company-${c.id}`;
-      xml += `  <url>\n    <loc>https://privatesector.vitalswiss.ch/#/unternehmen/${slug}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
+      xml += `  <url>\n    <loc>https://privatesector.ch/#/unternehmen/${slug}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
     });
 
     news.forEach(n => {
       const slug = n.slug || `news-${n.id}`;
-      xml += `  <url>\n    <loc>https://privatesector.vitalswiss.ch/#/news/${slug}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.6</priority>\n  </url>\n`;
+      xml += `  <url>\n    <loc>https://privatesector.ch/#/news/${slug}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.6</priority>\n  </url>\n`;
     });
 
     interviews.forEach(i => {
       const slug = i.slug || `interview-${i.id}`;
-      xml += `  <url>\n    <loc>https://privatesector.vitalswiss.ch/#/interviews/${slug}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.6</priority>\n  </url>\n`;
+      xml += `  <url>\n    <loc>https://privatesector.ch/#/interviews/${slug}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.6</priority>\n  </url>\n`;
     });
 
     jobs.forEach(j => {
       const slug = j.slug || `job-${j.id}`;
-      xml += `  <url>\n    <loc>https://privatesector.vitalswiss.ch/#/karriere/${slug}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.5</priority>\n  </url>\n`;
+      xml += `  <url>\n    <loc>https://privatesector.ch/#/karriere/${slug}</loc>\n    <changefreq>weekly</changefreq>\n    <priority>0.5</priority>\n  </url>\n`;
     });
 
     xml += `</urlset>`;

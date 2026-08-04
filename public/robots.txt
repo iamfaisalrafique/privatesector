@@ -20,4 +20,4 @@ Disallow: /
 User-agent: Dotbot
 Disallow: /
 
-Sitemap: https://privatesector.vitalswiss.ch/sitemap.xml
+Sitemap: https://privatesector.ch/sitemap.xml

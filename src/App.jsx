@@ -604,7 +604,7 @@ function AppContent() {
           </div>
 
           <div style={{ maxWidth: '1280px', margin: '0 auto', borderTop: '0.5px solid #d1d5db', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', color: '#4b5563', fontSize: '11px' }}>
-            <span>{t('footer_rights', '© 2026 privatesector.vitalswiss.ch. All rights reserved.')}</span>
+            <span>{t('footer_rights', '© 2026 privatesector.ch. All rights reserved.')}</span>
             <span>{t('footer_compliance', 'GDPR & Swiss Data Protection Act compliant 🇨🇭')}</span>
           </div>
         </footer>

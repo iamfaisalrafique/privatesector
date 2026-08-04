@@ -40,7 +40,7 @@ export default function CookieBanner() {
     >
       <div style={{ flex: '1 1 300px' }}>
         <p style={{ color: '#FFFFFF', fontSize: '13px', margin: 0, fontFamily: 'Inter, sans-serif', lineHeight: 1.5 }}>
-          {t('cookie_text', 'We use cookies to optimize your experience on privatesector.vitalswiss.ch. By using the website, you agree to our policies.')}
+          {t('cookie_text', 'We use cookies to optimize your experience on privatesector.ch. By using the website, you agree to our policies.')}
         </p>
       </div>
       <div style={{ display: 'flex', gap: '12px' }}>
