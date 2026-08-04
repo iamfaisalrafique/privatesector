@@ -457,21 +457,21 @@ export default function Admin({ navigate, onLogout }) {
               {/* Dynamic Inputs for different schemas */}
               {(editingItem.type === 'news' || editingItem.type === 'blogs') && (
                 <>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                     <div>
-                      <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Title</label>
-                      <input type="text" required value={editingItem.data.title} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, title: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }} />
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Title *</label>
+                      <input type="text" required value={editingItem.data.title || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, title: e.target.value } })} style={{ width: '100%', padding: '10px 14px', backgroundColor: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', fontSize: '14px', fontWeight: 500 }} />
                     </div>
                     <div>
-                      <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Category</label>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Category *</label>
                       {editingItem.type === 'news' ? (
-                        <select value={editingItem.data.category} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, category: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }}>
+                        <select value={editingItem.data.category || 'University Perspective'} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, category: e.target.value } })} style={{ width: '100%', padding: '10px 14px', backgroundColor: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', fontSize: '14px', fontWeight: 500 }}>
                           <option value="University Perspective">University Perspective</option>
                           <option value="Swiss Economics">Swiss Economics</option>
                           <option value="Corporation News">Corporation News</option>
                         </select>
                       ) : (
-                        <select value={editingItem.data.category} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, category: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }}>
+                        <select value={editingItem.data.category || 'Guides'} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, category: e.target.value } })} style={{ width: '100%', padding: '10px 14px', backgroundColor: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', fontSize: '14px', fontWeight: 500 }}>
                           <option value="Guides">Guides</option>
                           <option value="Market Trends">Market Trends</option>
                           <option value="Analysis">Analysis</option>
@@ -480,16 +480,16 @@ export default function Admin({ navigate, onLogout }) {
                     </div>
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Subtitle</label>
-                    <input type="text" value={editingItem.data.subtitle} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, subtitle: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }} />
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Subtitle / Summary</label>
+                    <input type="text" value={editingItem.data.subtitle || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, subtitle: e.target.value } })} style={{ width: '100%', padding: '10px 14px', backgroundColor: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', fontSize: '14px' }} />
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                     <div>
-                      <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Image URL</label>
-                      <input type="text" value={editingItem.data.image_url || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, image_url: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }} />
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Featured Image URL</label>
+                      <input type="text" value={editingItem.data.image_url || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, image_url: e.target.value } })} style={{ width: '100%', padding: '10px 14px', backgroundColor: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', fontSize: '14px' }} />
                     </div>
                     <div>
-                      <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Tags (comma separated)</label>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Tags (comma separated)</label>
                       <input 
                         type="text" 
                         value={Array.isArray(editingItem.data.tags) ? editingItem.data.tags.join(', ') : (() => {
@@ -503,79 +503,87 @@ export default function Admin({ navigate, onLogout }) {
                           const tagsArr = e.target.value.split(',').map(t => t.trim()).filter(Boolean);
                           setEditingItem({ ...editingItem, data: { ...editingItem.data, tags: tagsArr } });
                         }} 
-                        style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }} 
+                        style={{ width: '100%', padding: '10px 14px', backgroundColor: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', fontSize: '14px' }} 
                       />
                     </div>
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                     <div>
-                      <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Author Name</label>
-                      <input type="text" value={editingItem.data.author_name || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, author_name: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }} />
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Author Name</label>
+                      <input type="text" value={editingItem.data.author_name || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, author_name: e.target.value } })} style={{ width: '100%', padding: '10px 14px', backgroundColor: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', fontSize: '14px' }} />
                     </div>
                     <div>
-                      <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Pull Quote (Optional)</label>
-                      <input type="text" value={editingItem.data.pull_quote || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, pull_quote: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }} />
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Pull Quote (Optional)</label>
+                      <input type="text" value={editingItem.data.pull_quote || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, pull_quote: e.target.value } })} style={{ width: '100%', padding: '10px 14px', backgroundColor: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', fontSize: '14px' }} />
                     </div>
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Article Content (HTML/Markdown)</label>
-                    <textarea rows="10" required value={editingItem.data.content_body} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, content_body: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px', fontFamily: 'monospace' }} />
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Gutenberg Rich Content Editor *</label>
+                    <RichTextEditor 
+                      value={editingItem.data.content_body || ''} 
+                      onChange={(newHtml) => setEditingItem({ ...editingItem, data: { ...editingItem.data, content_body: newHtml } })} 
+                      placeholder="Write your article body content with rich formatting, headings, quotes, and lists..."
+                    />
                   </div>
                 </>
               )}
 
               {editingItem.type === 'companies' && (
                 <>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                     <div>
-                      <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Company Name</label>
-                      <input type="text" required value={editingItem.data.name} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, name: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }} />
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Company Name *</label>
+                      <input type="text" required value={editingItem.data.name || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, name: e.target.value } })} style={{ width: '100%', padding: '10px 14px', backgroundColor: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', fontSize: '14px' }} />
                     </div>
                     <div>
-                      <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Industry</label>
-                      <input type="text" required value={editingItem.data.industry} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, industry: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }} />
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Industry *</label>
+                      <input type="text" required value={editingItem.data.industry || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, industry: e.target.value } })} style={{ width: '100%', padding: '10px 14px', backgroundColor: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', fontSize: '14px' }} />
                     </div>
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                     <div>
-                      <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Canton</label>
-                      <input type="text" required maxLength="2" value={editingItem.data.canton} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, canton: e.target.value.toUpperCase() } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }} />
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Canton (2 letters) *</label>
+                      <input type="text" required maxLength={2} value={editingItem.data.canton || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, canton: e.target.value.toUpperCase() } })} style={{ width: '100%', padding: '10px 14px', backgroundColor: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', fontSize: '14px' }} />
                     </div>
                     <div>
-                      <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Size Class</label>
-                      <input type="text" required value={editingItem.data.size_class} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, size_class: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }} />
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Size Class *</label>
+                      <input type="text" required value={editingItem.data.size_class || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, size_class: e.target.value } })} style={{ width: '100%', padding: '10px 14px', backgroundColor: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', fontSize: '14px' }} />
                     </div>
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Description</label>
-                    <textarea rows="4" required value={editingItem.data.description} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, description: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }} />
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Company Overview & Dossier Description *</label>
+                    <RichTextEditor 
+                      value={editingItem.data.description || ''} 
+                      onChange={(newHtml) => setEditingItem({ ...editingItem, data: { ...editingItem.data, description: newHtml, about_text: newHtml } })} 
+                      placeholder="Write structured company overview, products, key leadership, and market positioning..."
+                    />
                   </div>
                 </>
               )}
 
               {editingItem.type === 'interviews' && (
                 <>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                     <div>
-                      <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Title</label>
-                      <input type="text" required value={editingItem.data.title} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, title: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }} />
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Title *</label>
+                      <input type="text" required value={editingItem.data.title || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, title: e.target.value } })} style={{ width: '100%', padding: '10px 14px', backgroundColor: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', fontSize: '14px' }} />
                     </div>
                     <div>
-                      <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Category</label>
-                      <select value={editingItem.data.category} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, category: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }}>
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Category</label>
+                      <select value={editingItem.data.category || 'Executive Briefing'} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, category: e.target.value } })} style={{ width: '100%', padding: '10px 14px', backgroundColor: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', fontSize: '14px' }}>
                         <option value="Executive Briefing">Interview</option>
                         <option value="Podcast">Podcast</option>
                       </select>
                     </div>
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                     <div>
-                      <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Interviewee Name</label>
-                      <input type="text" value={editingItem.data.interviewee_name} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, interviewee_name: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }} />
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Interviewee / Guest Name</label>
+                      <input type="text" value={editingItem.data.interviewee_name || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, interviewee_name: e.target.value } })} style={{ width: '100%', padding: '10px 14px', backgroundColor: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', fontSize: '14px' }} />
                     </div>
                     <div>
-                      <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Audio URL (Optional for Podcasts)</label>
-                      <input type="text" value={editingItem.data.audio_url || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, audio_url: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }} />
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Audio URL (Podcast)</label>
+                      <input type="text" value={editingItem.data.audio_url || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, audio_url: e.target.value } })} style={{ width: '100%', padding: '10px 14px', backgroundColor: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', fontSize: '14px' }} />
                     </div>
                   </div>
                 </>
@@ -583,85 +591,94 @@ export default function Admin({ navigate, onLogout }) {
 
               {editingItem.type === 'jobs' && (
                 <>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                     <div>
-                      <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Job Title</label>
-                      <input type="text" required value={editingItem.data.title} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, title: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }} />
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Job Title *</label>
+                      <input type="text" required value={editingItem.data.title || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, title: e.target.value } })} style={{ width: '100%', padding: '10px 14px', backgroundColor: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', fontSize: '14px' }} />
                     </div>
                     <div>
-                      <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Category</label>
-                      <input type="text" required value={editingItem.data.category} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, category: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }} />
-                    </div>
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                    <div>
-                      <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Type</label>
-                      <input type="text" value={editingItem.data.type} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, type: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }} />
-                    </div>
-                    <div>
-                      <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Location</label>
-                      <input type="text" value={editingItem.data.location} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, location: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }} />
+                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Category *</label>
+                      <input type="text" required value={editingItem.data.category || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, category: e.target.value } })} style={{ width: '100%', padding: '10px 14px', backgroundColor: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', fontSize: '14px' }} />
                     </div>
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Description</label>
-                    <textarea rows="6" required value={editingItem.data.description} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, description: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }} />
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Job Description & Candidate Requirements *</label>
+                    <RichTextEditor 
+                      value={editingItem.data.description || ''} 
+                      onChange={(newHtml) => setEditingItem({ ...editingItem, data: { ...editingItem.data, description: newHtml } })} 
+                      placeholder="Specify role expectations, responsibilities, required qualifications, and application instructions..."
+                    />
                   </div>
                 </>
               )}
 
               {/* Shared SEO Section */}
-              <div style={{ borderTop: '1px solid #222', paddingTop: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                <h3 style={{ margin: '0 0 8px 0', fontSize: '16px', color: 'var(--primary-red)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>On-Page SEO Configuration</h3>
+              <div style={{ borderTop: '1.5px solid #CBD5E1', paddingTop: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 800, color: 'var(--primary-red)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  On-Page SEO & Schema Configuration
+                </h3>
                 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                   <div>
-                    <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Focus Keyword</label>
-                    <input type="text" placeholder="e.g. Swiss B2B" value={editingItem.data.focus_keyword || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, focus_keyword: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }} />
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Focus Keyword</label>
+                    <input type="text" placeholder="e.g. Swiss B2B Enterprise" value={editingItem.data.focus_keyword || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, focus_keyword: e.target.value } })} style={{ width: '100%', padding: '10px 14px', backgroundColor: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', fontSize: '14px' }} />
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>URL Slug</label>
-                    <input type="text" placeholder="e.g. swiss-b2b-markets" value={editingItem.data.slug || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, slug: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }} />
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>URL Slug</label>
+                    <input type="text" placeholder="e.g. swiss-b2b-markets" value={editingItem.data.slug || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, slug: e.target.value } })} style={{ width: '100%', padding: '10px 14px', backgroundColor: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', fontSize: '14px' }} />
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                   <div>
-                    <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Meta Title</label>
-                    <input type="text" value={editingItem.data.meta_title || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, meta_title: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }} />
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>SEO Meta Title</label>
+                    <input type="text" value={editingItem.data.meta_title || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, meta_title: e.target.value } })} style={{ width: '100%', padding: '10px 14px', backgroundColor: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', fontSize: '14px' }} />
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '11px', color: '#888', marginBottom: '6px' }}>Meta Description</label>
-                    <input type="text" value={editingItem.data.meta_description || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, meta_description: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#1C1C1C', border: '1px solid #333', color: '#FFF', borderRadius: '4px' }} />
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>SEO Meta Description</label>
+                    <input type="text" value={editingItem.data.meta_description || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, meta_description: e.target.value } })} style={{ width: '100%', padding: '10px 14px', backgroundColor: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', fontSize: '14px' }} />
                   </div>
                 </div>
 
                 {/* Schema Markup Builder */}
-                <div style={{ border: '1px solid #222', borderRadius: '6px', padding: '16px', backgroundColor: '#111' }}>
+                <div style={{ border: '1.5px solid #CBD5E1', borderRadius: '8px', padding: '16px', backgroundColor: '#F8FAFC' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                    <strong style={{ fontSize: '13px', color: '#FFF' }}>Structured Data Schema Generator</strong>
+                    <strong style={{ fontSize: '13px', fontWeight: 700, color: '#0F172A' }}>Structured Data Schema Generator (JSON-LD)</strong>
                     <div style={{ display: 'flex', gap: '8px' }}>
-                      <select value={schemaType} onChange={(e) => setSchemaType(e.target.value)} style={{ padding: '4px 8px', backgroundColor: '#222', border: '1px solid #444', color: '#FFF', borderRadius: '4px', fontSize: '12px' }}>
+                      <select value={schemaType} onChange={(e) => setSchemaType(e.target.value)} style={{ padding: '6px 12px', backgroundColor: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', fontSize: '12px', fontWeight: 600 }}>
                         <option value="Article">Article Schema</option>
                         <option value="LocalBusiness">Local Business Schema</option>
                         <option value="FAQ">FAQ Schema</option>
                       </select>
-                      <button type="button" onClick={() => setEditingItem({ ...editingItem, data: { ...editingItem.data, schema_markup: generateSchema(schemaType, editingItem.data) } })} style={{ padding: '4px 10px', backgroundColor: 'var(--primary-red)', border: 'none', color: '#FFF', borderRadius: '4px', fontSize: '12px', cursor: 'pointer' }}>Build</button>
+                      <button type="button" onClick={() => setEditingItem({ ...editingItem, data: { ...editingItem.data, schema_markup: generateSchema(schemaType, editingItem.data) } })} style={{ padding: '6px 14px', backgroundColor: 'var(--primary-red)', border: 'none', color: '#FFFFFF', borderRadius: '6px', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}>Generate Schema</button>
                     </div>
                   </div>
-                  <textarea rows="5" value={editingItem.data.schema_markup || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, schema_markup: e.target.value } })} style={{ width: '100%', padding: '10px', backgroundColor: '#0A0A0A', border: '1px solid #333', color: '#00FF00', borderRadius: '4px', fontFamily: 'monospace', fontSize: '11px' }} />
+                  <textarea rows={5} value={editingItem.data.schema_markup || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, schema_markup: e.target.value } })} style={{ width: '100%', padding: '12px', backgroundColor: '#0F172A', border: '1.5px solid #334155', color: '#38BDF8', borderRadius: '6px', fontFamily: 'monospace', fontSize: '12px', lineHeight: 1.5 }} />
                 </div>
               </div>
             </form>
 
             {/* RankMath SEO Analyzer Widget Column */}
             <div>
-              <SeoAnalyzer 
-                title={editingItem.data.title || editingItem.data.name || ''} 
-                content={editingItem.data.content_body || editingItem.data.description || ''} 
-                focusKeyword={editingItem.data.focus_keyword || ''} 
-                metaDescription={editingItem.data.meta_description || ''} 
-                slug={editingItem.data.slug || ''} 
+              <RankMathSeoBox 
+                seoData={{
+                  focusKeyword: editingItem.data.focus_keyword || '',
+                  seoTitle: editingItem.data.meta_title || editingItem.data.title || editingItem.data.name || '',
+                  metaDescription: editingItem.data.meta_description || editingItem.data.subtitle || editingItem.data.description || '',
+                  slug: editingItem.data.slug || '',
+                  content: editingItem.data.content_body || editingItem.data.description || ''
+                }}
+                onChange={(newSeo) => {
+                  setEditingItem({
+                    ...editingItem,
+                    data: {
+                      ...editingItem.data,
+                      focus_keyword: newSeo.focusKeyword !== undefined ? newSeo.focusKeyword : editingItem.data.focus_keyword,
+                      meta_title: newSeo.seoTitle !== undefined ? newSeo.seoTitle : editingItem.data.meta_title,
+                      meta_description: newSeo.metaDescription !== undefined ? newSeo.metaDescription : editingItem.data.meta_description
+                    }
+                  });
+                }}
               />
             </div>
           </div>
@@ -847,11 +864,24 @@ export default function Admin({ navigate, onLogout }) {
         .admin-dashboard-container select, 
         .admin-dashboard-container textarea {
           background-color: #FFFFFF !important;
-          border: 1px solid var(--light-border) !important;
-          color: var(--text-charcoal) !important;
+          border: 1.5px solid #94A3B8 !important;
+          color: #0F172A !important;
+          font-weight: 500 !important;
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+          transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+        }
+        .admin-dashboard-container input:focus, 
+        .admin-dashboard-container select:focus, 
+        .admin-dashboard-container textarea:focus {
+          border-color: var(--primary-red) !important;
+          outline: none !important;
+          box-shadow: 0 0 0 3px rgba(213, 43, 30, 0.15) !important;
         }
         .admin-dashboard-container label {
-          color: var(--text-charcoal) !important;
+          color: #0F172A !important;
+          font-weight: 700 !important;
+          font-size: 12px !important;
+          letter-spacing: 0.03em !important;
         }
         .admin-dashboard-container h1,
         .admin-dashboard-container h2,
@@ -860,20 +890,22 @@ export default function Admin({ navigate, onLogout }) {
         .admin-dashboard-container h5,
         .admin-dashboard-container h6,
         .admin-dashboard-container strong {
-          color: var(--text-ink) !important;
+          color: #0F172A !important;
         }
         .admin-dashboard-container span {
-          color: var(--text-charcoal) !important;
+          color: #334155 !important;
         }
         .admin-dashboard-container .admin-stat-card,
         .admin-dashboard-container .admin-list-item {
           background-color: #FFFFFF !important;
-          border: 1px solid var(--light-border) !important;
+          border: 1.5px solid #CBD5E1 !important;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
         }
         .admin-dashboard-container button[style*="backgroundColor: '#222'"] {
-          background-color: #F3F4F6 !important;
-          border: 1px solid var(--light-border) !important;
-          color: var(--text-charcoal) !important;
+          background-color: #F1F5F9 !important;
+          border: 1.5px solid #CBD5E1 !important;
+          color: #0F172A !important;
+          font-weight: 600 !important;
         }
       `}</style>
     </div>
