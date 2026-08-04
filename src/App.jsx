@@ -1,31 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
-import Navbar from './components/Navbar';
+import { Navbar, Hero, CookieBanner, AdSlot, ErrorBoundary, HomepageGraphics } from './features/shared';
+import { Directory, Profile, CompanyCard } from './features/company';
+import { StudentProfile, StudentDashboard, Careers } from './features/students';
+import { Rankings, CrossBorderRanking, Statistics } from './features/company-ranking';
+import { Admin, Auth, About, Contact } from './features/system';
+import { Blogs } from './features/blog';
+import { News, Interviews, TranslaticTranscript, SoCalGateway, TradePolicyPulse } from './features/news';
 import logo from './assets/logo_highres.png';
-import Hero from './components/Hero';
-import CookieBanner from './components/CookieBanner';
-import AdSlot from './components/AdSlot';
-import Directory from './pages/Directory';
-import Profile from './pages/Profile';
-import News from './pages/News';
-import Blogs from './pages/Blogs';
-import Statistics from './pages/Statistics';
-import Admin from './pages/Admin';
-import Interviews from './pages/Interviews';
-import Auth from './pages/Auth';
-import Careers from './pages/Careers';
-import StudentProfile from './pages/StudentProfile';
-import StudentDashboard from './pages/StudentDashboard';
-import Rankings from './pages/Rankings';
-import CompanyCard from './components/CompanyCard';
-import HomepageGraphics from './components/HomepageGraphics';
-import TranslaticTranscript from './pages/TranslaticTranscript';
-import SoCalGateway from './pages/SoCalGateway';
-import TradePolicyPulse from './pages/TradePolicyPulse';
-import CrossBorderRanking from './pages/CrossBorderRanking';
-import About from './pages/About';
-import Contact from './pages/Contact';
-import ErrorBoundary from './components/ErrorBoundary';
 import { Landmark, ArrowRight, ShieldCheck } from 'lucide-react';
 
 function AppContent() {
