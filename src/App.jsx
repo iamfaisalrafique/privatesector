@@ -3,10 +3,10 @@ import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { Navbar, Hero, CookieBanner, AdSlot, ErrorBoundary, HomepageGraphics } from './features/shared';
 import { Directory, Profile, CompanyCard } from './features/company';
 import { StudentProfile, StudentDashboard, Careers } from './features/students';
-import { Rankings, CrossBorderRanking, Statistics } from './features/company-ranking';
+import { Rankings, Statistics } from './features/company-ranking';
 import { Admin, Auth, About, Contact } from './features/system';
 import { Blogs } from './features/blog';
-import { News, Interviews, TranslaticTranscript, SoCalGateway, TradePolicyPulse } from './features/news';
+import { News, Interviews, TranslaticTranscript, SoCalGateway, TradePolicyPulse, CrossBorderRanking } from './features/news';
 import logo from './assets/logo_highres.png';
 import { Landmark, ArrowRight, ShieldCheck } from 'lucide-react';
 

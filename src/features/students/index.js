@@ -1,3 +1,3 @@
-export { default as StudentProfile } from '../../pages/StudentProfile';
-export { default as StudentDashboard } from '../../pages/StudentDashboard';
-export { default as Careers } from '../../pages/Careers';
+export { default as StudentProfile } from './views/StudentProfile';
+export { default as StudentDashboard } from './views/StudentDashboard';
+export { default as Careers } from './views/Careers';

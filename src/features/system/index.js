@@ -1,4 +1,4 @@
-export { default as Admin } from '../../pages/Admin';
-export { default as Auth } from '../../pages/Auth';
-export { default as About } from '../../pages/About';
-export { default as Contact } from '../../pages/Contact';
+export { default as Admin } from './views/Admin';
+export { default as Auth } from './views/Auth';
+export { default as About } from './views/About';
+export { default as Contact } from './views/Contact';

@@ -1,3 +1,2 @@
-export { default as Rankings } from '../../pages/Rankings';
-export { default as CrossBorderRanking } from '../../pages/CrossBorderRanking';
-export { default as Statistics } from '../../pages/Statistics';
+export { default as Rankings } from './views/Rankings';
+export { default as Statistics } from './views/Statistics';
