@@ -1,5 +1,5 @@
 import React from 'react';
-import { Building, MapPin, Users, Award, Shield, CheckCircle } from 'lucide-react';
+import { Calendar, Users, BarChart3, Building, MapPin, Award, Shield, CheckCircle } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 
 export default function CompanyCard({ company, onClick }) {
