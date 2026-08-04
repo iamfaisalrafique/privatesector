@@ -10,6 +10,7 @@ export const LANGUAGES = [
 ];
 
 const getPathnameLanguage = () => {
+  if (typeof window === 'undefined') return null;
   const path = window.location.pathname || '';
   const parts = path.split('/').filter(Boolean);
   const exists = LANGUAGES.some(l => l.code === parts[0]);
@@ -18,29 +19,23 @@ const getPathnameLanguage = () => {
 
 export const LanguageProvider = ({ children }) => {
   const [currentLang, setCurrentLang] = useState(() => {
-    // 1. Check URL path
     const pathLang = getPathnameLanguage();
     if (pathLang) return pathLang;
-
-    // 2. Check local storage
     const saved = localStorage.getItem('privatesector_lang');
     if (saved) return saved;
-
-    // 3. Default to English
     return 'en';
   });
 
   const [translations, setTranslations] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  // Sync translation bundle from backend
   const fetchTranslations = async (langCode) => {
     try {
       setLoading(true);
       const res = await fetch(`/api/translations?lang=${langCode}`);
       if (res.ok) {
         const data = await res.json();
-        setTranslations(data);
+        setTranslations(data || {});
       }
     } catch (error) {
       console.error('Error loading translations:', error);
@@ -49,19 +44,21 @@ export const LanguageProvider = ({ children }) => {
     }
   };
 
-  // Sync state to local storage, documents, and URL path
   useEffect(() => {
     fetchTranslations(currentLang);
     
-    // Set text direction and lang attribute
     const activeLanguage = LANGUAGES.find(l => l.code === currentLang);
     const isRtl = activeLanguage?.rtl || false;
     document.documentElement.dir = isRtl ? 'rtl' : 'ltr';
     document.documentElement.lang = currentLang;
     
     localStorage.setItem('privatesector_lang', currentLang);
+  }, [currentLang]);
 
-    // Sync to path prefix if it differs
+  const switchLanguage = (langCode) => {
+    if (langCode === currentLang) return;
+    setCurrentLang(langCode);
+    
     const path = window.location.pathname || '';
     const queryStr = window.location.search || '';
     const parts = path.split('/').filter(Boolean);
@@ -71,59 +68,46 @@ export const LanguageProvider = ({ children }) => {
       pathPart = '/' + parts.slice(1).join('/');
     }
     
-    // For English ('en'), default URL is clean without /en prefix
-    // For non-English ('de', 'fr', 'ar'), URL includes /lang prefix
-    const targetPath = currentLang === 'en'
+    const targetPath = langCode === 'en'
       ? (pathPart === '' ? '/' : pathPart)
-      : `/${currentLang}${pathPart === '/' ? '' : pathPart}`;
+      : `/${langCode}${pathPart === '/' ? '' : pathPart}`;
 
-    if (path !== targetPath) {
-      window.history.replaceState(null, '', `${targetPath}${queryStr}`);
-      // Dispatch popstate event to let routing listeners know path changed
-      window.dispatchEvent(new Event('popstate'));
-    }
-  }, [currentLang]);
-
-  // Handle pathname changes externally (browser Back/Forward)
-  useEffect(() => {
-    const handlePopState = () => {
-      const pathLang = getPathnameLanguage();
-      if (pathLang && pathLang !== currentLang) {
-        setCurrentLang(pathLang);
-      }
-    };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, [currentLang]);
-
-  const switchLanguage = (langCode) => {
-    setCurrentLang(langCode);
+    window.history.pushState(null, '', `${targetPath}${queryStr}`);
+    window.dispatchEvent(new Event('popstate'));
   };
 
-  // Safe translation helper
   const t = (key, defaultText = '') => {
-    if (translations[key] !== undefined) {
+    if (translations && translations[key] !== undefined && translations[key] !== null) {
       return translations[key];
     }
     return defaultText;
   };
 
-  const isRtl = LANGUAGES.find(l => l.code === currentLang)?.rtl || false;
+  const activeLanguage = LANGUAGES.find(l => l.code === currentLang) || LANGUAGES[2];
 
   return (
-    <LanguageContext.Provider value={{ 
-      currentLang, 
-      language: currentLang,
-      switchLanguage, 
-      setLanguage: switchLanguage,
-      t, 
-      isRtl, 
-      loading, 
-      refreshTranslations: () => fetchTranslations(currentLang) 
+    <LanguageContext.Provider value={{
+      currentLang,
+      switchLanguage,
+      t,
+      isRtl: activeLanguage.rtl || false,
+      loading
     }}>
       {children}
     </LanguageContext.Provider>
   );
 };
 
-export const useLanguage = () => useContext(LanguageContext);
+export const useLanguage = () => {
+  const context = useContext(LanguageContext);
+  if (!context) {
+    return {
+      currentLang: 'en',
+      switchLanguage: () => {},
+      t: (key, defaultText = '') => defaultText,
+      isRtl: false,
+      loading: false
+    };
+  }
+  return context;
+};

@@ -93,20 +93,20 @@ function AppContent() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, [currentLang]);
 
-  // Fetch Homepage feeds
+  // Fetch Homepage feeds safely
   useEffect(() => {
     async function loadHomeFeeds() {
       try {
         const compRes = await fetch('/api/companies?premium=true');
         if (compRes.ok) {
           const list = await compRes.json();
-          setHomeFeatured(list.slice(0, 3));
+          setHomeFeatured(Array.isArray(list) ? list.slice(0, 3) : []);
         }
 
         const newsRes = await fetch('/api/news');
         if (newsRes.ok) {
           const list = await newsRes.json();
-          setHomeNews(list.slice(0, 3));
+          setHomeNews(Array.isArray(list) ? list.slice(0, 3) : []);
         }
       } catch (e) {
         console.error('Error loading homepage feeds:', e);
@@ -265,7 +265,7 @@ function AppContent() {
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
-                  {homeFeatured.map(comp => (
+                  {(homeFeatured || []).map(comp => (
                     <CompanyCard 
                       key={comp.id}
                       company={comp}
@@ -290,7 +290,7 @@ function AppContent() {
                   </h2>
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                    {homeNews.map(art => (
+                    {(homeNews || []).map(art => (
                       <div 
                         key={art.id} 
                         onClick={() => navigate(`/news/${art.id}`)}
