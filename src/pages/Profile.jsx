@@ -3,6 +3,7 @@ import KnowledgePanel from '../components/KnowledgePanel';
 import AdSlot from '../components/AdSlot';
 import { ArrowLeft, Mail, Building, Users } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import SeoHead from '../components/SeoHead';
 
 export default function Profile({ companyId, onBack, navigate }) {
   const { t, isRtl } = useLanguage();
@@ -72,6 +73,14 @@ export default function Profile({ companyId, onBack, navigate }) {
 
   return (
     <div style={{ backgroundColor: 'var(--bg-ivory)', minHeight: 'calc(100vh - 120px)', paddingTop: '32px', paddingBottom: '64px' }}>
+      <SeoHead
+        title={data ? `${data.name} — Canton ${data.canton}` : 'Company Profile'}
+        description={data?.description || data?.about_text}
+        image={data?.logo_bg}
+        type="business"
+        schemaMarkup={data?.schema_markup}
+        entityData={data || {}}
+      />
       
       {/* Breadcrumbs */}
       <div className="container" style={{ marginBottom: '24px' }}>

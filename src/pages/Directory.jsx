@@ -3,6 +3,7 @@ import CompanyCard from '../components/CompanyCard';
 import AdSlot from '../components/AdSlot';
 import { Search, Map, Filter, ChevronDown, ChevronUp, CheckSquare, Square, Grid, List } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import SeoHead from '../components/SeoHead';
 
 const CANTONS = [
   'ZH', 'BE', 'LU', 'UR', 'SZ', 'OW', 'NW', 'GL', 'ZG', 'FR', 'SO', 'BS', 'BL', 'SH',
@@ -115,6 +116,11 @@ export default function Directory({ initialSearch = '', initialCanton = '', init
 
   return (
     <div style={{ backgroundColor: 'var(--bg-ivory)', minHeight: 'calc(100vh - 120px)' }}>
+      <SeoHead
+        title="Swiss Enterprise Directory & B2B Database"
+        description="Comprehensive Swiss company directory — filter by canton, industry, employee size, and ESG ratings."
+        type="website"
+      />
       {/* Top Breadcrumbs & Leaderboard Zone A */}
       <div className="container" style={{ paddingTop: '24px' }}>
         <div style={{ fontSize: '12px', color: 'var(--text-charcoal)', marginBottom: '16px', display: 'flex', gap: '6px' }}>

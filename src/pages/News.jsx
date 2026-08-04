@@ -5,6 +5,7 @@ import TableOfContents from '../components/TableOfContents';
 import AdSlot from '../components/AdSlot';
 import { Calendar, User, Clock, Share2 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import SeoHead from '../components/SeoHead';
 
 export default function News({ selectedArticleId, selectArticle, navigate }) {
   const { t } = useLanguage();
@@ -124,6 +125,14 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
     return (
       <div style={{ backgroundColor: 'var(--bg-ivory)', minHeight: 'calc(100vh - 120px)', padding: '32px 0 64px' }}>
         <div className="container">
+          <SeoHead
+            title={activeArticle.meta_title || activeArticle.title}
+            description={activeArticle.meta_description || activeArticle.subtitle}
+            image={activeArticle.image_url}
+            type="news"
+            schemaMarkup={activeArticle.schema_markup}
+            entityData={activeArticle}
+          />
           
           {/* Breadcrumbs */}
           <Breadcrumbs 
@@ -228,6 +237,11 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
   return (
     <div style={{ backgroundColor: '#F9FAFB', minHeight: 'calc(100vh - 120px)', padding: '48px 0 80px' }}>
       <div className="container">
+        <SeoHead
+          title="News & Market Analysis"
+          description="Swiss B2B market intelligence, editorial reports, trade updates, and corporate analysis."
+          type="website"
+        />
         
         <div style={{ marginBottom: '32px' }}>
           <h1 style={{ fontFamily: '"Playfair Display", serif', fontSize: '36px', color: 'var(--text-ink)', margin: '0 0 8px 0', fontWeight: 700 }}>
