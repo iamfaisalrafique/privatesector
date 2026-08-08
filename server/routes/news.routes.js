@@ -40,7 +40,14 @@ router.get('/', async (req, res) => {
 // Single Article Detail
 router.get('/:id', async (req, res) => {
   try {
-    const article = await dbGet('SELECT * FROM news WHERE id = ? OR slug = ?', [req.params.id, req.params.id]);
+    const isNumeric = !isNaN(Number(req.params.id)) && !isNaN(parseInt(req.params.id));
+    let article;
+    if (isNumeric) {
+      article = await dbGet('SELECT * FROM news WHERE id = ? OR slug = ?', [parseInt(req.params.id), req.params.id]);
+    } else {
+      article = await dbGet('SELECT * FROM news WHERE slug = ?', [req.params.id]);
+    }
+
     if (!article) {
       return res.status(404).json({ error: 'Article not found' });
     }
@@ -52,8 +59,8 @@ router.get('/:id', async (req, res) => {
     }
     
     const related = await dbQuery(
-      'SELECT id, title, category, date_published, read_time_mins, image_url, slug FROM news WHERE id != ? AND slug != ? LIMIT 3',
-      [article.id, article.slug || '']
+      'SELECT id, title, category, date_published, read_time_mins, image_url, slug FROM news WHERE id != ? LIMIT 3',
+      [article.id]
     );
     
     res.json({
