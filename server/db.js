@@ -701,12 +701,12 @@ export async function initializeDatabase() {
     console.log('Seeding mock interviews...');
     await seedInterviews();
 
-    console.log('Running auto-translation scanner for all database content...');
-    await autoTranslateDatabaseContent();
+    console.log('Starting background auto-translation scanner...');
+    autoTranslateDatabaseContent().catch(err => console.error('Background auto-translation error:', err));
   } else {
     console.log('Database is already fully populated with latest B2B, Careers, ESG, and podcast features.');
-    console.log('Running incremental auto-translation scanner...');
-    await autoTranslateDatabaseContent();
+    console.log('Starting background incremental auto-translation scanner...');
+    autoTranslateDatabaseContent().catch(err => console.error('Background auto-translation error:', err));
   }
 }
 
@@ -1332,6 +1332,84 @@ Source: Nestlé official half-year results, investor materials and corporate ann
       meta_title: 'Nestlé Accelerates Growth Strategy & Portfolio Transformation — PrivateSector Intelligence',
       meta_description: 'Nestlé reports organic sales growth of 3.6% for H1 2026 and announces €4.9B water business joint venture with LA-based Platinum Equity.',
       slug: 'nestle-accelerates-growth-strategy-organic-sales-improve'
+    },
+    {
+      title: 'Roche Expands Oncology Pipeline with Landmark Biotech Deal',
+      subtitle: 'Basel pharmaceutical giant strengthens targeted therapy portfolio with major US biopharma licensing agreement.',
+      category: 'Pharmaceuticals',
+      author_name: 'Dr. Lukas Weber',
+      author_avatar: 'https://i.pravatar.cc/100?img=12',
+      date_published: '2026-08-05',
+      read_time_mins: 4,
+      content_body: `Roche has announced a new global collaboration agreement to advance next-generation targeted cancer therapies. The licensing deal grants Roche exclusive international rights to co-develop innovative antibody-drug conjugates (ADCs).
+
+### Strengthening Clinical Leadership in Oncology
+
+Roche continues to invest heavily in precision medicine. The partnership aims to accelerate Phase II clinical trials across multiple solid tumor indications.
+
+Key aspects of the deal include:
+- $450 million upfront payment and milestone commitments
+- Joint development committee bringing together US and Swiss R&D teams
+- Shared global commercialisation rights across major regions
+
+### Executive Perspective
+
+Industry analysts highlight that the deal underlines Switzerland's central position in global healthcare innovation and international biotech investment.`,
+      pull_quote: 'Precision medicine and international licensing deals continue to define Roche’s long-term R&D leadership.',
+      tags: JSON.stringify(['Roche', 'Pharmaceuticals', 'Biotech', 'Oncology', 'R&D']),
+      image_url: 'https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=600',
+      focus_keyword: 'Roche oncology biotech deal',
+      meta_title: 'Roche Expands Oncology Pipeline with Landmark Licensing Agreement',
+      meta_description: 'Roche announces global oncology licensing deal to co-develop next-generation antibody-drug conjugates.',
+      slug: 'roche-expands-oncology-pipeline-with-landmark-biotech-deal'
+    },
+    {
+      title: 'Novartis Reports Robust Half-Year Growth Driven by Cardiovascular and Immunology Portfolio',
+      subtitle: 'Strong core operating income growth supports updated full-year net sales guidance.',
+      category: 'Pharmaceuticals',
+      author_name: 'PrivateSector Intelligence',
+      author_avatar: 'https://i.pravatar.cc/100?img=33',
+      date_published: '2026-08-04',
+      read_time_mins: 5,
+      content_body: `Novartis delivered strong financial results for the first half of 2026, driven by sustained momentum across its core therapeutic platforms.
+
+### Key Highlights
+
+- Net sales grew by 9% in constant currencies
+- Core operating income increased by 14%
+- Key growth drivers included Entresto, Kesimpta, and Scemblix
+
+Management reaffirmed its focus on high-margin innovative medicines following the successful spin-off of Sandoz.`,
+      pull_quote: 'Focused execution on innovative medicines continues to drive margin expansion at Novartis.',
+      tags: JSON.stringify(['Novartis', 'Pharmaceuticals', 'Healthcare', 'Q2 Results']),
+      image_url: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&q=80&w=600',
+      focus_keyword: 'Novartis half year growth',
+      meta_title: 'Novartis Reports Robust H1 Growth & Raises Guidance',
+      meta_description: 'Novartis reports 9% sales growth for H1 2026 supported by core cardiovascular and immunology treatments.',
+      slug: 'novartis-reports-robust-half-year-growth'
+    },
+    {
+      title: 'Swiss Watch Export Momentum Sustained by High-End Demand',
+      subtitle: 'Luxury timepieces drive record export values across North American and Asian markets.',
+      category: 'Luxury Goods',
+      author_name: 'Claire Dupont',
+      author_avatar: 'https://i.pravatar.cc/100?img=25',
+      date_published: '2026-08-03',
+      read_time_mins: 4,
+      content_body: `The Federation of the Swiss Watch Industry reported continued export value growth for high-end mechanical timepieces, led by strong consumer demand in the United States and selected Asian markets.
+
+### Key Insights
+
+- Total monthly export value surpassed CHF 2.2 billion
+- Mechanical watches priced above CHF 3,000 led category growth
+- The United States retained its position as the largest single market for Swiss watches`,
+      pull_quote: 'High-end mechanical craftsmanship remains the primary catalyst for Swiss luxury export performance.',
+      tags: JSON.stringify(['Watchmaking', 'Luxury Goods', 'Exports', 'Rolex', 'Richemont']),
+      image_url: 'https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&q=80&w=600',
+      focus_keyword: 'Swiss watch exports luxury demand',
+      meta_title: 'Swiss Watch Export Momentum Sustained by High-End Demand',
+      meta_description: 'Swiss watch exports reach record monthly values led by high-end mechanical timepieces in US and Asian markets.',
+      slug: 'swiss-watch-export-momentum-sustained-by-high-end-demand'
     }
   ];
 
