@@ -1,26 +1,55 @@
-import React, { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 
 export default function TableOfContents({ contentHtml = '' }) {
-  const [headings, setHeadings] = useState([]);
+  const headings = useMemo(() => {
+    let parsedHeadings = [];
 
-  useEffect(() => {
-    // Parse H2 and H3 tags from contentHtml or search in document body
+    // 1. Try parsing HTML H2/H3 tags
     const parser = new DOMParser();
-    const doc = parser.parseFromString(contentHtml, 'text/html');
+    const doc = parser.parseFromString(contentHtml || '', 'text/html');
     const headingElements = doc.querySelectorAll('h2, h3');
     
-    const parsedHeadings = Array.from(headingElements).map((el, index) => {
-      const text = el.innerText || el.textContent || '';
-      // Create a slug if id doesn't exist
-      const slug = el.id || text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') || `heading-${index}`;
-      return {
-        text,
-        slug,
-        level: el.tagName.toLowerCase()
-      };
-    });
+    if (headingElements.length > 0) {
+      parsedHeadings = Array.from(headingElements).map((el, index) => {
+        const text = el.innerText || el.textContent || '';
+        const slug = el.id || text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') || `heading-${index}`;
+        return { text, slug, level: el.tagName.toLowerCase() };
+      });
+    } else {
+      // 2. Fallback: Parse raw Markdown text lines (##, ###, or short title lines)
+      const lines = (contentHtml || '').split('\n');
+      lines.forEach((line, index) => {
+        const trimmed = line.trim();
+        if (trimmed.startsWith('## ')) {
+          const text = trimmed.replace('## ', '').trim();
+          const slug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+          parsedHeadings.push({ text, slug, level: 'h2' });
+        } else if (trimmed.startsWith('### ')) {
+          const text = trimmed.replace('### ', '').trim();
+          const slug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+          parsedHeadings.push({ text, slug, level: 'h3' });
+        } else if (
+          trimmed.length > 3 &&
+          trimmed.length < 70 &&
+          !trimmed.endsWith('.') &&
+          !trimmed.startsWith('-') &&
+          !trimmed.startsWith('*') &&
+          !trimmed.startsWith('Source:') &&
+          !trimmed.startsWith('http') &&
+          !trimmed.includes('---')
+        ) {
+          // Check if line looks like a title heading line (e.g., "A Strong Quarter for Switzerland's Largest Bank")
+          const prevLine = index > 0 ? lines[index - 1].trim() : '';
+          const nextLine = index < lines.length - 1 ? lines[index + 1].trim() : '';
+          if (prevLine === '' && nextLine === '') {
+            const slug = trimmed.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+            parsedHeadings.push({ text: trimmed, slug, level: 'h3' });
+          }
+        }
+      });
+    }
 
-    setHeadings(parsedHeadings);
+    return parsedHeadings;
   }, [contentHtml]);
 
   const handleScrollTo = (slug) => {

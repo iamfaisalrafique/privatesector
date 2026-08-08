@@ -1,14 +1,250 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import SidebarLayout from '../../../shared/components/SidebarLayout';
 import Breadcrumbs from '../../../shared/components/Breadcrumbs';
 import TableOfContents from '../../../shared/components/TableOfContents';
 import AdSlot from '../../../shared/components/AdSlot';
-import { Calendar, User, Clock, Share2 } from 'lucide-react';
-import { useLanguage } from '../../../context/LanguageContext';
+import { Calendar, Clock } from 'lucide-react';
 import SeoHead from '../../../shared/components/SeoHead';
 
+function parseInlineMarkdown(text) {
+  if (!text) return '';
+  const parts = [];
+  const regex = /(\*\*.*?\*\*|\*.*?\*|\[.*?\]\(.*?\)|https?:\/\/[^\s]+)/g;
+  let lastIndex = 0;
+  let match;
+  let keyIdx = 0;
+
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.substring(lastIndex, match.index));
+    }
+    const token = match[0];
+    if (token.startsWith('**') && token.endsWith('**')) {
+      parts.push(<strong key={keyIdx++} style={{ fontWeight: 700, color: '#111827' }}>{token.slice(2, -2)}</strong>);
+    } else if (token.startsWith('*') && token.endsWith('*')) {
+      parts.push(<em key={keyIdx++}>{token.slice(1, -1)}</em>);
+    } else if (token.startsWith('[') && token.includes('](') && token.endsWith(')')) {
+      const linkText = token.substring(1, token.indexOf(']('));
+      const url = token.substring(token.indexOf('](') + 2, token.length - 1);
+      parts.push(
+        <a key={keyIdx++} href={url} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-red)', textDecoration: 'underline', fontWeight: 500 }}>
+          {linkText}
+        </a>
+      );
+    } else if (token.startsWith('http://') || token.startsWith('https://')) {
+      parts.push(
+        <a key={keyIdx++} href={token} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-red)', textDecoration: 'underline', fontWeight: 500 }}>
+          {token}
+        </a>
+      );
+    }
+    lastIndex = regex.lastIndex;
+  }
+
+  if (lastIndex < text.length) {
+    parts.push(text.substring(lastIndex));
+  }
+
+  return parts;
+}
+
+function renderArticleMarkdown(contentBody) {
+  if (!contentBody) return null;
+
+  const blocks = contentBody.split(/\n\n+/);
+
+  return blocks.map((block, index) => {
+    const trimmed = block.trim();
+
+    // 1. Horizontal Rule
+    if (trimmed === '---' || trimmed === '***' || trimmed === '___') {
+      return <hr key={index} style={{ border: 'none', borderTop: '1px solid var(--light-border)', margin: '32px 0' }} />;
+    }
+
+    // 2. Source citation box
+    if (trimmed.startsWith('Source:') || trimmed.startsWith('Quelle:')) {
+      const sourceText = trimmed.replace(/^(Source:|Quelle:)\s*/i, '');
+      return (
+        <div 
+          key={index}
+          style={{
+            backgroundColor: '#F9FAFB',
+            borderLeft: '4px solid var(--primary-red)',
+            padding: '16px 20px',
+            marginTop: '32px',
+            marginBottom: '24px',
+            borderRadius: '0 6px 6px 0',
+            fontSize: '13.5px',
+            color: '#4B5563',
+            lineHeight: 1.6,
+            boxShadow: '0 1px 2px rgba(0,0,0,0.03)'
+          }}
+        >
+          <strong style={{ color: '#111827', display: 'inline-block', marginRight: '6px' }}>Source:</strong>
+          {parseInlineMarkdown(sourceText)}
+        </div>
+      );
+    }
+
+    // 3. Explicit H2 heading (## )
+    if (trimmed.startsWith('## ')) {
+      const text = trimmed.replace(/^##\s+/, '');
+      const slug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+      return (
+        <h2 
+          key={index} 
+          id={slug} 
+          style={{ 
+            fontFamily: '"Playfair Display", Georgia, serif', 
+            fontSize: '26px', 
+            marginTop: '36px', 
+            marginBottom: '16px', 
+            color: '#111827', 
+            fontWeight: 700,
+            borderBottom: '1px solid #E5E7EB',
+            paddingBottom: '8px'
+          }}
+        >
+          {parseInlineMarkdown(text)}
+        </h2>
+      );
+    }
+
+    // 4. Explicit H3 heading (### )
+    if (trimmed.startsWith('### ')) {
+      const text = trimmed.replace(/^###\s+/, '');
+      const slug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+      return (
+        <h3 
+          key={index} 
+          id={slug} 
+          style={{ 
+            fontFamily: '"Playfair Display", Georgia, serif', 
+            fontSize: '22px', 
+            marginTop: '28px', 
+            marginBottom: '12px', 
+            color: '#191919', 
+            fontWeight: 700 
+          }}
+        >
+          {parseInlineMarkdown(text)}
+        </h3>
+      );
+    }
+
+    // 5. Implicit Subheading detection (short single line without period)
+    const lines = trimmed.split('\n');
+    if (
+      lines.length === 1 &&
+      trimmed.length > 3 &&
+      trimmed.length < 75 &&
+      !trimmed.endsWith('.') &&
+      !trimmed.startsWith('-') &&
+      !trimmed.startsWith('*') &&
+      !trimmed.startsWith('http')
+    ) {
+      const slug = trimmed.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+      return (
+        <h3 
+          key={index} 
+          id={slug} 
+          style={{ 
+            fontFamily: '"Playfair Display", Georgia, serif', 
+            fontSize: '22px', 
+            marginTop: '28px', 
+            marginBottom: '12px', 
+            color: '#111827', 
+            fontWeight: 700 
+          }}
+        >
+          {parseInlineMarkdown(trimmed)}
+        </h3>
+      );
+    }
+
+    // 6. Pure Bulleted List block
+    const isListBlock = lines.every(line => line.trim().startsWith('- ') || line.trim().startsWith('* '));
+    if (isListBlock) {
+      return (
+        <ul 
+          key={index} 
+          style={{ 
+            margin: '16px 0 24px', 
+            paddingLeft: '24px', 
+            listStyleType: 'disc', 
+            color: '#374151',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px'
+          }}
+        >
+          {lines.map((line, lIdx) => {
+            const itemText = line.trim().replace(/^[-*]\s+/, '');
+            return (
+              <li key={lIdx} style={{ fontSize: '16px', lineHeight: 1.7, color: '#374151' }}>
+                {parseInlineMarkdown(itemText)}
+              </li>
+            );
+          })}
+        </ul>
+      );
+    }
+
+    // 7. Mixed Text + Bullet List Paragraph
+    const firstLineIsText = !lines[0].trim().startsWith('- ') && !lines[0].trim().startsWith('* ');
+    const hasBulletsBelow = lines.slice(1).some(line => line.trim().startsWith('- ') || line.trim().startsWith('* '));
+
+    if (firstLineIsText && hasBulletsBelow) {
+      const textLines = [];
+      const bulletLines = [];
+      lines.forEach(line => {
+        if (line.trim().startsWith('- ') || line.trim().startsWith('* ')) {
+          bulletLines.push(line.trim().replace(/^[-*]\s+/, ''));
+        } else {
+          textLines.push(line);
+        }
+      });
+
+      return (
+        <div key={index} style={{ marginBottom: '24px' }}>
+          {textLines.length > 0 && (
+            <p style={{ marginBottom: '12px', fontSize: '16px', lineHeight: 1.8, color: '#1F2937' }}>
+              {parseInlineMarkdown(textLines.join(' '))}
+            </p>
+          )}
+          {bulletLines.length > 0 && (
+            <ul 
+              style={{ 
+                margin: '12px 0 16px', 
+                paddingLeft: '24px', 
+                listStyleType: 'disc', 
+                color: '#374151',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px'
+              }}
+            >
+              {bulletLines.map((bItem, bIdx) => (
+                <li key={bIdx} style={{ fontSize: '16px', lineHeight: 1.7, color: '#374151' }}>
+                  {parseInlineMarkdown(bItem)}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      );
+    }
+
+    // Standard Paragraph
+    return (
+      <p key={index} style={{ marginBottom: '20px', fontSize: '16px', lineHeight: 1.8, color: '#1F2937' }}>
+        {parseInlineMarkdown(trimmed)}
+      </p>
+    );
+  });
+}
+
 export default function News({ selectedArticleId, selectArticle, navigate }) {
-  const { t } = useLanguage();
   const [articles, setArticles] = useState([]);
   const [activeArticle, setActiveArticle] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -106,7 +342,9 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
     let articleTags = [];
     try {
       articleTags = JSON.parse(art.tags || '[]');
-    } catch (e) {}
+    } catch {
+      articleTags = [];
+    }
     const matchesTag = selectedTag === '' || articleTags.includes(selectedTag);
 
     return matchesSearch && matchesCategory && matchesTag;
@@ -114,13 +352,13 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
 
   // --- 1. SINGLE ARTICLE VIEW ---
   if (selectedArticleId && activeArticle) {
-    const paragraphs = activeArticle.content_body?.split('\n\n') || [];
-
     // Parse tag array
     let tagsList = [];
     try {
       tagsList = JSON.parse(activeArticle.tags || '[]');
-    } catch (e) {}
+    } catch {
+      tagsList = [];
+    }
 
     return (
       <div style={{ backgroundColor: 'var(--bg-ivory)', minHeight: 'calc(100vh - 120px)', padding: '32px 0 64px' }}>
@@ -193,20 +431,7 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
 
               {/* Editorial Body Content */}
               <div className="editorial-content-body" style={{ fontSize: '16px', lineHeight: 1.8, color: 'var(--text-ink)' }}>
-                {paragraphs.map((p, index) => {
-                  // Auto insert anchor IDs on headings for Table of Contents
-                  if (p.startsWith('## ')) {
-                    const text = p.replace('## ', '');
-                    const slug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-                    return <h2 key={index} id={slug} style={{ fontFamily: '"Playfair Display", serif', fontSize: '24px', marginTop: '32px', marginBottom: '16px', color: '#111827' }}>{text}</h2>;
-                  }
-                  if (p.startsWith('### ')) {
-                    const text = p.replace('### ', '');
-                    const slug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-                    return <h3 key={index} id={slug} style={{ fontFamily: '"Playfair Display", serif', fontSize: '20px', marginTop: '24px', marginBottom: '12px', color: '#191919' }}>{text}</h3>;
-                  }
-                  return <p key={index} style={{ marginBottom: '20px' }}>{p}</p>;
-                })}
+                {renderArticleMarkdown(activeArticle.content_body)}
               </div>
 
               {/* Tag Badges Cloud */}
@@ -262,7 +487,7 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
           onSearch={(val) => setSearchQuery(val)}
           onSelectCategory={(cat) => setSelectedCategory(cat)}
           onSelectTag={(tag) => setSelectedTag(tag)}
-          onItemClick={(item) => selectArticle(item.id)}
+          onItemClick={(item) => selectArticle(item.slug || item.id)}
         >
           {/* Main Grid content list */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -274,7 +499,7 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
               filteredArticles.map(art => (
                 <div 
                   key={art.id}
-                  onClick={() => selectArticle(art.id)}
+                  onClick={() => selectArticle(art.slug || art.id)}
                   style={{
                     backgroundColor: '#FFFFFF',
                     border: '1px solid #E5E7EB',

@@ -56,12 +56,57 @@ export default function Admin({ navigate, onLogout }) {
   const [selectedTransLang, setSelectedTransLang] = useState(null);
   const [editingTranslations, setEditingTranslations] = useState([]);
 
+  // Bulk selection state
+  const [selectedItemIds, setSelectedItemIds] = useState([]);
+
   // Form States for CRUD
   const [editingItem, setEditingItem] = useState(null); // { type, data }
   const [isCreatingNew, setIsCreatingNew] = useState(false);
 
   // Schema builder options
   const [schemaType, setSchemaType] = useState('Article');
+
+  const getActiveTabItems = () => {
+    if (activeTab === 'blogs') return blogs;
+    if (activeTab === 'news') return news;
+    if (activeTab === 'companies') return companies;
+    if (activeTab === 'interviews') return interviews;
+    if (activeTab === 'jobs') return jobs;
+    return [];
+  };
+
+  const toggleSelectItem = (id) => {
+    setSelectedItemIds(prev => 
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAll = () => {
+    const items = getActiveTabItems();
+    const allIds = items.map(item => item.id);
+    const areAllSelected = allIds.length > 0 && allIds.every(id => selectedItemIds.includes(id));
+    if (areAllSelected) {
+      setSelectedItemIds([]);
+    } else {
+      setSelectedItemIds(allIds);
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedItemIds.length === 0) return;
+    if (!confirm(`Are you sure you want to delete ${selectedItemIds.length} selected item(s) from ${activeTab}?`)) return;
+
+    try {
+      await Promise.all(
+        selectedItemIds.map(id => fetch(`/api/${activeTab}/${id}`, { method: 'DELETE' }))
+      );
+      setSelectedItemIds([]);
+      await loadEntities();
+    } catch (e) {
+      console.error('Error during bulk deletion:', e);
+      alert('Failed to delete some items.');
+    }
+  };
 
   const loadPageLayout = useCallback(async (path) => {
     try {
@@ -747,11 +792,82 @@ export default function Admin({ navigate, onLogout }) {
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     
+                    {/* Bulk Action Header Bar */}
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      backgroundColor: selectedItemIds.length > 0 ? '#FEF2F2' : '#F8FAFC',
+                      border: `1.5px solid ${selectedItemIds.length > 0 ? '#FCA5A5' : '#CBD5E1'}`,
+                      padding: '12px 20px',
+                      borderRadius: '8px',
+                      marginBottom: '8px'
+                    }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontWeight: 700, fontSize: '13px', color: '#0F172A' }}>
+                        <input 
+                          type="checkbox" 
+                          checked={getActiveTabItems().length > 0 && getActiveTabItems().every(item => selectedItemIds.includes(item.id))}
+                          onChange={toggleSelectAll}
+                          style={{ width: '16px', height: '16px', cursor: 'pointer', accentColor: 'var(--primary-red)' }}
+                        />
+                        <span>Select All ({getActiveTabItems().length})</span>
+                      </label>
+
+                      {selectedItemIds.length > 0 && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                          <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--primary-red)' }}>
+                            {selectedItemIds.length} item(s) selected
+                          </span>
+                          <button 
+                            onClick={handleBulkDelete}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '6px',
+                              padding: '6px 14px',
+                              backgroundColor: 'var(--primary-red)',
+                              border: 'none',
+                              color: '#FFFFFF',
+                              borderRadius: '6px',
+                              cursor: 'pointer',
+                              fontSize: '13px',
+                              fontWeight: 700
+                            }}
+                          >
+                            <Trash2 size={14} /> Bulk Delete ({selectedItemIds.length})
+                          </button>
+                          <button 
+                            onClick={() => setSelectedItemIds([])}
+                            style={{
+                              padding: '6px 12px',
+                              backgroundColor: '#E2E8F0',
+                              border: 'none',
+                              color: '#334155',
+                              borderRadius: '6px',
+                              cursor: 'pointer',
+                              fontSize: '12px',
+                              fontWeight: 600
+                            }}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                    
                     {activeTab === 'blogs' && blogs.map(item => (
-                    <div key={item.id} className="admin-list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#FFFFFF', padding: '16px 24px', borderRadius: '8px', border: '1.5px solid #CBD5E1' }}>
-                      <div>
-                        <strong style={{ fontSize: '15px', color: '#0F172A', display: 'block', fontWeight: 700 }}>{item.title}</strong>
-                        <span style={{ fontSize: '12px', color: '#64748B' }}>Category: {item.category} | Keyword: {item.focus_keyword || 'None'}</span>
+                    <div key={item.id} className="admin-list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: selectedItemIds.includes(item.id) ? '#EFF6FF' : '#FFFFFF', padding: '16px 24px', borderRadius: '8px', border: `1.5px solid ${selectedItemIds.includes(item.id) ? '#3B82F6' : '#CBD5E1'}` }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                        <input 
+                          type="checkbox" 
+                          checked={selectedItemIds.includes(item.id)} 
+                          onChange={() => toggleSelectItem(item.id)} 
+                          style={{ width: '16px', height: '16px', cursor: 'pointer', accentColor: 'var(--primary-red)' }} 
+                        />
+                        <div>
+                          <strong style={{ fontSize: '15px', color: '#0F172A', display: 'block', fontWeight: 700 }}>{item.title}</strong>
+                          <span style={{ fontSize: '12px', color: '#64748B' }}>Category: {item.category} | Keyword: {item.focus_keyword || 'None'}</span>
+                        </div>
                       </div>
                       <div style={{ display: 'flex', gap: '12px' }}>
                         <button onClick={() => handleEditClick('blogs', item)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 14px', backgroundColor: '#F1F5F9', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: 600 }}><Edit3 size={14} /> Edit</button>
@@ -761,10 +877,18 @@ export default function Admin({ navigate, onLogout }) {
                   ))}
                   
                   {activeTab === 'news' && news.map(item => (
-                    <div key={item.id} className="admin-list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#FFFFFF', padding: '16px 24px', borderRadius: '8px', border: '1.5px solid #CBD5E1' }}>
-                      <div>
-                        <strong style={{ fontSize: '15px', color: '#0F172A', display: 'block', fontWeight: 700 }}>{item.title}</strong>
-                        <span style={{ fontSize: '12px', color: '#64748B' }}>Category: {item.category} | Keyword: {item.focus_keyword || 'None'}</span>
+                    <div key={item.id} className="admin-list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: selectedItemIds.includes(item.id) ? '#EFF6FF' : '#FFFFFF', padding: '16px 24px', borderRadius: '8px', border: `1.5px solid ${selectedItemIds.includes(item.id) ? '#3B82F6' : '#CBD5E1'}` }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                        <input 
+                          type="checkbox" 
+                          checked={selectedItemIds.includes(item.id)} 
+                          onChange={() => toggleSelectItem(item.id)} 
+                          style={{ width: '16px', height: '16px', cursor: 'pointer', accentColor: 'var(--primary-red)' }} 
+                        />
+                        <div>
+                          <strong style={{ fontSize: '15px', color: '#0F172A', display: 'block', fontWeight: 700 }}>{item.title}</strong>
+                          <span style={{ fontSize: '12px', color: '#64748B' }}>Category: {item.category} | Keyword: {item.focus_keyword || 'None'}</span>
+                        </div>
                       </div>
                       <div style={{ display: 'flex', gap: '12px' }}>
                         <button onClick={() => handleEditClick('news', item)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 14px', backgroundColor: '#F1F5F9', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: 600 }}><Edit3 size={14} /> Edit</button>
@@ -774,10 +898,18 @@ export default function Admin({ navigate, onLogout }) {
                   ))}
 
                   {activeTab === 'companies' && companies.map(item => (
-                    <div key={item.id} className="admin-list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#FFFFFF', padding: '16px 24px', borderRadius: '8px', border: '1.5px solid #CBD5E1' }}>
-                      <div>
-                        <strong style={{ fontSize: '15px', color: '#0F172A', display: 'block', fontWeight: 700 }}>{item.name}</strong>
-                        <span style={{ fontSize: '12px', color: '#64748B' }}>Industry: {item.industry} | Canton: {item.canton}</span>
+                    <div key={item.id} className="admin-list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: selectedItemIds.includes(item.id) ? '#EFF6FF' : '#FFFFFF', padding: '16px 24px', borderRadius: '8px', border: `1.5px solid ${selectedItemIds.includes(item.id) ? '#3B82F6' : '#CBD5E1'}` }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                        <input 
+                          type="checkbox" 
+                          checked={selectedItemIds.includes(item.id)} 
+                          onChange={() => toggleSelectItem(item.id)} 
+                          style={{ width: '16px', height: '16px', cursor: 'pointer', accentColor: 'var(--primary-red)' }} 
+                        />
+                        <div>
+                          <strong style={{ fontSize: '15px', color: '#0F172A', display: 'block', fontWeight: 700 }}>{item.name}</strong>
+                          <span style={{ fontSize: '12px', color: '#64748B' }}>Industry: {item.industry} | Canton: {item.canton}</span>
+                        </div>
                       </div>
                       <div style={{ display: 'flex', gap: '12px' }}>
                         <button onClick={() => handleEditClick('companies', item)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 14px', backgroundColor: '#F1F5F9', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: 600 }}><Edit3 size={14} /> Edit</button>
@@ -787,10 +919,18 @@ export default function Admin({ navigate, onLogout }) {
                   ))}
 
                   {activeTab === 'interviews' && interviews.map(item => (
-                    <div key={item.id} className="admin-list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#FFFFFF', padding: '16px 24px', borderRadius: '8px', border: '1.5px solid #CBD5E1' }}>
-                      <div>
-                        <strong style={{ fontSize: '15px', color: '#0F172A', display: 'block', fontWeight: 700 }}>{item.title}</strong>
-                        <span style={{ fontSize: '12px', color: '#64748B' }}>Category: {item.category} | Guest: {item.interviewee_name}</span>
+                    <div key={item.id} className="admin-list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: selectedItemIds.includes(item.id) ? '#EFF6FF' : '#FFFFFF', padding: '16px 24px', borderRadius: '8px', border: `1.5px solid ${selectedItemIds.includes(item.id) ? '#3B82F6' : '#CBD5E1'}` }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                        <input 
+                          type="checkbox" 
+                          checked={selectedItemIds.includes(item.id)} 
+                          onChange={() => toggleSelectItem(item.id)} 
+                          style={{ width: '16px', height: '16px', cursor: 'pointer', accentColor: 'var(--primary-red)' }} 
+                        />
+                        <div>
+                          <strong style={{ fontSize: '15px', color: '#0F172A', display: 'block', fontWeight: 700 }}>{item.title}</strong>
+                          <span style={{ fontSize: '12px', color: '#64748B' }}>Category: {item.category} | Guest: {item.interviewee_name}</span>
+                        </div>
                       </div>
                       <div style={{ display: 'flex', gap: '12px' }}>
                         <button onClick={() => handleEditClick('interviews', item)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 14px', backgroundColor: '#F1F5F9', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: 600 }}><Edit3 size={14} /> Edit</button>
@@ -800,10 +940,18 @@ export default function Admin({ navigate, onLogout }) {
                   ))}
 
                   {activeTab === 'jobs' && jobs.map(item => (
-                    <div key={item.id} className="admin-list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#FFFFFF', padding: '16px 24px', borderRadius: '8px', border: '1.5px solid #CBD5E1' }}>
-                      <div>
-                        <strong style={{ fontSize: '15px', color: '#0F172A', display: 'block', fontWeight: 700 }}>{item.title}</strong>
-                        <span style={{ fontSize: '12px', color: '#64748B' }}>Type: {item.type} | Category: {item.category}</span>
+                    <div key={item.id} className="admin-list-item" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: selectedItemIds.includes(item.id) ? '#EFF6FF' : '#FFFFFF', padding: '16px 24px', borderRadius: '8px', border: `1.5px solid ${selectedItemIds.includes(item.id) ? '#3B82F6' : '#CBD5E1'}` }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                        <input 
+                          type="checkbox" 
+                          checked={selectedItemIds.includes(item.id)} 
+                          onChange={() => toggleSelectItem(item.id)} 
+                          style={{ width: '16px', height: '16px', cursor: 'pointer', accentColor: 'var(--primary-red)' }} 
+                        />
+                        <div>
+                          <strong style={{ fontSize: '15px', color: '#0F172A', display: 'block', fontWeight: 700 }}>{item.title}</strong>
+                          <span style={{ fontSize: '12px', color: '#64748B' }}>Type: {item.type} | Category: {item.category}</span>
+                        </div>
                       </div>
                       <div style={{ display: 'flex', gap: '12px' }}>
                         <button onClick={() => handleEditClick('jobs', item)} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 14px', backgroundColor: '#F1F5F9', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: 600 }}><Edit3 size={14} /> Edit</button>

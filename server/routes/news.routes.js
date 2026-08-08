@@ -7,7 +7,7 @@ const router = Router();
 router.get('/', async (req, res) => {
   try {
     const { category, tag, search, student_author_id } = req.query;
-    let query = 'SELECT id, title, subtitle, category, author_name, author_avatar, date_published, read_time_mins, pull_quote, tags, image_url, student_author_id FROM news WHERE 1=1';
+    let query = 'SELECT id, slug, title, subtitle, category, author_name, author_avatar, date_published, read_time_mins, pull_quote, tags, image_url, student_author_id FROM news WHERE 1=1';
     const params = [];
     
     if (category) {
@@ -40,7 +40,7 @@ router.get('/', async (req, res) => {
 // Single Article Detail
 router.get('/:id', async (req, res) => {
   try {
-    const article = await dbGet('SELECT * FROM news WHERE id = ?', [req.params.id]);
+    const article = await dbGet('SELECT * FROM news WHERE id = ? OR slug = ?', [req.params.id, req.params.id]);
     if (!article) {
       return res.status(404).json({ error: 'Article not found' });
     }
@@ -52,8 +52,8 @@ router.get('/:id', async (req, res) => {
     }
     
     const related = await dbQuery(
-      'SELECT id, title, category, date_published, read_time_mins, image_url FROM news WHERE id != ? LIMIT 3',
-      [article.id]
+      'SELECT id, title, category, date_published, read_time_mins, image_url, slug FROM news WHERE id != ? AND slug != ? LIMIT 3',
+      [article.id, article.slug || '']
     );
     
     res.json({

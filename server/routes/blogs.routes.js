@@ -6,7 +6,7 @@ const router = Router();
 // GET all blogs
 router.get('/', async (req, res) => {
   try {
-    const blogs = await dbQuery('SELECT id, title, subtitle, category, author_name, author_avatar, date_published, read_time_mins, pull_quote, tags, image_url FROM blogs ORDER BY date_published DESC');
+    const blogs = await dbQuery('SELECT id, slug, title, subtitle, category, author_name, author_avatar, date_published, read_time_mins, pull_quote, tags, image_url FROM blogs ORDER BY date_published DESC');
     const parsedBlogs = blogs.map(item => ({
       ...item,
       tags: JSON.parse(item.tags || '[]')
@@ -20,15 +20,15 @@ router.get('/', async (req, res) => {
 // GET single blog
 router.get('/:id', async (req, res) => {
   try {
-    const article = await dbGet('SELECT * FROM blogs WHERE id = ?', [req.params.id]);
+    const article = await dbGet('SELECT * FROM blogs WHERE id = ? OR slug = ?', [req.params.id, req.params.id]);
     if (!article) {
       return res.status(404).json({ error: 'Blog not found' });
     }
     article.tags = JSON.parse(article.tags || '[]');
     
     const related = await dbQuery(
-      'SELECT id, title, category, date_published, read_time_mins, image_url FROM blogs WHERE id != ? LIMIT 3',
-      [article.id]
+      'SELECT id, title, category, date_published, read_time_mins, image_url, slug FROM blogs WHERE id != ? AND slug != ? LIMIT 3',
+      [article.id, article.slug || '']
     );
     
     res.json({

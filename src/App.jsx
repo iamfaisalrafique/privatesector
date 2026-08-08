@@ -293,7 +293,7 @@ function AppContent() {
                     {(homeNews || []).map(art => (
                       <div 
                         key={art.id} 
-                        onClick={() => navigate(`/news/${art.id}`)}
+                        onClick={() => navigate(`/news/${art.slug || art.id}`)}
                         style={{ display: 'flex', gap: '16px', cursor: 'pointer', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '20px' }}
                         className="home-news-teaser"
                       >
