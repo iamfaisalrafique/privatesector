@@ -59,7 +59,7 @@ function AppContent() {
       const parts = currentPath.split('/').filter(Boolean);
       const validLangs = ['de', 'fr', 'en', 'ar'];
       
-      if (parts.length > 0 && parts[0] === 'de') {
+      if (parts.length > 0 && parts[0] === 'en') {
         const cleanPath = '/' + parts.slice(1).join('/');
         const target = (cleanPath === '' || cleanPath === '//') ? '/' : cleanPath;
         window.history.replaceState(null, '', `${target}${currentSearch}`);
@@ -69,7 +69,7 @@ function AppContent() {
       }
 
       if (parts.length === 0 || !validLangs.includes(parts[0])) {
-        if (currentLang !== 'de') {
+        if (currentLang !== 'en') {
           const cleanPath = currentPath === '/' ? '' : currentPath;
           window.history.replaceState(null, '', `/${currentLang}${cleanPath}${currentSearch}`);
           setPathState(`/${currentLang}${cleanPath}${currentSearch}`);
@@ -130,7 +130,7 @@ function AppContent() {
 
   const navigate = (path) => {
     const cleanPath = path.startsWith('/') ? path : '/' + path;
-    const newUrl = currentLang === 'de' 
+    const newUrl = currentLang === 'en' 
       ? `${cleanPath}`
       : `/${currentLang}${cleanPath === '/' ? '' : cleanPath}`;
     window.history.pushState(null, '', newUrl);
