@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { dbQuery, dbGet, dbRun } from '../db.js';
+import crypto from 'crypto';
 
 const router = Router();
 
@@ -63,9 +64,10 @@ router.get('/translations', async (req, res) => {
 router.put('/translations', async (req, res) => {
   try {
     const { language_code, key, translated_text, status } = req.body;
+    const hash = crypto.createHash('md5').update(key || '').digest('hex');
     await dbRun(
-      'UPDATE translations SET translated_text = ?, status = ? WHERE language_code = ? AND key = ?',
-      [translated_text, status, language_code, key]
+      'UPDATE translations SET translated_text = ?, status = ? WHERE language_code = ? AND key_hash = ?',
+      [translated_text, status, language_code, hash]
     );
     res.json({ success: true });
   } catch (error) {
@@ -77,7 +79,8 @@ router.post('/translations/auto-translate-all', async (req, res) => {
   try {
     const rows = await dbQuery("SELECT language_code, key, translated_text FROM translations WHERE status != 'reviewed'");
     for (const row of rows) {
-      const engRow = await dbGet('SELECT translated_text FROM translations WHERE language_code = "en" AND key = ?', [row.key]);
+      const hash = crypto.createHash('md5').update(row.key || '').digest('hex');
+      const engRow = await dbGet('SELECT translated_text FROM translations WHERE language_code = \'en\' AND key_hash = ?', [hash]);
       const engText = engRow ? engRow.translated_text : row.translated_text;
       
       if (row.translated_text && row.translated_text !== engText) {
@@ -91,8 +94,8 @@ router.post('/translations/auto-translate-all', async (req, res) => {
       else translated = `[${row.language_code.toUpperCase()}-auto] ${engText}`;
 
       await dbRun(
-        'UPDATE translations SET translated_text = ?, status = "auto-only" WHERE language_code = ? AND key = ?',
-        [translated, row.language_code, row.key]
+        'UPDATE translations SET translated_text = ?, status = "auto-only" WHERE language_code = ? AND key_hash = ?',
+        [translated, row.language_code, hash]
       );
     }
     res.json({ success: true, count: rows.length });

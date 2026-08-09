@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import crypto from 'crypto';
 
 dotenv.config();
 
@@ -522,13 +523,48 @@ export async function initializeDatabase() {
   `);
 
   // 5. Translations Table
+  try {
+    let hasKeyHash = false;
+    if (usePg) {
+      const colCheck = await dbQuery(`
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name = 'translations' AND column_name = 'key_hash'
+      `);
+      if (colCheck && colCheck.length > 0) {
+        hasKeyHash = true;
+      }
+    } else {
+      try {
+        const colCheck = await dbQuery("PRAGMA table_info(translations)");
+        if (colCheck && colCheck.some(col => col.name === 'key_hash')) {
+          hasKeyHash = true;
+        }
+      } catch (e) {
+        // Table might not exist yet
+      }
+    }
+
+    if (!hasKeyHash) {
+      console.log('Migrating translations table to include key_hash column...');
+      if (usePg) {
+        await dbRun('DROP TABLE IF EXISTS translations CASCADE');
+      } else {
+        await dbRun('DROP TABLE IF EXISTS translations');
+      }
+    }
+  } catch (err) {
+    console.error('Error during translations table schema migration check:', err);
+  }
+
   await dbRun(`
     CREATE TABLE IF NOT EXISTS translations (
       language_code TEXT NOT NULL,
+      key_hash TEXT NOT NULL,
       key TEXT NOT NULL,
       translated_text TEXT NOT NULL,
       status TEXT NOT NULL,
-      PRIMARY KEY (language_code, key)
+      PRIMARY KEY (language_code, key_hash)
     )
   `);
 
@@ -2265,7 +2301,7 @@ Investors from across Europe are now looking at Zurich as the primary hub for ea
 
 async function batchInsertTranslations(items) {
   if (!items || items.length === 0) return;
-  const chunkSize = 50; // 50 items = 200 params per chunk (safe for Postgres & SQLite)
+  const chunkSize = 50; // 50 items = 250 params per chunk (safe for Postgres & SQLite)
   for (let i = 0; i < items.length; i += chunkSize) {
     const chunk = items.slice(i, i + chunkSize);
     if (usePg) {
@@ -2273,25 +2309,27 @@ async function batchInsertTranslations(items) {
       const params = [];
       let paramIdx = 1;
       for (const item of chunk) {
-        valueTuples.push(`($${paramIdx++}, $${paramIdx++}, $${paramIdx++}, $${paramIdx++})`);
-        params.push(item.lang, item.key, item.text, item.status);
+        const hash = crypto.createHash('md5').update(item.key || '').digest('hex');
+        valueTuples.push(`($${paramIdx++}, $${paramIdx++}, $${paramIdx++}, $${paramIdx++}, $${paramIdx++})`);
+        params.push(item.lang, hash, item.key, item.text, item.status);
       }
       const sql = `
-        INSERT INTO translations (language_code, key, translated_text, status)
+        INSERT INTO translations (language_code, key_hash, key, translated_text, status)
         VALUES ${valueTuples.join(', ')}
-        ON CONFLICT (language_code, key) 
+        ON CONFLICT (language_code, key_hash) 
         DO UPDATE SET translated_text = EXCLUDED.translated_text, status = EXCLUDED.status
       `;
       await pool.query(sql, params);
     } else {
       await dbRun('BEGIN TRANSACTION');
       for (const item of chunk) {
+        const hash = crypto.createHash('md5').update(item.key || '').digest('hex');
         await dbRun(`
-          INSERT INTO translations (language_code, key, translated_text, status)
-          VALUES (?, ?, ?, ?)
-          ON CONFLICT (language_code, key) 
+          INSERT INTO translations (language_code, key_hash, key, translated_text, status)
+          VALUES (?, ?, ?, ?, ?)
+          ON CONFLICT (language_code, key_hash) 
           DO UPDATE SET translated_text = EXCLUDED.translated_text, status = EXCLUDED.status
-        `, [item.lang, item.key, item.text, item.status]);
+        `, [item.lang, hash, item.key, item.text, item.status]);
       }
       await dbRun('COMMIT');
     }
