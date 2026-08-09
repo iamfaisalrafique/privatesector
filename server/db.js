@@ -727,7 +727,7 @@ async function seedKkrArticle() {
   const category = "Medical Technology";
   const author_name = "PrivateSector Intelligence";
   const author_avatar = "https://i.pravatar.cc/100?img=33";
-  const date_published = "2026-08-09";
+  const date_published = "2026-08-10";
   const read_time_mins = 6;
   const pull_quote = "Something significant has changed. Switzerland is already inside the story. Pay attention to what happens next.";
   const tags = JSON.stringify(["Integer Holdings", "KKR", "Medical Technology", "Biel/Bienne", "Private Equity", "Acquisition"]);
@@ -1727,7 +1727,108 @@ async function seedData() {
   }
 
   // Seed News Articles
-  const articles = [
+    {
+      title: 'Novartis Expands AI-Driven Drug Discovery Operations at Basel Research Hub',
+      subtitle: 'A major investment in computational biology and automated screening strengthens Switzerland\'s leadership in biomedical innovation.',
+      category: 'Pharmaceuticals',
+      author_name: 'PrivateSector Intelligence',
+      author_avatar: 'https://i.pravatar.cc/100?img=33',
+      date_published: '2026-08-10',
+      read_time_mins: 5,
+      content_body: `## 01 | STRATEGIC INVESTMENT\nNovartis has expanded its computational biology and AI-driven drug discovery infrastructure in Basel.\n\n## 02 | SWISS TECH ECOSYSTEM\nThe project connects Swiss AI startups with pharmaceutical manufacturing.`,
+      pull_quote: 'Computational biology is redefining pharmaceutical R&D speed and efficiency across Europe.',
+      tags: JSON.stringify(['Novartis', 'Pharmaceuticals', 'AI', 'Basel', 'R&D']),
+      image_url: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&q=80&w=600',
+      focus_keyword: 'Novartis AI drug discovery',
+      meta_title: 'Novartis Expands AI Drug Discovery at Basel Hub — PrivateSector',
+      meta_description: 'Novartis expands computational biology and automated screening in Basel, Switzerland.',
+      slug: 'novartis-expands-ai-drug-discovery-basel'
+    },
+    {
+      title: 'Roche Secures FDA Approval for Next-Generation Molecular Diagnostics Platform',
+      subtitle: 'The approval unlocks broader expansion in North American healthcare markets and reinforces Swiss-U.S. medical device channels.',
+      category: 'Healthcare',
+      author_name: 'PrivateSector Intelligence',
+      author_avatar: 'https://i.pravatar.cc/100?img=33',
+      date_published: '2026-08-10',
+      read_time_mins: 5,
+      content_body: `## 01 | REGULATORY CLEARANCE\nRoche Diagnostic division achieved FDA 510(k) clearance for its high-throughput sequencing platform.\n\n## 02 | U.S.-SWISS EXPANSION\nDirect supply chain routes will connect Rotkreuz facilities with U.S. hospital networks.`,
+      pull_quote: 'FDA clearance validates Roche\'s advanced diagnostic technology for global health systems.',
+      tags: JSON.stringify(['Roche', 'Healthcare', 'FDA Approval', 'Diagnostics', 'Rotkreuz']),
+      image_url: 'https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=600',
+      focus_keyword: 'Roche FDA molecular diagnostics',
+      meta_title: 'Roche Secures FDA Approval for Molecular Diagnostics — PrivateSector',
+      meta_description: 'Roche receives FDA clearance for next-generation sequencing platform built in Switzerland.',
+      slug: 'roche-secures-fda-approval-molecular-diagnostics'
+    },
+    {
+      title: 'ABB Partners with European Green Hydrogen Leaders for Heavy Industrial Decarbonization',
+      subtitle: 'Zurich-headquartered industrial automation leader scales modular electrification solutions across European manufacturing hubs.',
+      category: 'Manufacturing',
+      author_name: 'PrivateSector Intelligence',
+      author_avatar: 'https://i.pravatar.cc/100?img=33',
+      date_published: '2026-08-09',
+      read_time_mins: 5,
+      content_body: `## 01 | INDUSTRIAL ELECTRIFICATION\nABB enters strategic partnership to supply high-efficiency rectifiers and automation systems.\n\n## 02 | SUSTAINABILITY & SCALE\nThe initiative supports carbon reduction targets across heavy manufacturing ecosystems.`,
+      pull_quote: 'Electrification and automated control systems are vital for industrial energy transition.',
+      tags: JSON.stringify(['ABB', 'Manufacturing', 'Electrification', 'Green Hydrogen', 'Zurich']),
+      image_url: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=600',
+      focus_keyword: 'ABB green hydrogen manufacturing',
+      meta_title: 'ABB Partners for European Industrial Decarbonization — PrivateSector',
+      meta_description: 'ABB scales electrification and automation for hydrogen manufacturing projects across Europe.',
+      slug: 'abb-partners-green-hydrogen-industrial-decarbonization'
+    },
+    {
+      title: 'Schindler Accelerates Smart Elevator IoT Integration Across European Infrastructure',
+      subtitle: 'Lucerne-based mobility pioneer rolls out predictive AI maintenance systems across high-density urban transit nodes.',
+      category: 'Technology',
+      author_name: 'PrivateSector Intelligence',
+      author_avatar: 'https://i.pravatar.cc/100?img=33',
+      date_published: '2026-08-09',
+      read_time_mins: 4,
+      content_body: `## 01 | URBAN MOBILITY IOT\nSchindler connects thousands of elevators to central predictive analytics cloud platforms.\n\n## 02 | SWISS ENGINEERING\nBuilt in Ebikon, the system reduces maintenance downtime by over 30 percent.`,
+      pull_quote: 'IoT integration transforms traditional elevator hardware into digital mobility services.',
+      tags: JSON.stringify(['Schindler', 'Technology', 'IoT', 'Mobility', 'Ebikon']),
+      image_url: 'https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?auto=format&fit=crop&q=80&w=600',
+      focus_keyword: 'Schindler smart elevator IoT',
+      meta_title: 'Schindler Accelerates IoT Smart Elevator Mobility — PrivateSector',
+      meta_description: 'Schindler deploys AI predictive maintenance across European elevators from Ebikon, Switzerland.',
+      slug: 'schindler-accelerates-smart-elevator-iot-integration'
+    },
+    {
+      title: 'Richemont Reports Strong Q2 Growth in Precision Watchmaking & High Jewelry',
+      subtitle: 'Geneva luxury conglomerate benefits from resilient global demand for certified Swiss timepiece heritage.',
+      category: 'Luxury Goods',
+      author_name: 'PrivateSector Intelligence',
+      author_avatar: 'https://i.pravatar.cc/100?img=33',
+      date_published: '2026-08-09',
+      read_time_mins: 4,
+      content_body: `## 01 | FINANCIAL HIGHLIGHTS\nRichemont reports double-digit growth in specialized watchmakers and high jewelry Maisons.\n\n## 02 | CRAFTSMANSHIP & EXPORTS\nSwiss precision manufacturing remains an enduring export driver for international markets.`,
+      pull_quote: 'Precision craftsmanship and heritage branding continue to power luxury sector resilience.',
+      tags: JSON.stringify(['Richemont', 'Luxury Goods', 'Watchmaking', 'Geneva', 'Exports']),
+      image_url: 'https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&q=80&w=600',
+      focus_keyword: 'Richemont watchmaking growth',
+      meta_title: 'Richemont Reports Strong Q2 Growth in Precision Watchmaking — PrivateSector',
+      meta_description: 'Geneva luxury group Richemont reports strong Q2 demand across high jewelry and precision timepieces.',
+      slug: 'richemont-reports-strong-q2-growth-watchmaking'
+    },
+    {
+      title: 'Swisscom Deploys Standalone 5G Enterprise Private Networks Across Industrial Cantons',
+      subtitle: 'B2B telecommunications provider delivers ultra-low latency wireless architecture for smart factory automation.',
+      category: 'Telecommunications',
+      author_name: 'PrivateSector Intelligence',
+      author_avatar: 'https://i.pravatar.cc/100?img=33',
+      date_published: '2026-08-08',
+      read_time_mins: 5,
+      content_body: `## 01 | ENTERPRISE 5G STANDALONE\nSwisscom launches dedicated private 5G networks tailored for automated Swiss logistics.\n\n## 02 | B2B INDUSTRY IMPACT\nHigh-density sensors and autonomous robotics achieve sub-millisecond response times.`,
+      pull_quote: 'Private 5G networks provide the foundation for Industry 4.0 automation across Switzerland.',
+      tags: JSON.stringify(['Swisscom', 'Telecommunications', '5G Enterprise', 'Industry 4.0', 'Bern']),
+      image_url: 'https://images.unsplash.com/photo-1562408590-e32931084e23?auto=format&fit=crop&q=80&w=600',
+      focus_keyword: 'Swisscom 5G enterprise networks',
+      meta_title: 'Swisscom Deploys Standalone 5G Enterprise Networks — PrivateSector',
+      meta_description: 'Swisscom expands private 5G standalone networks for smart factory automation across Switzerland.',
+      slug: 'swisscom-deploys-standalone-5g-enterprise-networks'
+    },
     {
       title: 'UBS Strengthens Its Position with Strong Quarterly Results and a New USD 3 Billion Share Buyback',
       subtitle: 'UBS reports solid Q2 profit of USD 2.8B, announces new share buyback, and advances Credit Suisse integration.',

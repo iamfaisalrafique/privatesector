@@ -23,7 +23,7 @@ router.get('/', async (req, res) => {
       params.push(`%${search}%`, `%${search}%`, `%${search}%`);
     }
 
-    query += ' ORDER BY date_published DESC';
+    query += ' ORDER BY date_published DESC, id DESC';
     const rows = await dbQuery(query, params);
 
     const parsedRows = rows.map(item => ({

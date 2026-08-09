@@ -106,7 +106,20 @@ function AppContent() {
         const newsRes = await fetch('/api/news');
         if (newsRes.ok) {
           const list = await newsRes.json();
-          setHomeNews(Array.isArray(list) ? list.slice(0, 12) : []);
+          if (Array.isArray(list)) {
+            // Priority: Today's posts first -> Yesterday's posts next -> Previous older posts to complete all slots
+            const sorted = [...list].sort((a, b) => {
+              const dateA = a.date_published || '';
+              const dateB = b.date_published || '';
+              if (dateA !== dateB) {
+                return dateB.localeCompare(dateA);
+              }
+              return (b.id || 0) - (a.id || 0);
+            });
+            setHomeNews(sorted.slice(0, 12));
+          } else {
+            setHomeNews([]);
+          }
         }
       } catch (e) {
         console.error('Error loading homepage feeds:', e);
