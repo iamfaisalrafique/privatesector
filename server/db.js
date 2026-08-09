@@ -1726,7 +1726,7 @@ async function seedData() {
     ]);
   }
 
-  // Seed News Articles
+  // Seed News Articles (force rebuild)
   const articles = [
     {
       title: 'Novartis Expands AI-Driven Drug Discovery Operations at Basel Research Hub',
