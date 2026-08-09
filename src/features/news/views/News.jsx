@@ -447,7 +447,7 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
             </article>
 
             {/* Right Column: Sticky Table of Contents & Sidebar widgets */}
-            <aside style={{ display: 'flex', flexDirection: 'column', gap: '32px', position: 'sticky', top: '120px' }}>
+            <aside className="news-sidebar-col" style={{ display: 'flex', flexDirection: 'column', gap: '32px', position: 'sticky', top: '120px' }}>
               <TableOfContents contentHtml={activeArticle.content_body} />
               <AdSlot position="D" />
             </aside>
