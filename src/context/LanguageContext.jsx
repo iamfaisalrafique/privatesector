@@ -23,7 +23,7 @@ export const LanguageProvider = ({ children }) => {
     if (pathLang) return pathLang;
     const saved = localStorage.getItem('privatesector_lang');
     if (saved) return saved;
-    return 'en';
+    return 'de';
   });
 
   const [translations, setTranslations] = useState({});
@@ -68,7 +68,7 @@ export const LanguageProvider = ({ children }) => {
       pathPart = '/' + parts.slice(1).join('/');
     }
     
-    const targetPath = langCode === 'en'
+    const targetPath = langCode === 'de'
       ? (pathPart === '' ? '/' : pathPart)
       : `/${langCode}${pathPart === '/' ? '' : pathPart}`;
 
@@ -83,7 +83,7 @@ export const LanguageProvider = ({ children }) => {
     return defaultText;
   };
 
-  const activeLanguage = LANGUAGES.find(l => l.code === currentLang) || LANGUAGES[2];
+  const activeLanguage = LANGUAGES.find(l => l.code === currentLang) || LANGUAGES[0];
 
   return (
     <LanguageContext.Provider value={{
@@ -102,7 +102,7 @@ export const useLanguage = () => {
   const context = useContext(LanguageContext);
   if (!context) {
     return {
-      currentLang: 'en',
+      currentLang: 'de',
       switchLanguage: () => {},
       t: (key, defaultText = '') => defaultText,
       isRtl: false,

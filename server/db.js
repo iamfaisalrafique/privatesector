@@ -740,7 +740,8 @@ export async function initializeDatabase() {
     console.log('Starting background auto-translation scanner...');
     autoTranslateDatabaseContent().catch(err => console.error('Background auto-translation error:', err));
   } else {
-    console.log('Database is already fully populated with latest B2B, Careers, ESG, and podcast features.');
+    console.log('Database is already populated. Ensuring any missing seed articles or companies exist...');
+    await seedData();
     console.log('Starting background incremental auto-translation scanner...');
     autoTranslateDatabaseContent().catch(err => console.error('Background auto-translation error:', err));
   }
@@ -1750,16 +1751,19 @@ async function seedData() {
   ];
 
   for (const comp of companies) {
-    await dbRun(`
-      INSERT INTO companies (
-        name, logo_bg, canton, industry, size_class, description, premium, verified,
-        founded, employees, revenue_band, website, linkedin, contact_email, about_text, structured_data
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `, [
-      comp.name, comp.logo_bg, comp.canton, comp.industry, comp.size_class, comp.description,
-      comp.premium, comp.verified, comp.founded, comp.employees, comp.revenue_band,
-      comp.website, comp.linkedin, comp.contact_email, comp.about_text, comp.structured_data
-    ]);
+    const existing = await dbGet('SELECT id FROM companies WHERE name = ?', [comp.name]);
+    if (!existing) {
+      await dbRun(`
+        INSERT INTO companies (
+          name, logo_bg, canton, industry, size_class, description, premium, verified,
+          founded, employees, revenue_band, website, linkedin, contact_email, about_text, structured_data
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `, [
+        comp.name, comp.logo_bg, comp.canton, comp.industry, comp.size_class, comp.description,
+        comp.premium, comp.verified, comp.founded, comp.employees, comp.revenue_band,
+        comp.website, comp.linkedin, comp.contact_email, comp.about_text, comp.structured_data
+      ]);
+    }
   }
 
   // Seed News Articles (force rebuild)
@@ -2033,16 +2037,19 @@ Source: Nestlé official half-year results, investor materials and corporate ann
   const defaultImage = 'https://images.unsplash.com/photo-1518173946687-a4c8a383392e?auto=format&fit=crop&q=80&w=600';
 
   for (const art of articles) {
-    const imgUrl = art.image_url || categoryImages[art.category] || defaultImage;
-    await dbRun(`
-      INSERT INTO news (
-        title, subtitle, category, author_name, author_avatar, date_published, read_time_mins, content_body, pull_quote, tags, image_url, focus_keyword, meta_title, meta_description, slug
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `, [
-      art.title, art.subtitle, art.category, art.author_name, art.author_avatar, art.date_published,
-      art.read_time_mins, art.content_body, art.pull_quote, art.tags, imgUrl,
-      art.focus_keyword || '', art.meta_title || '', art.meta_description || '', art.slug || ''
-    ]);
+    const existing = await dbGet('SELECT id FROM news WHERE slug = ? OR title = ?', [art.slug || '', art.title]);
+    if (!existing) {
+      const imgUrl = art.image_url || categoryImages[art.category] || defaultImage;
+      await dbRun(`
+        INSERT INTO news (
+          title, subtitle, category, author_name, author_avatar, date_published, read_time_mins, content_body, pull_quote, tags, image_url, focus_keyword, meta_title, meta_description, slug
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `, [
+        art.title, art.subtitle, art.category, art.author_name, art.author_avatar, art.date_published,
+        art.read_time_mins, art.content_body, art.pull_quote, art.tags, imgUrl,
+        art.focus_keyword || '', art.meta_title || '', art.meta_description || '', art.slug || ''
+      ]);
+    }
   }
 
   // Seed Blogs
@@ -2082,14 +2089,17 @@ Investors from across Europe are now looking at Zurich as the primary hub for ea
   ];
 
   for (const blog of blogPosts) {
-    await dbRun(`
-      INSERT INTO blogs (
-        title, subtitle, category, author_name, author_avatar, date_published, read_time_mins, content_body, pull_quote, tags, image_url
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `, [
-      blog.title, blog.subtitle, blog.category, blog.author_name, blog.author_avatar, blog.date_published,
-      blog.read_time_mins, blog.content_body, blog.pull_quote, blog.tags, blog.image_url
-    ]);
+    const existing = await dbGet('SELECT id FROM blogs WHERE title = ?', [blog.title]);
+    if (!existing) {
+      await dbRun(`
+        INSERT INTO blogs (
+          title, subtitle, category, author_name, author_avatar, date_published, read_time_mins, content_body, pull_quote, tags, image_url
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `, [
+        blog.title, blog.subtitle, blog.category, blog.author_name, blog.author_avatar, blog.date_published,
+        blog.read_time_mins, blog.content_body, blog.pull_quote, blog.tags, blog.image_url
+      ]);
+    }
   }
 
   // Seed Ads
@@ -2101,14 +2111,17 @@ Investors from across Europe are now looking at Zurich as the primary hub for ea
   ];
 
   for (const ad of ads) {
-    await dbRun(`
-      INSERT INTO ads (
-        name, type, position, company_id, status, impressions, clicks, image_url, start_date, end_date, geo_swiss_only
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `, [
-      ad.name, ad.type, ad.position, ad.company_id, ad.status, ad.impressions, ad.clicks,
-      ad.image_url, ad.start_date, ad.end_date, ad.geo_swiss_only
-    ]);
+    const existing = await dbGet('SELECT id FROM ads WHERE name = ?', [ad.name]);
+    if (!existing) {
+      await dbRun(`
+        INSERT INTO ads (
+          name, type, position, company_id, status, impressions, clicks, image_url, start_date, end_date, geo_swiss_only
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `, [
+        ad.name, ad.type, ad.position, ad.company_id, ad.status, ad.impressions, ad.clicks,
+        ad.image_url, ad.start_date, ad.end_date, ad.geo_swiss_only
+      ]);
+    }
   }
 
   // Seed Page configs (Page Builder)
@@ -2128,11 +2141,14 @@ Investors from across Europe are now looking at Zurich as the primary hub for ea
   ];
 
   for (const page of pages) {
-    await dbRun(`
-      INSERT INTO pages (
-        path, title, meta_description, blocks_layout, ads_enabled
-      ) VALUES (?, ?, ?, ?, ?)
-    `, [page.path, page.title, page.meta_description, page.blocks_layout, page.ads_enabled]);
+    const existing = await dbGet('SELECT id FROM pages WHERE path = ?', [page.path]);
+    if (!existing) {
+      await dbRun(`
+        INSERT INTO pages (
+          path, title, meta_description, blocks_layout, ads_enabled
+        ) VALUES (?, ?, ?, ?, ?)
+      `, [page.path, page.title, page.meta_description, page.blocks_layout, page.ads_enabled]);
+    }
   }
 
   // Seed Translation dictionary for English, German, French, and 15 other languages!
