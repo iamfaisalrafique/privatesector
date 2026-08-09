@@ -2252,17 +2252,50 @@ Investors from across Europe are now looking at Zurich as the primary hub for ea
   };
 
   const languages = ['de', 'fr', 'en', 'it', 'rm', 'es', 'pt', 'ar', 'zh', 'ru', 'ja', 'tr', 'nl', 'pl', 'ko', 'sv', 'da', 'fi'];
+  const itemsToInsert = [];
 
   for (const [key, langObj] of Object.entries(baseUiKeys)) {
     for (const lang of languages) {
       const text = langObj[lang] || langObj['en']; // fallback to english
       const status = (lang === 'de' || lang === 'fr' || lang === 'en') ? 'reviewed' : 'auto-only';
-      await dbRun(`
+      itemsToInsert.push({ lang, key, text, status });
+    }
+  }
+
+  await batchInsertTranslations(itemsToInsert);
+}
+
+async function batchInsertTranslations(items) {
+  if (!items || items.length === 0) return;
+  const chunkSize = 50; // 50 items = 200 params per chunk (safe for Postgres & SQLite)
+  for (let i = 0; i < items.length; i += chunkSize) {
+    const chunk = items.slice(i, i + chunkSize);
+    if (usePg) {
+      const valueTuples = [];
+      const params = [];
+      let paramIdx = 1;
+      for (const item of chunk) {
+        valueTuples.push(`($${paramIdx++}, $${paramIdx++}, $${paramIdx++}, $${paramIdx++})`);
+        params.push(item.lang, item.key, item.text, item.status);
+      }
+      const sql = `
         INSERT INTO translations (language_code, key, translated_text, status)
-        VALUES (?, ?, ?, ?)
+        VALUES ${valueTuples.join(', ')}
         ON CONFLICT (language_code, key) 
         DO UPDATE SET translated_text = EXCLUDED.translated_text, status = EXCLUDED.status
-      `, [lang, key, text, status]);
+      `;
+      await pool.query(sql, params);
+    } else {
+      await dbRun('BEGIN TRANSACTION');
+      for (const item of chunk) {
+        await dbRun(`
+          INSERT INTO translations (language_code, key, translated_text, status)
+          VALUES (?, ?, ?, ?)
+          ON CONFLICT (language_code, key) 
+          DO UPDATE SET translated_text = EXCLUDED.translated_text, status = EXCLUDED.status
+        `, [item.lang, item.key, item.text, item.status]);
+      }
+      await dbRun('COMMIT');
     }
   }
 }
@@ -2819,41 +2852,27 @@ async function autoTranslateDatabaseContent() {
   saveTranslationCache();
   console.log('Translation API phase complete. Writing all translations to database...');
 
-  // 2. Perform bulk insertion in SQLite using a transaction to make it extremely fast
-  await dbRun('BEGIN TRANSACTION');
-  try {
-    let count = 0;
-    for (const text of stringsToTranslate) {
-      if (!text || text.trim().length === 0) continue;
-      const isGermanUiKey = GERMAN_UI_KEYS.has(text);
-      const sourceLang = isGermanUiKey ? 'de' : 'en';
+  const itemsToInsert = [];
+  for (const text of stringsToTranslate) {
+    if (!text || text.trim().length === 0) continue;
+    const isGermanUiKey = GERMAN_UI_KEYS.has(text);
+    const sourceLang = isGermanUiKey ? 'de' : 'en';
 
-      for (const lang of languages) {
-        let translatedText = text;
-        if (lang === 'rm') {
-          translatedText = text;
-        } else if (lang === sourceLang) {
-          translatedText = text;
-        } else {
-          const cacheKey = `${lang}:${text}`;
-          translatedText = translationCache[cacheKey] || text;
-        }
-
-        const status = (lang === 'de' || lang === 'fr' || lang === 'en') ? 'reviewed' : 'auto-only';
-        await dbRun(`
-          INSERT INTO translations (language_code, key, translated_text, status)
-          VALUES (?, ?, ?, ?)
-          ON CONFLICT (language_code, key) 
-          DO UPDATE SET translated_text = EXCLUDED.translated_text, status = EXCLUDED.status
-        `, [lang, text, translatedText, status]);
-        count++;
+    for (const lang of languages) {
+      let translatedText = text;
+      if (lang === 'rm') {
+        translatedText = text;
+      } else if (lang === sourceLang) {
+        translatedText = text;
+      } else {
+        const cacheKey = `${lang}:${text}`;
+        translatedText = translationCache[cacheKey] || text;
       }
+
+      const status = (lang === 'de' || lang === 'fr' || lang === 'en') ? 'reviewed' : 'auto-only';
+      itemsToInsert.push({ lang, key: text, text: translatedText, status });
     }
-    await dbRun('COMMIT');
-    console.log(`Successfully ensured ${count} database translations in table 'translations'.`);
-  } catch (dbErr) {
-    await dbRun('ROLLBACK');
-    console.error('Failed database transaction for translations:', dbErr);
-    throw dbErr;
   }
+  await batchInsertTranslations(itemsToInsert);
+  console.log(`Successfully ensured ${itemsToInsert.length} database translations in table 'translations'.`);
 }
