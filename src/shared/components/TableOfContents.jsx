@@ -6,7 +6,7 @@ function formatHeadingText(text) {
   const clean = text.replace(/^([0-9]+\s*[|—–-]\s*)/, '').trim();
   const words = clean.split(/\s+/);
   if (words.length <= 3) return clean;
-  return words.slice(0, 3).join(' ');
+  return words.slice(0, 3).join(' ') + '...';
 }
 
 export default function TableOfContents({ contentHtml = '' }) {

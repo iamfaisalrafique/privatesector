@@ -754,7 +754,7 @@ It represents a significant ownership change involving a U.S. medical-technology
 
 ---
 
-01 | THE SIGNAL
+## 01 | THE SIGNAL
 
 Private-equity firm "KKR" (https://reference-url-citation.invalid/1) has agreed to acquire "Integer Holdings Corporation" (https://reference-url-citation.invalid/2).
 
@@ -778,7 +778,7 @@ PrivateSector's interest, however, begins where the acquisition headline ends.
 
 ---
 
-02 | THE SWISS CONNECTION 🇨🇭
+## 02 | THE SWISS CONNECTION 🇨🇭
 
 Integer has established operations in Switzerland.
 
@@ -808,7 +808,7 @@ The transaction is confirmed. Future Swiss opportunities are analysis, not confi
 
 ---
 
-03 | WHAT KKR IS ACTUALLY BUYING
+## 03 | WHAT KKR IS ACTUALLY BUYING
 
 Integer is not merely a medical-device brand.
 
@@ -856,25 +856,25 @@ That means KKR is acquiring not simply products, but a substantial manufacturing
 
 ---
 
-04 | WHY PRIVATESECTOR SELECTED THIS DEAL
+## 04 | WHY PRIVATESECTOR SELECTED THIS DEAL
 
 The $5.7 billion headline alone was not enough.
 
 PrivateSector selected the transaction because four elements intersect:
 
-01 — SCALE
+### 01 — SCALE
 
 A multibillion-dollar healthcare transaction.
 
-02 — STRATEGIC INDUSTRY
+### 02 — STRATEGIC INDUSTRY
 
 Medical devices and advanced manufacturing are areas in which Switzerland has substantial expertise.
 
-03 — DIRECT SWISS CONNECTION
+### 03 — DIRECT SWISS CONNECTION
 
 Integer's European headquarters are already located in Biel/Bienne.
 
-04 — CHANGE OF OWNERSHIP
+### 04 — CHANGE OF OWNERSHIP
 
 A major ownership transition can create new strategic priorities over time — including investment, portfolio decisions, manufacturing optimization, partnerships and expansion.
 
@@ -884,29 +884,29 @@ It means the transaction deserves monitoring.
 
 ---
 
-05 | PRIVATESECTOR OPPORTUNITY MAP
+## 05 | PRIVATESECTOR OPPORTUNITY MAP
 
 If KKR seeks to accelerate Integer's growth over the coming years, PrivateSector believes several areas deserve particular attention.
 
-ADVANCED MANUFACTURING
+### ADVANCED MANUFACTURING
 
 Integer operates sophisticated manufacturing processes across medical-device components and complete systems.
 
 Switzerland has deep capabilities in precision engineering, automation and advanced manufacturing.
 
-MEDTECH INNOVATION
+### MEDTECH INNOVATION
 
 Integer's cardiovascular and neuromodulation activities overlap with areas in which Switzerland has an established medical-technology ecosystem.
 
-SUPPLY CHAIN
+### SUPPLY CHAIN
 
 A global manufacturing network creates continuing requirements for components, tooling, manufacturing technology, quality systems and specialized suppliers.
 
-EUROPEAN DEVELOPMENT
+### EUROPEAN DEVELOPMENT
 
 Because Biel/Bienne already serves as Integer's European headquarters, Switzerland has an existing position inside Integer's European structure.
 
-INVESTMENT
+### INVESTMENT
 
 New private-equity ownership makes future capital allocation particularly important to monitor.
 
@@ -922,7 +922,7 @@ The correct question is:
 
 ---
 
-06 | SWISS COMPANIES TO WATCH 🇨🇭
+## 06 | SWISS COMPANIES TO WATCH 🇨🇭
 
 PrivateSector is deliberately not yet declaring specific Swiss companies as confirmed opportunity candidates.
 
@@ -940,7 +940,7 @@ This is an important PrivateSector principle:
 
 ---
 
-07 | SIMILAR CASES™
+## 07 | SIMILAR CASES™
 
 Before PrivateSector recommends a Swiss company as strategically positioned for a future Integer opportunity, we will test the match against precedent.
 
@@ -976,27 +976,27 @@ Instead, Similar Cases provide evidence that the capability exists.
 
 ---
 
-08 | POTENTIAL UPSIDE
+## 08 | POTENTIAL UPSIDE
 
 If new investment or expansion follows the acquisition, possible areas of opportunity could include:
 
-Manufacturing technology
+### Manufacturing technology
 
 New equipment or production processes.
 
-Swiss supplier relationships
+### Swiss supplier relationships
 
 Specialized components, tooling, engineering or manufacturing technologies.
 
-Research and development
+### Research and development
 
 Potential collaboration across Europe's medtech ecosystem.
 
-European expansion
+### European expansion
 
 Additional strategic importance for Integer's existing Swiss base.
 
-Cross-border investment
+### Cross-border investment
 
 Further integration between American capital and Swiss medical-technology expertise.
 
@@ -1006,37 +1006,37 @@ None should currently be interpreted as announced KKR or Integer plans.
 
 ---
 
-09 | POTENTIAL RISK / DOWNSIDE
+## 09 | POTENTIAL RISK / DOWNSIDE
 
 Opportunity intelligence becomes useful only when risk is examined alongside upside.
 
-PROCUREMENT VISIBILITY — HIGH RISK
+### PROCUREMENT VISIBILITY — HIGH RISK
 
 No relevant open procurement process has yet been identified.
 
-EXISTING SUPPLIERS — HIGH RISK
+### EXISTING SUPPLIERS — HIGH RISK
 
 Integer already operates a mature global manufacturing network and will have established supplier relationships.
 
-OWNERSHIP-TRANSITION UNCERTAINTY — MEDIUM/HIGH
+### OWNERSHIP-TRANSITION UNCERTAINTY — MEDIUM/HIGH
 
 KKR's eventual strategic priorities for individual Integer locations and operations are not yet fully visible publicly.
 
-COMPETITION — HIGH
+### COMPETITION — HIGH
 
 Medical-device manufacturing is highly specialized and globally competitive.
 
-REGULATORY COMPLEXITY — HIGH
+### REGULATORY COMPLEXITY — HIGH
 
 Medical-device manufacturing operates under demanding regulatory and quality requirements.
 
-TIMING — MEDIUM
+### TIMING — MEDIUM
 
 The acquisition itself is expected to close by year-end 2026, meaning many strategic decisions may emerge only later.
 
 ---
 
-10 | PRIVATESECTOR OPPORTUNITY SCORE
+## 10 | PRIVATESECTOR OPPORTUNITY SCORE
 
 Strategic Importance
 ★★★★★
@@ -1059,7 +1059,7 @@ Long-Term Opportunity Potential
 Monitoring Priority
 ★★★★★
 
-PRIVATESECTOR ASSESSMENT
+### PRIVATESECTOR ASSESSMENT
 
 HIGH STRATEGIC INTEREST — MONITOR CLOSELY
 
@@ -1075,7 +1075,7 @@ That is exactly why this development belongs on the PrivateSector Radar.
 
 ---
 
-11 | WHAT HAPPENS NEXT?
+## 11 | WHAT HAPPENS NEXT?
 
 PrivateSector will monitor the transaction for several signals:
 
@@ -1107,7 +1107,7 @@ The first meaningful appearance of one of these signals could move this story fr
 
 ---
 
-12 | PRIVATESECTOR INSIGHT
+## 12 | PRIVATESECTOR INSIGHT
 
 Most readers will see:
 
@@ -1133,7 +1133,7 @@ That is the advantage of following an opportunity before the opportunity becomes
 
 ---
 
-EXECUTIVE CONCLUSION
+## EXECUTIVE CONCLUSION
 
 The KKR–Integer transaction demonstrates exactly why PrivateSector does not stop at reporting business news.
 
@@ -1171,7 +1171,7 @@ And what executives should watch next.
 
 ---
 
-PRIVATESECTOR INTELLIGENCE CARD
+## PRIVATESECTOR INTELLIGENCE CARD
 
 Radar ID: USR-000001
 
@@ -1195,7 +1195,7 @@ Verification: CONFIRMED
 
 ---
 
-ABOUT PRIVATESECTOR INTELLIGENCE
+## ABOUT PRIVATESECTOR INTELLIGENCE
 
 PrivateSector Intelligence identifies important business developments across Switzerland and the United States, breaks them into potential opportunities, identifies companies positioned to participate when supported by evidence, and tests those matches against real-world precedent.
 
@@ -1205,7 +1205,7 @@ We don't stop at the news. We find where the opportunity lies.
 
 ---
 
-SOURCES & VERIFICATION
+## SOURCES & VERIFICATION
 
 PrivateSector identified the transaction through specialist and financial reporting and independently verified the core facts using company and regulatory information.
 
