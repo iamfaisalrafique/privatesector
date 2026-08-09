@@ -339,7 +339,7 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
     
     const matchesCategory = selectedCategory === '' || art.category === selectedCategory;
     
-    let articleTags = [];
+    let articleTags;
     try {
       articleTags = JSON.parse(art.tags || '[]');
     } catch {
@@ -353,7 +353,7 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
   // --- 1. SINGLE ARTICLE VIEW ---
   if (selectedArticleId && activeArticle) {
     // Parse tag array
-    let tagsList = [];
+    let tagsList;
     try {
       tagsList = JSON.parse(activeArticle.tags || '[]');
     } catch {
