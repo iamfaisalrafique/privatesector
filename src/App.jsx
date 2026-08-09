@@ -248,161 +248,111 @@ function AppContent() {
               {/* Leaderboard Zone A */}
               <AdSlot position="A" />
 
-              {/* 1. News & Market Analysis Archives Block (Immediately after Hero) */}
-              <div style={{ marginTop: '48px', display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '32px' }} className="home-news-row">
-                
-                {/* News feed column */}
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '16px', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
-                    <div>
-                      <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--primary-red)', display: 'block', marginBottom: '2px' }}>
-                        {t('news_archive_badge', 'DAILY WIRTSCHAFTS-NEWS & ARCHIV')}
-                      </span>
-                      <h2 style={{ fontSize: '26px', fontFamily: '"Playfair Display", serif', fontWeight: 700, margin: 0, color: 'var(--text-ink)' }}>
-                        {t('news_title', 'Wirtschaftsanalysen & News-Archiv')}
-                      </h2>
-                    </div>
-                    
-                    <button 
-                      onClick={() => navigate('/news')}
-                      className="btn btn-gold-fill"
-                      style={{ 
-                        fontSize: '13px', 
-                        padding: '8px 18px', 
-                        fontWeight: 600, 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        gap: '6px',
-                        borderRadius: '4px',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      <span>{t('view_all_news', 'Alle News-Archive anzeigen')}</span>
-                      <ArrowRight size={15} />
-                    </button>
-                  </div>
-
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                    {(homeNews || []).map(art => (
-                      <div 
-                        key={art.id} 
-                        onClick={() => navigate(`/news/${art.slug || art.id}`)}
-                        style={{ 
-                          display: 'flex', 
-                          gap: '20px', 
-                          cursor: 'pointer', 
-                          backgroundColor: '#FFFFFF',
-                          border: '1px solid #E5E7EB',
-                          borderRadius: '6px',
-                          padding: '16px 20px',
-                          transition: 'transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease'
-                        }}
-                        className="home-news-teaser"
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'translateY(-2px)';
-                          e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.05)';
-                          e.currentTarget.style.borderColor = 'var(--primary-red)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = 'none';
-                          e.currentTarget.style.borderColor = '#E5E7EB';
-                        }}
-                      >
-                        {art.image_url && (
-                          <img 
-                            src={art.image_url} 
-                            alt="" 
-                            style={{ width: '130px', height: '90px', objectFit: 'cover', borderRadius: '4px', flexShrink: 0 }} 
-                          />
-                        )}
-                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                          <div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                              <span style={{ fontSize: '11px', color: 'var(--primary-red)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 700 }}>
-                                {art.category}
-                              </span>
-                              {art.date_published && (
-                                <span style={{ fontSize: '11px', color: '#9CA3AF' }}>
-                                  {art.date_published}
-                                </span>
-                              )}
-                            </div>
-                            <h3 style={{ fontSize: '17px', fontFamily: '"Playfair Display", serif', color: 'var(--text-ink)', margin: '0 0 6px 0', fontWeight: 700, lineHeight: 1.3 }}>
-                              {art.title}
-                            </h3>
-                            <p style={{ fontSize: '13px', color: '#4B5563', lineHeight: 1.4, margin: 0, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                              {art.subtitle}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div style={{ marginTop: '20px', textAlign: 'center' }}>
-                    <button 
-                      onClick={() => navigate('/news')}
-                      style={{ 
-                        width: '100%',
-                        backgroundColor: '#F3F4F6', 
-                        color: '#374151',
-                        border: '1px solid #D1D5DB',
-                        borderRadius: '6px',
-                        padding: '12px 20px',
-                        fontSize: '14px',
-                        fontWeight: 600,
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '8px',
-                        transition: 'background-color 150ms ease'
-                      }}
-                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#E5E7EB'}
-                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#F3F4F6'}
-                    >
-                      <span>{t('browse_full_news_archive', 'Vollständiges News-Archiv durchsuchen')}</span>
-                      <ArrowRight size={16} />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Right side static editorial promo */}
-                <div className="desktop-only">
-                  <div 
-                    style={{ 
-                      backgroundColor: '#ffffff', 
-                      color: '#374151', 
-                      padding: '24px', 
-                      borderRadius: '6px',
-                      borderTop: '4px solid var(--primary-red)',
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
-                    }}
-                  >
-                    <Landmark size={32} style={{ color: 'var(--primary-red)', marginBottom: '16px' }} />
-                    <h3 style={{ fontFamily: '"Playfair Display", serif', fontSize: '20px', color: '#111827', marginBottom: '8px', fontWeight: 700 }}>
-                      {t('B2B Vertrauensindex', 'B2B Vertrauensindex')}
-                    </h3>
-                    <p style={{ fontSize: '12px', color: '#4b5563', lineHeight: 1.6, marginBottom: '20px' }}>
-                      {t('Zefix-verifizierte Profile sorgen für Transparenz und direkte Vertrauensbildung mit internationalen Handelspartnern im Schweizer B2B-Markt.', 'Zefix-verifizierte Profile sorgen für Transparenz und direkte Vertrauensbildung mit internationalen Handelspartnern im Schweizer B2B-Markt.')}
-                    </p>
-                    <button 
-                      className="btn btn-gold-fill" 
-                      style={{ fontSize: '11px', padding: '8px 16px', width: '100%', minHeight: '36px' }}
-                      onClick={() => navigate('/unternehmen')}
-                    >
-                      {t('Dossier-Index durchsuchen', 'Dossier-Index durchsuchen')}
-                    </button>
+              {/* 1. Latest News & Archives Box Grid (Immediately after Hero / AdSlot A, BEFORE Spotlight) */}
+              <div style={{ marginTop: '48px', marginBottom: '64px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '16px', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
+                  <div>
+                    <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--primary-red)', display: 'block', marginBottom: '2px' }}>
+                      {t('news_archive_badge', 'DAILY WIRTSCHAFTS-NEWS & ARCHIV')}
+                    </span>
+                    <h2 style={{ fontSize: '26px', fontFamily: '"Playfair Display", serif', fontWeight: 700, margin: 0, color: 'var(--text-ink)' }}>
+                      {t('latest_news_heading', 'Aktuelle Nachrichten & Marktarchiv')}
+                    </h2>
                   </div>
                   
-                  {/* Sticky Rectangle ad Zone C */}
-                  <AdSlot position="C" />
+                  <button 
+                    onClick={() => navigate('/news')}
+                    className="btn btn-gold-fill"
+                    style={{ 
+                      fontSize: '13px', 
+                      padding: '8px 18px', 
+                      fontWeight: 600, 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '6px',
+                      borderRadius: '4px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <span>{t('view_all_news', 'Alle News-Archive anzeigen')}</span>
+                    <ArrowRight size={15} />
+                  </button>
                 </div>
 
+                {/* Responsive 3 or 4 Column Box Grid */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '24px' }}>
+                  {(homeNews || []).map(art => (
+                    <div 
+                      key={art.id} 
+                      onClick={() => navigate(`/news/${art.slug || art.id}`)}
+                      style={{ 
+                        backgroundColor: '#FFFFFF',
+                        border: '1px solid #E5E7EB',
+                        borderRadius: '8px',
+                        overflow: 'hidden',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justify: 'space-between',
+                        transition: 'transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease'
+                      }}
+                      className="home-news-card"
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateY(-4px)';
+                        e.currentTarget.style.boxShadow = '0 12px 20px -4px rgba(0, 0, 0, 0.08)';
+                        e.currentTarget.style.borderColor = 'var(--primary-red)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = 'none';
+                        e.currentTarget.style.borderColor = '#E5E7EB';
+                      }}
+                    >
+                      {art.image_url ? (
+                        <div style={{ height: '160px', width: '100%', overflow: 'hidden' }}>
+                          <img 
+                            src={art.image_url} 
+                            alt={art.title} 
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                          />
+                        </div>
+                      ) : (
+                        <div style={{ height: '160px', width: '100%', backgroundColor: '#F3F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <span style={{ color: '#9CA3AF', fontSize: '12px' }}>PrivateSector News</span>
+                        </div>
+                      )}
+
+                      <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                            <span style={{ fontSize: '11px', color: 'var(--primary-red)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 700 }}>
+                              {art.category}
+                            </span>
+                            {art.date_published && (
+                              <span style={{ fontSize: '11px', color: '#9CA3AF' }}>
+                                {art.date_published}
+                              </span>
+                            )}
+                          </div>
+                          <h3 style={{ fontSize: '17px', fontFamily: '"Playfair Display", serif', color: 'var(--text-ink)', margin: '0 0 8px 0', fontWeight: 700, lineHeight: 1.3 }}>
+                            {art.title}
+                          </h3>
+                          <p style={{ fontSize: '13px', color: '#4B5563', lineHeight: 1.5, margin: '0 0 16px 0', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                            {art.subtitle}
+                          </p>
+                        </div>
+
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', color: 'var(--primary-red)', fontWeight: 600 }}>
+                          <span>Weiterlesen</span>
+                          <ArrowRight size={14} />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              {/* 2. Spotlight Enterprises Grid */}
+              {/* 2. Premium Business Spotlight Section */}
               <div style={{ marginTop: '64px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '12px', marginBottom: '24px' }}>
                   <h2 style={{ fontSize: '24px', fontFamily: '"Playfair Display", serif', fontWeight: 700 }}>
