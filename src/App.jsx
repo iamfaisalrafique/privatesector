@@ -277,17 +277,24 @@ function AppContent() {
                 </div>
               </div>
 
-              {/* Interactive Canton, Live Register, & Network Graphics */}
-              <HomepageGraphics navigate={navigate} />
-
               {/* Editorial / News teaser block */}
               <div style={{ marginTop: '64px', display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '32px' }} className="home-news-row">
                 
                 {/* News feed column */}
                 <div>
-                  <h2 style={{ fontSize: '24px', fontFamily: '"Playfair Display", serif', fontWeight: 700, borderBottom: '0.5px solid var(--light-border)', paddingBottom: '12px', marginBottom: '24px' }}>
-                    {t('news_title', 'Wirtschaftsanalysen & Berichte')}
-                  </h2>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '12px', marginBottom: '24px' }}>
+                    <h2 style={{ fontSize: '24px', fontFamily: '"Playfair Display", serif', fontWeight: 700, margin: 0 }}>
+                      {t('news_title', 'Wirtschaftsanalysen & Berichte')}
+                    </h2>
+                    <a 
+                      href="#/news" 
+                      onClick={(e) => { e.preventDefault(); navigate('/news'); }}
+                      style={{ fontSize: '13px', color: 'var(--primary-red)', textDecoration: 'none', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}
+                    >
+                      <span>{t('see_all_news', 'Mehr anzeigen')}</span>
+                      <ArrowRight size={14} />
+                    </a>
+                  </div>
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                     {(homeNews || []).map(art => (
@@ -346,6 +353,9 @@ function AppContent() {
                 </div>
 
               </div>
+
+              {/* Interactive Canton, Live Register, & Network Graphics */}
+              <HomepageGraphics navigate={navigate} />
 
             </div>
 
