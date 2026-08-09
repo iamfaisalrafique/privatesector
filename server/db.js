@@ -708,6 +708,553 @@ export async function initializeDatabase() {
     console.log('Starting background incremental auto-translation scanner...');
     autoTranslateDatabaseContent().catch(err => console.error('Background auto-translation error:', err));
   }
+
+  // Guarantee the KKR Medtech Deal Radar article is seeded in both SQLite and PostgreSQL on startup
+  await seedKkrArticle().catch(err => console.error('Error seeding KKR article:', err));
+}
+
+async function seedKkrArticle() {
+  const slug = "kkr-integer-holdings-acquisition-swiss-medtech";
+  const existing = await dbGet('SELECT id FROM news WHERE slug = ?', [slug]);
+  if (existing) {
+    console.log('KKR Integer Acquisition article already exists in database.');
+    return;
+  }
+
+  console.log('Seeding KKR Integer Acquisition article...');
+  const title = "KKR's $5.7 Billion Integer Acquisition Puts a U.S.–Swiss Medtech Connection in the Spotlight";
+  const subtitle = "A major American private-equity transaction reaches directly into Switzerland's medical-technology ecosystem — and PrivateSector sees more than an acquisition.";
+  const category = "Medical Technology";
+  const author_name = "PrivateSector Intelligence";
+  const author_avatar = "https://i.pravatar.cc/100?img=33";
+  const date_published = "2026-08-09";
+  const read_time_mins = 6;
+  const pull_quote = "Something significant has changed. Switzerland is already inside the story. Pay attention to what happens next.";
+  const tags = JSON.stringify(["Integer Holdings", "KKR", "Medical Technology", "Biel/Bienne", "Private Equity", "Acquisition"]);
+  const image_url = "https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=600";
+  const focus_keyword = "KKR Integer Holdings acquisition";
+  const meta_title = "KKR's $5.7B Integer Acquisition & Swiss Medtech Connection";
+  const meta_description = "KKR acquires Integer Holdings for $5.7 billion. Analyze the strategic impact on Integer's European headquarters in Biel/Bienne, Switzerland.";
+  
+  const content_body = `EXECUTIVE SUMMARY
+
+KKR has agreed to acquire Integer Holdings Corporation in an all-cash transaction valued at approximately $5.7 billion, taking one of the world's largest medical-device contract development and manufacturing organizations private.
+
+Shareholders are expected to receive $127 per share, with completion targeted by the end of 2026, subject to customary closing conditions.
+
+But for Switzerland, the important detail sits beneath the transaction headline.
+
+Integer's European headquarters are in Biel/Bienne, Switzerland.
+
+Integer operates across cardiovascular, neuromodulation and cardiac-rhythm-management markets and provides advanced engineering, component manufacturing, assembly and finished-device capabilities to global medical-device companies.
+
+PrivateSector therefore sees this transaction not simply as another American private-equity acquisition.
+
+It represents a significant ownership change involving a U.S. medical-technology manufacturer with an established Swiss corporate presence — potentially creating strategic questions around investment, manufacturing, partnerships, technology and future European development.
+
+---
+
+01 | THE SIGNAL
+
+Private-equity firm "KKR" (https://reference-url-citation.invalid/1) has agreed to acquire "Integer Holdings Corporation" (https://reference-url-citation.invalid/2).
+
+Transaction value: approximately $5.7 billion
+
+Offer: $127 per share
+
+Sector: Medical technology / contract development and manufacturing
+
+Buyer: KKR
+
+Target: Integer Holdings Corporation
+
+Expected closing: By the end of 2026, subject to required conditions
+
+PrivateSector Verification: CONFIRMED ✓
+
+The transaction attracted international financial coverage.
+
+PrivateSector's interest, however, begins where the acquisition headline ends.
+
+---
+
+02 | THE SWISS CONNECTION 🇨🇭
+
+Integer has established operations in Switzerland.
+
+Its Biel/Bienne office serves as the company's European headquarters.
+
+That changes the relevance of this transaction considerably for our audience.
+
+This is not simply:
+
+American private equity → American medtech company.
+
+There is another layer:
+
+American capital → global medtech manufacturer → established Swiss presence → European medical-technology ecosystem.
+
+Switzerland is therefore already inside the story.
+
+And that raises the question PrivateSector exists to investigate:
+
+«What could new ownership eventually mean for Integer's Swiss and European activities — and where could opportunities emerge around them?»
+
+At present, PrivateSector has found no announcement that KKR plans a specific expansion, restructuring or new investment in Integer's Swiss operations.
+
+That distinction matters.
+
+The transaction is confirmed. Future Swiss opportunities are analysis, not confirmed commitments.
+
+---
+
+03 | WHAT KKR IS ACTUALLY BUYING
+
+Integer is not merely a medical-device brand.
+
+It is one of the world's largest medical-device contract development and manufacturing organizations.
+
+Its capabilities span areas including:
+
+• Precision manufacturing
+
+• Complex medical-device assembly
+
+• Catheters and components
+
+• Batteries and power technologies
+
+• Laser processing
+
+• Coatings
+
+• Molding and machining
+
+• Welding
+
+• Prototyping
+
+• Testing
+
+• Packaging and sterilization
+
+• Scale-up manufacturing
+
+• Integrated supply-chain services
+
+Integer says it operates across 23 manufacturing sites and provides more than 2.5 million square feet of manufacturing space globally.
+
+Its major markets include:
+
+Cardio & Vascular
+
+Cardiac Rhythm Management
+
+Neuromodulation
+
+That means KKR is acquiring not simply products, but a substantial manufacturing and engineering platform embedded inside the global medical-device supply chain.
+
+---
+
+04 | WHY PRIVATESECTOR SELECTED THIS DEAL
+
+The $5.7 billion headline alone was not enough.
+
+PrivateSector selected the transaction because four elements intersect:
+
+01 — SCALE
+
+A multibillion-dollar healthcare transaction.
+
+02 — STRATEGIC INDUSTRY
+
+Medical devices and advanced manufacturing are areas in which Switzerland has substantial expertise.
+
+03 — DIRECT SWISS CONNECTION
+
+Integer's European headquarters are already located in Biel/Bienne.
+
+04 — CHANGE OF OWNERSHIP
+
+A major ownership transition can create new strategic priorities over time — including investment, portfolio decisions, manufacturing optimization, partnerships and expansion.
+
+That does not mean any of those outcomes will occur.
+
+It means the transaction deserves monitoring.
+
+---
+
+05 | PRIVATESECTOR OPPORTUNITY MAP
+
+If KKR seeks to accelerate Integer's growth over the coming years, PrivateSector believes several areas deserve particular attention.
+
+ADVANCED MANUFACTURING
+
+Integer operates sophisticated manufacturing processes across medical-device components and complete systems.
+
+Switzerland has deep capabilities in precision engineering, automation and advanced manufacturing.
+
+MEDTECH INNOVATION
+
+Integer's cardiovascular and neuromodulation activities overlap with areas in which Switzerland has an established medical-technology ecosystem.
+
+SUPPLY CHAIN
+
+A global manufacturing network creates continuing requirements for components, tooling, manufacturing technology, quality systems and specialized suppliers.
+
+EUROPEAN DEVELOPMENT
+
+Because Biel/Bienne already serves as Integer's European headquarters, Switzerland has an existing position inside Integer's European structure.
+
+INVESTMENT
+
+New private-equity ownership makes future capital allocation particularly important to monitor.
+
+The central PrivateSector question is therefore not:
+
+«Will Swiss companies automatically benefit from this acquisition?»
+
+They will not.
+
+The correct question is:
+
+«Which future decisions under KKR ownership could create opportunities — and which Swiss companies would possess the capabilities to respond if those opportunities emerge?»
+
+---
+
+06 | SWISS COMPANIES TO WATCH 🇨🇭
+
+PrivateSector is deliberately not yet declaring specific Swiss companies as confirmed opportunity candidates.
+
+Why?
+
+Because no public procurement, supplier search, partnership program or Swiss expansion connected to the acquisition has been identified.
+
+Naming companies merely because they operate in medtech would weaken our analysis.
+
+Instead, PrivateSector will monitor Switzerland's medical-device, precision-manufacturing, automation and healthcare-technology ecosystem and identify specific companies when evidence supports a genuine capability match.
+
+This is an important PrivateSector principle:
+
+«We name companies when the evidence supports the match — not because a company name makes the article more exciting.»
+
+---
+
+07 | SIMILAR CASES™
+
+Before PrivateSector recommends a Swiss company as strategically positioned for a future Integer opportunity, we will test the match against precedent.
+
+Our Similar Cases analysis will ask:
+
+Has the company supplied comparable technology before?
+
+Has it participated in comparable U.S. medical-device projects?
+
+Does it already operate in the United States?
+
+Has it worked with medical-device manufacturers or CDMOs?
+
+Can we document the previous project?
+
+Was its role actually comparable to the opportunity we are examining?
+
+Only then will PrivateSector move a company from:
+
+WATCH
+
+to
+
+POTENTIAL FIT
+
+or
+
+HIGH FIT.
+
+Previous success will never be presented as proof of future success.
+
+Instead, Similar Cases provide evidence that the capability exists.
+
+---
+
+08 | POTENTIAL UPSIDE
+
+If new investment or expansion follows the acquisition, possible areas of opportunity could include:
+
+Manufacturing technology
+
+New equipment or production processes.
+
+Swiss supplier relationships
+
+Specialized components, tooling, engineering or manufacturing technologies.
+
+Research and development
+
+Potential collaboration across Europe's medtech ecosystem.
+
+European expansion
+
+Additional strategic importance for Integer's existing Swiss base.
+
+Cross-border investment
+
+Further integration between American capital and Swiss medical-technology expertise.
+
+These are potential pathways.
+
+None should currently be interpreted as announced KKR or Integer plans.
+
+---
+
+09 | POTENTIAL RISK / DOWNSIDE
+
+Opportunity intelligence becomes useful only when risk is examined alongside upside.
+
+PROCUREMENT VISIBILITY — HIGH RISK
+
+No relevant open procurement process has yet been identified.
+
+EXISTING SUPPLIERS — HIGH RISK
+
+Integer already operates a mature global manufacturing network and will have established supplier relationships.
+
+OWNERSHIP-TRANSITION UNCERTAINTY — MEDIUM/HIGH
+
+KKR's eventual strategic priorities for individual Integer locations and operations are not yet fully visible publicly.
+
+COMPETITION — HIGH
+
+Medical-device manufacturing is highly specialized and globally competitive.
+
+REGULATORY COMPLEXITY — HIGH
+
+Medical-device manufacturing operates under demanding regulatory and quality requirements.
+
+TIMING — MEDIUM
+
+The acquisition itself is expected to close by year-end 2026, meaning many strategic decisions may emerge only later.
+
+---
+
+10 | PRIVATESECTOR OPPORTUNITY SCORE
+
+Strategic Importance
+★★★★★
+
+Swiss Connection
+★★★★★
+
+Medtech Relevance
+★★★★★
+
+Immediate Procurement Visibility
+★★☆☆☆
+
+Current Swiss Company Match Evidence
+★★☆☆☆
+
+Long-Term Opportunity Potential
+★★★★☆
+
+Monitoring Priority
+★★★★★
+
+PRIVATESECTOR ASSESSMENT
+
+HIGH STRATEGIC INTEREST — MONITOR CLOSELY
+
+The Swiss connection is real.
+
+The transaction is real.
+
+Integer's advanced manufacturing capabilities are real.
+
+What is not yet established is whether KKR's ownership will produce new procurement, investment or partnership opportunities relevant to additional Swiss companies.
+
+That is exactly why this development belongs on the PrivateSector Radar.
+
+---
+
+11 | WHAT HAPPENS NEXT?
+
+PrivateSector will monitor the transaction for several signals:
+
+→ Completion of the KKR acquisition
+
+→ Statements regarding Integer's post-acquisition strategy
+
+→ Investment in manufacturing capacity
+
+→ Changes involving Integer's European operations
+
+→ Developments at the Biel/Bienne headquarters
+
+→ New supplier relationships
+
+→ Acquisitions by Integer
+
+→ New manufacturing facilities
+
+→ R&D partnerships
+
+→ Major hiring activity
+
+→ Capital investment announcements
+
+→ New U.S.–Swiss medtech relationships
+
+The first meaningful appearance of one of these signals could move this story from transaction intelligence into an actionable opportunity.
+
+---
+
+12 | PRIVATESECTOR INSIGHT
+
+Most readers will see:
+
+«KKR acquires Integer for $5.7 billion.»
+
+PrivateSector sees another question:
+
+«What happens after the acquisition?»
+
+A major investor is acquiring a global medical-device manufacturing platform.
+
+That platform already has its European headquarters in Switzerland.
+
+Its operations sit inside industries where Swiss engineering and medical-technology capabilities are significant.
+
+There is no justification today for claiming that a particular Swiss company will receive a contract because of this transaction.
+
+But there is every reason to place this development on the Swiss corporate radar.
+
+And if KKR and Integer begin investing, expanding, sourcing, partnering or restructuring, PrivateSector will already have the transaction mapped.
+
+That is the advantage of following an opportunity before the opportunity becomes obvious.
+
+---
+
+EXECUTIVE CONCLUSION
+
+The KKR–Integer transaction demonstrates exactly why PrivateSector does not stop at reporting business news.
+
+The headline is a $5.7 billion American acquisition.
+
+Underneath it sits a global medical-device manufacturing network, an established European headquarters in Biel/Bienne and a strategic ownership change whose consequences will unfold over time.
+
+PrivateSector therefore classifies the transaction:
+
+HIGH STRATEGIC INTEREST — MONITOR CLOSELY
+
+Today, we are not telling Swiss companies:
+
+"There is a contract waiting for you."
+
+We are telling them:
+
+"Something significant has changed. Switzerland is already inside the story. Pay attention to what happens next."
+
+And when evidence of an opportunity appears, PrivateSector will break it apart:
+
+What is required.
+
+Where the opportunity lies.
+
+Which companies genuinely fit.
+
+What Similar Cases tell us.
+
+What could be gained.
+
+What could go wrong.
+
+And what executives should watch next.
+
+---
+
+PRIVATESECTOR INTELLIGENCE CARD
+
+Radar ID: USR-000001
+
+Corridor: 🇺🇸 United States ↔ Switzerland 🇨🇭
+
+Sector: Medical Technology
+
+Transaction: KKR acquisition of Integer Holdings
+
+Transaction Value: Approx. $5.7 billion
+
+Swiss Connection: Biel/Bienne — Integer European Headquarters
+
+Opportunity Status: EARLY
+
+PrivateSector Classification: HIGH STRATEGIC INTEREST
+
+Action: MONITOR CLOSELY
+
+Verification: CONFIRMED
+
+---
+
+ABOUT PRIVATESECTOR INTELLIGENCE
+
+PrivateSector Intelligence identifies important business developments across Switzerland and the United States, breaks them into potential opportunities, identifies companies positioned to participate when supported by evidence, and tests those matches against real-world precedent.
+
+We don't stop at the news. We find where the opportunity lies.
+
+🇨🇭 ↔ 🇺🇸
+
+---
+
+SOURCES & VERIFICATION
+
+PrivateSector identified the transaction through specialist and financial reporting and independently verified the core facts using company and regulatory information.
+
+Primary research included official information from "Integer Holdings Corporation" (https://reference-url-citation.invalid/3) concerning the company's operations, manufacturing capabilities and Swiss headquarters.
+
+Independent transaction reporting from Reuters confirmed KKR's agreement to acquire Integer in an approximately $5.7 billion transaction at $127 per share.
+
+Integer's official corporate information confirms that Biel/Bienne serves as its European headquarters.
+
+All opportunity analysis, risk assessment and Swiss–U.S. interpretation above are PrivateSector Intelligence analysis based on publicly available information.
+
+Editorial status: Independent analysis
+Published: 09 August 2026
+PrivateSector U.S. Deal Radar: USR-000001`;
+
+  const schema_markup = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    "headline": title,
+    "description": meta_description,
+    "image": image_url,
+    "datePublished": date_published,
+    "author": {
+      "@type": "Organization",
+      "name": author_name,
+      "url": "https://privatesector.ch"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "PrivateSector",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://privatesector.ch/assets/logo_highres.png"
+      }
+    }
+  }, null, 2);
+
+  await dbRun(`
+    INSERT INTO news (
+      title, subtitle, category, author_name, author_avatar, date_published, 
+      read_time_mins, content_body, pull_quote, tags, image_url, 
+      focus_keyword, meta_title, meta_description, slug, schema_markup
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `, [
+    title, subtitle, category, author_name, author_avatar, date_published,
+    read_time_mins, content_body, pull_quote, tags, image_url,
+    focus_keyword, meta_title, meta_description, slug, schema_markup
+  ]);
+  console.log('KKR Integer Acquisition article seeded successfully.');
 }
 
 async function seedData() {
