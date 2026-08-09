@@ -20,8 +20,10 @@ const connectionString = process.env.DATABASE_URL;
 if (connectionString) {
   console.log('DATABASE_URL environment variable found. Using PostgreSQL.');
   usePg = true;
+  const isLocal = connectionString.includes('localhost') || connectionString.includes('127.0.0.1');
   pool = new pg.Pool({
     connectionString,
+    ssl: isLocal ? false : { rejectUnauthorized: false }
   });
   pool.on('error', (err) => {
     console.error('Unexpected error on idle pg client', err);
