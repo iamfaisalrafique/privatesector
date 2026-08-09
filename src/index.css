@@ -506,4 +506,64 @@ p, li, .sans-font {
   display: block;
 }
 
+/* Full Width Responsive News Archive Grid & 2-Row Layout Rules */
+.home-news-archive-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 24px;
+}
 
+@media (min-width: 640px) {
+  .home-news-archive-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .home-news-archive-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1440px) {
+  .home-news-archive-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1800px) {
+  .home-news-archive-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* Limit to exactly 2 rows per breakpoint */
+@media (max-width: 639px) {
+  .home-news-card:nth-child(n+3) {
+    display: none !important;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .home-news-card:nth-child(n+5) {
+    display: none !important;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .home-news-card:nth-child(n+7) {
+    display: none !important;
+  }
+}
+
+@media (min-width: 1440px) and (max-width: 1799px) {
+  .home-news-card:nth-child(n+9) {
+    display: none !important;
+  }
+}
+
+@media (min-width: 1800px) {
+  .home-news-card:nth-child(n+13) {
+    display: none !important;
+  }
+}

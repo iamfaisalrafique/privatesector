@@ -106,7 +106,7 @@ function AppContent() {
         const newsRes = await fetch('/api/news');
         if (newsRes.ok) {
           const list = await newsRes.json();
-          setHomeNews(Array.isArray(list) ? list.slice(0, 4) : []);
+          setHomeNews(Array.isArray(list) ? list.slice(0, 12) : []);
         }
       } catch (e) {
         console.error('Error loading homepage feeds:', e);
@@ -243,7 +243,7 @@ function AppContent() {
             <Hero navigate={navigate} />
 
             {/* Homepage Body content */}
-            <div className="container" style={{ paddingTop: '64px', paddingBottom: '96px' }}>
+            <div className="container" style={{ paddingTop: '64px', paddingBottom: '96px', maxWidth: '1680px' }}>
               
               {/* Leaderboard Zone A */}
               <AdSlot position="A" />
@@ -279,8 +279,8 @@ function AppContent() {
                   </button>
                 </div>
 
-                {/* Responsive 3 or 4 Column Box Grid */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '24px' }}>
+                {/* Responsive 3 to 6 Column Box Grid (Laptop: 3 cols x 2 rows = 6 items; Big Screen: 4-6 cols x 2 rows = 8-12 items) */}
+                <div className="home-news-archive-grid">
                   {(homeNews || []).map(art => (
                     <div 
                       key={art.id} 
