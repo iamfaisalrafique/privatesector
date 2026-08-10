@@ -393,16 +393,16 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
           }} className="sidebar-grid-layout">
             
             {/* Left Column: Article Body */}
-            <article style={{ maxWidth: '720px', width: '100%' }}>
+            <article style={{ maxWidth: '720px', width: '100%', boxSizing: 'border-box', overflowWrap: 'break-word', wordBreak: 'break-word' }}>
               <span className="badge badge-industry" style={{ marginBottom: '16px', backgroundColor: 'var(--primary-red)', color: '#FFF', padding: '4px 8px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                 {activeArticle.category}
               </span>
               
-              <h1 style={{ fontFamily: '"Playfair Display", Georgia, serif', fontSize: '38px', lineHeight: 1.2, color: 'var(--text-ink)', marginBottom: '16px', fontWeight: 700 }}>
+              <h1 style={{ fontFamily: '"Playfair Display", Georgia, serif', fontSize: '38px', lineHeight: 1.2, color: 'var(--text-ink)', marginBottom: '16px', fontWeight: 700, overflowWrap: 'break-word', wordBreak: 'break-word' }}>
                 {activeArticle.title}
               </h1>
               
-              <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '18px', lineHeight: 1.5, color: 'var(--text-charcoal)', marginBottom: '24px' }}>
+              <p style={{ fontFamily: 'Inter, sans-serif', fontSize: '18px', lineHeight: 1.5, color: 'var(--text-charcoal)', marginBottom: '24px', overflowWrap: 'break-word', wordBreak: 'break-word' }}>
                 {activeArticle.subtitle}
               </p>
 
@@ -430,7 +430,7 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
               )}
 
               {/* Editorial Body Content */}
-              <div className="editorial-content-body" style={{ fontSize: '16px', lineHeight: 1.8, color: 'var(--text-ink)' }}>
+              <div className="editorial-content-body" style={{ fontSize: '16px', lineHeight: 1.8, color: 'var(--text-ink)', overflowWrap: 'break-word', wordBreak: 'break-word', maxWidth: '100%' }}>
                 {renderArticleMarkdown(activeArticle.content_body)}
               </div>
 

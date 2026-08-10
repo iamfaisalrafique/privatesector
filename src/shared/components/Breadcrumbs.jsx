@@ -34,14 +34,16 @@ export default function Breadcrumbs({ paths = [], navigate }) {
           <React.Fragment key={idx}>
             <ChevronRight size={12} style={{ color: '#9CA3AF' }} />
             {isLast ? (
-              <span style={{ color: '#111827', fontWeight: 600 }}>{p.name}</span>
+              <span style={{ color: '#111827', fontWeight: 600, maxWidth: '100%', wordBreak: 'break-word' }}>{p.name}</span>
             ) : (
               <span 
                 onClick={() => p.url && navigate(p.url)}
                 style={{ 
                   cursor: p.url ? 'pointer' : 'default', 
                   color: '#374151',
-                  fontWeight: 500
+                  fontWeight: 500,
+                  maxWidth: '100%',
+                  wordBreak: 'break-word'
                 }}
               >
                 {p.name}
