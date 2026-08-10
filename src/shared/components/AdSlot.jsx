@@ -163,10 +163,10 @@ export default function AdSlot({ position, adData, adminPreview = false }) {
           </span>
           <div style={{ textAlign: 'center', padding: '16px' }}>
             <span style={{ fontSize: '12px', color: 'var(--text-charcoal)', display: 'block', marginBottom: '8px' }}>
-              {t('Spotlight-Unternehmen', 'Spotlight-Unternehmen')}
+              {t('Spotlight Company', 'Spotlight Company')}
             </span>
             <span style={{ fontSize: '10px', color: '#888' }}>
-              {t('Sponsor-Dossier hier platzieren.', 'Sponsor-Dossier hier platzieren.')}
+              {t('Place sponsor dossier here.', 'Place sponsor dossier here.')}
             </span>
           </div>
         </div>

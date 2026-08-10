@@ -14,21 +14,21 @@ const CANTON_DATA = [
 ];
 
 const INITIAL_REGISTER_EVENTS = [
-  { id: 1, time: 'Vor 2 Min.', company: 'Roche Holding AG', canton: 'BS', action: 'VR-Mitglied Mutation eingetragen', type: 'mutation' },
-  { id: 2, time: 'Vor 5 Min.', company: 'UBS Group AG', canton: 'ZH', action: 'Kapitalerhöhung im Handelsregister publiziert', type: 'capital' },
-  { id: 3, time: 'Vor 12 Min.', company: 'Stadler Rail AG', canton: 'TG', action: 'Statutenänderung genehmigt', type: 'statutes' },
-  { id: 4, time: 'Vor 18 Min.', company: 'Glencore International AG', canton: 'ZG', action: 'Prokura erloschen für 2 Zeichnungsberechtigte', type: 'deletion' },
-  { id: 5, time: 'Vor 25 Min.', company: 'Nestlé S.A.', canton: 'VD', action: 'Neue Zweigniederlassung registriert in Vevey', type: 'new' },
-  { id: 6, time: 'Vor 35 Min.', company: 'Swisscom AG', canton: 'BE', action: 'Zweigniederlassung Mutation', type: 'mutation' }
+  { id: 1, time: '2 mins ago', company: 'Roche Holding AG', canton: 'BS', action: 'Board Member mutation registered', type: 'mutation' },
+  { id: 2, time: '5 mins ago', company: 'UBS Group AG', canton: 'ZH', action: 'Capital increase published in commercial register', type: 'capital' },
+  { id: 3, time: '12 mins ago', company: 'Stadler Rail AG', canton: 'TG', action: 'Articles of association amendment approved', type: 'statutes' },
+  { id: 4, time: '18 mins ago', company: 'Glencore International AG', canton: 'ZG', action: 'Power of attorney expired for 2 signatories', type: 'deletion' },
+  { id: 5, time: '25 mins ago', company: 'Nestlé S.A.', canton: 'VD', action: 'New branch office registered in Vevey', type: 'new' },
+  { id: 6, time: '35 mins ago', company: 'Swisscom AG', canton: 'BE', action: 'Branch office mutation', type: 'mutation' }
 ];
 
 const MOCK_REGISTER_TEMPLATES = [
-  { company: 'Novartis AG', canton: 'BS', action: 'Eintragung eines neuen Markenpatents', type: 'patent' },
-  { company: 'SGS SA', canton: 'GE', action: 'Statutenänderung und Sitzverlegung', type: 'statutes' },
-  { company: 'Richemont SA', canton: 'GE', action: 'VR-Präsident wiedergewählt', type: 'mutation' },
-  { company: 'Kühne + Nagel International AG', canton: 'SZ', action: 'Aktienkapital neu CHF 120\'000\'000', type: 'capital' },
-  { company: 'Swiss Re AG', canton: 'ZH', action: 'Veränderung der Zeichnungsberechtigung', type: 'mutation' },
-  { company: 'Holcim AG', canton: 'ZG', action: 'Verschmelzung mit Tochtergesellschaft genehmigt', type: 'merger' }
+  { company: 'Novartis AG', canton: 'BS', action: 'Registration of a new trademark patent', type: 'patent' },
+  { company: 'SGS SA', canton: 'GE', action: 'Amendment of articles and transfer of seat', type: 'statutes' },
+  { company: 'Richemont SA', canton: 'GE', action: 'Board Chairman re-elected', type: 'mutation' },
+  { company: 'Kühne + Nagel International AG', canton: 'SZ', action: 'Share capital newly CHF 120,000,000', type: 'capital' },
+  { company: 'Swiss Re AG', canton: 'ZH', action: 'Change in signing authority', type: 'mutation' },
+  { company: 'Holcim AG', canton: 'ZG', action: 'Merger with subsidiary approved', type: 'merger' }
 ];
 
 export default function HomepageGraphics({ navigate }) {
@@ -42,7 +42,7 @@ export default function HomepageGraphics({ navigate }) {
       const randomTemplate = MOCK_REGISTER_TEMPLATES[Math.floor(Math.random() * MOCK_REGISTER_TEMPLATES.length)];
       const newEvent = {
         id: Date.now(),
-        time: 'Gerade eben',
+        time: 'Just now',
         company: randomTemplate.company,
         canton: randomTemplate.canton,
         action: randomTemplate.action,
@@ -52,13 +52,13 @@ export default function HomepageGraphics({ navigate }) {
       setRegisterEvents(prev => {
         // Shift existing times
         const updatedPrev = prev.map((e, idx) => {
-          if (e.time === 'Gerade eben') return { ...e, time: 'Vor 1 Min.' };
-          if (e.time.startsWith('Vor 1 Min.')) return { ...e, time: 'Vor 3 Min.' };
-          if (e.time.startsWith('Vor 2')) return { ...e, time: 'Vor 5 Min.' };
-          if (e.time.startsWith('Vor 5')) return { ...e, time: 'Vor 8 Min.' };
-          if (e.time.startsWith('Vor 12')) return { ...e, time: 'Vor 15 Min.' };
-          if (e.time.startsWith('Vor 18')) return { ...e, time: 'Vor 22 Min.' };
-          if (e.time.startsWith('Vor 25')) return { ...e, time: 'Vor 30 Min.' };
+          if (e.time === 'Just now') return { ...e, time: '1 min ago' };
+          if (e.time.startsWith('1 min')) return { ...e, time: '3 mins ago' };
+          if (e.time.startsWith('2 mins')) return { ...e, time: '5 mins ago' };
+          if (e.time.startsWith('5 mins')) return { ...e, time: '8 mins ago' };
+          if (e.time.startsWith('12 mins')) return { ...e, time: '15 mins ago' };
+          if (e.time.startsWith('18 mins')) return { ...e, time: '22 mins ago' };
+          if (e.time.startsWith('25 mins')) return { ...e, time: '30 mins ago' };
           return e;
         });
         return [newEvent, ...updatedPrev.slice(0, 5)];

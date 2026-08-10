@@ -148,7 +148,7 @@ export default function Hero({ navigate }) {
               <Search size={18} style={{ color: 'var(--primary-red)', marginLeft: '12px' }} />
               <input 
                 type="text"
-                placeholder={t('Firma suchen (z.B. Nestlé, Roche, UBS)...', 'Firma suchen (z.B. Nestlé, Roche, UBS)...')}
+                placeholder={t('search_company_placeholder', 'Search company (e.g. Nestlé, Roche, UBS)...')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 style={{
@@ -171,13 +171,13 @@ export default function Hero({ navigate }) {
                   fontSize: '13px'
                 }}
               >
-                {t('Suchen', 'Suchen')}
+                {t('Search', 'Search')}
               </button>
             </form>
 
             {/* Quick searches */}
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap', marginBottom: '36px', fontSize: '12px' }}>
-              <span style={{ color: 'var(--text-charcoal)' }}>{t('popular_searches', 'Beliebte Suchen:')}</span>
+              <span style={{ color: 'var(--text-charcoal)' }}>{t('popular_searches', 'Popular Searches:')}</span>
               {['Nestlé', 'Roche', 'UBS', 'Stadler Rail'].map(term => (
                 <span 
                   key={term}

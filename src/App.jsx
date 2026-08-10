@@ -217,7 +217,7 @@ function AppContent() {
       {routeInfo.route === 'home' && (
         <div className="breaking-banner">
           <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <span className="breaking-label">{t('breaking_news', 'Eilmeldung')}</span>
+            <span className="breaking-label">{t('breaking_news', 'BREAKING NEWS')}</span>
             <marquee scrollamount="4" style={{ fontFamily: 'Inter, sans-serif', fontSize: '12px' }}>
               {t('marquee_text', '+++ Swiss Federal Council announces tax relief for private R&D hubs +++ Nestlé expands sustainability audits across agricultural supply chains +++ UBS receives approval for tokenized bond pilot project in Geneva +++')}
             </marquee>
@@ -252,10 +252,10 @@ function AppContent() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '16px', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
                   <div>
                     <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--primary-red)', display: 'block', marginBottom: '2px' }}>
-                      {t('news_archive_badge', 'DAILY WIRTSCHAFTS-NEWS & ARCHIV')}
+                      {t('news_archive_badge', 'DAILY BUSINESS NEWS & ARCHIVE')}
                     </span>
                     <h2 style={{ fontSize: '26px', fontFamily: '"Playfair Display", serif', fontWeight: 700, margin: 0, color: 'var(--text-ink)' }}>
-                      {t('latest_news_heading', 'Aktuelle Nachrichten & Marktarchiv')}
+                      {t('latest_news_heading', 'Latest News & Market Archive')}
                     </h2>
                   </div>
                   
@@ -273,7 +273,7 @@ function AppContent() {
                       cursor: 'pointer'
                     }}
                   >
-                    <span>{t('view_all_news', 'Alle News-Archive anzeigen')}</span>
+                    <span>{t('view_all_news', 'View All News Archives')}</span>
                     <ArrowRight size={15} />
                   </button>
                 </div>
@@ -342,7 +342,7 @@ function AppContent() {
                         </div>
 
                         <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', color: 'var(--primary-red)', fontWeight: 600 }}>
-                          <span>Weiterlesen</span>
+                          <span>Read Article</span>
                           <ArrowRight size={14} />
                         </div>
                       </div>
@@ -362,7 +362,7 @@ function AppContent() {
                     onClick={(e) => { e.preventDefault(); navigate('/unternehmen'); }}
                     style={{ fontSize: '13px', color: 'var(--primary-red)', textDecoration: 'none', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}
                   >
-                    <span>{t('open_directory', 'Verzeichnis öffnen')}</span>
+                    <span>{t('open_directory', 'Open Directory')}</span>
                     <ArrowRight size={14} />
                   </a>
                 </div>
@@ -490,7 +490,7 @@ function AppContent() {
         )}
 
         {/* ROUTE: CAREERS */}
-        {routeInfo.route === 'careers' && (
+        {routeInfo.route === 'karriere' && (
           <Careers navigate={navigate} />
         )}
 
@@ -501,7 +501,7 @@ function AppContent() {
 
         {/* ROUTE: STUDENT PROFILE */}
         {routeInfo.route === 'student-profile' && (
-          <StudentProfile studentId={routeInfo.id} navigate={navigate} />
+          <StudentProfile studentId={routeInfo.id || currentStudentId} navigate={navigate} />
         )}
 
         {/* ROUTE: STUDENT DASHBOARD */}
@@ -623,19 +623,6 @@ function AppContent() {
               <strong style={{ color: 'var(--primary-red)', display: 'block', marginBottom: '16px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{t('footer_console', 'Console')}</strong>
               <a href="#/admin" onClick={(e) => { e.preventDefault(); navigate('/admin'); }} style={{ color: '#4b5563', textDecoration: 'none', display: 'block', margin: '8px 0' }}>Admin Dashboard</a>
               <a href="#/statistiken" onClick={(e) => { e.preventDefault(); navigate('/statistiken'); }} style={{ color: '#4b5563', textDecoration: 'none', display: 'block', margin: '8px 0' }}>{t('footer_stats_heatmaps', 'Statistics & Heatmaps')}</a>
-            </div>
-          </div>
-
-          {/* 18 Languages Flag Grid */}
-          <div style={{ maxWidth: '1280px', margin: '0 auto 32px', borderTop: '0.5px solid #d1d5db', paddingTop: '24px' }}>
-            <span style={{ fontSize: '10px', color: '#4b5563', textTransform: 'uppercase', letterSpacing: '0.1em', display: 'block', marginBottom: '12px' }}>{t('footer_supported_langs', 'Supported Languages')}</span>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px 18px', fontSize: '11px', color: '#4b5563' }}>
-              {footerFlags.map(f => (
-                <div key={f.code} style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }} onClick={() => switchLanguage(f.code.toLowerCase())}>
-                  <span>{f.flag}</span>
-                  <span>{f.code}</span>
-                </div>
-              ))}
             </div>
           </div>
 
