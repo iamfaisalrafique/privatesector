@@ -304,8 +304,7 @@ export default function Navbar({ currentPath, navigate, currentUser, onLogout })
                 background: 'none',
                 border: 'none',
                 color: '#FFFFFF',
-                cursor: 'pointer',
-                display: 'none'
+                cursor: 'pointer'
               }}
               className="mobile-hamburger"
             >
@@ -323,7 +322,7 @@ export default function Navbar({ currentPath, navigate, currentUser, onLogout })
             borderBottom: '1px solid #2A2A2A',
             padding: '12px 24px',
             position: 'absolute',
-            top: '64px',
+            top: '100px',
             left: 0,
             right: 0,
             zIndex: 998
@@ -351,7 +350,7 @@ export default function Navbar({ currentPath, navigate, currentUser, onLogout })
         <div 
           style={{
             position: 'fixed',
-            top: '64px',
+            top: '100px',
             left: 0,
             right: 0,
             bottom: 0,
