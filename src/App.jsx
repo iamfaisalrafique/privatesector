@@ -11,7 +11,7 @@ import logo from './assets/logo_highres.png';
 import { Landmark, ArrowRight, ShieldCheck } from 'lucide-react';
 
 function AppContent() {
-  const { t, isRtl, switchLanguage, currentLang } = useLanguage();
+  const { t, isRtl } = useLanguage();
   const [pathState, setPathState] = useState(window.location.pathname + window.location.search);
   const [transitioning, setTransitioning] = useState(false);
   const [homeFeatured, setHomeFeatured] = useState([]);
@@ -50,7 +50,7 @@ function AppContent() {
   }, [pathState]);
 
 
-  // Path Routing Parser
+  // Path Routing Parser — English only, no lang prefixes
   useEffect(() => {
     const handlePopState = () => {
       setTransitioning(true);
@@ -58,24 +58,13 @@ function AppContent() {
       const currentSearch = window.location.search || '';
       const parts = currentPath.split('/').filter(Boolean);
       const validLangs = ['de', 'fr', 'en', 'ar'];
-      
-      if (parts.length > 0 && parts[0] === 'en') {
+
+      // Strip any legacy lang prefix from URL (e.g. /en/news -> /news)
+      if (parts.length > 0 && validLangs.includes(parts[0])) {
         const cleanPath = '/' + parts.slice(1).join('/');
-        const target = (cleanPath === '' || cleanPath === '//') ? '/' : cleanPath;
+        const target = (!cleanPath || cleanPath === '/') ? '/' : cleanPath;
         window.history.replaceState(null, '', `${target}${currentSearch}`);
         setPathState(target + currentSearch);
-        setTransitioning(false);
-        return;
-      }
-
-      if (parts.length === 0 || !validLangs.includes(parts[0])) {
-        if (currentLang !== 'en') {
-          const cleanPath = currentPath === '/' ? '' : currentPath;
-          window.history.replaceState(null, '', `/${currentLang}${cleanPath}${currentSearch}`);
-          setPathState(`/${currentLang}${cleanPath}${currentSearch}`);
-        } else {
-          setPathState(currentPath + currentSearch);
-        }
         setTransitioning(false);
         return;
       }
@@ -89,9 +78,9 @@ function AppContent() {
 
     window.addEventListener('popstate', handlePopState);
     handlePopState();
-    
+
     return () => window.removeEventListener('popstate', handlePopState);
-  }, [currentLang]);
+  }, []);
 
   // Fetch Homepage feeds safely
   useEffect(() => {
@@ -130,10 +119,7 @@ function AppContent() {
 
   const navigate = (path) => {
     const cleanPath = path.startsWith('/') ? path : '/' + path;
-    const newUrl = currentLang === 'en' 
-      ? `${cleanPath}`
-      : `/${currentLang}${cleanPath === '/' ? '' : cleanPath}`;
-    window.history.pushState(null, '', newUrl);
+    window.history.pushState(null, '', cleanPath);
     window.dispatchEvent(new Event('popstate'));
   };
 
