@@ -6,7 +6,7 @@ const router = Router();
 // GET all blogs
 router.get('/', async (req, res) => {
   try {
-    const blogs = await dbQuery('SELECT id, slug, title, subtitle, category, author_name, author_avatar, date_published, read_time_mins, pull_quote, tags, image_url FROM blogs ORDER BY date_published DESC');
+    const blogs = await dbQuery('SELECT * FROM blogs ORDER BY date_published DESC');
     const parsedBlogs = blogs.map(item => ({
       ...item,
       tags: JSON.parse(item.tags || '[]')

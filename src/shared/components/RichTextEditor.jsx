@@ -9,7 +9,9 @@ import {
   Quote, 
   Code, 
   Eye, 
-  Code2 
+  Code2,
+  Image as ImageIcon,
+  Link as LinkIcon
 } from 'lucide-react';
 
 export default function RichTextEditor({ value, onChange, placeholder = 'Write detailed content...' }) {
@@ -27,7 +29,7 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Write d
 
   const handleRef = (node) => {
     editorRef.current = node;
-    if (node && !node.innerHTML && value) {
+    if (node && value) {
       node.innerHTML = value;
     }
   };
@@ -39,6 +41,13 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Write d
     document.execCommand(command, false, val);
     if (editorRef.current) {
       onChange(editorRef.current.innerHTML);
+    }
+  };
+
+  const handleInsertImage = () => {
+    const url = window.prompt('Enter Image URL to insert into article body:');
+    if (url && url.trim()) {
+      executeCommand('insertImage', url.trim());
     }
   };
 
@@ -138,6 +147,14 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Write d
               style={toolbarButtonStyle}
             >
               <Code size={15} />
+            </button>
+            <button
+              type="button"
+              onClick={handleInsertImage}
+              title="Insert Inline Image"
+              style={toolbarButtonStyle}
+            >
+              <ImageIcon size={15} />
             </button>
           </>
         )}

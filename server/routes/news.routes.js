@@ -7,7 +7,7 @@ const router = Router();
 router.get('/', async (req, res) => {
   try {
     const { category, tag, search, student_author_id } = req.query;
-    let query = 'SELECT id, slug, title, subtitle, category, author_name, author_avatar, date_published, read_time_mins, pull_quote, tags, image_url, student_author_id FROM news WHERE 1=1';
+    let query = 'SELECT * FROM news WHERE 1=1';
     const params = [];
     
     if (category) {

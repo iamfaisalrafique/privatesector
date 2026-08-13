@@ -759,6 +759,709 @@ export async function initializeDatabase() {
 
   // Guarantee the KKR Medtech Deal Radar article is seeded in both SQLite and PostgreSQL on startup
   await seedKkrArticle().catch(err => console.error('Error seeding KKR article:', err));
+  await seedSandozArticle().catch(err => console.error('Error seeding Sandoz article:', err));
+  await seedBmsArticle().catch(err => console.error('Error seeding BMS article:', err));
+}
+
+async function seedSandozArticle() {
+  const slug = "americas-push-drug-production-home-puts-sandoz-strategic-crossroads";
+  const existing = await dbGet('SELECT id FROM news WHERE slug = ?', [slug]);
+  if (existing) {
+    console.log('Sandoz Drug Production article already exists in database.');
+    return;
+  }
+
+  console.log('Seeding Sandoz Drug Production article...');
+  const title = "America's Push to Bring Drug Production Home Puts Sandoz at a Strategic Crossroads";
+  const subtitle = "Sandoz is discussing potential U.S. manufacturing investment. PrivateSector examines what could come next — and where proven Swiss pharmaceutical capabilities may fit.";
+  const category = "Pharmaceuticals";
+  const author_name = "PrivateSector Intelligence";
+  const author_avatar = "https://i.pravatar.cc/100?img=33";
+  const date_published = "2026-08-09";
+  const read_time_mins = 7;
+  const pull_quote = "We don't stop at the news. We find where the opportunity lies.";
+  const tags = JSON.stringify(["Sandoz", "Pharmaceuticals", "Biosimilars", "U.S.-Swiss Industry", "SKAN", "SGS", "Manufacturing"]);
+  const image_url = "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&q=80&w=600";
+  const focus_keyword = "Sandoz US drug production manufacturing";
+  const meta_title = "America's Push for Drug Production Home Puts Sandoz at Crossroads";
+  const meta_description = "Sandoz discusses potential U.S. manufacturing investment. PrivateSector analyzes biosimilar growth, Swiss industrial capabilities (SKAN, SGS), and key risks.";
+  
+  const content_body = `## EXECUTIVE SUMMARY
+
+A significant question is emerging for one of Switzerland's most important pharmaceutical companies:
+
+**Will Sandoz rebuild a manufacturing footprint in the United States?**
+
+Sandoz is in discussions with the U.S. government over potential domestic manufacturing investment as Washington increases pressure on generic-drug producers to manufacture medicines for American patients inside the country.
+
+The timing is particularly important.
+
+Sandoz is entering a period of strong biosimilar growth. Second-quarter 2026 sales reached approximately $3.01 billion, while biosimilar sales increased strongly and North America became one of the most dynamic parts of the business.
+
+But Sandoz's current U.S. manufacturing position creates a strategic question.
+
+The company previously announced the closure of its Long Island manufacturing operation around the end of 2026, leaving it without the substantial domestic production footprint that several global pharmaceutical competitors maintain.
+
+PrivateSector therefore sees something larger than a tariff story.
+
+We see the possible beginning of a new U.S. pharmaceutical manufacturing decision — involving a Swiss company, American industrial policy, a rapidly expanding biosimilar market and a Swiss life-sciences ecosystem with capabilities that have already been deployed inside American pharmaceutical facilities.
+
+**No new Sandoz U.S. factory has been announced.**
+
+**No supplier contracts have been announced.**
+
+But the strategic conditions are changing.
+
+And that makes this an opportunity worth watching before the investment decision arrives.
+
+---
+
+## 01 | THE SIGNAL
+
+Sandoz Chief Executive Richard Saynor has confirmed discussions with the U.S. government concerning possible manufacturing investment in the United States.
+
+The talks are taking place as Washington pushes generic-drug manufacturers toward greater domestic production.
+
+That matters particularly for Sandoz because the company is deeply exposed to the American healthcare market while having limited U.S. manufacturing capacity once its Long Island operation closes.
+
+The situation creates a strategic tension:
+
+- America wants more medicines manufactured domestically.
+- Sandoz wants competitive economics and predictable returns.
+- Between those two objectives could eventually sit a major investment decision.
+
+### PRIVATESECTOR VERIFICATION
+
+- **Government discussions:** CONFIRMED ✓
+- **New U.S. Sandoz factory:** NOT ANNOUNCED
+- **Location:** NOT ANNOUNCED
+- **Investment amount:** NOT ANNOUNCED
+- **Supplier selection:** NOT ANNOUNCED
+- **Procurement process:** NOT IDENTIFIED
+
+That distinction is essential.
+
+PrivateSector is monitoring an emerging strategic opportunity, not reporting a project that has already been approved.
+
+---
+
+## 02 | WHY THE TIMING MATTERS
+
+Sandoz is not entering these discussions from a position of weakness.
+
+The company reported second-quarter 2026 net sales of approximately $3.01 billion.
+
+Biosimilars are becoming increasingly important to the business, representing roughly one-third of sales.
+
+North America is particularly significant.
+
+Sandoz's North American biosimilar sales grew sharply during the latest quarter, supported by newer products and increasing demand.
+
+At the same time, an enormous patent-expiration cycle is approaching across the global pharmaceutical industry.
+
+Sandoz expects medicines representing hundreds of billions of dollars in existing sales to lose exclusivity over the coming decade.
+
+That creates a potentially extraordinary market for lower-cost alternatives.
+
+The manufacturing question therefore arrives at exactly the moment when Sandoz is positioning itself for a larger biosimilar opportunity.
+
+---
+
+## 03 | THIS IS NOT JUST ABOUT TARIFFS
+
+It would be easy to reduce the story to:
+
+**U.S. threatens tariffs → Sandoz considers American manufacturing.**
+
+PrivateSector believes that interpretation is too narrow.
+
+There are at least four strategic forces operating simultaneously.
+
+### 01 — U.S. INDUSTRIAL POLICY
+
+Washington wants greater pharmaceutical manufacturing security and less dependence on overseas supply chains.
+
+### 02 — BIOSIMILAR GROWTH
+
+Sandoz is expanding one of the most strategically important parts of its business.
+
+### 03 — SUPPLY-CHAIN RESILIENCE
+
+The availability of essential medicines has become an increasingly important strategic issue in the United States.
+
+### 04 — MARKET ACCESS
+
+The United States remains one of the world's largest and most commercially important pharmaceutical markets.
+
+Put those forces together and the question changes.
+
+It is no longer simply:
+
+**«Will tariffs hurt Sandoz?»**
+
+It becomes:
+
+**«Could American policy accelerate a new phase of Sandoz's U.S. manufacturing strategy?»**
+
+---
+
+## 04 | SANDOZ HAS DONE THIS BEFORE
+
+This is where PrivateSector's Similar Cases methodology becomes important.
+
+Sandoz already knows how to make major strategic manufacturing investments.
+
+The company has committed substantial capital to expanding biosimilar development and manufacturing capacity in Europe.
+
+In Slovenia, a major investment was launched around a high-tech biosimilar production center in Lendava.
+
+Sandoz has also expanded its biosimilar development capabilities in Ljubljana, including a modern digitally integrated development center.
+
+These projects demonstrate something important:
+
+Sandoz has already shown willingness to deploy substantial capital when it believes long-term biosimilar demand justifies the investment.
+
+That does not prove the company will make a comparable investment in America.
+
+But it provides precedent.
+
+The capability exists.
+
+The strategic appetite for biosimilar manufacturing investment exists.
+
+The unresolved question is whether the United States can provide the economics and policy conditions necessary to attract the next major commitment.
+
+---
+
+## 05 | PRIVATESECTOR OPPORTUNITY MAP
+
+If Sandoz ultimately chooses to establish meaningful new manufacturing capacity in the United States, the project would require much more than a building.
+
+Depending on the type of facility, potential requirements could include:
+
+- Aseptic manufacturing systems
+- Cleanroom technology
+- Filling and finishing equipment
+- Process automation
+- Quality-control systems
+- Facility validation
+- Environmental monitoring
+- Pharmaceutical testing
+- Regulatory compliance
+- Digital manufacturing systems
+- Supply-chain qualification
+- Specialized engineering
+- Maintenance and lifecycle services
+
+That is where Switzerland becomes interesting.
+
+Because Switzerland doesn't only manufacture medicines.
+
+It has built an entire industrial ecosystem around how sophisticated medicines are manufactured safely and at scale.
+
+---
+
+## 06 | SWISS COMPANIES POSITIONED FOR THE OPPORTUNITY
+
+PrivateSector reviewed potential Swiss capability matches against publicly documented experience.
+
+One company currently stands out.
+
+### SKAN — HIGH STRATEGIC FIT ★★★★★
+
+SKAN, headquartered in Allschwil, Switzerland, specializes in isolators, cleanroom equipment, decontamination systems and aseptic pharmaceutical manufacturing technology.
+
+Its capabilities are directly relevant to sophisticated sterile pharmaceutical production.
+
+But capability alone is not why PrivateSector places SKAN on the Radar.
+
+There is something much stronger.
+
+**SKAN has already done comparable work in the United States.**
+
+That moves the company from a theoretical Swiss candidate to an evidence-backed company to watch.
+
+### PRIVATESECTOR FIT ASSESSMENT
+
+- **Pharmaceutical manufacturing capability:** HIGH
+- **Aseptic production expertise:** HIGH
+- **U.S. market experience:** CONFIRMED
+- **Comparable project evidence:** CONFIRMED
+- **Sandoz involvement:** NOT CONFIRMED
+- **Current opportunity classification:** HIGH-FIT WATCH
+
+PrivateSector has found no evidence that Sandoz has approached SKAN regarding a potential U.S. facility.
+
+The assessment reflects capability and precedent only.
+
+---
+
+### SGS — STRATEGIC SERVICES FIT ★★★★☆
+
+Swiss-headquartered SGS operates pharmaceutical services in the United States covering areas including analytical testing, facility validation, environmental monitoring, quality control and regulatory support.
+
+These capabilities could become relevant around the qualification and operation of pharmaceutical manufacturing infrastructure.
+
+SGS also already maintains U.S. pharmaceutical operations.
+
+### PRIVATESECTOR FIT ASSESSMENT
+
+- **Pharmaceutical testing capability:** HIGH
+- **Regulatory/quality expertise:** HIGH
+- **U.S. presence:** CONFIRMED
+- **Direct Sandoz opportunity:** NOT CONFIRMED
+- **Current opportunity classification:** WATCH
+
+SGS is not being identified as a likely contractor.
+
+PrivateSector identifies it as a company whose existing service capabilities overlap with requirements that commonly accompany pharmaceutical manufacturing expansion.
+
+---
+
+## 07 | SIMILAR CASES™
+
+This is where the analysis becomes particularly interesting.
+
+### CASE 01 — SKAN × CIVICA | UNITED STATES
+
+Swiss pharmaceutical-technology company SKAN has already participated in the creation of advanced pharmaceutical manufacturing infrastructure in the United States.
+
+SKAN and German filling-equipment specialist groninger worked together on manufacturing equipment for Civica's pharmaceutical facility in Petersburg, Virginia.
+
+The project included two filling lines integrated with SKAN isolator technology.
+
+The facility was designed to manufacture injectable medicines and support Civica's objective of improving the availability of essential medicines in the United States.
+
+Importantly for our analysis, the equipment was also designed to support biosimilar insulin production.
+
+### WHY THIS CASE MATTERS
+
+The similarities are not perfect.
+
+Civica and Sandoz are different companies.
+
+Their product portfolios and strategic objectives differ.
+
+But the precedent demonstrates that:
+
+- A Swiss pharmaceutical-equipment company can participate in U.S. medicine-manufacturing localization.
+- SKAN possesses relevant technology.
+- SKAN has U.S. project experience.
+- SKAN has operated in a pharmaceutical-manufacturing environment concerned with medicine availability.
+- And SKAN technology has been deployed in infrastructure capable of supporting biosimilar production.
+
+That is meaningful evidence.
+
+It does not mean SKAN will participate in a future Sandoz project.
+
+It means PrivateSector has a defensible reason to put SKAN on the opportunity Radar.
+
+---
+
+### CASE 02 — SANDOZ × LENDAVA | SLOVENIA
+
+Sandoz has previously committed major investment to a high-tech biosimilar production center in Lendava, Slovenia.
+
+The project demonstrates the company's willingness to expand sophisticated manufacturing capacity when long-term strategic conditions support it.
+
+### WHY THIS CASE MATTERS
+
+If Sandoz ultimately commits capital to the United States, PrivateSector will compare the proposed American investment with its European manufacturing model.
+
+We will examine:
+
+- Facility type
+- Production technology
+- Capital intensity
+- Automation requirements
+- Supplier ecosystem
+- Development timeline
+- Employment
+- Manufacturing strategy
+
+That comparison may eventually help identify which Swiss suppliers genuinely fit.
+
+---
+
+## 08 | POTENTIAL UPSIDE ↔
+
+If a substantial Sandoz U.S. manufacturing investment materializes, several potential benefits could emerge.
+
+### FOR SANDOZ
+
+- Greater proximity to the U.S. market.
+- Reduced exposure to future trade barriers.
+- Improved supply-chain resilience.
+- Potentially stronger positioning with U.S. policymakers and healthcare stakeholders.
+- Additional manufacturing capacity for future growth.
+
+### FOR SWISS INDUSTRY
+
+- Potential demand for specialized pharmaceutical-production technology.
+- Engineering opportunities.
+- Validation and testing services.
+- Long-term maintenance relationships.
+- Digital-manufacturing expertise.
+- Supply-chain partnerships.
+
+### FOR THE UNITED STATES
+
+- Additional domestic pharmaceutical manufacturing.
+- Greater supply-chain resilience.
+- Potential job creation.
+- Expanded access to manufacturing expertise.
+- Potentially stronger domestic capacity for essential and lower-cost medicines.
+
+---
+
+## 09 | POTENTIAL DOWNSIDE / RISK
+
+**Opportunity without risk analysis is promotion.**
+
+PrivateSector is not a promotional platform.
+
+### ECONOMICS — HIGH RISK
+
+Generic medicines operate under intense price pressure.
+
+Building pharmaceutical manufacturing capacity in the United States can be expensive.
+
+The investment must produce acceptable economics.
+
+### POLICY DEPENDENCE — HIGH
+
+The attractiveness of the project could depend heavily on future tariff rules, incentives and regulatory policy.
+
+Those conditions can change.
+
+### PROCUREMENT VISIBILITY — HIGH
+
+No procurement process connected to a new Sandoz U.S. facility has been identified.
+
+### EXISTING SUPPLIERS — HIGH
+
+Sandoz already has sophisticated global manufacturing relationships.
+
+New Swiss suppliers would not automatically gain access.
+
+### REGULATORY COMPLEXITY — HIGH
+
+Pharmaceutical manufacturing requires demanding FDA compliance, validation and quality systems.
+
+### TIMING — UNCERTAIN
+
+Discussions do not equal an investment decision.
+
+A project could emerge quickly, slowly — or not at all.
+
+---
+
+## 10 | PRIVATESECTOR OPPORTUNITY SCORE
+
+**Strategic Importance**  
+★★★★★
+
+**Swiss–U.S. Relevance**  
+★★★★★
+
+**Market Growth Potential**  
+★★★★★
+
+**Swiss Capability Match**  
+★★★★☆
+
+**Similar-Case Evidence**  
+★★★★☆
+
+**Immediate Procurement Visibility**  
+★☆☆☆☆
+
+**Policy Risk**  
+★★★★☆
+
+**Monitoring Priority**  
+★★★★★
+
+### PRIVATESECTOR ASSESSMENT
+
+**EARLY-STAGE / HIGH STRATEGIC POTENTIAL — MONITOR INTENSIVELY**
+
+The opportunity is not mature enough to call actionable procurement.
+
+But the combination of U.S. policy pressure, Sandoz's North American growth, the approaching biosimilar cycle and existing Swiss pharmaceutical-manufacturing capabilities makes the development strategically important.
+
+---
+
+## 11 | WHAT SHOULD SWISS EXECUTIVES WATCH NEXT?
+
+PrivateSector will monitor several signals.
+
+- → Formal Sandoz U.S. investment announcement
+- → State or city selected for manufacturing
+- → Incentive negotiations
+- → Site acquisition
+- → Construction permits
+- → Engineering appointments
+- → Equipment procurement
+- → Supplier qualification
+- → FDA-related facility developments
+- → Manufacturing hiring
+- → SKAN U.S. order commentary
+- → SGS pharmaceutical-services activity
+- → Sandoz capital-expenditure guidance
+
+The moment a location or facility type is announced, the opportunity map becomes substantially more precise.
+
+At that point PrivateSector can move from:
+
+**WHO COULD FIT?**
+
+toward:
+
+**WHO ACTUALLY FITS THIS FACILITY?**
+
+---
+
+## 12 | PRIVATESECTOR INSIGHT
+
+Most coverage sees a pharmaceutical company talking with Washington.
+
+PrivateSector sees a possible industrial chain beginning to form.
+
+**Policy** → **Investment decision** → **Site selection** → **Facility design** → **Engineering** → **Manufacturing technology** → **Validation** → **Production** → **Long-term services**
+
+Every arrow can potentially represent commercial activity.
+
+The objective is not to predict contracts that do not exist.
+
+The objective is to identify the chain early enough that executives understand where opportunities could appear before those opportunities become obvious.
+
+And we already have evidence that Swiss technology can participate in American pharmaceutical localization.
+
+SKAN's work with Civica in Virginia demonstrates exactly that.
+
+---
+
+## EXECUTIVE CONCLUSION
+
+The most important development today is not that Sandoz has announced an American factory.
+
+It hasn't.
+
+The important development is that the strategic conditions surrounding such an investment are beginning to align.
+
+The United States wants more domestic medicine manufacturing.
+
+Sandoz is experiencing strong biosimilar momentum.
+
+A major global patent-expiration cycle is approaching.
+
+Sandoz has demonstrated its willingness to invest heavily in biosimilar infrastructure elsewhere.
+
+And Switzerland possesses pharmaceutical technology and services companies with proven U.S. capabilities.
+
+PrivateSector therefore classifies this development:
+
+**EARLY-STAGE / HIGH STRATEGIC POTENTIAL**
+
+**ACTION: MONITOR INTENSIVELY**
+
+---
+
+## PRIVATESECTOR INTELLIGENCE CARD
+
+**Radar ID:** USR-000002
+
+**Corridor:** Switzerland ↔ United States
+
+**Sector:** Pharmaceuticals & Biosimilars
+
+**Company:** Sandoz
+
+**Development:** Potential U.S. manufacturing investment
+
+**Project Status:** DISCUSSION / PRE-INVESTMENT
+
+**Confirmed U.S. Factory:** NO
+
+**Swiss Opportunity Candidate:** SKAN — HIGH-FIT WATCH
+
+**Secondary Watch:** SGS
+
+**Similar Case:** SKAN × Civica, Virginia
+
+**Opportunity Classification:** EARLY-STAGE / HIGH STRATEGIC POTENTIAL
+
+**PrivateSector Action:** MONITOR INTENSIVELY
+
+**Verification Status:** CONFIRMED DEVELOPMENT / UNCONFIRMED INVESTMENT
+
+---
+
+## ABOUT PRIVATESECTOR INTELLIGENCE
+
+PrivateSector Intelligence identifies important business developments across Switzerland and the United States, breaks them into potential commercial opportunities, identifies companies positioned to participate when supported by evidence, and tests those matches against real-world precedent.
+
+**We don't stop at the news. We find where the opportunity lies.**
+
+---
+
+## SOURCES & VERIFICATION
+
+The underlying Sandoz–U.S. manufacturing discussions were verified through recent financial reporting and Sandoz-related public information.
+
+Sandoz's latest financial results were used to establish the company's current growth trajectory and North American biosimilar momentum.
+
+Sandoz and Slovenian public records were used to examine previous biosimilar development and manufacturing investments.
+
+SKAN corporate materials were used to verify the company's pharmaceutical-manufacturing capabilities and its previous work with Civica in Virginia.
+
+SGS corporate materials were used to verify its pharmaceutical testing, validation, environmental-monitoring and regulatory capabilities in the United States.
+
+All company matching, opportunity mapping, Similar Cases interpretation, risk assessment and Swiss–U.S. analysis are independent PrivateSector Intelligence analysis.
+
+**Editorial status:** Independent analysis
+**Published:** 09 August 2026
+**PrivateSector U.S. Deal Radar:** USR-000002`;
+
+  const schema_markup = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    "headline": title,
+    "description": meta_description,
+    "image": image_url,
+    "datePublished": date_published,
+    "author": {
+      "@type": "Organization",
+      "name": author_name,
+      "url": "https://privatesector.ch"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "PrivateSector",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://privatesector.ch/assets/logo_highres.png"
+      }
+    }
+  }, null, 2);
+
+  await dbRun(`
+    INSERT INTO news (
+      title, subtitle, category, author_name, author_avatar, date_published, 
+      read_time_mins, content_body, pull_quote, tags, image_url, 
+      focus_keyword, meta_title, meta_description, slug, schema_markup
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `, [
+    title, subtitle, category, author_name, author_avatar, date_published,
+    read_time_mins, content_body, pull_quote, tags, image_url,
+    focus_keyword, meta_title, meta_description, slug, schema_markup
+  ]);
+  console.log('Sandoz Drug Production article seeded successfully.');
+}
+
+async function seedBmsArticle() {
+  const slug = "bms-building-2-3b-pharma-campus-houston-swiss-opportunity";
+  const existing = await dbGet('SELECT id FROM news WHERE slug = ?', [slug]);
+  if (existing) {
+    console.log('BMS Houston Campus article already exists in database.');
+    return;
+  }
+
+  console.log('Seeding BMS Houston Campus article...');
+  const title = "BMS Is Building a $2.3 Billion Pharma Campus in Houston. Where Could Swiss Industry Fit?";
+  const subtitle = "Bristol Myers Squibb has chosen Houston for a major advanced-manufacturing campus. The investment is confirmed. For Switzerland, the commercial opportunity may only be beginning.";
+  const category = "Pharmaceuticals";
+  const author_name = "PrivateSector Intelligence";
+  const author_avatar = "https://i.pravatar.cc/100?img=33";
+  const date_published = "2026-08-10";
+  const read_time_mins = 3;
+  const pull_quote = "We don't stop at the news. We find where the opportunity lies.";
+  const tags = JSON.stringify(["Bristol Myers Squibb", "BMS", "Houston", "Pharmaceuticals", "Advanced Manufacturing", "SKAN", "Aseptic Manufacturing"]);
+  const image_url = "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&q=80&w=600";
+  const focus_keyword = "Bristol Myers Squibb Houston campus Swiss industry";
+  const meta_title = "BMS $2.3B Houston Pharma Campus: Where Could Swiss Industry Fit?";
+  const meta_description = "Bristol Myers Squibb invests $2.3 billion in a new Houston advanced manufacturing campus. PrivateSector explores how Swiss isolator and aseptic production technology could fit.";
+  
+  const content_body = `U.S. RADAR 🇺🇸 ↔ 🇨🇭 ◆ 10 AUGUST 2026 ◆ 3 MIN READ ◆ PHARMA ◆ ADVANCED MANUFACTURING
+
+Bristol Myers Squibb has chosen Houston for a major advanced-manufacturing campus. The investment is confirmed. For Switzerland, the commercial opportunity may only be beginning.
+
+Bristol Myers Squibb is investing $2.3 billion in a new pharmaceutical manufacturing campus at Generation Park in Houston, Texas. The approximately 600,000-square-foot facility is expected to manufacture small-molecule medicines, biologics and antibody-drug conjugates. Construction is planned to begin in 2027, with operations targeted for 2030 and nearly 500 permanent skilled jobs expected.
+
+For most readers, that's the story. For us, that's where the story begins. A pharmaceutical campus of this scale requires sophisticated manufacturing technology, automation, sterile-production systems, testing, validation and specialist engineering — areas where Swiss industrial capabilities could become relevant.
+
+---
+
+## THE SWISS OPPORTUNITY
+
+One company worth watching is SKAN, the Allschwil-based specialist in isolators and aseptic pharmaceutical-production technology.
+
+**SKAN — HIGH FIT ◆ SIMILAR CASE — VERIFIED ◆ U.S. EXPERIENCE — VERIFIED ◆ BMS CONTRACT — UNCONFIRMED**
+
+SKAN and filling-equipment specialist groninger previously supplied integrated filling and isolator systems for Civica's pharmaceutical manufacturing facility in Petersburg, Virginia. That does not mean SKAN will work on the BMS project. It does, however, provide documented evidence that its technology has already been deployed in sophisticated U.S. pharmaceutical manufacturing.
+
+**POTENTIAL AREAS ◆ ASEPTIC MANUFACTURING ◆ AUTOMATION ◆ CLEANROOMS ◆ TESTING ◆ VALIDATION ◆ PRODUCTION EQUIPMENT ◆ ENGINEERING**
+
+---
+
+## OPPORTUNITY & RISK
+
+**OPPORTUNITY — HIGH ◆ COMPETITION — HIGH ◆ TIMING — EARLY ◆ PROCUREMENT — NOT YET CLEAR**
+
+A $2.3 billion pharmaceutical campus could generate meaningful demand for specialist technology and long-term supplier relationships. But global competition will be intense, and BMS has not yet made the relevant supplier landscape publicly clear. Construction is expected to begin in 2027, with operations targeted for 2030. This is an early commercial signal — not an available contract.
+
+---
+
+## OUR VIEW
+
+The conventional headline is BMS invests $2.3 billion in Houston. The more interesting question for Switzerland is: What will that $2.3 billion need to buy — and which Swiss companies have already demonstrated that they could potentially deliver part of it?
+
+SKAN gives us an early example because the capability match is supported by previous U.S. experience. We're not predicting a contract; we're identifying a credible signal early and following it as the project develops.
+
+**SWISS FIT — STRONG ◆ EVIDENCE — VERIFIED ◆ CONTRACT — UNCONFIRMED ◆ NEXT SIGNAL — PROCUREMENT ◆ VERDICT — MONITOR CLOSELY**
+
+- Engineering appointments
+- Equipment orders
+- Automation contracts
+- Supplier announcements
+
+**We don't stop at the news. We find where the opportunity lies.**`;
+
+  const schema_markup = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    "headline": title,
+    "description": meta_description,
+    "image": image_url,
+    "datePublished": date_published,
+    "author": {
+      "@type": "Organization",
+      "name": author_name,
+      "url": "https://privatesector.ch"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "PrivateSector",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://privatesector.ch/assets/logo_highres.png"
+      }
+    }
+  }, null, 2);
+
+  await dbRun(`
+    INSERT INTO news (
+      title, subtitle, category, author_name, author_avatar, date_published, 
+      read_time_mins, content_body, pull_quote, tags, image_url, 
+      focus_keyword, meta_title, meta_description, slug, schema_markup
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `, [
+    title, subtitle, category, author_name, author_avatar, date_published,
+    read_time_mins, content_body, pull_quote, tags, image_url,
+    focus_keyword, meta_title, meta_description, slug, schema_markup
+  ]);
+  console.log('BMS Houston Campus article seeded successfully.');
 }
 
 async function seedKkrArticle() {

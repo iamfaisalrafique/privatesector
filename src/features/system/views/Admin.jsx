@@ -15,7 +15,10 @@ import {
   Mic,
   PlusCircle,
   LogOut,
-  Shield
+  Shield,
+  Upload,
+  Image as ImageIcon,
+  X
 } from 'lucide-react';
 
 export default function Admin({ navigate, onLogout }) {
@@ -31,6 +34,7 @@ export default function Admin({ navigate, onLogout }) {
 
   const [blogsExpanded, setBlogsExpanded] = useState(false);
   const [newsExpanded, setNewsExpanded] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   // Verify Admin Session
   const sessionStr = typeof window !== 'undefined' ? localStorage.getItem('userSession') : null;
@@ -272,9 +276,70 @@ export default function Admin({ navigate, onLogout }) {
     }
   };
 
-  const handleEditClick = (type, data) => {
-    setEditingItem({ type, data: { ...data } });
+  const handleEditClick = async (type, data) => {
     setIsCreatingNew(false);
+    setEditingItem({ type, data: { ...data } });
+
+    if (data && data.id) {
+      try {
+        const res = await fetch(`/api/${type}/${data.id}`);
+        if (res.ok) {
+          const detail = await res.json();
+          const fullData = detail.article || detail.company || detail.interview || detail.job || detail;
+          if (fullData) {
+            setEditingItem({ type, data: { ...fullData } });
+          }
+        }
+      } catch (e) {
+        console.error('Error fetching full entity detail:', e);
+      }
+    }
+  };
+
+  const handleFeaturedImageUpload = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 10 * 1024 * 1024) {
+      alert('Image file is too large. Please select an image under 10MB.');
+      return;
+    }
+
+    setUploadingImage(true);
+    try {
+      const reader = new FileReader();
+      reader.onload = async (evt) => {
+        const base64Str = evt.target.result;
+        try {
+          const res = await fetch('/api/upload', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image: base64Str, filename: file.name })
+          });
+          if (res.ok) {
+            const resData = await res.json();
+            if (resData.url) {
+              setEditingItem(prev => ({ ...prev, data: { ...prev.data, image_url: resData.url } }));
+            }
+          } else {
+            setEditingItem(prev => ({ ...prev, data: { ...prev.data, image_url: base64Str } }));
+          }
+        } catch (err) {
+          console.error('Upload failed, using data URL fallback:', err);
+          setEditingItem(prev => ({ ...prev, data: { ...prev.data, image_url: base64Str } }));
+        } finally {
+          setUploadingImage(false);
+        }
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      console.error('File reading error:', err);
+      setUploadingImage(false);
+    }
+  };
+
+  const handleRemoveFeaturedImage = () => {
+    setEditingItem(prev => ({ ...prev, data: { ...prev.data, image_url: '' } }));
   };
 
   const handleCreateClick = (type) => {
@@ -536,29 +601,115 @@ export default function Admin({ navigate, onLogout }) {
                     <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Subtitle / Summary</label>
                     <input type="text" value={editingItem.data.subtitle || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, subtitle: e.target.value } })} style={{ width: '100%', padding: '10px 14px', backgroundColor: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', fontSize: '14px' }} />
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                    <div>
-                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Featured Image URL</label>
-                      <input type="text" value={editingItem.data.image_url || ''} onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, image_url: e.target.value } })} style={{ width: '100%', padding: '10px 14px', backgroundColor: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', fontSize: '14px' }} />
+                  {/* Featured Image & Media Manager */}
+                  <div style={{ backgroundColor: '#F8FAFC', border: '1.5px solid #CBD5E1', borderRadius: '8px', padding: '16px', marginBottom: '8px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 700, color: '#0F172A', textTransform: 'uppercase', letterSpacing: '0.04em', margin: 0 }}>
+                        <ImageIcon size={16} style={{ color: 'var(--primary-red)' }} /> Featured Image & Media Manager
+                      </label>
+                      {editingItem.data.image_url && (
+                        <button
+                          type="button"
+                          onClick={handleRemoveFeaturedImage}
+                          title="Remove Image / Edit Out"
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            padding: '4px 10px',
+                            backgroundColor: '#FEF2F2',
+                            border: '1.5px solid #FCA5A5',
+                            color: '#DC2626',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            fontSize: '11px',
+                            fontWeight: 700
+                          }}
+                        >
+                          <Trash2 size={13} /> Remove / Edit Out Image
+                        </button>
+                      )}
                     </div>
-                    <div>
-                      <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Tags (comma separated)</label>
+
+                    {/* Live Thumbnail Preview */}
+                    {editingItem.data.image_url ? (
+                      <div style={{ display: 'flex', gap: '16px', alignItems: 'center', backgroundColor: '#FFFFFF', padding: '12px', borderRadius: '6px', border: '1px solid #E2E8F0', marginBottom: '12px' }}>
+                        <img 
+                          src={editingItem.data.image_url} 
+                          alt="Featured Preview" 
+                          style={{ width: '120px', height: '75px', objectFit: 'cover', borderRadius: '6px', border: '1px solid #CBD5E1' }}
+                          onError={(e) => { e.target.style.display = 'none'; }}
+                        />
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <span style={{ display: 'inline-block', padding: '2px 8px', backgroundColor: '#DCFCE7', color: '#166534', borderRadius: '4px', fontSize: '11px', fontWeight: 700, marginBottom: '6px' }}>
+                            Image Attached
+                          </span>
+                          <div style={{ fontSize: '11px', color: '#475569', wordBreak: 'break-all', fontFamily: 'monospace' }}>
+                            {editingItem.data.image_url}
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div style={{ border: '2px dashed #CBD5E1', borderRadius: '6px', padding: '16px', textAlign: 'center', backgroundColor: '#FFFFFF', marginBottom: '12px' }}>
+                        <ImageIcon size={28} style={{ color: '#94A3B8', marginBottom: '4px' }} />
+                        <div style={{ fontSize: '12px', fontWeight: 600, color: '#64748B' }}>No featured image attached. Upload or paste a URL below.</div>
+                      </div>
+                    )}
+
+                    {/* Image Upload & Direct URL Controls */}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '12px', alignItems: 'center' }}>
+                      <label style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '9px 16px',
+                        backgroundColor: 'var(--primary-red)',
+                        color: '#FFFFFF',
+                        borderRadius: '6px',
+                        cursor: uploadingImage ? 'wait' : 'pointer',
+                        fontSize: '13px',
+                        fontWeight: 700,
+                        whiteSpace: 'nowrap',
+                        opacity: uploadingImage ? 0.7 : 1,
+                        boxShadow: '0 1px 2px rgba(0,0,0,0.1)'
+                      }}>
+                        <Upload size={15} />
+                        {uploadingImage ? 'Uploading Image...' : 'Upload Image File'}
+                        <input 
+                          type="file" 
+                          accept="image/*" 
+                          onChange={handleFeaturedImageUpload} 
+                          disabled={uploadingImage}
+                          style={{ display: 'none' }} 
+                        />
+                      </label>
                       <input 
                         type="text" 
-                        value={Array.isArray(editingItem.data.tags) ? editingItem.data.tags.join(', ') : (() => {
-                          try {
-                            return JSON.parse(editingItem.data.tags || '[]').join(', ');
-                          } catch {
-                            return typeof editingItem.data.tags === 'string' ? editingItem.data.tags : '';
-                          }
-                        })()} 
-                        onChange={(e) => {
-                          const tagsArr = e.target.value.split(',').map(t => t.trim()).filter(Boolean);
-                          setEditingItem({ ...editingItem, data: { ...editingItem.data, tags: tagsArr } });
-                        }} 
-                        style={{ width: '100%', padding: '10px 14px', backgroundColor: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', fontSize: '14px' }} 
+                        placeholder="Or paste external image URL (e.g. https://...)" 
+                        value={editingItem.data.image_url || ''} 
+                        onChange={(e) => setEditingItem({ ...editingItem, data: { ...editingItem.data, image_url: e.target.value } })} 
+                        style={{ width: '100%', padding: '9px 14px', backgroundColor: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', fontSize: '13px' }} 
                       />
                     </div>
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#0F172A', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Tags (comma separated)</label>
+                    <input 
+                      type="text" 
+                      value={Array.isArray(editingItem.data.tags) ? editingItem.data.tags.join(', ') : (() => {
+                        try {
+                          return JSON.parse(editingItem.data.tags || '[]').join(', ');
+                        } catch {
+                          return typeof editingItem.data.tags === 'string' ? editingItem.data.tags : '';
+                        }
+                      })()} 
+                      onChange={(e) => {
+                        const tagsArr = e.target.value.split(',').map(t => t.trim()).filter(Boolean);
+                        setEditingItem({ ...editingItem, data: { ...editingItem.data, tags: tagsArr } });
+                      }} 
+                      style={{ width: '100%', padding: '10px 14px', backgroundColor: '#FFFFFF', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', fontSize: '14px' }} 
+                    />
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                     <div>
