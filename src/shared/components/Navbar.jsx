@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useLanguage } from '../../context/LanguageContext';
+import logo from '../../assets/logo_highres.png';
 
 // Pixel-perfect SVG Flags for crisp rendering on all platforms
 export const SwissFlag = ({ size = 16, style = {} }) => (
@@ -371,7 +372,7 @@ export default function Navbar({ currentPath, navigate, currentUser, onLogout })
             </button>
           </div>
 
-          {/* Brand Logo & Subtitle */}
+          {/* Brand Logo */}
           <div 
             onClick={() => {
               navigate('/');
@@ -381,36 +382,20 @@ export default function Navbar({ currentPath, navigate, currentUser, onLogout })
             style={{ 
               cursor: 'pointer', 
               display: 'flex', 
-              flexDirection: 'column',
+              alignItems: 'center',
               userSelect: 'none'
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ 
-                fontFamily: '"Playfair Display", Georgia, serif', 
-                fontSize: '24px', 
-                fontWeight: 800, 
-                letterSpacing: '0.04em', 
-                color: '#0A0A0A',
-                lineHeight: 1
-              }}>
-                PRIVATESECTOR
-              </span>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                <SwissFlag size={18} />
-                <USAFlag size={18} />
-              </div>
-            </div>
-            <span style={{ 
-              fontFamily: 'Inter, sans-serif', 
-              fontSize: '10px', 
-              fontWeight: 500, 
-              color: '#4B5563', 
-              letterSpacing: '0.02em',
-              marginTop: '4px'
-            }}>
-              Switzerland ↔ United States Business Intelligence
-            </span>
+            <img 
+              src={logo} 
+              alt="PrivateSector" 
+              style={{ 
+                height: '46px', 
+                width: 'auto', 
+                objectFit: 'contain', 
+                display: 'block' 
+              }} 
+            />
           </div>
 
           {/* Desktop Navigation Links */}
@@ -828,23 +813,18 @@ export default function Navbar({ currentPath, navigate, currentUser, onLogout })
                 navigate('/');
                 setMobileMenuOpen(false);
               }}
-              style={{ textAlign: 'center', cursor: 'pointer' }}
+              style={{ textAlign: 'center', cursor: 'pointer', display: 'flex', justifyContent: 'center' }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                <span style={{ 
-                  fontFamily: '"Playfair Display", serif', 
-                  fontSize: '20px', 
-                  fontWeight: 800, 
-                  color: '#0A0A0A' 
-                }}>
-                  PRIVATESECTOR
-                </span>
-                <SwissFlag size={16} />
-                <USAFlag size={16} />
-              </div>
-              <span style={{ fontSize: '9px', color: '#6B7280', display: 'block', marginTop: '2px' }}>
-                Switzerland ↔ United States Business Intelligence
-              </span>
+              <img 
+                src={logo} 
+                alt="PrivateSector" 
+                style={{ 
+                  height: '38px', 
+                  width: 'auto', 
+                  objectFit: 'contain', 
+                  display: 'block' 
+                }} 
+              />
             </div>
 
             <button 
