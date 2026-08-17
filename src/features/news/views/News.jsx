@@ -5,6 +5,7 @@ import TableOfContents from '../../../shared/components/TableOfContents';
 import AdSlot from '../../../shared/components/AdSlot';
 import { Calendar, Clock } from 'lucide-react';
 import SeoHead from '../../../shared/components/SeoHead';
+import logo from '../../../assets/logo_highres.png';
 
 function parseInlineMarkdown(text) {
   if (!text) return '';
@@ -409,8 +410,8 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
               {/* Byline */}
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', alignItems: 'center', padding: '16px 0', borderTop: '0.5px solid var(--light-border)', borderBottom: '0.5px solid var(--light-border)', marginBottom: '32px', fontSize: '13px', color: '#6B7280' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <img src={activeArticle.author_avatar} alt="" style={{ width: '28px', height: '28px', borderRadius: '50%' }} />
-                  <strong>{activeArticle.author_name}</strong>
+                  <img src={logo} alt="PrivateSector" style={{ height: '22px', width: 'auto', objectFit: 'contain', display: 'inline-block' }} />
+                  <strong style={{ color: 'var(--text-ink)' }}>{activeArticle.author_name}</strong>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <Calendar size={14} />
@@ -425,7 +426,15 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
               {/* Featured Image */}
               {activeArticle.image_url && (
                 <div style={{ width: '100%', maxHeight: '420px', overflow: 'hidden', borderRadius: '6px', marginBottom: '32px' }}>
-                  <img src={activeArticle.image_url} alt={activeArticle.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <img 
+                    src={activeArticle.image_url} 
+                    alt={activeArticle.title} 
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&q=80&w=1200';
+                    }}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                  />
                 </div>
               )}
 
@@ -523,6 +532,10 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
                     <img 
                       src={art.image_url} 
                       alt="" 
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&q=80&w=600';
+                      }}
                       style={{ width: '200px', height: '140px', objectFit: 'cover', borderRadius: '4px', flexShrink: 0 }} 
                     />
                   )}

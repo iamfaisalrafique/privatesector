@@ -312,6 +312,10 @@ function AppContent() {
                           <img 
                             src={art.image_url} 
                             alt={art.title} 
+                            onError={(e) => {
+                              e.currentTarget.onerror = null;
+                              e.currentTarget.src = 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&q=80&w=600';
+                            }}
                             style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                           />
                         </div>

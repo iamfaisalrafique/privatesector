@@ -39,6 +39,13 @@ app.use((req, res, next) => {
 app.use(cors());
 app.use(express.json({ limit: '15mb' }));
 app.use('/uploads', express.static(uploadsDir));
+app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
+app.use('/uploads', express.static(path.join(__dirname, '../dist/uploads')));
+
+// 404 handler for missing uploads so it doesn't return HTML
+app.use('/uploads', (req, res) => {
+  res.status(404).type('text/plain').send('Image not found');
+});
 
 // Initialize Database on startup
 initializeDatabase().catch(err => {
@@ -48,7 +55,7 @@ initializeDatabase().catch(err => {
 // Image Upload Endpoint
 app.post('/api/upload', (req, res) => {
   try {
-    const { image, filename } = req.body;
+    const { image, filename, exactName } = req.body;
     if (!image) {
       return res.status(400).json({ error: 'No image data provided' });
     }
@@ -65,10 +72,16 @@ app.post('/api/upload', (req, res) => {
     }
 
     const cleanBase = filename ? filename.replace(/[^a-zA-Z0-9_-]/g, '_').toLowerCase() : 'upload';
-    const uniqueName = `${cleanBase}_${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${ext}`;
+    const uniqueName = exactName ? `${cleanBase}.${ext}` : `${cleanBase}_${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${ext}`;
     const filePath = path.join(uploadsDir, uniqueName);
 
     fs.writeFileSync(filePath, buffer);
+
+    // Also write to public/uploads if available locally
+    const pubUploads = path.join(__dirname, '../public/uploads');
+    if (fs.existsSync(pubUploads)) {
+      try { fs.writeFileSync(path.join(pubUploads, uniqueName), buffer); } catch(e){}
+    }
 
     const publicUrl = `/uploads/${uniqueName}`;
     res.json({ success: true, url: publicUrl });
@@ -189,53 +202,53 @@ app.get('/sitemap.xml', async (req, res) => {
     ];
 
     staticPages.forEach(p => {
-      xml += `  <url>\n    <loc>https://privatesector.ch/#${p.path}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${p.freq}</changefreq>\n    <priority>${p.priority}</priority>\n  </url>\n`;
+      xml += `  <url>\n    <loc>https://privatesector.ch${p.path}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${p.freq}</changefreq>\n    <priority>${p.priority}</priority>\n  </url>\n`;
     });
 
     // 2. Custom Page Builder Pages
     (customPages || []).forEach(cp => {
       if (cp.path && !staticPages.some(s => s.path === cp.path)) {
-        xml += `  <url>\n    <loc>https://privatesector.ch/#${cp.path}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
+        xml += `  <url>\n    <loc>https://privatesector.ch${cp.path}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
       }
     });
 
     // 3. Dynamic Company Listings
     (companies || []).forEach(c => {
       const targetSlug = c.slug || c.id;
-      xml += `  <url>\n    <loc>https://privatesector.ch/#/unternehmen/${targetSlug}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
+      xml += `  <url>\n    <loc>https://privatesector.ch/unternehmen/${targetSlug}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
     });
 
     // 4. Dynamic News & Press Releases (with Google News extensions)
     (news || []).forEach(n => {
       const targetSlug = n.slug || n.id;
       const pubDate = n.date_published || today;
-      xml += `  <url>\n    <loc>https://privatesector.ch/#/news/${targetSlug}</loc>\n    <lastmod>${pubDate}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
+      xml += `  <url>\n    <loc>https://privatesector.ch/news/${targetSlug}</loc>\n    <lastmod>${pubDate}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
     });
 
     // 5. Dynamic Blogs & Market Insights
     (blogs || []).forEach(b => {
       const targetSlug = b.slug || b.id;
       const pubDate = b.date_published || today;
-      xml += `  <url>\n    <loc>https://privatesector.ch/#/blogs/${targetSlug}</loc>\n    <lastmod>${pubDate}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
+      xml += `  <url>\n    <loc>https://privatesector.ch/blogs/${targetSlug}</loc>\n    <lastmod>${pubDate}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
     });
 
     // 6. Dynamic Interviews & Executive Briefings
     (interviews || []).forEach(i => {
       const targetSlug = i.slug || i.id;
       const pubDate = i.date_published || today;
-      xml += `  <url>\n    <loc>https://privatesector.ch/#/interviews/${targetSlug}</loc>\n    <lastmod>${pubDate}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.6</priority>\n  </url>\n`;
+      xml += `  <url>\n    <loc>https://privatesector.ch/interviews/${targetSlug}</loc>\n    <lastmod>${pubDate}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.6</priority>\n  </url>\n`;
     });
 
     // 7. Dynamic Job Listings & Careers
     (jobs || []).forEach(j => {
       const targetSlug = j.slug || j.id;
       const pubDate = j.date_posted || today;
-      xml += `  <url>\n    <loc>https://privatesector.ch/#/karriere/${targetSlug}</loc>\n    <lastmod>${pubDate}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.6</priority>\n  </url>\n`;
+      xml += `  <url>\n    <loc>https://privatesector.ch/karriere/${targetSlug}</loc>\n    <lastmod>${pubDate}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.6</priority>\n  </url>\n`;
     });
 
     // 8. Dynamic Student Talent Profiles
     (students || []).forEach(s => {
-      xml += `  <url>\n    <loc>https://privatesector.ch/#/student/${s.id}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.5</priority>\n  </url>\n`;
+      xml += `  <url>\n    <loc>https://privatesector.ch/student/${s.id}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.5</priority>\n  </url>\n`;
     });
 
     xml += `</urlset>`;
