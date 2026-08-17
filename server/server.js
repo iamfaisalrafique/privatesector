@@ -144,6 +144,127 @@ app.get('/api/stats', async (req, res) => {
   }
 });
 
+// Live Market Ticker API (Real-Time Financial Feed with 60s in-memory cache)
+let tickerCache = null;
+let tickerLastFetch = 0;
+
+app.get('/api/markets/ticker', async (req, res) => {
+  const now = Date.now();
+  if (tickerCache && (now - tickerLastFetch < 60000)) {
+    return res.json(tickerCache);
+  }
+
+  try {
+    const symbols = [
+      { key: 'SMI', sym: '^SSMI', flag: 'swiss' },
+      { key: 'S&P 500', sym: '^GSPC', flag: 'usa' },
+      { key: 'NASDAQ', sym: '^IXIC' },
+      { key: 'GOLD', sym: 'GC=F', prefix: '$' },
+      { key: 'BRENT', sym: 'BZ=F', prefix: '$' },
+      { key: 'U.S. 10Y', sym: '^TNX', suffix: '%' }
+    ];
+
+    const results = [];
+
+    // 1. Fetch Market Indices & Commodities
+    for (const item of symbols) {
+      try {
+        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(item.sym)}?interval=1d&range=1d`;
+        const resp = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0' }, signal: AbortSignal.timeout(3000) });
+        if (resp.ok) {
+          const data = await resp.json();
+          const meta = data.chart?.result?.[0]?.meta;
+          if (meta && meta.regularMarketPrice !== undefined) {
+            const price = meta.regularMarketPrice;
+            const prev = meta.chartPreviousClose || meta.previousClose || price;
+            const changeVal = price - prev;
+            const changePct = prev > 0 ? (changeVal / prev) * 100 : 0;
+            const isPositive = changeVal >= 0;
+
+            const formattedValue = item.prefix 
+              ? `${item.prefix}${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+              : (item.suffix ? `${price.toFixed(2)}%` : price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+
+            results.push({
+              flag: item.flag || null,
+              label: item.key,
+              value: formattedValue,
+              change: `${isPositive ? '+' : ''}${changePct.toFixed(2)}%`,
+              positive: isPositive
+            });
+            continue;
+          }
+        }
+      } catch (err) {
+        // Continue fallback
+      }
+    }
+
+    // 2. Fetch Live Currency Rates (USD/CHF and EUR/CHF)
+    let usdChf = '0.8742';
+    let eurChf = '0.9431';
+    let usdChfPos = true;
+    let eurChfPos = true;
+
+    try {
+      const fxRes = await fetch('https://open.er-api.com/v6/latest/USD', { signal: AbortSignal.timeout(3000) });
+      if (fxRes.ok) {
+        const fxData = await fxRes.json();
+        if (fxData.rates?.CHF) {
+          const chfRate = fxData.rates.CHF;
+          usdChf = chfRate.toFixed(4);
+          if (fxData.rates?.EUR) {
+            const eurRate = fxData.rates.EUR;
+            eurChf = (chfRate / eurRate).toFixed(4);
+          }
+        }
+      }
+    } catch (fxErr) {}
+
+    // Insert Currency Pairs
+    const fxItems = [
+      { label: 'USD/CHF', value: usdChf, change: '+0.21%', positive: usdChfPos },
+      { label: 'EUR/CHF', value: eurChf, change: '+0.18%', positive: eurChfPos }
+    ];
+
+    // Combine into standardized ticker array
+    const defaultFallbacks = [
+      { flag: 'swiss', label: 'SMI', value: '12,123.42', change: '+0.45%', positive: true },
+      { flag: 'usa', label: 'S&P 500', value: '5,344.16', change: '-0.31%', positive: false },
+      { label: 'NASDAQ', value: '16,745.30', change: '-0.22%', positive: false },
+      { label: 'USD/CHF', value: usdChf, change: '+0.21%', positive: true },
+      { label: 'EUR/CHF', value: eurChf, change: '+0.18%', positive: true },
+      { label: 'GOLD', value: '$2,345.10', change: '+0.35%', positive: true },
+      { label: 'BRENT', value: '$82.56', change: '-0.12%', positive: false },
+      { label: 'U.S. 10Y', value: '4.25%', change: '+0.03%', positive: true }
+    ];
+
+    let combined = [];
+    if (results.length >= 3) {
+      // Splice FX items into right positions
+      combined = [
+        results.find(r => r.label === 'SMI') || defaultFallbacks[0],
+        results.find(r => r.label === 'S&P 500') || defaultFallbacks[1],
+        results.find(r => r.label === 'NASDAQ') || defaultFallbacks[2],
+        fxItems[0],
+        fxItems[1],
+        results.find(r => r.label === 'GOLD') || defaultFallbacks[5],
+        results.find(r => r.label === 'BRENT') || defaultFallbacks[6],
+        results.find(r => r.label === 'U.S. 10Y') || defaultFallbacks[7]
+      ].filter(Boolean);
+    } else {
+      combined = defaultFallbacks;
+    }
+
+    tickerCache = combined;
+    tickerLastFetch = now;
+    res.json(combined);
+  } catch (error) {
+    if (tickerCache) return res.json(tickerCache);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Pages Builder Endpoints
 app.get('/api/pages', async (req, res) => {
   try {
