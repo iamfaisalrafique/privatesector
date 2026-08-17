@@ -213,7 +213,12 @@ function AppContent() {
         direction: isRtl ? 'rtl' : 'ltr'
       }}
     >
-      {/* 1. Breaking News deep red banner (Visible on Homepage) */}
+      {/* 1. Global Navigation Header (with Top Market Ticker) */}
+      {!hideHeaderFooter && (
+        <Navbar currentPath={pathState.split('?')[0]} navigate={navigate} currentUser={currentUser} onLogout={handleLogout} />
+      )}
+
+      {/* 2. Breaking News deep red banner (Visible on Homepage) */}
       {routeInfo.route === 'home' && (
         <div className="breaking-banner">
           <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -223,11 +228,6 @@ function AppContent() {
             </marquee>
           </div>
         </div>
-      )}
-
-      {/* 2. Global Navigation Header */}
-      {!hideHeaderFooter && (
-        <Navbar currentPath={pathState.split('?')[0]} navigate={navigate} currentUser={currentUser} onLogout={handleLogout} />
       )}
 
       {/* 3. Page Content Area with Transition Wrapper */}
