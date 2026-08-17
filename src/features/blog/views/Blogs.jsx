@@ -423,7 +423,19 @@ export default function Blogs({ selectedArticleId, selectArticle, navigate }) {
                     alt={activeblog.title} 
                     onError={(e) => {
                       e.currentTarget.onerror = null;
-                      e.currentTarget.src = 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=1200';
+                      const fallbackMap = {
+                        'Wealth Management': 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=1200',
+                        'Aerospace & Technology': 'https://images.unsplash.com/photo-1517976487504-59a1a0b82f0c?auto=format&fit=crop&q=80&w=1200',
+                        'Insurtech & Finance': 'https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&q=80&w=1200',
+                        'Fintech & Banking': 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=1200',
+                        'Clean Energy': 'https://images.unsplash.com/photo-1509391365360-2e959784a276?auto=format&fit=crop&q=80&w=1200',
+                        'Advanced Manufacturing': 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200',
+                        'Pharmaceuticals': 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&q=80&w=1200',
+                        'Medical Technology': 'https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=1200',
+                        'Consumer Goods': 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=1200',
+                        'Financial Services': 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&q=80&w=1200'
+                      };
+                      e.currentTarget.src = fallbackMap[activeblog.category] || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1200';
                     }}
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                   />
@@ -526,7 +538,19 @@ export default function Blogs({ selectedArticleId, selectArticle, navigate }) {
                       alt="" 
                       onError={(e) => {
                         e.currentTarget.onerror = null;
-                        e.currentTarget.src = 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=600';
+                        const fallbackMap = {
+                          'Wealth Management': 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=600',
+                          'Aerospace & Technology': 'https://images.unsplash.com/photo-1517976487504-59a1a0b82f0c?auto=format&fit=crop&q=80&w=600',
+                          'Insurtech & Finance': 'https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&q=80&w=600',
+                          'Fintech & Banking': 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=600',
+                          'Clean Energy': 'https://images.unsplash.com/photo-1509391365360-2e959784a276?auto=format&fit=crop&q=80&w=600',
+                          'Advanced Manufacturing': 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=600',
+                          'Pharmaceuticals': 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&q=80&w=600',
+                          'Medical Technology': 'https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=600',
+                          'Consumer Goods': 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=600',
+                          'Financial Services': 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&q=80&w=600'
+                        };
+                        e.currentTarget.src = fallbackMap[art.category] || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=600';
                       }}
                       style={{ width: '200px', height: '140px', objectFit: 'cover', borderRadius: '4px', flexShrink: 0 }} 
                     />
