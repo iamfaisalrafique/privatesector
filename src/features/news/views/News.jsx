@@ -318,19 +318,24 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
     );
   }
 
+  // Helper for safe tag extraction
+  const getSafeTags = (item) => {
+    if (!item || !item.tags) return [];
+    if (Array.isArray(item.tags)) return item.tags;
+    try {
+      return JSON.parse(item.tags);
+    } catch {
+      return [];
+    }
+  };
+
   // Categories & Tags Extractor
   const uniqueCategories = [...new Set(articles.map(art => art.category))].map(cat => ({
     name: cat,
     count: articles.filter(art => art.category === cat).length
   }));
 
-  const uniqueTags = [...new Set(articles.flatMap(art => {
-    try {
-      return JSON.parse(art.tags || '[]');
-    } catch {
-      return [];
-    }
-  }))];
+  const uniqueTags = [...new Set(articles.flatMap(art => getSafeTags(art)))];
 
   // Filtering Logic
   const filteredArticles = articles.filter(art => {
@@ -340,13 +345,8 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
     
     const matchesCategory = selectedCategory === '' || art.category === selectedCategory;
     
-    let articleTags;
-    try {
-      articleTags = JSON.parse(art.tags || '[]');
-    } catch {
-      articleTags = [];
-    }
-    const matchesTag = selectedTag === '' || articleTags.includes(selectedTag);
+    const articleTags = getSafeTags(art);
+    const matchesTag = selectedTag === '' || articleTags.some(t => t.toLowerCase() === selectedTag.toLowerCase());
 
     return matchesSearch && matchesCategory && matchesTag;
   });
@@ -354,12 +354,7 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
   // --- 1. SINGLE ARTICLE VIEW ---
   if (selectedArticleId && activeArticle) {
     // Parse tag array
-    let tagsList;
-    try {
-      tagsList = JSON.parse(activeArticle.tags || '[]');
-    } catch {
-      tagsList = [];
-    }
+    const tagsList = getSafeTags(activeArticle);
 
     return (
       <div style={{ backgroundColor: 'var(--bg-ivory)', minHeight: 'calc(100vh - 120px)', padding: '32px 0 64px' }}>

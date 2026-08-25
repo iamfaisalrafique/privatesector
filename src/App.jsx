@@ -420,6 +420,9 @@ function AppContent() {
             initialSearch={routeInfo.params.search || ''} 
             initialCanton={routeInfo.params.canton || ''}
             initialIndustry={routeInfo.params.industry || ''}
+            initialCountry={routeInfo.params.country || ''}
+            initialTab={routeInfo.params.tab || ''}
+            initialTag={routeInfo.params.tag || ''}
             selectCompany={(id) => navigate(`/unternehmen/${id}`)}
             navigate={navigate}
           />

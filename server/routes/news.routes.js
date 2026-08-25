@@ -26,10 +26,17 @@ router.get('/', async (req, res) => {
     query += ' ORDER BY date_published DESC, id DESC';
     const rows = await dbQuery(query, params);
 
-    const parsedRows = rows.map(item => ({
+    let parsedRows = rows.map(item => ({
       ...item,
-      tags: JSON.parse(item.tags || '[]')
+      tags: typeof item.tags === 'string' ? JSON.parse(item.tags || '[]') : (item.tags || [])
     }));
+
+    if (tag) {
+      const normalizedTag = tag.trim().toLowerCase();
+      parsedRows = parsedRows.filter(item => 
+        Array.isArray(item.tags) && item.tags.some(t => t.toLowerCase() === normalizedTag)
+      );
+    }
 
     res.json(parsedRows);
   } catch (error) {

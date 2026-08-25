@@ -761,6 +761,93 @@ export async function initializeDatabase() {
   await seedKkrArticle().catch(err => console.error('Error seeding KKR article:', err));
   await seedSandozArticle().catch(err => console.error('Error seeding Sandoz article:', err));
   await seedBmsArticle().catch(err => console.error('Error seeding BMS article:', err));
+  await seedHiddenSwissCompanies().catch(err => console.error('Error seeding Hidden Swiss companies:', err));
+}
+
+async function seedHiddenSwissCompanies() {
+  const companies = [
+    {
+      name: 'Crevoisier SA',
+      logo_bg: '#1A365D',
+      canton: 'JU',
+      industry: 'Manufacturing',
+      size_class: 'Small',
+      description: 'Family-owned precision machinery builder in Les Genevez since 1966. Over 6,000 C501 polishing machines installed across 65+ countries.',
+      premium: 1,
+      verified: 1,
+      founded: 1966,
+      employees: 45,
+      revenue_band: 'CHF 10M - 25M',
+      website: 'https://crevoisier.ch',
+      linkedin: 'https://linkedin.com/company/crevoisier-sa',
+      contact_email: 'contact@crevoisier.ch',
+      about_text: 'Crevoisier SA has engineered and manufactured high-precision finishing and polishing machines in Les Genevez (Canton Jura) for three generations. Renowned globally in watchmaking, medical technology, aerospace, and robotics.',
+      structured_data: JSON.stringify({
+        foundingLocation: 'Les Genevez, Canton Jura',
+        ceo: 'Laurent Crevoisier',
+        chairman: 'Philippe Crevoisier',
+        founder: 'René Crevoisier',
+        flagshipProduct: 'C501 Polishing & Grinding Machine',
+        globalInstallations: '6,000+ machines in 65+ countries'
+      }),
+      focus_keyword: 'Crevoisier SA Jura precision polishing machinery watchmaking',
+      meta_title: 'Crevoisier SA — Precision Machine Builder in Canton Jura',
+      meta_description: 'Crevoisier SA in Les Genevez, Canton Jura: Family-owned precision machine builder with over 6,000 machines across 65+ countries in watchmaking, MedTech, and robotics.',
+      slug: 'crevoisier-sa',
+      schema_markup: '',
+      tags: JSON.stringify(['Crevoisier SA', 'Hidden Swiss', 'Canton Jura', 'Precision Machinery', 'Watchmaking', 'Robotics'])
+    },
+    {
+      name: 'Yalosys AG',
+      logo_bg: '#0F766E',
+      canton: 'ZG',
+      industry: 'Technology',
+      size_class: 'Small',
+      description: 'Pioneering laser microprocessing of glass, quartz, and sapphire in Hünenberg (Canton Zug) for MedTech, photonics, and semiconductors.',
+      premium: 1,
+      verified: 1,
+      founded: 2022,
+      employees: 15,
+      revenue_band: 'CHF 5M - 10M',
+      website: 'https://yalosys.ch',
+      linkedin: 'https://linkedin.com/company/yalosys-ag',
+      contact_email: 'info@yalosys.ch',
+      about_text: 'Yalosys AG specializes in automated ultrafast laser micromachining for brittle transparent materials including glass, sapphire, and fused silica, enabling microscopic fluidic and optical devices.',
+      structured_data: JSON.stringify({
+        foundingLocation: 'Hünenberg, Canton Zug',
+        ceo: 'Dr. Luigi Calabrese',
+        technology: 'Ultrafast Laser Microprocessing',
+        materials: 'Glass, Sapphire, Quartz, Fused Silica',
+        sectors: 'MedTech, Microfluidics, Photonics, Semiconductors'
+      }),
+      focus_keyword: 'Yalosys AG Zug laser micromachining glass sapphire medtech',
+      meta_title: 'Yalosys AG — Laser Glass Microprocessing in Canton Zug',
+      meta_description: 'Yalosys AG in Hünenberg, Canton Zug: Advanced ultrafast laser micromachining of glass and sapphire for microfluidics, photonics, and MedTech.',
+      slug: 'yalosys-ag',
+      schema_markup: '',
+      tags: JSON.stringify(['Yalosys AG', 'Hidden Swiss', 'Canton Zug', 'Laser Microprocessing', 'MedTech', 'Photonics'])
+    }
+  ];
+
+  for (const comp of companies) {
+    const existing = await dbGet('SELECT id FROM companies WHERE name = ? OR slug = ?', [comp.name, comp.slug]);
+    if (!existing) {
+      console.log(`Seeding company ${comp.name}...`);
+      await dbRun(`
+        INSERT INTO companies (
+          name, logo_bg, canton, industry, size_class, description,
+          premium, verified, founded, employees, revenue_band,
+          website, linkedin, contact_email, about_text, structured_data,
+          focus_keyword, meta_title, meta_description, slug, schema_markup, tags
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `, [
+        comp.name, comp.logo_bg, comp.canton, comp.industry, comp.size_class, comp.description,
+        comp.premium, comp.verified, comp.founded, comp.employees, comp.revenue_band,
+        comp.website, comp.linkedin, comp.contact_email, comp.about_text, comp.structured_data,
+        comp.focus_keyword, comp.meta_title, comp.meta_description, comp.slug, comp.schema_markup, comp.tags
+      ]);
+    }
+  }
 }
 
 async function seedSandozArticle() {
