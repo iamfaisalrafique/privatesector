@@ -157,6 +157,9 @@ function AppContent() {
       const id = path.split('/')[2];
       return { route: 'profile', id, params: query };
     }
+    if (path === '/swiss' || path === '/news/swiss' || path === '/news-swiss' || path === '/swiss-companies') {
+      return { route: 'swiss-news', params: { ...query, tag: query.tag || 'Hidden Swiss' } };
+    }
     if (path === '/news') return { route: 'news', params: query };
     if (path.startsWith('/news/')) {
       const id = path.split('/')[2];
@@ -434,6 +437,19 @@ function AppContent() {
             companyId={routeInfo.id} 
             onBack={() => navigate('/unternehmen')} 
             navigate={navigate}
+          />
+        )}
+
+        {/* ROUTE: SWISS COMPANY NEWS */}
+        {routeInfo.route === 'swiss-news' && (
+          <News 
+            selectedArticleId={null} 
+            selectArticle={(id) => id ? navigate(`/news/${id}`) : navigate('/swiss')}
+            navigate={navigate}
+            initialTag={routeInfo.params.tag || 'Hidden Swiss'}
+            initialSearch={routeInfo.params.search || ''}
+            pageTitle="Swiss Companies & Hidden Champions"
+            isSwissSection={true}
           />
         )}
 

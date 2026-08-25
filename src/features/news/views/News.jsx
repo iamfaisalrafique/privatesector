@@ -245,15 +245,36 @@ function renderArticleMarkdown(contentBody) {
   });
 }
 
-export default function News({ selectedArticleId, selectArticle, navigate }) {
+export default function News({ 
+  selectedArticleId, 
+  selectArticle, 
+  navigate, 
+  initialTag = '', 
+  initialCategory = '', 
+  initialSearch = '', 
+  pageTitle = '', 
+  isSwissSection = false 
+}) {
   const [articles, setArticles] = useState([]);
   const [activeArticle, setActiveArticle] = useState(null);
   const [loading, setLoading] = useState(true);
 
   // Filter States
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedTag, setSelectedTag] = useState('');
+  const [searchQuery, setSearchQuery] = useState(initialSearch || '');
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory || '');
+  const [selectedTag, setSelectedTag] = useState(initialTag || '');
+
+  useEffect(() => {
+    if (initialTag !== undefined) setSelectedTag(initialTag);
+  }, [initialTag]);
+
+  useEffect(() => {
+    if (initialCategory !== undefined) setSelectedCategory(initialCategory);
+  }, [initialCategory]);
+
+  useEffect(() => {
+    if (initialSearch !== undefined) setSearchQuery(initialSearch);
+  }, [initialSearch]);
 
   // Fetch News data
   useEffect(() => {
@@ -485,11 +506,23 @@ export default function News({ selectedArticleId, selectArticle, navigate }) {
         />
         
         <div style={{ marginBottom: '32px' }}>
+          {(isSwissSection || selectedTag.toLowerCase().includes('swiss') || selectedTag.toLowerCase().includes('hidden')) && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+              <span style={{ backgroundColor: 'var(--primary-red)', color: '#FFFFFF', fontSize: '10px', fontWeight: 700, padding: '2px 8px', borderRadius: '3px', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                🇨🇭 SWITZERLAND
+              </span>
+              <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--primary-red)' }}>
+                SWISS COMPANIES & HIDDEN CHAMPIONS INTELLIGENCE
+              </span>
+            </div>
+          )}
           <h1 style={{ fontFamily: '"Playfair Display", serif', fontSize: '36px', color: 'var(--text-ink)', margin: '0 0 8px 0', fontWeight: 700 }}>
-            Market News & Analysis
+            {pageTitle || (isSwissSection ? 'Swiss Companies & Hidden Champions' : 'Market News & Analysis')}
           </h1>
           <p style={{ margin: 0, color: '#6B7280', fontSize: '15px' }}>
-            Verified financial reports, corporate actions, and industrial insights.
+            {isSwissSection 
+              ? 'Investigative intelligence, corporate dossiers, and deep dives into Swiss hidden precision champions.' 
+              : 'Verified financial reports, corporate actions, and industrial insights.'}
           </p>
         </div>
 
