@@ -149,7 +149,7 @@ export default function Navbar({ currentPath, navigate, currentUser, onLogout })
       subtitle: 'Swiss business & economy',
       items: [
         { label: 'Swiss Economy', path: '/news' },
-        { label: 'Swiss Companies', path: '/unternehmen?country=switzerland' },
+        { label: 'Swiss Companies', path: '/unternehmen' },
         { label: 'Swiss Industries', path: '/unternehmen' },
         { label: 'Trade & Policy', path: '/trade-policy-pulse' },
         { label: 'Swiss Startups', path: '/statistiken' },
@@ -180,7 +180,7 @@ export default function Navbar({ currentPath, navigate, currentUser, onLogout })
       subtitle: 'Company intelligence',
       items: [
         { label: 'Company Intelligence', path: '/unternehmen' },
-        { label: 'Swiss Companies', path: '/unternehmen?country=switzerland' },
+        { label: 'Swiss Companies', path: '/unternehmen' },
         { label: 'U.S. Companies', path: '/unternehmen?country=usa' },
         { label: 'Industries', path: '/unternehmen' },
         { label: 'Rankings', path: '/cross-border-ranking' },
