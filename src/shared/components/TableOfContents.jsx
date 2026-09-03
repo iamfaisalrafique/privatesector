@@ -2,11 +2,15 @@ import { useState, useEffect, useMemo } from 'react';
 
 function formatHeadingText(text) {
   if (!text) return '';
-  // Strip numeric prefix like "01 | ", "02 — ", etc.
-  const clean = text.replace(/^([0-9]+\s*[|—–-]\s*)/, '').trim();
+  // Strip numeric prefix like "01 | ", "02 — ", etc. and markdown asterisks
+  const clean = text
+    .replace(/^([0-9]+\s*[|—–-]\s*)/, '')
+    .replace(/\*\*/g, '')
+    .replace(/\*/g, '')
+    .trim();
   const words = clean.split(/\s+/);
-  if (words.length <= 3) return clean;
-  return words.slice(0, 3).join(' ') + '...';
+  if (words.length <= 4) return clean;
+  return words.slice(0, 4).join(' ') + '...';
 }
 
 export default function TableOfContents({ contentHtml = '' }) {
@@ -23,7 +27,8 @@ export default function TableOfContents({ contentHtml = '' }) {
     
     if (headingElements.length > 0) {
       parsedHeadings = Array.from(headingElements).map((el, index) => {
-        const text = el.innerText || el.textContent || '';
+        const rawText = el.innerText || el.textContent || '';
+        const text = rawText.replace(/\*\*/g, '').replace(/\*/g, '').trim();
         const slug = el.id || text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') || `heading-${index}`;
         return { text, slug, level: el.tagName.toLowerCase() };
       });
@@ -33,28 +38,32 @@ export default function TableOfContents({ contentHtml = '' }) {
       lines.forEach((line, index) => {
         const trimmed = line.trim();
         if (trimmed.startsWith('## ')) {
-          const text = trimmed.replace('## ', '').trim();
+          const text = trimmed.replace('## ', '').replace(/\*\*/g, '').replace(/\*/g, '').trim();
           const slug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
           parsedHeadings.push({ text, slug, level: 'h2' });
         } else if (trimmed.startsWith('### ')) {
-          const text = trimmed.replace('### ', '').trim();
+          const text = trimmed.replace('### ', '').replace(/\*\*/g, '').replace(/\*/g, '').trim();
           const slug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
           parsedHeadings.push({ text, slug, level: 'h3' });
         } else if (
           trimmed.length > 3 &&
           trimmed.length < 70 &&
-          !trimmed.endsWith('.') &&
           !trimmed.startsWith('-') &&
           !trimmed.startsWith('*') &&
           !trimmed.startsWith('Source:') &&
           !trimmed.startsWith('http') &&
           !trimmed.includes('---')
         ) {
-          const prevLine = index > 0 ? lines[index - 1].trim() : '';
-          const nextLine = index < lines.length - 1 ? lines[index + 1].trim() : '';
-          if (prevLine === '' && nextLine === '') {
-            const slug = trimmed.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-            parsedHeadings.push({ text: trimmed, slug, level: 'h3' });
+          const cleanForCheck = trimmed.replace(/[*_#`~]/g, '').trim();
+          const isPunctuationEnding = cleanForCheck.endsWith('.') || cleanForCheck.endsWith(':') || cleanForCheck.endsWith('?') || cleanForCheck.endsWith('!') || cleanForCheck.endsWith(';');
+          if (!isPunctuationEnding) {
+            const prevLine = index > 0 ? lines[index - 1].trim() : '';
+            const nextLine = index < lines.length - 1 ? lines[index + 1].trim() : '';
+            if (prevLine === '' && nextLine === '') {
+              const text = cleanForCheck;
+              const slug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+              parsedHeadings.push({ text, slug, level: 'h3' });
+            }
           }
         }
       });

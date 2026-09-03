@@ -6,244 +6,8 @@ import AdSlot from '../../../shared/components/AdSlot';
 import { Calendar, Clock } from 'lucide-react';
 import SeoHead from '../../../shared/components/SeoHead';
 import logo from '../../../assets/logo_highres.png';
-
-function parseInlineMarkdown(text) {
-  if (!text) return '';
-  const parts = [];
-  const regex = /(\*\*.*?\*\*|\*.*?\*|\[.*?\]\(.*?\)|https?:\/\/[^\s]+)/g;
-  let lastIndex = 0;
-  let match;
-  let keyIdx = 0;
-
-  while ((match = regex.exec(text)) !== null) {
-    if (match.index > lastIndex) {
-      parts.push(text.substring(lastIndex, match.index));
-    }
-    const token = match[0];
-    if (token.startsWith('**') && token.endsWith('**')) {
-      parts.push(<strong key={keyIdx++} style={{ fontWeight: 700, color: '#111827' }}>{token.slice(2, -2)}</strong>);
-    } else if (token.startsWith('*') && token.endsWith('*')) {
-      parts.push(<em key={keyIdx++}>{token.slice(1, -1)}</em>);
-    } else if (token.startsWith('[') && token.includes('](') && token.endsWith(')')) {
-      const linkText = token.substring(1, token.indexOf(']('));
-      const url = token.substring(token.indexOf('](') + 2, token.length - 1);
-      parts.push(
-        <a key={keyIdx++} href={url} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-red)', textDecoration: 'underline', fontWeight: 500 }}>
-          {linkText}
-        </a>
-      );
-    } else if (token.startsWith('http://') || token.startsWith('https://')) {
-      parts.push(
-        <a key={keyIdx++} href={token} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary-red)', textDecoration: 'underline', fontWeight: 500 }}>
-          {token}
-        </a>
-      );
-    }
-    lastIndex = regex.lastIndex;
-  }
-
-  if (lastIndex < text.length) {
-    parts.push(text.substring(lastIndex));
-  }
-
-  return parts;
-}
-
-function renderArticleMarkdown(contentBody) {
-  if (!contentBody) return null;
-
-  const blocks = contentBody.split(/\n\n+/);
-
-  return blocks.map((block, index) => {
-    const trimmed = block.trim();
-
-    // 1. Horizontal Rule
-    if (trimmed === '---' || trimmed === '***' || trimmed === '___') {
-      return <hr key={index} style={{ border: 'none', borderTop: '1px solid var(--light-border)', margin: '32px 0' }} />;
-    }
-
-    // 2. Source citation box
-    if (trimmed.startsWith('Source:') || trimmed.startsWith('Quelle:')) {
-      const sourceText = trimmed.replace(/^(Source:|Quelle:)\s*/i, '');
-      return (
-        <div 
-          key={index}
-          style={{
-            backgroundColor: '#F9FAFB',
-            borderLeft: '4px solid var(--primary-red)',
-            padding: '16px 20px',
-            marginTop: '32px',
-            marginBottom: '24px',
-            borderRadius: '0 6px 6px 0',
-            fontSize: '13.5px',
-            color: '#4B5563',
-            lineHeight: 1.6,
-            boxShadow: '0 1px 2px rgba(0,0,0,0.03)'
-          }}
-        >
-          <strong style={{ color: '#111827', display: 'inline-block', marginRight: '6px' }}>Source:</strong>
-          {parseInlineMarkdown(sourceText)}
-        </div>
-      );
-    }
-
-    // 3. Explicit H2 heading (## )
-    if (trimmed.startsWith('## ')) {
-      const text = trimmed.replace(/^##\s+/, '');
-      const slug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-      return (
-        <h2 
-          key={index} 
-          id={slug} 
-          style={{ 
-            fontFamily: '"Playfair Display", Georgia, serif', 
-            fontSize: '26px', 
-            marginTop: '36px', 
-            marginBottom: '16px', 
-            color: '#111827', 
-            fontWeight: 700,
-            borderBottom: '1px solid #E5E7EB',
-            paddingBottom: '8px'
-          }}
-        >
-          {parseInlineMarkdown(text)}
-        </h2>
-      );
-    }
-
-    // 4. Explicit H3 heading (### )
-    if (trimmed.startsWith('### ')) {
-      const text = trimmed.replace(/^###\s+/, '');
-      const slug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-      return (
-        <h3 
-          key={index} 
-          id={slug} 
-          style={{ 
-            fontFamily: '"Playfair Display", Georgia, serif', 
-            fontSize: '22px', 
-            marginTop: '28px', 
-            marginBottom: '12px', 
-            color: '#191919', 
-            fontWeight: 700 
-          }}
-        >
-          {parseInlineMarkdown(text)}
-        </h3>
-      );
-    }
-
-    // 5. Implicit Subheading detection (short single line without period)
-    const lines = trimmed.split('\n');
-    if (
-      lines.length === 1 &&
-      trimmed.length > 3 &&
-      trimmed.length < 75 &&
-      !trimmed.endsWith('.') &&
-      !trimmed.startsWith('-') &&
-      !trimmed.startsWith('*') &&
-      !trimmed.startsWith('http')
-    ) {
-      const slug = trimmed.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-      return (
-        <h3 
-          key={index} 
-          id={slug} 
-          style={{ 
-            fontFamily: '"Playfair Display", Georgia, serif', 
-            fontSize: '22px', 
-            marginTop: '28px', 
-            marginBottom: '12px', 
-            color: '#111827', 
-            fontWeight: 700 
-          }}
-        >
-          {parseInlineMarkdown(trimmed)}
-        </h3>
-      );
-    }
-
-    // 6. Pure Bulleted List block
-    const isListBlock = lines.every(line => line.trim().startsWith('- ') || line.trim().startsWith('* '));
-    if (isListBlock) {
-      return (
-        <ul 
-          key={index} 
-          style={{ 
-            margin: '16px 0 24px', 
-            paddingLeft: '24px', 
-            listStyleType: 'disc', 
-            color: '#374151',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '8px'
-          }}
-        >
-          {lines.map((line, lIdx) => {
-            const itemText = line.trim().replace(/^[-*]\s+/, '');
-            return (
-              <li key={lIdx} style={{ fontSize: '16px', lineHeight: 1.7, color: '#374151' }}>
-                {parseInlineMarkdown(itemText)}
-              </li>
-            );
-          })}
-        </ul>
-      );
-    }
-
-    // 7. Mixed Text + Bullet List Paragraph
-    const firstLineIsText = !lines[0].trim().startsWith('- ') && !lines[0].trim().startsWith('* ');
-    const hasBulletsBelow = lines.slice(1).some(line => line.trim().startsWith('- ') || line.trim().startsWith('* '));
-
-    if (firstLineIsText && hasBulletsBelow) {
-      const textLines = [];
-      const bulletLines = [];
-      lines.forEach(line => {
-        if (line.trim().startsWith('- ') || line.trim().startsWith('* ')) {
-          bulletLines.push(line.trim().replace(/^[-*]\s+/, ''));
-        } else {
-          textLines.push(line);
-        }
-      });
-
-      return (
-        <div key={index} style={{ marginBottom: '24px' }}>
-          {textLines.length > 0 && (
-            <p style={{ marginBottom: '12px', fontSize: '16px', lineHeight: 1.8, color: '#1F2937' }}>
-              {parseInlineMarkdown(textLines.join(' '))}
-            </p>
-          )}
-          {bulletLines.length > 0 && (
-            <ul 
-              style={{ 
-                margin: '12px 0 16px', 
-                paddingLeft: '24px', 
-                listStyleType: 'disc', 
-                color: '#374151',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '8px'
-              }}
-            >
-              {bulletLines.map((bItem, bIdx) => (
-                <li key={bIdx} style={{ fontSize: '16px', lineHeight: 1.7, color: '#374151' }}>
-                  {parseInlineMarkdown(bItem)}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      );
-    }
-
-    // Standard Paragraph
-    return (
-      <p key={index} style={{ marginBottom: '20px', fontSize: '16px', lineHeight: 1.8, color: '#1F2937' }}>
-        {parseInlineMarkdown(trimmed)}
-      </p>
-    );
-  });
-}
+import { handleImageFallback, getCategoryFallbackImage } from '../../../shared/utils/imageFallbacks';
+import { parseInlineMarkdown, renderArticleMarkdown } from '../../../shared/utils/renderArticleContent';
 
 export default function News({ 
   selectedArticleId, 
@@ -440,31 +204,16 @@ export default function News({
               </div>
 
               {/* Featured Image */}
-              {activeArticle.image_url && (
+              {activeArticle.image_url ? (
                 <div style={{ width: '100%', maxHeight: '420px', overflow: 'hidden', borderRadius: '6px', marginBottom: '32px' }}>
                   <img 
                     src={activeArticle.image_url} 
                     alt={activeArticle.title} 
-                    onError={(e) => {
-                      e.currentTarget.onerror = null;
-                      const fallbackMap = {
-                        'Wealth Management': 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=1200',
-                        'Aerospace & Technology': 'https://images.unsplash.com/photo-1517976487504-59a1a0b82f0c?auto=format&fit=crop&q=80&w=1200',
-                        'Insurtech & Finance': 'https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&q=80&w=1200',
-                        'Fintech & Banking': 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=1200',
-                        'Clean Energy': 'https://images.unsplash.com/photo-1509391365360-2e959784a276?auto=format&fit=crop&q=80&w=1200',
-                        'Advanced Manufacturing': 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200',
-                        'Pharmaceuticals': 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&q=80&w=1200',
-                        'Medical Technology': 'https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=1200',
-                        'Consumer Goods': 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=1200',
-                        'Financial Services': 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&q=80&w=1200'
-                      };
-                      e.currentTarget.src = fallbackMap[activeArticle.category] || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1200';
-                    }}
+                    onError={(e) => handleImageFallback(e, activeArticle.category, 1200)}
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                   />
                 </div>
-              )}
+              ) : null}
 
               {/* Editorial Body Content */}
               <div className="editorial-content-body" style={{ fontSize: '16px', lineHeight: 1.8, color: 'var(--text-ink)', overflowWrap: 'break-word', wordBreak: 'break-word', maxWidth: '100%' }}>
@@ -568,28 +317,18 @@ export default function News({
                     e.currentTarget.style.boxShadow = 'none';
                   }}
                 >
-                  {art.image_url && (
+                  {art.image_url ? (
                     <img 
                       src={art.image_url} 
-                      alt="" 
-                      onError={(e) => {
-                        e.currentTarget.onerror = null;
-                        const fallbackMap = {
-                          'Wealth Management': 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=600',
-                          'Aerospace & Technology': 'https://images.unsplash.com/photo-1517976487504-59a1a0b82f0c?auto=format&fit=crop&q=80&w=600',
-                          'Insurtech & Finance': 'https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&q=80&w=600',
-                          'Fintech & Banking': 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=600',
-                          'Clean Energy': 'https://images.unsplash.com/photo-1509391365360-2e959784a276?auto=format&fit=crop&q=80&w=600',
-                          'Advanced Manufacturing': 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=600',
-                          'Pharmaceuticals': 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&q=80&w=600',
-                          'Medical Technology': 'https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=600',
-                          'Consumer Goods': 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=600',
-                          'Financial Services': 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&q=80&w=600'
-                        };
-                        e.currentTarget.src = fallbackMap[art.category] || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=600';
-                      }}
+                      alt={art.title} 
+                      onError={(e) => handleImageFallback(e, art.category, 600)}
                       style={{ width: '200px', height: '140px', objectFit: 'cover', borderRadius: '4px', flexShrink: 0 }} 
                     />
+                  ) : (
+                    <div style={{ width: '200px', height: '140px', backgroundColor: '#F3F4F6', borderRadius: '4px', flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '1px solid #E5E7EB' }}>
+                      <span style={{ color: 'var(--primary-red)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>PrivateSector</span>
+                      <span style={{ color: '#9CA3AF', fontSize: '10px', marginTop: '4px' }}>Editorial</span>
+                    </div>
                   )}
                   <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flex: 1 }}>
                     <div>
