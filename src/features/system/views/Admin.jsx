@@ -2,29 +2,37 @@ import { useState, useEffect, useCallback } from 'react';
 import { useLanguage } from '../../../context/LanguageContext';
 import RichTextEditor from '../../../shared/components/RichTextEditor';
 import RankMathSeoBox from '../../../shared/components/RankMathSeoBox';
+import MorningBriefingAdmin from '../components/MorningBriefingAdmin';
 import { 
   LayoutDashboard, 
   Files, 
   Tv, 
   Languages, 
   Save, 
-  Trash2,
-  Edit3,
-  Compass,
-  Briefcase,
-  Mic,
-  PlusCircle,
-  LogOut,
-  Shield,
-  Upload,
-  Image as ImageIcon,
-  X
+  Trash2, 
+  Edit3, 
+  Compass, 
+  Briefcase, 
+  Mic, 
+  PlusCircle, 
+  LogOut, 
+  Shield, 
+  Upload, 
+  Image as ImageIcon, 
+  X,
+  Radio
 } from 'lucide-react';
 
-export default function Admin({ navigate, onLogout }) {
+export default function Admin({ navigate, onLogout, adminTab, adminAction, adminId }) {
   const { refreshTranslations } = useLanguage();
-  const [activeTab, setActiveTab] = useState('overview'); // overview, pages, ads, translations, news, companies, interviews, jobs
+  const [activeTab, setActiveTab] = useState(adminTab || 'overview'); // overview, pages, ads, translations, news, companies, interviews, jobs
   const [subTab, setSubTab] = useState('all'); // all, categories, tags
+
+  useEffect(() => {
+    if (adminTab && adminTab !== activeTab) {
+      setActiveTab(adminTab);
+    }
+  }, [adminTab]);
 
   const handleLogout = () => {
     localStorage.removeItem('userSession');
@@ -252,7 +260,8 @@ export default function Admin({ navigate, onLogout }) {
         alert(`${type.toUpperCase()} saved successfully!`);
         setEditingItem(null);
         setIsCreatingNew(false);
-        loadEntities();
+        await loadEntities();
+        if (navigate) navigate(`/admin/${type}`);
       } else {
         const error = await res.json();
         alert(`Error: ${error.error}`);
@@ -264,6 +273,10 @@ export default function Admin({ navigate, onLogout }) {
   };
 
   const handleDeleteEntity = async (type, id) => {
+    if (navigate) {
+      navigate(`/admin/${type}/delete/${id}`);
+      return;
+    }
     if (!window.confirm(`Are you sure you want to delete this ${type}?`)) return;
     try {
       const res = await fetch(`/api/${type}/${id}`, { method: 'DELETE' });
@@ -277,6 +290,10 @@ export default function Admin({ navigate, onLogout }) {
   };
 
   const handleEditClick = async (type, data) => {
+    if (navigate && data && data.id) {
+      navigate(`/admin/${type}/edit/${data.id}`);
+      return;
+    }
     setIsCreatingNew(false);
     setEditingItem({ type, data: { ...data } });
 
@@ -359,6 +376,40 @@ export default function Admin({ navigate, onLogout }) {
     setEditingItem({ type, data: emptyData });
     setIsCreatingNew(true);
   };
+
+  const loadItemForEdit = useCallback(async (type, id) => {
+    setIsCreatingNew(false);
+    try {
+      const res = await fetch(`/api/${type}/${id}`);
+      if (res.ok) {
+        const detail = await res.json();
+        const fullData = detail.article || detail.company || detail.interview || detail.job || detail;
+        if (fullData) {
+          setEditingItem({ type, data: { ...fullData } });
+        }
+      }
+    } catch (e) {
+      console.error('Error fetching full entity detail:', e);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (adminTab === 'morning-briefing') return;
+    if (adminAction === 'new') {
+      if (['blogs', 'news', 'companies', 'interviews', 'jobs'].includes(adminTab)) {
+        handleCreateClick(adminTab);
+      }
+    } else if (adminAction === 'edit' && adminId) {
+      if (['blogs', 'news', 'companies', 'interviews', 'jobs'].includes(adminTab)) {
+        loadItemForEdit(adminTab, adminId);
+      }
+    } else if (adminAction === 'delete') {
+      // Handled by modal
+    } else {
+      setEditingItem(null);
+      setIsCreatingNew(false);
+    }
+  }, [adminTab, adminAction, adminId, loadItemForEdit]);
 
   // Translations Handlers
   const handleOpenLanguageEdit = (lang) => {
@@ -451,6 +502,7 @@ export default function Admin({ navigate, onLogout }) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '16px 0' }}>
             {[
               { id: 'overview', label: 'Overview', icon: <LayoutDashboard size={18} /> },
+              { id: 'morning-briefing', label: 'Morning Briefing', icon: <Radio size={18} /> },
               { id: 'blogs', label: 'Blogs', icon: <Files size={18} />, hasSubmenu: true },
               { id: 'news', label: 'News & Articles', icon: <Files size={18} />, hasSubmenu: true },
               { id: 'companies', label: 'Companies', icon: <Compass size={18} /> },
@@ -472,6 +524,7 @@ export default function Admin({ navigate, onLogout }) {
                       setActiveTab(tab.id);
                       setSubTab('all');
                       setEditingItem(null);
+                      if (navigate) navigate('/admin/' + tab.id);
                     }}
                     style={{
                       display: 'flex',
@@ -565,7 +618,7 @@ export default function Admin({ navigate, onLogout }) {
                   {isCreatingNew ? 'Create New' : 'Edit'} {editingItem.type}
                 </h2>
                 <div style={{ display: 'flex', gap: '12px' }}>
-                  <button type="button" onClick={() => setEditingItem(null)} style={{ padding: '8px 16px', backgroundColor: '#F1F5F9', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}>Cancel</button>
+                  <button type="button" onClick={() => { setEditingItem(null); if (navigate) navigate('/admin/' + activeTab); }} style={{ padding: '8px 16px', backgroundColor: '#F1F5F9', border: '1.5px solid #CBD5E1', color: '#0F172A', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}>Cancel</button>
                   <button type="submit" style={{ padding: '8px 20px', backgroundColor: 'var(--primary-red)', border: 'none', color: '#FFF', borderRadius: '6px', cursor: 'pointer', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <Save size={16} /> Save Changes
                   </button>
@@ -908,6 +961,15 @@ export default function Admin({ navigate, onLogout }) {
               </div>
             )}
 
+            {/* Morning Briefing Management */}
+            {activeTab === 'morning-briefing' && (
+              <MorningBriefingAdmin 
+                navigate={navigate}
+                adminAction={adminAction}
+                adminId={adminId}
+              />
+            )}
+
             {/* Entity management lists */}
             {['blogs', 'news', 'companies', 'interviews', 'jobs'].includes(activeTab) && (
               <div>
@@ -916,7 +978,10 @@ export default function Admin({ navigate, onLogout }) {
                     Manage {activeTab} {subTab !== 'all' ? ` > ${subTab}` : ''}
                   </h1>
                   {subTab === 'all' && (
-                    <button onClick={() => handleCreateClick(activeTab)} style={{ padding: '10px 20px', backgroundColor: 'var(--primary-red)', border: 'none', color: '#FFF', borderRadius: '6px', cursor: 'pointer', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <button 
+                      onClick={() => navigate ? navigate(`/admin/${activeTab}/new`) : handleCreateClick(activeTab)} 
+                      style={{ padding: '10px 20px', backgroundColor: 'var(--primary-red)', border: 'none', color: '#FFF', borderRadius: '6px', cursor: 'pointer', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}
+                    >
                       <PlusCircle size={18} /> Add New {activeTab.slice(0, -1)}
                     </button>
                   )}
@@ -1165,6 +1230,103 @@ export default function Admin({ navigate, onLogout }) {
             )}
           </>
         )}
+      {/* Delete Confirmation Modal for Entity items */}
+      {adminAction === 'delete' && adminId && activeTab !== 'morning-briefing' && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.65)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+          backdropFilter: 'blur(3px)'
+        }}>
+          <div style={{
+            backgroundColor: '#FFFFFF',
+            borderRadius: '12px',
+            padding: '32px',
+            maxWidth: '480px',
+            width: '90%',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.3)',
+            border: '1px solid #E2E8F0'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+              <div style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                backgroundColor: '#FEE2E2',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#DC2626'
+              }}>
+                <Trash2 size={20} />
+              </div>
+              <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#0F172A', margin: 0 }}>
+                Confirm Permanent Deletion
+              </h3>
+            </div>
+            <p style={{ fontSize: '14px', color: '#475569', lineHeight: 1.6, marginBottom: '24px' }}>
+              Are you sure you want to permanently delete this <strong>{activeTab.slice(0, -1)}</strong> item (ID #{adminId})? This action cannot be undone.
+            </p>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+              <button
+                type="button"
+                onClick={() => navigate ? navigate(`/admin/${activeTab}`) : null}
+                style={{
+                  padding: '10px 18px',
+                  backgroundColor: '#F1F5F9',
+                  border: '1px solid #CBD5E1',
+                  color: '#334155',
+                  borderRadius: '6px',
+                  fontWeight: 600,
+                  fontSize: '13px',
+                  cursor: 'pointer'
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  try {
+                    const res = await fetch(`/api/${activeTab}/${adminId}`, { method: 'DELETE' });
+                    if (res.ok) {
+                      await loadEntities();
+                      if (navigate) navigate(`/admin/${activeTab}`);
+                    } else {
+                      alert('Failed to delete item.');
+                    }
+                  } catch (err) {
+                    console.error('Delete error:', err);
+                    alert('Delete failed.');
+                  }
+                }}
+                style={{
+                  padding: '10px 20px',
+                  backgroundColor: 'var(--primary-red, #D52B1E)',
+                  border: 'none',
+                  color: '#FFFFFF',
+                  borderRadius: '6px',
+                  fontWeight: 700,
+                  fontSize: '13px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                <Trash2 size={15} /> Yes, Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       </main>
       <style>{`
         .admin-dashboard-container input, 
@@ -1184,11 +1346,11 @@ export default function Admin({ navigate, onLogout }) {
           outline: none !important;
           box-shadow: 0 0 0 3px rgba(213, 43, 30, 0.15) !important;
         }
-        .admin-dashboard-container label {
-          color: #0F172A !important;
-          font-weight: 700 !important;
-          font-size: 12px !important;
-          letter-spacing: 0.03em !important;
+        .admin-dashboard-container label:not([class*="btn"]):not([style*="background"]):not([style*="color: #FFFFFF"]):not([style*="color: rgb(255, 255, 255)"]) {
+          color: #0F172A;
+          font-weight: 700;
+          font-size: 12px;
+          letter-spacing: 0.03em;
         }
         .admin-dashboard-container h1,
         .admin-dashboard-container h2,

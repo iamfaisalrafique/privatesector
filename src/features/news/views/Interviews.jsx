@@ -116,6 +116,10 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
                 <img 
                   src={activeDossier.interviewee_avatar} 
                   alt={activeDossier.interviewee_name}
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(activeDossier.interviewee_name || 'Interviewee')}&background=D52B1E&color=fff`;
+                  }}
                   style={{
                     width: '160px',
                     height: '160px',
@@ -175,6 +179,10 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
                     <img 
                       src={activeDossier.studentAuthor.avatar} 
                       alt={activeDossier.studentAuthor.name} 
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(activeDossier.studentAuthor.name || 'Author')}&background=D52B1E&color=fff`;
+                      }}
                       style={{ width: '24px', height: '24px', borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--primary-red)' }}
                     />
                     <span style={{ fontSize: '11.5px', color: 'var(--primary-red)', fontWeight: 600 }}>
@@ -438,6 +446,10 @@ export default function Interviews({ selectedInterviewId, isPodcastOnly = false,
                     <img 
                       src={iv.interviewee_avatar} 
                       alt={iv.interviewee_name} 
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(iv.interviewee_name || 'Expert')}&background=D52B1E&color=fff`;
+                      }}
                       style={{ width: '48px', height: '48px', borderRadius: '50%', border: '1.5px solid var(--primary-red)', objectFit: 'cover' }}
                     />
                     <div>

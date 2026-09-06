@@ -159,6 +159,23 @@ export default function SeoHead({
             }
           }
         };
+      } else if (type === 'audio' || type === 'briefing') {
+        jsonLdObj = {
+          '@context': 'https://schema.org',
+          '@type': 'PodcastEpisode',
+          'name': title || 'PrivateSector Morning Briefing',
+          'description': metaDescription,
+          'datePublished': entityData.date || new Date().toISOString().split('T')[0],
+          'associatedMedia': {
+            '@type': 'AudioObject',
+            'contentUrl': entityData.audio_url || ''
+          },
+          'partOfSeries': {
+            '@type': 'PodcastSeries',
+            'name': 'PrivateSector Daily Audio Intelligence',
+            'url': 'https://privatesector.ch/'
+          }
+        };
       } else {
         // Generic WebPage / Organization Schema
         jsonLdObj = {

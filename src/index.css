@@ -698,3 +698,10 @@ p, li, .sans-font {
     display: none !important;
   }
 }
+
+@media (max-width: 768px) {
+  .single-briefing-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+

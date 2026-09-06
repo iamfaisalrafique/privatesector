@@ -12,6 +12,7 @@ import newsRoutes from './routes/news.routes.js';
 import blogsRoutes from './routes/blogs.routes.js';
 import studentsRoutes from './routes/students.routes.js';
 import adminRoutes from './routes/admin.routes.js';
+import morningBriefingRoutes from './routes/morning-briefing.routes.js';
 
 import fs from 'fs';
 
@@ -23,6 +24,10 @@ const __dirname = path.dirname(__filename);
 const uploadsDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
+}
+const audioUploadsDir = path.join(uploadsDir, 'audio');
+if (!fs.existsSync(audioUploadsDir)) {
+  fs.mkdirSync(audioUploadsDir, { recursive: true });
 }
 
 const app = express();
@@ -37,10 +42,17 @@ app.use((req, res, next) => {
 });
 
 app.use(cors());
-app.use(express.json({ limit: '15mb' }));
-app.use('/uploads', express.static(uploadsDir));
-app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
-app.use('/uploads', express.static(path.join(__dirname, '../dist/uploads')));
+app.use(express.json({ limit: '50mb' }));
+const staticUploadOptions = {
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.webm')) {
+      res.setHeader('Content-Type', 'audio/webm');
+    }
+  }
+};
+app.use('/uploads', express.static(uploadsDir, staticUploadOptions));
+app.use('/uploads', express.static(path.join(__dirname, '../public/uploads'), staticUploadOptions));
+app.use('/uploads', express.static(path.join(__dirname, '../dist/uploads'), staticUploadOptions));
 
 // 404 handler for missing uploads so it doesn't return HTML
 app.use('/uploads', (req, res) => {
@@ -96,6 +108,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/companies', companyRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/blogs', blogsRoutes);
+app.use('/api/morning-briefings', morningBriefingRoutes);
 app.use('/api', studentsRoutes); // /api/jobs, /api/students
 app.use('/api/admin', adminRoutes); // /api/admin/ads, /api/admin/translations
 
@@ -370,6 +383,12 @@ app.get('/sitemap.xml', async (req, res) => {
     // 8. Dynamic Student Talent Profiles
     (students || []).forEach(s => {
       xml += `  <url>\n    <loc>https://privatesector.ch/student/${s.id}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.5</priority>\n  </url>\n`;
+    });
+
+    // 9. Morning Briefings
+    const briefings = await dbQuery('SELECT id, date FROM morning_briefings WHERE status = "published"');
+    (briefings || []).forEach(b => {
+      xml += `  <url>\n    <loc>https://privatesector.ch/</loc>\n    <lastmod>${b.date || today}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>1.0</priority>\n  </url>\n`;
     });
 
     xml += `</urlset>`;

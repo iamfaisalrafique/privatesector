@@ -32,7 +32,7 @@ const focus_keyword = "Vertiv UIG acquisition AI data center power microgrids Sw
 const meta_title = "AI Needs Power — Vertiv Is Paying Up to $2.6 Billion to Get It Faster — PrivateSector";
 const meta_description = "Vertiv agrees to acquire UtilityInnovation Group for up to $2.6B to help AI data centers secure power faster. Discover what this means for Swiss grid and cooling leaders.";
 const slug = "ai-needs-power-vertiv-is-paying-up-to-2-6-billion-to-get-it-faster";
-const image_url = "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?auto=format&fit=crop&q=80&w=1200";
+const image_url = "/uploads/ai_needs_power_vertiv_paying_2_6_billion.jpg";
 
 const content_body = `USA INSIGHT 🇺🇸 ↔ 🇨🇭 ◆ 3 SEPTEMBER 2026 ◆ 2 MIN READ ◆ ARTIFICIAL INTELLIGENCE ◆ ENERGY & INFRASTRUCTURE ◆ DATA CENTERS
 
@@ -83,7 +83,7 @@ const schema_markup = JSON.stringify({
   "@type": "NewsArticle",
   "headline": title,
   "description": meta_description,
-  "image": image_url,
+  "image": "https://privatesector.ch/uploads/ai_needs_power_vertiv_paying_2_6_billion.jpg",
   "datePublished": date_published,
   "dateModified": date_published,
   "inLanguage": "en",

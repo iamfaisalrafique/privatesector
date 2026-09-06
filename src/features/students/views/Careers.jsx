@@ -103,6 +103,10 @@ export default function Careers({ navigate }) {
                   <img 
                     src={s.avatar} 
                     alt={s.name} 
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(s.name || 'Candidate')}&background=D52B1E&color=fff`;
+                    }}
                     style={{ width: '64px', height: '64px', borderRadius: '50%', border: '1.5px solid var(--primary-red)', objectFit: 'cover' }}
                   />
                   <div style={{ flex: 1 }}>

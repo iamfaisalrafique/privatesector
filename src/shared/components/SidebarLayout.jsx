@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Tag, ArrowRight } from 'lucide-react';
+import { handleImageFallback } from '../utils/imageFallbacks';
 
 export default function SidebarLayout({ 
   children,
@@ -217,6 +218,7 @@ export default function SidebarLayout({
                     <img 
                       src={item.image_url} 
                       alt="" 
+                      onError={(e) => handleImageFallback(e, item.category, 100)}
                       style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '4px', flexShrink: 0 }} 
                     />
                   )}

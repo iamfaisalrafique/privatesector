@@ -75,6 +75,10 @@ export default function StudentProfile({ studentId, navigate }) {
             <img 
               src={profile.avatar} 
               alt={profile.name}
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.name || 'Student')}&background=D52B1E&color=fff`;
+              }}
               style={{
                 width: '140px',
                 height: '140px',

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
-import { Navbar, Hero, CookieBanner, AdSlot, ErrorBoundary, HomepageGraphics } from './features/shared';
+import { Navbar, Hero, CookieBanner, AdSlot, ErrorBoundary, HomepageGraphics, DailyAudioNews } from './features/shared';
 import { Directory, Profile, CompanyCard } from './features/company';
 import { StudentProfile, StudentDashboard, Careers } from './features/students';
 import { Rankings, Statistics } from './features/company-ranking';
@@ -9,6 +9,7 @@ import { Blogs } from './features/blog';
 import { News, Interviews, TranslaticTranscript, SoCalGateway, TradePolicyPulse, CrossBorderRanking } from './features/news';
 import logo from './assets/logo_highres.png';
 import { Landmark, ArrowRight, ShieldCheck } from 'lucide-react';
+import { handleImageFallback } from './shared/utils/imageFallbacks';
 
 function AppContent() {
   const { t, isRtl } = useLanguage();
@@ -186,7 +187,37 @@ function AppContent() {
     }
     if (path === '/login') return { route: 'login', params: query };
     if (path === '/register') return { route: 'register', params: query };
-    if (path === '/admin') return { route: 'admin', params: query };
+    if (path === '/admin' || path.startsWith('/admin/')) {
+      const adminParts = path.split('/').filter(Boolean);
+      const rawTab = adminParts[1] || 'overview';
+      let adminTab = rawTab;
+      let adminAction = null;
+      let adminId = null;
+
+      if (['new', 'add'].includes(rawTab)) {
+        adminTab = 'news';
+        adminAction = 'new';
+      } else {
+        const actionPart = adminParts[2];
+        if (actionPart === 'new' || actionPart === 'add') {
+          adminAction = 'new';
+        } else if (actionPart === 'edit') {
+          adminAction = 'edit';
+          adminId = adminParts[3] || null;
+        } else if (actionPart === 'delete') {
+          adminAction = 'delete';
+          adminId = adminParts[3] || null;
+        }
+      }
+
+      return { 
+        route: 'admin', 
+        adminTab, 
+        adminAction, 
+        adminId, 
+        params: query 
+      };
+    }
     if (path === '/translatic-transcript') return { route: 'translatic-transcript', params: query };
     if (path === '/socal-gateway') return { route: 'socal-gateway', params: query };
     if (path === '/trade-policy-pulse') return { route: 'trade-policy-pulse', params: query };
@@ -242,10 +273,15 @@ function AppContent() {
         {/* ROUTE: HOME */}
         {routeInfo.route === 'home' && (
           <div>
+            {/* PrivateSector Daily Audio Briefing (Top before Hero) */}
+            <div className="container" style={{ paddingTop: '20px', maxWidth: '1680px' }}>
+              <DailyAudioNews navigate={navigate} />
+            </div>
+
             <Hero navigate={navigate} />
 
             {/* Homepage Body content */}
-            <div className="container" style={{ paddingTop: '64px', paddingBottom: '96px', maxWidth: '1680px' }}>
+            <div className="container" style={{ paddingTop: '48px', paddingBottom: '96px', maxWidth: '1680px' }}>
               
               {/* Leaderboard Zone A */}
               <AdSlot position="A" />
@@ -315,22 +351,7 @@ function AppContent() {
                           <img 
                             src={art.image_url} 
                             alt={art.title} 
-                            onError={(e) => {
-                              e.currentTarget.onerror = null;
-                              const fallbackMap = {
-                                'Wealth Management': 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?auto=format&fit=crop&q=80&w=600',
-                                'Aerospace & Technology': 'https://images.unsplash.com/photo-1517976487504-59a1a0b82f0c?auto=format&fit=crop&q=80&w=600',
-                                'Insurtech & Finance': 'https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&q=80&w=600',
-                                'Fintech & Banking': 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&q=80&w=600',
-                                'Clean Energy': 'https://images.unsplash.com/photo-1509391365360-2e959784a276?auto=format&fit=crop&q=80&w=600',
-                                'Advanced Manufacturing': 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=600',
-                                'Pharmaceuticals': 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&q=80&w=600',
-                                'Medical Technology': 'https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=600',
-                                'Consumer Goods': 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&q=80&w=600',
-                                'Financial Services': 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&q=80&w=600'
-                              };
-                              e.currentTarget.src = fallbackMap[art.category] || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=600';
-                            }}
+                            onError={(e) => handleImageFallback(e, art.category, 600)}
                             style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                           />
                         </div>
@@ -586,7 +607,13 @@ function AppContent() {
 
         {/* ROUTE: ADMIN DASHBOARD */}
         {routeInfo.route === 'admin' && (
-          <Admin navigate={navigate} onLogout={handleLogout} />
+          <Admin 
+            navigate={navigate} 
+            onLogout={handleLogout}
+            adminTab={routeInfo.adminTab}
+            adminAction={routeInfo.adminAction}
+            adminId={routeInfo.adminId}
+          />
         )}
 
       </div>

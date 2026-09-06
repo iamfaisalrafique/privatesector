@@ -11,3 +11,5 @@ export { default as LanguageSwitcher } from './components/LanguageSwitcher';
 export { default as SidebarLayout } from './components/SidebarLayout';
 export { default as RichTextEditor } from './components/RichTextEditor';
 export { default as RankMathSeoBox } from './components/RankMathSeoBox';
+export { default as DailyAudioNews } from './components/DailyAudioNews';
+

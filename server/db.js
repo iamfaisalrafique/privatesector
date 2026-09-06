@@ -16,7 +16,8 @@ let pool = null;
 let sqliteDb = null;
 let sqlite3 = null;
 
-const connectionString = process.env.DATABASE_URL;
+const rawConnectionString = process.env.DATABASE_URL;
+const connectionString = (rawConnectionString && (rawConnectionString.startsWith('postgres://') || rawConnectionString.startsWith('postgresql://'))) ? rawConnectionString : null;
 
 if (connectionString) {
   console.log('DATABASE_URL environment variable found. Using PostgreSQL.');
@@ -645,6 +646,23 @@ export async function initializeDatabase() {
     )
   `);
 
+  // Create morning_briefings table
+  await dbRun(`
+    CREATE TABLE IF NOT EXISTS morning_briefings (
+      id SERIAL PRIMARY KEY,
+      title TEXT NOT NULL,
+      date TEXT NOT NULL,
+      image_url TEXT DEFAULT '',
+      audio_url TEXT NOT NULL,
+      audio_duration INTEGER DEFAULT 0,
+      transcript TEXT DEFAULT '',
+      linked_articles TEXT DEFAULT '[]',
+      status TEXT DEFAULT 'published',
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    )
+  `);
+
   // Add SEO columns, category, and tags to all tables
   await dbRun(`ALTER TABLE news ADD COLUMN IF NOT EXISTS focus_keyword TEXT DEFAULT ''`);
   await dbRun(`ALTER TABLE news ADD COLUMN IF NOT EXISTS meta_title TEXT DEFAULT ''`);
@@ -698,6 +716,8 @@ export async function initializeDatabase() {
   } catch (err) {
     console.error('Error seeding users:', err);
   }
+
+  // Morning briefings table is created without auto-seeding demo data.
 
 
   // Count checks to decide if we need to clean and seed

@@ -42,19 +42,113 @@ export function parseInlineMarkdown(text) {
   return parts;
 }
 
+export function decodeHtmlEntities(str) {
+  if (!str) return '';
+  if (typeof str !== 'string') return String(str);
+  
+  if (/&lt;\/?(p|h[1-6]|div|span|ul|ol|li|blockquote|strong|b|em|i|br|hr|a)[^&]*&gt;/i.test(str)) {
+    return str
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/&amp;/g, '&');
+  }
+  return str;
+}
+
 export function renderHtmlContent(htmlString) {
   if (!htmlString) return null;
+  const decoded = decodeHtmlEntities(htmlString);
   const parser = new DOMParser();
-  const doc = parser.parseFromString(htmlString, 'text/html');
+  const doc = parser.parseFromString(decoded, 'text/html');
 
   function domNodeToReact(node, key) {
     if (node.nodeType === Node.TEXT_NODE) {
-      return parseInlineMarkdown(node.textContent);
+      const text = node.textContent;
+      if (!text) return null;
+      if (/<(p|h[1-6]|ul|ol|div|blockquote|table|section|hr|br)[^>]*>/i.test(text)) {
+        return renderHtmlContent(text);
+      }
+      return parseInlineMarkdown(text);
     }
     if (node.nodeType !== Node.ELEMENT_NODE) return null;
 
     const tagName = node.tagName.toLowerCase();
+    const rawText = node.textContent.trim();
     const children = Array.from(node.childNodes).map((child, idx) => domNodeToReact(child, `${key}-${idx}`));
+
+    // Check if paragraph or div or block is secretly a markdown heading or divider
+    if (tagName === 'p' || tagName === 'div') {
+      if (rawText.startsWith('## ')) {
+        const text = rawText.replace(/^##\s+/, '').replace(/\*\*/g, '').replace(/\*/g, '').trim();
+        const slug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+        return (
+          <h2
+            key={key}
+            id={slug}
+            style={{
+              fontFamily: '"Playfair Display", Georgia, serif',
+              fontSize: '26px',
+              marginTop: '36px',
+              marginBottom: '16px',
+              color: '#111827',
+              fontWeight: 700,
+              borderBottom: '1px solid #E5E7EB',
+              paddingBottom: '8px'
+            }}
+          >
+            {parseInlineMarkdown(text)}
+          </h2>
+        );
+      }
+      if (rawText.startsWith('### ')) {
+        const text = rawText.replace(/^###\s+/, '').replace(/\*\*/g, '').replace(/\*/g, '').trim();
+        const slug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+        return (
+          <h3
+            key={key}
+            id={slug}
+            style={{
+              fontFamily: '"Playfair Display", Georgia, serif',
+              fontSize: '22px',
+              marginTop: '28px',
+              marginBottom: '12px',
+              color: '#111827',
+              fontWeight: 700
+            }}
+          >
+            {parseInlineMarkdown(text)}
+          </h3>
+        );
+      }
+      if (rawText === '---' || rawText === '***' || rawText === '___') {
+        return <hr key={key} style={{ border: 'none', borderTop: '1px solid var(--light-border)', margin: '32px 0' }} />;
+      }
+      if (rawText.startsWith('Source:') || rawText.startsWith('Quelle:')) {
+        const sourceText = rawText.replace(/^(Source:|Quelle:)\s*/i, '');
+        return (
+          <div
+            key={key}
+            style={{
+              backgroundColor: '#F9FAFB',
+              borderLeft: '4px solid var(--primary-red)',
+              padding: '16px 20px',
+              marginTop: '32px',
+              marginBottom: '24px',
+              borderRadius: '0 6px 6px 0',
+              fontSize: '13.5px',
+              color: '#4B5563',
+              lineHeight: 1.6,
+              boxShadow: '0 1px 2px rgba(0,0,0,0.03)'
+            }}
+          >
+            <strong style={{ color: '#111827', display: 'inline-block', marginRight: '6px' }}>Source:</strong>
+            {parseInlineMarkdown(sourceText)}
+          </div>
+        );
+      }
+    }
 
     // Heading H1, H2
     if (tagName === 'h1' || tagName === 'h2') {
@@ -104,30 +198,6 @@ export function renderHtmlContent(htmlString) {
 
     // Paragraph
     if (tagName === 'p') {
-      const text = node.textContent.trim();
-      if (text.startsWith('Source:') || text.startsWith('Quelle:')) {
-        const sourceText = text.replace(/^(Source:|Quelle:)\s*/i, '');
-        return (
-          <div
-            key={key}
-            style={{
-              backgroundColor: '#F9FAFB',
-              borderLeft: '4px solid var(--primary-red)',
-              padding: '16px 20px',
-              marginTop: '32px',
-              marginBottom: '24px',
-              borderRadius: '0 6px 6px 0',
-              fontSize: '13.5px',
-              color: '#4B5563',
-              lineHeight: 1.6,
-              boxShadow: '0 1px 2px rgba(0,0,0,0.03)'
-            }}
-          >
-            <strong style={{ color: '#111827', display: 'inline-block', marginRight: '6px' }}>Source:</strong>
-            {parseInlineMarkdown(sourceText)}
-          </div>
-        );
-      }
       return (
         <p key={key} style={{ marginBottom: '20px', fontSize: '16px', lineHeight: 1.8, color: '#1F2937' }}>
           {children}
@@ -239,13 +309,14 @@ export function renderHtmlContent(htmlString) {
 
 export function renderArticleMarkdown(contentBody) {
   if (!contentBody) return null;
+  const decoded = decodeHtmlEntities(contentBody);
 
   // If content contains standard HTML block tags, render with rich HTML element parser
-  if (/<(p|h[1-6]|ul|ol|div|blockquote|table|section)[^>]*>/i.test(contentBody)) {
-    return renderHtmlContent(contentBody);
+  if (/<(p|h[1-6]|ul|ol|div|blockquote|table|section|article|figure|hr|br)[^>]*>/i.test(decoded)) {
+    return renderHtmlContent(decoded);
   }
 
-  const blocks = contentBody.split(/\n\n+/);
+  const blocks = decoded.split(/\n\n+/);
 
   return blocks.map((block, index) => {
     const trimmed = block.trim();
@@ -282,6 +353,36 @@ export function renderArticleMarkdown(contentBody) {
 
     // 3. Explicit H2 heading (## )
     if (trimmed.startsWith('## ')) {
+      const newlineIdx = trimmed.indexOf('\n');
+      if (newlineIdx !== -1) {
+        const headingLine = trimmed.substring(0, newlineIdx).replace(/^##\s+/, '').replace(/\*\*/g, '').replace(/\*/g, '').trim();
+        const remainingText = trimmed.substring(newlineIdx + 1).trim();
+        const slug = headingLine.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+        return (
+          <div key={index}>
+            <h2 
+              id={slug} 
+              style={{ 
+                fontFamily: '"Playfair Display", Georgia, serif', 
+                fontSize: '26px', 
+                marginTop: '36px', 
+                marginBottom: '16px', 
+                color: '#111827', 
+                fontWeight: 700,
+                borderBottom: '1px solid #E5E7EB',
+                paddingBottom: '8px'
+              }}
+            >
+              {parseInlineMarkdown(headingLine)}
+            </h2>
+            {remainingText && (
+              <p style={{ marginBottom: '20px', fontSize: '16px', lineHeight: 1.8, color: '#1F2937' }}>
+                {parseInlineMarkdown(remainingText)}
+              </p>
+            )}
+          </div>
+        );
+      }
       const text = trimmed.replace(/^##\s+/, '').replace(/\*\*/g, '').replace(/\*/g, '').trim();
       const slug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
       return (
@@ -306,6 +407,34 @@ export function renderArticleMarkdown(contentBody) {
 
     // 4. Explicit H3 heading (### )
     if (trimmed.startsWith('### ')) {
+      const newlineIdx = trimmed.indexOf('\n');
+      if (newlineIdx !== -1) {
+        const headingLine = trimmed.substring(0, newlineIdx).replace(/^###\s+/, '').replace(/\*\*/g, '').replace(/\*/g, '').trim();
+        const remainingText = trimmed.substring(newlineIdx + 1).trim();
+        const slug = headingLine.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+        return (
+          <div key={index}>
+            <h3 
+              id={slug} 
+              style={{ 
+                fontFamily: '"Playfair Display", Georgia, serif', 
+                fontSize: '22px', 
+                marginTop: '28px', 
+                marginBottom: '12px', 
+                color: '#111827', 
+                fontWeight: 700 
+              }}
+            >
+              {parseInlineMarkdown(headingLine)}
+            </h3>
+            {remainingText && (
+              <p style={{ marginBottom: '20px', fontSize: '16px', lineHeight: 1.8, color: '#1F2937' }}>
+                {parseInlineMarkdown(remainingText)}
+              </p>
+            )}
+          </div>
+        );
+      }
       const text = trimmed.replace(/^###\s+/, '').replace(/\*\*/g, '').replace(/\*/g, '').trim();
       const slug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
       return (

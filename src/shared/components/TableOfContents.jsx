@@ -20,19 +20,37 @@ export default function TableOfContents({ contentHtml = '' }) {
   const headings = useMemo(() => {
     let parsedHeadings = [];
 
-    // 1. Try parsing HTML H2/H3 tags
+    // 1. Try parsing HTML headings or p/div containing ## or ###
     const parser = new DOMParser();
     const doc = parser.parseFromString(contentHtml || '', 'text/html');
-    const headingElements = doc.querySelectorAll('h2, h3');
+    const headingElements = doc.querySelectorAll('h1, h2, h3, h4');
     
     if (headingElements.length > 0) {
       parsedHeadings = Array.from(headingElements).map((el, index) => {
         const rawText = el.innerText || el.textContent || '';
         const text = rawText.replace(/\*\*/g, '').replace(/\*/g, '').trim();
         const slug = el.id || text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') || `heading-${index}`;
-        return { text, slug, level: el.tagName.toLowerCase() };
+        const level = (el.tagName.toLowerCase() === 'h1' || el.tagName.toLowerCase() === 'h2') ? 'h2' : 'h3';
+        return { text, slug, level };
       });
-    } else {
+    }
+
+    // Also look for p and div elements starting with ## or ### (from dashboard rich editors)
+    const blockElements = doc.querySelectorAll('p, div');
+    blockElements.forEach((el, index) => {
+      const rawText = (el.innerText || el.textContent || '').trim();
+      if (rawText.startsWith('## ')) {
+        const text = rawText.replace(/^##\s+/, '').replace(/\*\*/g, '').replace(/\*/g, '').trim();
+        const slug = el.id || text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') || `heading-${index}`;
+        parsedHeadings.push({ text, slug, level: 'h2' });
+      } else if (rawText.startsWith('### ')) {
+        const text = rawText.replace(/^###\s+/, '').replace(/\*\*/g, '').replace(/\*/g, '').trim();
+        const slug = el.id || text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') || `heading-${index}`;
+        parsedHeadings.push({ text, slug, level: 'h3' });
+      }
+    });
+
+    if (parsedHeadings.length === 0) {
       // 2. Fallback: Parse raw Markdown text lines (##, ###, or short title lines)
       const lines = (contentHtml || '').split('\n');
       lines.forEach((line, index) => {
