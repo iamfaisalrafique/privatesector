@@ -351,7 +351,7 @@ function AppContent() {
                           <img 
                             src={art.image_url} 
                             alt={art.title} 
-                            onError={(e) => handleImageFallback(e, art.category, 600)}
+                            onError={(e) => handleImageFallback(e, art.category, 600, art.title)}
                             style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                           />
                         </div>
