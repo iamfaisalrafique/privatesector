@@ -17,6 +17,7 @@
   "dependencies": {
     "@astrojs/node": "11.1.6",
     "@astrojs/react": "7.0.0",
+    "@node-rs/argon2": "^2.2.1",
     "astro": "7.3.5",
     "emdash": "1.1.0",
     "pg": "8.13.3",

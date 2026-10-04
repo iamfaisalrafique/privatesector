@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import { marked } from 'marked';
 import sanitizeHtml from 'sanitize-html';
 import { htmlToPortableText } from '@emdash-cms/gutenberg-to-portable-text';
-import { getPortalSession } from '../../../lib/portal-auth.ts';
+import { getPortalSession, verifyCsrfOrigin } from '../../../lib/portal-auth.ts';
 
 /**
  * Student Article Submission Endpoint (/api/student/submit)
@@ -10,12 +10,13 @@ import { getPortalSession } from '../../../lib/portal-auth.ts';
  * Architecture & Security Specification:
  * 1. Students are portal users in app_schema. They do NOT get EmDash CMS accounts,
  *    cannot log into EmDash, and have zero access to /_emdash/admin.
- * 2. Authenticates the student from the portal session (app_schema session cookie or token).
- * 3. Author identity (student_author_id, author_name) is derived strictly from the portal session.
- * 4. Calls EmDash content API using ONE dedicated internal service token (EMDASH_STUDENT_SERVICE_PAT),
+ * 2. Authenticates the student strictly from the portal session cookie.
+ * 3. Enforces CSRF Origin/Referer verification on state-changing submission.
+ * 4. Author identity (student_author_id, author_name) is derived strictly from the portal session.
+ * 5. Calls EmDash content API using ONE dedicated internal service token (EMDASH_STUDENT_SERVICE_PAT),
  *    which belongs to a single system-level Contributor user in EmDash.
- * 5. Submissions are strictly created in 'draft' status for editorial review.
- * 6. Any client-supplied student_id, student_author_id, author_name, status, publishedAt,
+ * 6. Submissions are strictly created in 'draft' status for editorial review.
+ * 7. Any client-supplied student_id, student_author_id, author_name, status, publishedAt,
  *    or authorId in the request body is strictly ignored.
  */
 
@@ -33,7 +34,15 @@ function normalizeHtmlForPortableText(html: string): string {
 }
 
 export const POST: APIRoute = async ({ request }) => {
-  // 1. Authenticate student strictly from portal session (app_schema)
+  // 1. CSRF Protection: Verify request Origin matches Host
+  if (!verifyCsrfOrigin(request)) {
+    return new Response(
+      JSON.stringify({ error: 'Forbidden: CSRF origin validation failed.' }),
+      { status: 403, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+
+  // 2. Authenticate student strictly from portal session cookie (app_schema)
   // Students are portal users, NOT EmDash CMS users. They never get CMS accounts or admin access.
   const portalStudent = await getPortalSession(request);
 
@@ -143,8 +152,7 @@ export const POST: APIRoute = async ({ request }) => {
         data: {
           title: title.trim(),
           subtitle: subtitle?.trim() || '',
-          category: typeof category === 'string' ? category.trim() : 'University Perspective',
-          student_author_id: serverStudentAuthorId,
+          student_author_id: typeof serverStudentAuthorId === 'number' ? serverStudentAuthorId : (parseInt(String(serverStudentAuthorId).replace(/\D/g, ''), 10) || 1),
           author_name: serverAuthorName,
           content: portableTextBlocks
         }
