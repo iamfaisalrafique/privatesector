@@ -23,15 +23,34 @@ dist-ssr
 *.sln
 *.sw?
 
-# SQLite databases
-# *.sqlite
+# SQLite databases & WAL files
+*.sqlite*
+*.db*
+data.db*
+
+# Environment variables
+.env
+.env.*
+.env.migration
+!.env.example
 
 # Audio / temporary files
 *.ogg
 *.wav
 *.mp3
+*.webm
 *.mp4
 
-# Cache files
-# server/translations_cache.json
+# Uploads and media
+uploads/
+public/uploads/
+server/uploads/
 
+# Cache files
+server/translations_cache.json
+
+# Test binaries
+traefik-bin/
+
+# Impeccable skill artifacts
+.impeccable/

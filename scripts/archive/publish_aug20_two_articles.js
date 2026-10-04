@@ -394,7 +394,7 @@ async function updateSQLite(article, imgUrl, schemaMarkup) {
 
 // Live Postgres Updater
 async function updateLivePostgres(article, imgUrl, schemaMarkup) {
-  const connectionString = "postgres://postgres:edcKM0253QrFib0sSl2JYZoj5If8DxbKVxgzmsBpQVI5HBHyQ9UBZ6gMi79z0AFD@62.72.44.254:1127/postgres";
+  const connectionString = process.env.DATABASE_URL || "";
   const client = new Client({ connectionString });
   try {
     await client.connect();

@@ -136,7 +136,7 @@ async function seedSQLite() {
 
 // 2. Seed into Live Postgres
 async function seedPostgres() {
-  const connectionString = "postgres://postgres:edcKM0253QrFib0sSl2JYZoj5If8DxbKVxgzmsBpQVI5HBHyQ9UBZ6gMi79z0AFD@62.72.44.254:1127/postgres";
+  const connectionString = process.env.DATABASE_URL || "";
   const client = new Client({ connectionString });
 
   try {

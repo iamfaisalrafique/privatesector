@@ -1,0 +1,456 @@
+{
+	"$schema": "https://emdashcms.com/seed.schema.json",
+	"version": "1",
+	"meta": {
+		"name": "PrivateSector",
+		"description": "Switzerland's Independent Private Sector & Business Intelligence Platform",
+		"author": "PrivateSector Editorial"
+	},
+	"settings": {
+		"title": "PrivateSector.ch",
+		"tagline": "Switzerland's Private Sector Intelligence"
+	},
+	"collections": [
+		{
+			"slug": "posts",
+			"label": "News Articles",
+			"labelSingular": "News Article",
+			"urlPattern": "/news/{slug}",
+			"supports": ["drafts", "revisions", "preview", "scheduling", "search", "seo"],
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "subtitle",
+					"label": "Subtitle",
+					"type": "string"
+				},
+				{
+					"slug": "featured_image",
+					"label": "Featured Image",
+					"type": "image"
+				},
+				{
+					"slug": "content",
+					"label": "Content",
+					"type": "portableText",
+					"searchable": true
+				},
+				{
+					"slug": "pull_quote",
+					"label": "Pull Quote",
+					"type": "text"
+				},
+				{
+					"slug": "read_time_mins",
+					"label": "Read Time (mins)",
+					"type": "integer"
+				},
+				{
+					"slug": "author_name",
+					"label": "Author Name",
+					"type": "string"
+				},
+				{
+					"slug": "author_avatar",
+					"label": "Author Avatar",
+					"type": "string"
+				},
+				{
+					"slug": "student_author_id",
+					"label": "Student Contributor ID",
+					"type": "integer"
+				},
+				{
+					"slug": "focus_keyword",
+					"label": "Focus Keyword",
+					"type": "string"
+				},
+				{
+					"slug": "meta_title",
+					"label": "Meta Title",
+					"type": "string"
+				},
+				{
+					"slug": "meta_description",
+					"label": "Meta Description",
+					"type": "string"
+				},
+				{
+					"slug": "schema_markup",
+					"label": "JSON-LD Schema Markup",
+					"type": "text"
+				}
+			]
+		},
+		{
+			"slug": "blogs",
+			"label": "Blog Posts",
+			"labelSingular": "Blog Post",
+			"urlPattern": "/blogs/{slug}",
+			"supports": ["drafts", "revisions", "preview", "scheduling", "search", "seo"],
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "subtitle",
+					"label": "Subtitle",
+					"type": "string"
+				},
+				{
+					"slug": "featured_image",
+					"label": "Featured Image",
+					"type": "image"
+				},
+				{
+					"slug": "content",
+					"label": "Content",
+					"type": "portableText",
+					"searchable": true
+				},
+				{
+					"slug": "pull_quote",
+					"label": "Pull Quote",
+					"type": "text"
+				},
+				{
+					"slug": "read_time_mins",
+					"label": "Read Time (mins)",
+					"type": "integer"
+				},
+				{
+					"slug": "author_name",
+					"label": "Author Name",
+					"type": "string"
+				},
+				{
+					"slug": "author_avatar",
+					"label": "Author Avatar",
+					"type": "string"
+				},
+				{
+					"slug": "focus_keyword",
+					"label": "Focus Keyword",
+					"type": "string"
+				},
+				{
+					"slug": "meta_title",
+					"label": "Meta Title",
+					"type": "string"
+				},
+				{
+					"slug": "meta_description",
+					"label": "Meta Description",
+					"type": "string"
+				},
+				{
+					"slug": "schema_markup",
+					"label": "JSON-LD Schema Markup",
+					"type": "text"
+				}
+			]
+		},
+		{
+			"slug": "companies",
+			"label": "Companies",
+			"labelSingular": "Company",
+			"urlPattern": "/unternehmen/{slug}",
+			"supports": ["drafts", "revisions", "search", "seo"],
+			"fields": [
+				{
+					"slug": "name",
+					"label": "Company Name",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "logo_bg",
+					"label": "Logo Background Color",
+					"type": "string"
+				},
+				{
+					"slug": "canton",
+					"label": "Canton",
+					"type": "string"
+				},
+				{
+					"slug": "industry",
+					"label": "Industry",
+					"type": "string"
+				},
+				{
+					"slug": "size_class",
+					"label": "Size Class",
+					"type": "string"
+				},
+				{
+					"slug": "description",
+					"label": "Short Description",
+					"type": "text"
+				},
+				{
+					"slug": "premium",
+					"label": "Premium Featured",
+					"type": "boolean"
+				},
+				{
+					"slug": "verified",
+					"label": "Zefix Commercial Registry Verified",
+					"type": "boolean"
+				},
+				{
+					"slug": "founded",
+					"label": "Founding Year",
+					"type": "integer"
+				},
+				{
+					"slug": "employees",
+					"label": "Employee Headcount",
+					"type": "integer"
+				},
+				{
+					"slug": "revenue_band",
+					"label": "Revenue Band",
+					"type": "string"
+				},
+				{
+					"slug": "website",
+					"label": "Website URL",
+					"type": "string"
+				},
+				{
+					"slug": "linkedin",
+					"label": "LinkedIn Profile",
+					"type": "string"
+				},
+				{
+					"slug": "contact_email",
+					"label": "Contact Email",
+					"type": "string"
+				},
+				{
+					"slug": "about_text",
+					"label": "Detailed About Dossier",
+					"type": "text"
+				},
+				{
+					"slug": "structured_data",
+					"label": "Structured Metadata (JSON)",
+					"type": "text"
+				},
+				{
+					"slug": "esg_rating",
+					"label": "ESG Score",
+					"type": "integer"
+				},
+				{
+					"slug": "sustainability_summary",
+					"label": "Sustainability Summary",
+					"type": "text"
+				},
+				{
+					"slug": "meta_title",
+					"label": "Meta Title",
+					"type": "string"
+				},
+				{
+					"slug": "meta_description",
+					"label": "Meta Description",
+					"type": "string"
+				}
+			]
+		},
+		{
+			"slug": "interviews",
+			"label": "Interviews & Podcasts",
+			"labelSingular": "Interview",
+			"urlPattern": "/interviews/{slug}",
+			"supports": ["drafts", "revisions", "search", "seo"],
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "subtitle",
+					"label": "Subtitle",
+					"type": "string"
+				},
+				{
+					"slug": "interviewee_name",
+					"label": "Interviewee Name",
+					"type": "string"
+				},
+				{
+					"slug": "interviewee_title",
+					"label": "Interviewee Title",
+					"type": "string"
+				},
+				{
+					"slug": "interviewee_avatar",
+					"label": "Interviewee Avatar",
+					"type": "string"
+				},
+				{
+					"slug": "company_name",
+					"label": "Company Name",
+					"type": "string"
+				},
+				{
+					"slug": "audio_url",
+					"label": "Audio Recording URL",
+					"type": "string"
+				},
+				{
+					"slug": "read_time_mins",
+					"label": "Read Time (mins)",
+					"type": "integer"
+				},
+				{
+					"slug": "qa_content",
+					"label": "Q&A Content",
+					"type": "text"
+				},
+				{
+					"slug": "student_author_id",
+					"label": "Student Contributor ID",
+					"type": "integer"
+				},
+				{
+					"slug": "category",
+					"label": "Category",
+					"type": "string"
+				}
+			]
+		},
+		{
+			"slug": "briefings",
+			"label": "Morning Briefings",
+			"labelSingular": "Morning Briefing",
+			"urlPattern": "/podcasts",
+			"supports": ["drafts", "revisions", "search"],
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Briefing Title",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "date",
+					"label": "Broadcast Date",
+					"type": "string"
+				},
+				{
+					"slug": "audio_url",
+					"label": "Audio File URL",
+					"type": "string"
+				},
+				{
+					"slug": "audio_duration",
+					"label": "Audio Duration (seconds)",
+					"type": "integer"
+				},
+				{
+					"slug": "transcript",
+					"label": "Transcript",
+					"type": "text"
+				},
+				{
+					"slug": "featured_image",
+					"label": "Cover Image",
+					"type": "image"
+				}
+			]
+		},
+		{
+			"slug": "pages",
+			"label": "Pages",
+			"labelSingular": "Page",
+			"urlPattern": "/{slug}",
+			"supports": ["drafts", "revisions", "preview", "search", "seo"],
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "content",
+					"label": "Content",
+					"type": "portableText",
+					"searchable": true
+				}
+			]
+		}
+	],
+	"taxonomies": [
+		{
+			"name": "category",
+			"label": "Categories",
+			"labelSingular": "Category",
+			"hierarchical": true,
+			"collections": ["posts", "blogs"],
+			"terms": [
+				{ "slug": "executive-briefing", "label": "Executive Briefing" },
+				{ "slug": "deal-radar", "label": "Deal Radar" },
+				{ "slug": "transatlantic-transcript", "label": "Transatlantic Transcript" },
+				{ "slug": "socal-gateway", "label": "SoCal Gateway" },
+				{ "slug": "trade-policy-pulse", "label": "Trade Policy Pulse" },
+				{ "slug": "university-perspective", "label": "University Perspective" }
+			]
+		},
+		{
+			"name": "tag",
+			"label": "Tags",
+			"labelSingular": "Tag",
+			"hierarchical": false,
+			"collections": ["posts", "blogs", "companies"],
+			"terms": [
+				{ "slug": "hidden-swiss", "label": "Hidden Swiss" },
+				{ "slug": "switzerland", "label": "Switzerland" },
+				{ "slug": "usa", "label": "USA" },
+				{ "slug": "manufacturing", "label": "Manufacturing" },
+				{ "slug": "ai", "label": "AI" },
+				{ "slug": "pharma", "label": "Pharma" },
+				{ "slug": "medtech", "label": "Medtech" }
+			]
+		}
+	],
+	"menus": [
+		{
+			"name": "primary",
+			"label": "Primary Navigation",
+			"items": [
+				{ "type": "custom", "label": "Home", "url": "/" },
+				{ "type": "custom", "label": "Unternehmen", "url": "/unternehmen" },
+				{ "type": "custom", "label": "News & Intelligence", "url": "/news" },
+				{ "type": "custom", "label": "Statistiken", "url": "/statistiken" },
+				{ "type": "custom", "label": "Karriere", "url": "/karriere" },
+				{ "type": "custom", "label": "Podcasts", "url": "/podcasts" }
+			]
+		}
+	],
+	"widgetAreas": [],
+	"content": {
+		"pages": [],
+		"posts": []
+	}
+}

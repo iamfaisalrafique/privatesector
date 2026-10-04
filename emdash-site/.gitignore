@@ -1,0 +1,16 @@
+node_modules
+dist
+.astro
+.emdash/migrations.json
+uploads
+public/uploads
+*.db*
+*.sqlite*
+data.db*
+.impeccable/
+
+# Environment
+.env
+.env.*
+.env.migration
+!.env.example

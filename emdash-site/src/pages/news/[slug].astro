@@ -1,0 +1,95 @@
+---
+import {
+  getEmDashEntry,
+  getSeoMeta,
+  decodeSlug,
+  getSiteSettings
+} from "emdash";
+import { Image, PortableText } from "emdash/ui";
+import Base from "../../layouts/Base.astro";
+import { resolveStarterSiteIdentity } from "../../utils/site-identity";
+import newsRedirects from "../../data/news-redirects.json";
+
+const rawSlug = Astro.params.slug;
+const slug = decodeSlug(rawSlug);
+
+if (!slug) {
+  return Astro.redirect("/404");
+}
+
+// 1. Production-Only Numeric ID Legacy Redirection (Strict 301)
+// If the slug is numeric, check against production ID map (excluding local-only IDs 6, 43, 47)
+if (/^\d+$/.test(slug)) {
+  const targetSlug = (newsRedirects as Record<string, string>)[slug];
+  if (targetSlug) {
+    return Astro.redirect(`/news/${targetSlug}`, 301);
+  }
+  return Astro.redirect("/404");
+}
+
+// 2. Fetch Content from EmDash Live Content Collection
+const { entry: post, cacheHint } = await getEmDashEntry("posts", slug);
+
+if (!post) {
+  return Astro.redirect("/404");
+}
+
+if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+
+const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
+const seo = getSeoMeta(post, {
+  siteTitle,
+  siteUrl: Astro.url.origin,
+  path: Astro.url.pathname.replace(/\/$/, "")
+});
+
+const categories = post.data.terms?.category ?? [];
+---
+
+<Base
+  title={seo.title}
+  pageTitle={seo.ogTitle}
+  description={seo.description}
+  canonical={seo.canonical}
+  image={seo.ogImage}
+  content={{ collection: "posts", id: post.data.id, slug }}
+>
+  <main class="max-w-4xl mx-auto px-4 py-8">
+    <article class="prose lg:prose-xl dark:prose-invert mx-auto">
+      <header class="mb-8">
+        <h1 class="text-3xl md:text-5xl font-bold tracking-tight mb-4">{post.data.title}</h1>
+        {post.data.subtitle && (
+          <p class="text-xl text-neutral-600 dark:text-neutral-400 font-medium leading-relaxed">{post.data.subtitle}</p>
+        )}
+        <div class="flex items-center gap-4 text-sm text-neutral-500 mt-6 pt-4 border-t border-neutral-200 dark:border-neutral-800">
+          {post.data.publishedAt && (
+            <time datetime={post.data.publishedAt.toISOString()}>
+              {new Date(post.data.publishedAt).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+              })}
+            </time>
+          )}
+          {categories.length > 0 && (
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200">
+              {categories[0].label}
+            </span>
+          )}
+        </div>
+      </header>
+
+      {post.data.featured_image && (
+        <div class="my-8 rounded-xl overflow-hidden shadow-lg">
+          <Image image={post.data.featured_image} />
+        </div>
+      )}
+
+      {post.data.content && (
+        <div class="mt-8 leading-relaxed space-y-6">
+          <PortableText value={post.data.content} />
+        </div>
+      )}
+    </article>
+  </main>
+</Base>

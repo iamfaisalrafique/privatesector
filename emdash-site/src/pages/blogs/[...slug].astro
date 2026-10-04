@@ -1,0 +1,7 @@
+---
+// Catch-all route for legacy /blogs/* paths (Option 2 decision: do not migrate 24 seed blogs)
+// Performs strict 301 redirect back to the /blogs index.
+export const prerender = false;
+
+return Astro.redirect("/blogs", 301);
+---
