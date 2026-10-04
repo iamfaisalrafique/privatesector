@@ -11,8 +11,7 @@ services:
       - BEHIND_CLOUDFLARE=true
       - DATABASE_URL=${DATABASE_URL}
       - EMDASH_AUTH_SECRET=${EMDASH_AUTH_SECRET}
-    ports:
-      - "4321:4321"
+    # Ports are managed internally by Coolify via Traefik overlay/bridge network
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.privatesector.rule=Host(`privatesector.ch`)"

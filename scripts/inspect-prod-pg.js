@@ -4,8 +4,8 @@ dotenv.config();
 
 const connectionString = process.env.DATABASE_URL;
 
-if (!connectionString) {
-  console.error('No DATABASE_URL set!');
+if (!connectionString || (!connectionString.startsWith('postgres://') && !connectionString.startsWith('postgresql://'))) {
+  console.error('[CONFIG ERROR] No valid postgres DATABASE_URL provided in environment.');
   process.exit(1);
 }
 
