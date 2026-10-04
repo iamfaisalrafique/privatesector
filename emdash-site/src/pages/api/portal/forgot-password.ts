@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import nodeCrypto from 'node:crypto';
 import { extractClientIp } from '../../../lib/client-ip.ts';
 import {
   computeLockoutKey,
@@ -59,27 +60,40 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 
-  // 4. Asynchronous Background Dispatch:
-  // Decouple DB lookup & token generation from the HTTP request/response cycle so that
-  // the HTTP response is returned immediately and cannot leak timing information.
-  setImmediate(async () => {
-    try {
-      await ensurePortalAuthTables();
-      const user = await dbGet<{ id: any; email: string }>(
-        'SELECT id, email FROM users WHERE LOWER(email) = LOWER(?)',
-        [email.trim()]
-      );
-      if (user) {
-        await createPasswordResetRequest(user.email);
-        // Outbound email dispatched asynchronously here
-      }
-    } catch (err) {
-      console.error('[BACKGROUND RESET DISPATCH ERROR]:', err);
-    }
-  });
+  const startTime = performance.now();
+  const MIN_RESPONSE_DURATION_MS = 300;
 
-  // Anti-enumeration guarantee: exact identical JSON body, status 200, and flat constant timing
-  // Password reset token is NEVER returned in response.
+  // 4. Equal Work on Request Path & Constant-Time Response:
+  // Both known and unknown accounts execute a DB read and dummy work on the request path
+  // to avoid side-channel timing discrepancies.
+  try {
+    await ensurePortalAuthTables();
+    const user = await dbGet<{ id: any; email: string }>(
+      'SELECT id, email FROM users WHERE LOWER(email) = LOWER(?)',
+      [email.trim()]
+    );
+
+    if (user) {
+      // Create password reset request token
+      await createPasswordResetRequest(user.email);
+      // Real email dispatch is decoupled to background/queue
+    } else {
+      // Execute equivalent cryptographic work for unknown accounts
+      nodeCrypto.randomBytes(32).toString('hex');
+      nodeCrypto.createHash('sha256').update(email).digest('hex');
+    }
+  } catch (err) {
+    console.error('[RESET REQUEST ERROR]:', err);
+  }
+
+  // 5. Constant-Time Padding:
+  // Pad the total response time to a fixed minimum of 300ms
+  const elapsed = performance.now() - startTime;
+  if (elapsed < MIN_RESPONSE_DURATION_MS) {
+    await new Promise((resolve) => setTimeout(resolve, MIN_RESPONSE_DURATION_MS - elapsed));
+  }
+
+  // Anti-enumeration guarantee: exact identical JSON body, status 200, and identical padded timing
   return new Response(
     JSON.stringify({
       success: true,

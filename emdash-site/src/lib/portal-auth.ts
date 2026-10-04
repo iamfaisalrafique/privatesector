@@ -318,27 +318,85 @@ export function getCookieName(): string {
   return isHttps ? '__Host-portal_session' : 'portal_session';
 }
 
-export async function cleanupExpiredSessions(): Promise<number> {
+export async function cleanupExpiredAuthRecords(): Promise<{ sessions: number; attempts: number; resets: number }> {
   await ensurePortalAuthTables();
-  const now = new Date().toISOString();
-  // Clean up sessions older than expiry or revoked over 1 day ago
-  const res = await dbRun(
-    `DELETE FROM portal_sessions WHERE expires_at < CURRENT_TIMESTAMP OR (revoked = 1 AND created_at < CURRENT_TIMESTAMP - INTERVAL '1 day')`
-  );
-  return res.changes;
+  const isPg = Boolean(process.env.DATABASE_URL?.startsWith('postgres'));
+  const nowMs = Date.now();
+
+  let sessionsPruned = 0;
+  let attemptsPruned = 0;
+  let resetsPruned = 0;
+
+  try {
+    // 1. Prune expired or revoked sessions
+    if (isPg) {
+      const res = await dbRun(
+        `DELETE FROM portal_sessions WHERE expires_at < CURRENT_TIMESTAMP OR (revoked = TRUE AND created_at < CURRENT_TIMESTAMP - INTERVAL '1 day')`
+      );
+      sessionsPruned = res.changes;
+    } else {
+      const res = await dbRun(
+        `DELETE FROM portal_sessions WHERE expires_at < ? OR (revoked = 1 AND created_at < datetime('now', '-1 day'))`,
+        [nowMs]
+      );
+      sessionsPruned = res.changes;
+    }
+  } catch (err) {
+    console.error('[CLEANUP SESSIONS ERROR]:', err);
+  }
+
+  try {
+    // 2. Prune expired login attempts (older than 1 day or lock expired)
+    if (isPg) {
+      const res = await dbRun(
+        `DELETE FROM portal_login_attempts WHERE (locked_until > 0 AND locked_until < ?) OR (updated_at < CURRENT_TIMESTAMP - INTERVAL '1 day')`,
+        [nowMs]
+      );
+      attemptsPruned = res.changes;
+    } else {
+      const res = await dbRun(
+        `DELETE FROM portal_login_attempts WHERE (locked_until > 0 AND locked_until < ?) OR (updated_at < datetime('now', '-1 day'))`,
+        [nowMs]
+      );
+      attemptsPruned = res.changes;
+    }
+  } catch (err) {
+    console.error('[CLEANUP ATTEMPTS ERROR]:', err);
+  }
+
+  try {
+    // 3. Prune expired or consumed password resets (expired or consumed > 1 hour ago)
+    if (isPg) {
+      const res = await dbRun(
+        `DELETE FROM portal_password_resets WHERE expires_at < ? OR (consumed = TRUE AND created_at < CURRENT_TIMESTAMP - INTERVAL '1 hour')`,
+        [nowMs]
+      );
+      resetsPruned = res.changes;
+    } else {
+      const res = await dbRun(
+        `DELETE FROM portal_password_resets WHERE expires_at < ? OR (consumed = 1 AND created_at < datetime('now', '-1 hour'))`,
+        [nowMs]
+      );
+      resetsPruned = res.changes;
+    }
+  } catch (err) {
+    console.error('[CLEANUP RESETS ERROR]:', err);
+  }
+
+  return { sessions: sessionsPruned, attempts: attemptsPruned, resets: resetsPruned };
+}
+
+export async function cleanupExpiredSessions(): Promise<number> {
+  const res = await cleanupExpiredAuthRecords();
+  return res.sessions;
 }
 
 export async function createPortalSession(user: PortalUser): Promise<{ rawToken: string; cookieHeader: string }> {
   await ensurePortalAuthTables();
 
-  // Run lazy session pruning on creation
+  // Lazy maintenance pruning on session creation
   try {
-    const isPg = Boolean(process.env.DATABASE_URL?.startsWith('postgres'));
-    if (isPg) {
-      await dbRun(`DELETE FROM portal_sessions WHERE expires_at < CURRENT_TIMESTAMP`);
-    } else {
-      await dbRun(`DELETE FROM portal_sessions WHERE expires_at < ?`, [Date.now()]);
-    }
+    await cleanupExpiredAuthRecords();
   } catch {}
 
   const rawToken = crypto.randomBytes(32).toString('base64url');

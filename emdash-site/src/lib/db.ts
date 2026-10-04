@@ -132,6 +132,36 @@ export async function ensurePortalAuthTables(): Promise<void> {
   const pool = getPgPool();
   if (pool) {
     await pool.query(`
+      CREATE SCHEMA IF NOT EXISTS app_schema;
+
+      CREATE TABLE IF NOT EXISTS app_schema.portal_sessions (
+        session_id VARCHAR(64) PRIMARY KEY,
+        user_id VARCHAR(64) NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        role VARCHAR(32) NOT NULL,
+        name VARCHAR(255),
+        profile_id VARCHAR(64),
+        created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        expires_at TIMESTAMPTZ NOT NULL,
+        revoked BOOLEAN NOT NULL DEFAULT FALSE
+      );
+
+      CREATE TABLE IF NOT EXISTS app_schema.portal_login_attempts (
+        lockout_key VARCHAR(128) PRIMARY KEY,
+        attempts INTEGER NOT NULL DEFAULT 0,
+        locked_until BIGINT NOT NULL DEFAULT 0,
+        action_required VARCHAR(32) NOT NULL DEFAULT 'none',
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS app_schema.portal_password_resets (
+        token_hash VARCHAR(64) PRIMARY KEY,
+        email VARCHAR(255) NOT NULL,
+        expires_at BIGINT NOT NULL,
+        consumed BOOLEAN NOT NULL DEFAULT FALSE,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+
       CREATE TABLE IF NOT EXISTS portal_sessions (
         session_id VARCHAR(64) PRIMARY KEY,
         user_id VARCHAR(64) NOT NULL,

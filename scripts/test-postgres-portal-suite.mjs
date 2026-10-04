@@ -100,6 +100,7 @@ async function run() {
       NODE_ENV: 'production',
       DATABASE_URL: PG_URL,
       PUBLIC_SITE_ORIGIN: `http://127.0.0.1:${PORT}`,
+      SKIP_HTTPS_STARTUP_CHECK: 'true',
       EMDASH_STUDENT_SERVICE_PAT: rawServiceToken,
       EMDASH_INTERNAL_URL: `http://127.0.0.1:${PORT}`
     },
@@ -328,7 +329,39 @@ async function run() {
         break;
       }
     }
-    if (!tier1Locked) allPassed = false;
+    if (!tier1Locked) {
+      console.error('>>> FAIL: Tier 1 rate limit not triggered!');
+      allPassed = false;
+    }
+
+    // Tier 2: Per-IP Global cap across accounts (25 failures -> ip_cap)
+    console.log('Testing Tier 2: Per-IP Global cap across accounts (25 attempts from 198.51.100.50)...');
+    let tier2Triggered = false;
+    for (let i = 1; i <= 26; i++) {
+      const res = await fetch(`${BASE_URL}/api/portal/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Origin: `http://127.0.0.1:${PORT}`,
+          'X-Forwarded-For': '198.51.100.50'
+        },
+        body: JSON.stringify({ email: `spraying-target-${i}@privatesector.ch`, password: 'WrongPassword' })
+      });
+      if (res.status === 429) {
+        const b = await res.json();
+        if (b.reason === 'ip_cap') {
+          tier2Triggered = true;
+          console.log(`  [Tier 2 Global IP Triggered on attempt ${i}]:`, b);
+          break;
+        }
+      }
+    }
+    if (tier2Triggered) {
+      console.log('>>> PASS: Horizontal password spraying caught by per-IP global cap (reason: ip_cap).');
+    } else {
+      console.error('>>> FAIL: Tier 2 per-IP global cap was not triggered!');
+      allPassed = false;
+    }
 
     // Tier 3: Per-Account Global cap across distributed IPs (15 attempts -> force_reset)
     console.log('Testing Tier 3: Per-Account cap across rotating IPs (15 attempts)...');
@@ -362,44 +395,55 @@ async function run() {
     }
 
     // -------------------------------------------------------------------------
-    // TEST 7: Forgot Password Timing Benchmark (20 Known vs 20 Unknown)
+    // TEST 7: Forgot Password Timing Benchmark (100 Known vs 100 Unknown)
     // -------------------------------------------------------------------------
-    console.log('\n=== TEST 7: Forgot-Password Asynchronous Timing Benchmark (20 Known vs 20 Unknown) ===');
+    console.log('\n=== TEST 7: Forgot-Password Constant-Time Benchmark (100 Known vs 100 Unknown) ===');
 
+    const SAMPLES = 100;
     const knownTimes = [];
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < SAMPLES; i++) {
       const t0 = performance.now();
       await fetch(`${BASE_URL}/api/portal/forgot-password`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Origin: `http://127.0.0.1:${PORT}`, 'X-Forwarded-For': `10.0.1.${i}` },
+        headers: { 'Content-Type': 'application/json', Origin: `http://127.0.0.1:${PORT}`, 'X-Forwarded-For': `10.1.1.${i % 250}` },
         body: JSON.stringify({ email: 'student@privatesector.ch' })
       });
       knownTimes.push(performance.now() - t0);
     }
 
     const unknownTimes = [];
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < SAMPLES; i++) {
       const t0 = performance.now();
       await fetch(`${BASE_URL}/api/portal/forgot-password`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Origin: `http://127.0.0.1:${PORT}`, 'X-Forwarded-For': `10.0.2.${i}` },
+        headers: { 'Content-Type': 'application/json', Origin: `http://127.0.0.1:${PORT}`, 'X-Forwarded-For': `10.2.2.${i % 250}` },
         body: JSON.stringify({ email: `random-unknown-${i}@nowhere-domain.ch` })
       });
       unknownTimes.push(performance.now() - t0);
     }
 
-    const avgKnown = knownTimes.reduce((a, b) => a + b, 0) / knownTimes.length;
-    const avgUnknown = unknownTimes.reduce((a, b) => a + b, 0) / unknownTimes.length;
-    const diff = Math.abs(avgKnown - avgUnknown);
+    function computeStats(times) {
+      const sorted = [...times].sort((a, b) => a - b);
+      const avg = sorted.reduce((a, b) => a + b, 0) / sorted.length;
+      const p95 = sorted[Math.floor(sorted.length * 0.95)];
+      const max = sorted[sorted.length - 1];
+      const min = sorted[0];
+      return { avg, p95, max, min };
+    }
 
-    console.log(`  - 20 Known Account Requests:   avg = ${avgKnown.toFixed(2)} ms (min: ${Math.min(...knownTimes).toFixed(2)} ms, max: ${Math.max(...knownTimes).toFixed(2)} ms)`);
-    console.log(`  - 20 Unknown Account Requests: avg = ${avgUnknown.toFixed(2)} ms (min: ${Math.min(...unknownTimes).toFixed(2)} ms, max: ${Math.max(...unknownTimes).toFixed(2)} ms)`);
-    console.log(`  - Timing Difference:           ${diff.toFixed(2)} ms`);
+    const kStats = computeStats(knownTimes);
+    const uStats = computeStats(unknownTimes);
+    const diffAvg = Math.abs(kStats.avg - uStats.avg);
 
-    if (diff < 15) {
-      console.log('>>> PASS: Timing difference between known and unknown accounts is statistically negligible (< 15ms).');
+    console.log(`  - 100 Known Account Requests:   avg = ${kStats.avg.toFixed(2)} ms, p95 = ${kStats.p95.toFixed(2)} ms, max = ${kStats.max.toFixed(2)} ms (min: ${kStats.min.toFixed(2)} ms)`);
+    console.log(`  - 100 Unknown Account Requests: avg = ${uStats.avg.toFixed(2)} ms, p95 = ${uStats.p95.toFixed(2)} ms, max = ${uStats.max.toFixed(2)} ms (min: ${uStats.min.toFixed(2)} ms)`);
+    console.log(`  - Delta (Avg Difference):       ${diffAvg.toFixed(2)} ms`);
+
+    if (diffAvg < 20) {
+      console.log('>>> PASS: Fixed 300ms padding and equivalent request-path work guarantees timing difference is within noise (< 20ms).');
     } else {
-      console.log('>>> NOTICE: Asynchronous dispatch active; timing delta is minimal.');
+      console.error('>>> FAIL: Significant timing delta observed!');
+      allPassed = false;
     }
 
     console.log('\n' + '='.repeat(80));

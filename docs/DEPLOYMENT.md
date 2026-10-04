@@ -146,3 +146,28 @@ HOST=0.0.0.0
 - [ ] Direct connection to port 8000 drops or rejects from untrusted IPs.
 - [ ] `process.env.BEHIND_CLOUDFLARE === 'true'` is confirmed in container logs.
 - [ ] Client IP resolution in `client-ip.ts` correctly extracts visitor IP via `CF-Connecting-IP`.
+
+---
+
+## 7. Multi-Tier Rate Limiting & Forced-Reset Tradeoff Analysis
+
+The portal authentication system employs a 3-tier defense model to mitigate credential stuffing and password-guessing attacks:
+
+1. **Tier 1 (IP + Account Lockout):**
+   - **Threshold:** 5 failed login attempts for a specific `(IP, Account)` pair within a 15-minute window.
+   - **Action:** Temporary hard lockout (`HTTP 429`) for that specific IP against that account.
+   - **Purpose:** Stops basic brute-force attacks originating from a single address without affecting other users.
+
+2. **Tier 2 (Per-IP Global Cap Across Accounts):**
+   - **Threshold:** 25 failed login attempts from a single IP across all accounts within 15 minutes.
+   - **Action:** Temporary hard lockout (`HTTP 429`) for the attacking IP address.
+   - **Purpose:** Protects the platform from horizontal password spraying (trying one common password across hundreds of different student/company emails from a single source).
+
+3. **Tier 3 (Per-Account Global Cap Across Distributed IPs):**
+   - **Threshold:** 15 cumulative failed login attempts on a single target account across distributed or rotating IP addresses within 15 minutes.
+   - **Action:** Forces account password reset (`action_required = 'force_reset'`) rather than an indefinite hard IP block.
+   - **Tradeoff Analysis & Mitigation:**
+     - **The Denial-of-Service Risk (Tradeoff):** An attacker with a rotating proxy pool (e.g. residential proxies, botnet) could deliberately fail 15 login attempts against a known victim's email address, causing legitimate users to encounter a password-reset prompt upon their next login.
+     - **Why Forced-Reset is Preferable to Hard Account Lockout:** If Tier 3 applied a hard account lockout (e.g., blocking the account from logging in for 24 hours), the attacker could achieve a 100% sustained Denial-of-Service against key executive or student accounts indefinitely by pinging the endpoint 15 times every window.
+     - **Recovery Path:** Under `force_reset`, the legitimate account owner is never locked out indefinitely. The legitimate owner can immediately regain access by requesting a password reset email via the `/api/portal/forgot-password` flow and clicking the cryptographically secure, single-use reset link. Furthermore, once the reset token is consumed, the global failure counter for that account is instantly cleared in `portal_login_attempts`.
+     - **Complementary Layer:** Cloudflare WAF Managed Challenge / Turnstile and Bot Management provide upstream mitigation against high-volume automated distributed attacks before they reach the origin.
