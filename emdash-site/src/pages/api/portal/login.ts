@@ -44,15 +44,19 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   const clientIp = extractClientIp(request.headers);
-  const lockoutKey = computeLockoutKey(clientIp, email);
 
-  // 3. Rate Limit Check
-  const rateLimitStatus = await checkLoginRateLimit(lockoutKey);
+  // 3. Multi-Tier Rate Limit Check (IP+Account, Per-IP Global, Per-Account Global)
+  const rateLimitStatus = await checkLoginRateLimit(clientIp, email);
   if (!rateLimitStatus.allowed) {
+    const errorMsg = rateLimitStatus.reason === 'force_reset'
+      ? 'Suspicious activity detected across locations. Please reset your password to regain access.'
+      : 'Too many failed login attempts. Please try again later.';
+
     return new Response(
       JSON.stringify({
-        error: 'Too many failed login attempts. Please try again later.',
-        retryAfterSeconds: rateLimitStatus.retryAfterSeconds
+        error: errorMsg,
+        retryAfterSeconds: rateLimitStatus.retryAfterSeconds,
+        reason: rateLimitStatus.reason
       }),
       {
         status: 429,
@@ -79,12 +83,17 @@ export const POST: APIRoute = async ({ request }) => {
   const isValid = await verifyPassword(user?.password_hash, password);
 
   if (!user || !isValid) {
-    const failResult = await recordLoginFailure(lockoutKey);
+    const failResult = await recordLoginFailure(clientIp, email);
     if (failResult.locked) {
+      const lockMsg = failResult.reason === 'force_reset'
+        ? 'Suspicious activity detected across locations. Please reset your password to regain access.'
+        : 'Too many failed login attempts. Account temporarily locked.';
+
       return new Response(
         JSON.stringify({
-          error: 'Too many failed login attempts. Account temporarily locked.',
-          retryAfterSeconds: 900
+          error: lockMsg,
+          retryAfterSeconds: 900,
+          reason: failResult.reason
         }),
         {
           status: 429,
@@ -103,7 +112,7 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   // Successful login: reset attempts
-  await resetLoginAttempts(lockoutKey);
+  await resetLoginAttempts(clientIp, email);
 
   // Retrieve display name if student profile exists
   let displayName = user.email;

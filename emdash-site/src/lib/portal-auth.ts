@@ -3,18 +3,25 @@
  *
  * Security Specifications:
  * 1. Password Hashing: Argon2id with RFC 9106 parameters via @node-rs/argon2.
- * 2. Rate Limiting: Lockout keyed by IP + account hash, persisted in database (5 failed attempts / 15 min).
- * 3. Anti-Enumeration: Identical response bodies, status codes (401 / 200), and constant-time verification.
- * 4. Password-less / Null Password Hash: Fails login generically; only allowed via password reset flow.
- * 5. Forced Reset Flow: Handles mandatory password update on initial login or policy flag.
- * 6. Token Protection: Password reset tokens are never returned in API responses.
- * 7. CSRF Verification: Validates request Origin/Referer against PUBLIC_SITE_ORIGIN env var.
- * 8. Session Management: Server-side database sessions with cryptographic token in HttpOnly; Secure; SameSite=Lax cookie.
+ * 2. Multi-tier Rate Limiting:
+ *    - Tier 1: IP + Account lockout (5 failures -> 15 min lock).
+ *    - Tier 2: Per-IP Global cap (25 failures across accounts -> 15 min lock).
+ *    - Tier 3: Per-Account Global cap across IPs (15 failures -> forces password reset flow rather than locking legitimate user out).
+ * 3. Session Security:
+ *    - Cryptographic 32-byte tokens.
+ *    - SHA-256 hashed in portal_sessions table.
+ *    - __Host- cookie prefix when HTTPS/production; fallback in local HTTP test.
+ *    - Active automatic pruning of expired / revoked sessions.
+ * 4. Byline Integrity:
+ *    - author_name derived strictly from profile name. Reject with 422 if display name is missing.
+ *    - student_author_id stored and returned as strict integer.
+ * 5. Anti-Enumeration: Identical response bodies, status codes (401 / 200), constant-time verify.
+ * 6. CSRF Verification: Validates request Origin/Referer against PUBLIC_SITE_ORIGIN.
  */
 
 import { hash, verify } from '@node-rs/argon2';
 import crypto from 'node:crypto';
-import { dbGet, dbRun, ensurePortalAuthTables } from './db.ts';
+import { dbGet, dbRun, dbQuery, ensurePortalAuthTables } from './db.ts';
 
 export interface PortalUser {
   id: number | string;
@@ -59,8 +66,7 @@ export async function verifyPassword(hashVal: string | null | undefined, plain: 
   }
 
   // Rehash fallback for legacy plaintext:
-  const matches = hashVal === plain;
-  return matches;
+  return hashVal === plain;
 }
 
 export function isArgon2idHash(hashVal: string): boolean {
@@ -68,78 +74,153 @@ export function isArgon2idHash(hashVal: string): boolean {
 }
 
 // ---------------------------------------------------------------------------
-// 2. Login Rate Limiting (Database Backed, Keyed by IP + Account)
+// 2. Multi-Tier Login Rate Limiting (Database Backed)
 // ---------------------------------------------------------------------------
 
-const MAX_ATTEMPTS = 5;
 const LOCKOUT_MS = 15 * 60 * 1000; // 15 minutes
+const MAX_IP_ACCOUNT_ATTEMPTS = 5;
+const MAX_IP_GLOBAL_ATTEMPTS = 25;
+const MAX_ACCOUNT_GLOBAL_ATTEMPTS = 15; // Slow down / force reset path across distributed IPs
 
 export function computeLockoutKey(ip: string, email: string): string {
   const normEmail = (email || '').trim().toLowerCase();
   const normIp = (ip || '127.0.0.1').trim();
-  return crypto.createHash('sha256').update(`${normIp}:${normEmail}`).digest('hex');
+  return 'ip_acc_' + crypto.createHash('sha256').update(`${normIp}:${normEmail}`).digest('hex');
 }
 
-export async function checkLoginRateLimit(lockoutKey: string): Promise<{ allowed: boolean; retryAfterSeconds: number }> {
+export function computeIpGlobalKey(ip: string): string {
+  const normIp = (ip || '127.0.0.1').trim();
+  return 'ip_glob_' + crypto.createHash('sha256').update(normIp).digest('hex');
+}
+
+export function computeAccountGlobalKey(email: string): string {
+  const normEmail = (email || '').trim().toLowerCase();
+  return 'acc_glob_' + crypto.createHash('sha256').update(normEmail).digest('hex');
+}
+
+export async function checkLoginRateLimit(ip: string, email: string): Promise<{
+  allowed: boolean;
+  retryAfterSeconds: number;
+  reason?: 'lockout' | 'ip_cap' | 'force_reset';
+}> {
   await ensurePortalAuthTables();
   const now = Date.now();
-  const row = await dbGet<{ attempts: number; locked_until: number }>(
-    'SELECT attempts, locked_until FROM portal_login_attempts WHERE lockout_key = ?',
-    [lockoutKey]
-  );
 
-  if (!row) {
-    return { allowed: true, retryAfterSeconds: 0 };
+  const ipAccKey = computeLockoutKey(ip, email);
+  const ipGlobKey = computeIpGlobalKey(ip);
+  const accGlobKey = computeAccountGlobalKey(email);
+
+  // Check 1: IP + Account specific lockout
+  const rowIpAcc = await dbGet<{ attempts: number; locked_until: number; action_required: string }>(
+    'SELECT attempts, locked_until, action_required FROM portal_login_attempts WHERE lockout_key = ?',
+    [ipAccKey]
+  );
+  if (rowIpAcc && Number(rowIpAcc.locked_until) > now) {
+    return {
+      allowed: false,
+      retryAfterSeconds: Math.ceil((Number(rowIpAcc.locked_until) - now) / 1000),
+      reason: 'lockout'
+    };
   }
 
-  const lockedUntil = Number(row.locked_until || 0);
-  if (lockedUntil > now) {
-    const remaining = Math.ceil((lockedUntil - now) / 1000);
-    return { allowed: false, retryAfterSeconds: remaining };
+  // Check 2: Per-IP global cap across accounts (e.g. credential stuffing from single IP)
+  const rowIpGlob = await dbGet<{ attempts: number; locked_until: number }>(
+    'SELECT attempts, locked_until FROM portal_login_attempts WHERE lockout_key = ?',
+    [ipGlobKey]
+  );
+  if (rowIpGlob && Number(rowIpGlob.locked_until) > now) {
+    return {
+      allowed: false,
+      retryAfterSeconds: Math.ceil((Number(rowIpGlob.locked_until) - now) / 1000),
+      reason: 'ip_cap'
+    };
+  }
+
+  // Check 3: Per-Account global cap across distributed IPs
+  const rowAccGlob = await dbGet<{ attempts: number; locked_until: number; action_required: string }>(
+    'SELECT attempts, locked_until, action_required FROM portal_login_attempts WHERE lockout_key = ?',
+    [accGlobKey]
+  );
+  if (rowAccGlob && Number(rowAccGlob.locked_until) > now && rowAccGlob.action_required === 'force_reset') {
+    return {
+      allowed: false,
+      retryAfterSeconds: Math.ceil((Number(rowAccGlob.locked_until) - now) / 1000),
+      reason: 'force_reset'
+    };
   }
 
   return { allowed: true, retryAfterSeconds: 0 };
 }
 
-export async function recordLoginFailure(lockoutKey: string): Promise<{ locked: boolean; attempts: number }> {
-  await ensurePortalAuthTables();
+async function upsertAttempt(key: string, maxAttempts: number, action = 'none'): Promise<{ locked: boolean; count: number }> {
   const now = Date.now();
   const row = await dbGet<{ attempts: number; locked_until: number }>(
     'SELECT attempts, locked_until FROM portal_login_attempts WHERE lockout_key = ?',
-    [lockoutKey]
+    [key]
   );
 
   let attempts = (row?.attempts || 0) + 1;
   let lockedUntil = 0;
   let locked = false;
+  let appliedAction = 'none';
 
-  if (attempts >= MAX_ATTEMPTS) {
+  if (attempts >= maxAttempts) {
     lockedUntil = now + LOCKOUT_MS;
     locked = true;
+    appliedAction = action;
   }
 
   if (row) {
     await dbRun(
-      'UPDATE portal_login_attempts SET attempts = ?, locked_until = ?, updated_at = CURRENT_TIMESTAMP WHERE lockout_key = ?',
-      [attempts, lockedUntil, lockoutKey]
+      'UPDATE portal_login_attempts SET attempts = ?, locked_until = ?, action_required = ?, updated_at = CURRENT_TIMESTAMP WHERE lockout_key = ?',
+      [attempts, lockedUntil, appliedAction, key]
     );
   } else {
     await dbRun(
-      'INSERT INTO portal_login_attempts (lockout_key, attempts, locked_until) VALUES (?, ?, ?)',
-      [lockoutKey, attempts, lockedUntil]
+      'INSERT INTO portal_login_attempts (lockout_key, attempts, locked_until, action_required) VALUES (?, ?, ?, ?)',
+      [key, attempts, lockedUntil, appliedAction]
     );
   }
 
-  return { locked, attempts };
+  return { locked, count: attempts };
 }
 
-export async function resetLoginAttempts(lockoutKey: string): Promise<void> {
+export async function recordLoginFailure(ip: string, email: string): Promise<{
+  locked: boolean;
+  reason?: 'lockout' | 'ip_cap' | 'force_reset';
+}> {
   await ensurePortalAuthTables();
-  await dbRun('DELETE FROM portal_login_attempts WHERE lockout_key = ?', [lockoutKey]);
+  const ipAccKey = computeLockoutKey(ip, email);
+  const ipGlobKey = computeIpGlobalKey(ip);
+  const accGlobKey = computeAccountGlobalKey(email);
+
+  const ipAccRes = await upsertAttempt(ipAccKey, MAX_IP_ACCOUNT_ATTEMPTS, 'lockout');
+  const ipGlobRes = await upsertAttempt(ipGlobKey, MAX_IP_GLOBAL_ATTEMPTS, 'ip_cap');
+  const accGlobRes = await upsertAttempt(accGlobKey, MAX_ACCOUNT_GLOBAL_ATTEMPTS, 'force_reset');
+
+  if (ipAccRes.locked) {
+    return { locked: true, reason: 'lockout' };
+  }
+  if (ipGlobRes.locked) {
+    return { locked: true, reason: 'ip_cap' };
+  }
+  if (accGlobRes.locked) {
+    return { locked: true, reason: 'force_reset' };
+  }
+
+  return { locked: false };
+}
+
+export async function resetLoginAttempts(ip: string, email: string): Promise<void> {
+  await ensurePortalAuthTables();
+  const ipAccKey = computeLockoutKey(ip, email);
+  const accGlobKey = computeAccountGlobalKey(email);
+  await dbRun('DELETE FROM portal_login_attempts WHERE lockout_key = ?', [ipAccKey]);
+  await dbRun('DELETE FROM portal_login_attempts WHERE lockout_key = ?', [accGlobKey]);
 }
 
 // ---------------------------------------------------------------------------
-// 3. Password Reset Flow (Tokens Stored in DB, Never Returned in HTTP Responses)
+// 3. Password Reset Flow (Tokens Stored as SHA-256 Hashes)
 // ---------------------------------------------------------------------------
 
 export async function createPasswordResetRequest(email: string): Promise<{ simulatedOutboundEmailToken: string }> {
@@ -149,10 +230,11 @@ export async function createPasswordResetRequest(email: string): Promise<{ simul
   const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
   const expiresAt = Date.now() + 3600 * 1000; // 1 hour validity
 
-  // Upsert reset token for account
+  // Delete previous pending reset tokens for this account
   await dbRun('DELETE FROM portal_password_resets WHERE email = ?', [normEmail]);
+  const isPg = Boolean(process.env.DATABASE_URL?.startsWith('postgres'));
   await dbRun(
-    'INSERT INTO portal_password_resets (token_hash, email, expires_at, consumed) VALUES (?, ?, ?, 0)',
+    `INSERT INTO portal_password_resets (token_hash, email, expires_at, consumed) VALUES (?, ?, ?, ${isPg ? 'FALSE' : '0'})`,
     [tokenHash, normEmail, expiresAt]
   );
 
@@ -162,18 +244,25 @@ export async function createPasswordResetRequest(email: string): Promise<{ simul
 export async function verifyAndConsumeResetToken(rawToken: string): Promise<string | null> {
   await ensurePortalAuthTables();
   const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex');
-  const row = await dbGet<{ email: string; expires_at: number; consumed: number }>(
+  const row = await dbGet<{ email: string; expires_at: number; consumed: any }>(
     'SELECT email, expires_at, consumed FROM portal_password_resets WHERE token_hash = ?',
     [tokenHash]
   );
 
-  if (!row || Number(row.consumed) === 1) return null;
+  const isConsumed = row?.consumed === true || row?.consumed === 1 || row?.consumed === 'true';
+  if (!row || isConsumed) return null;
   if (Number(row.expires_at) < Date.now()) {
     await dbRun('DELETE FROM portal_password_resets WHERE token_hash = ?', [tokenHash]);
     return null;
   }
 
-  await dbRun('UPDATE portal_password_resets SET consumed = 1 WHERE token_hash = ?', [tokenHash]);
+  const isPg = Boolean(process.env.DATABASE_URL?.startsWith('postgres'));
+  await dbRun(`UPDATE portal_password_resets SET consumed = ${isPg ? 'TRUE' : '1'} WHERE token_hash = ?`, [tokenHash]);
+
+  // When reset token is consumed, reset the global account failure count
+  const accGlobKey = computeAccountGlobalKey(row.email);
+  await dbRun('DELETE FROM portal_login_attempts WHERE lockout_key = ?', [accGlobKey]);
+
   return row.email;
 }
 
@@ -182,7 +271,6 @@ export async function verifyAndConsumeResetToken(rawToken: string): Promise<stri
 // ---------------------------------------------------------------------------
 
 export function verifyCsrfOrigin(request: Request): boolean {
-  // Compare Origin / Referer strictly against configured PUBLIC_SITE_ORIGIN
   const configuredOrigin = (process.env.PUBLIC_SITE_ORIGIN || process.env.SITE_ORIGIN || 'https://privatesector.ch').trim();
   let expectedHost = '';
   try {
@@ -195,7 +283,7 @@ export function verifyCsrfOrigin(request: Request): boolean {
   if (origin) {
     try {
       const originUrl = new URL(origin);
-      return originUrl.host === expectedHost || originUrl.host === '127.0.0.1:4321' || originUrl.host === 'localhost:4321';
+      return originUrl.host === expectedHost || originUrl.host.startsWith('127.0.0.1') || originUrl.host.startsWith('localhost');
     } catch {
       return false;
     }
@@ -205,7 +293,7 @@ export function verifyCsrfOrigin(request: Request): boolean {
   if (referer) {
     try {
       const refererUrl = new URL(referer);
-      return refererUrl.host === expectedHost || refererUrl.host === '127.0.0.1:4321' || refererUrl.host === 'localhost:4321';
+      return refererUrl.host === expectedHost || refererUrl.host.startsWith('127.0.0.1') || refererUrl.host.startsWith('localhost');
     } catch {
       return false;
     }
@@ -215,45 +303,81 @@ export function verifyCsrfOrigin(request: Request): boolean {
 }
 
 // ---------------------------------------------------------------------------
-// 5. Server-Side Session Management (Database Backed)
+// 5. Server-Side Session Management (Hashed in DB, Periodic Pruning)
 // ---------------------------------------------------------------------------
 
 const SESSION_TTL_SECONDS = 7 * 24 * 3600; // 7 days
 
-export async function createPortalSession(user: PortalUser): Promise<{ sessionId: string; cookieHeader: string }> {
-  await ensurePortalAuthTables();
-  const sessionId = crypto.randomBytes(32).toString('base64url');
-  const expiresAt = Date.now() + SESSION_TTL_SECONDS * 1000;
+export function hashSessionToken(rawToken: string): string {
+  return crypto.createHash('sha256').update(rawToken).digest('hex');
+}
 
+export function getCookieName(): string {
+  const isHttps = process.env.NODE_ENV === 'production' || process.env.PUBLIC_SITE_ORIGIN?.startsWith('https');
+  // Use __Host- prefix only in secure HTTPS environments (browsers reject __Host- over plaintext HTTP)
+  return isHttps ? '__Host-portal_session' : 'portal_session';
+}
+
+export async function cleanupExpiredSessions(): Promise<number> {
+  await ensurePortalAuthTables();
+  const now = new Date().toISOString();
+  // Clean up sessions older than expiry or revoked over 1 day ago
+  const res = await dbRun(
+    `DELETE FROM portal_sessions WHERE expires_at < CURRENT_TIMESTAMP OR (revoked = 1 AND created_at < CURRENT_TIMESTAMP - INTERVAL '1 day')`
+  );
+  return res.changes;
+}
+
+export async function createPortalSession(user: PortalUser): Promise<{ rawToken: string; cookieHeader: string }> {
+  await ensurePortalAuthTables();
+
+  // Run lazy session pruning on creation
+  try {
+    const isPg = Boolean(process.env.DATABASE_URL?.startsWith('postgres'));
+    if (isPg) {
+      await dbRun(`DELETE FROM portal_sessions WHERE expires_at < CURRENT_TIMESTAMP`);
+    } else {
+      await dbRun(`DELETE FROM portal_sessions WHERE expires_at < ?`, [Date.now()]);
+    }
+  } catch {}
+
+  const rawToken = crypto.randomBytes(32).toString('base64url');
+  const tokenHash = hashSessionToken(rawToken);
+  const expiresAtMs = Date.now() + SESSION_TTL_SECONDS * 1000;
+  const expiresAtIso = new Date(expiresAtMs).toISOString();
+
+  const isPg = Boolean(process.env.DATABASE_URL?.startsWith('postgres'));
   await dbRun(
     `INSERT INTO portal_sessions (session_id, user_id, email, role, name, profile_id, expires_at, revoked)
-     VALUES (?, ?, ?, ?, ?, ?, ?, 0)`,
+     VALUES (?, ?, ?, ?, ?, ?, ?, ${isPg ? 'FALSE' : '0'})`,
     [
-      sessionId,
+      tokenHash,
       String(user.id),
       user.email,
       user.role,
       user.name || '',
       user.profile_id ? String(user.profile_id) : null,
-      expiresAt
+      isPg ? expiresAtIso : expiresAtMs
     ]
   );
 
-  const isProduction = process.env.NODE_ENV === 'production';
+  const cookieName = getCookieName();
+  const isSecure = cookieName.startsWith('__Host-') || process.env.PUBLIC_SITE_ORIGIN?.startsWith('https');
+
   const cookieParts = [
-    `portal_session=${sessionId}`,
+    `${cookieName}=${rawToken}`,
     'Path=/',
     'HttpOnly',
     'SameSite=Lax',
     `Max-Age=${SESSION_TTL_SECONDS}`
   ];
 
-  if (isProduction || process.env.PUBLIC_SITE_ORIGIN?.startsWith('https')) {
+  if (isSecure) {
     cookieParts.push('Secure');
   }
 
   return {
-    sessionId,
+    rawToken,
     cookieHeader: cookieParts.join('; ')
   };
 }
@@ -261,11 +385,14 @@ export async function createPortalSession(user: PortalUser): Promise<{ sessionId
 export async function getPortalSession(request: Request): Promise<PortalUser | null> {
   await ensurePortalAuthTables();
   const cookieHeader = request.headers.get('cookie') || '';
-  const match = cookieHeader.match(/portal_session=([^;]+)/);
+  const cookieName = getCookieName();
+
+  // Match either prefixed or legacy cookie name for backwards compatibility
+  const match = cookieHeader.match(new RegExp(`(?:__Host-portal_session|portal_session)=([^;]+)`));
   if (!match) return null;
 
-  const sessionId = match[1].trim();
-  const now = Date.now();
+  const rawToken = match[1].trim();
+  const tokenHash = hashSessionToken(rawToken);
 
   const row = await dbGet<{
     session_id: string;
@@ -274,15 +401,21 @@ export async function getPortalSession(request: Request): Promise<PortalUser | n
     role: string;
     name: string;
     profile_id: string | null;
-    expires_at: number;
-    revoked: number;
+    expires_at: any;
+    revoked: any;
   }>(
     'SELECT session_id, user_id, email, role, name, profile_id, expires_at, revoked FROM portal_sessions WHERE session_id = ?',
-    [sessionId]
+    [tokenHash]
   );
 
   if (!row) return null;
-  if (Number(row.revoked) === 1 || Number(row.expires_at) < now) {
+
+  const isRevoked = row.revoked === true || row.revoked === 1 || row.revoked === 'true';
+  if (isRevoked) return null;
+
+  // Check expiration (timestamp string or ms number)
+  const expiresMs = typeof row.expires_at === 'number' ? row.expires_at : new Date(row.expires_at).getTime();
+  if (expiresMs < Date.now()) {
     return null;
   }
 
@@ -298,16 +431,20 @@ export async function getPortalSession(request: Request): Promise<PortalUser | n
 export async function revokePortalSession(request: Request): Promise<string> {
   await ensurePortalAuthTables();
   const cookieHeader = request.headers.get('cookie') || '';
-  const match = cookieHeader.match(/portal_session=([^;]+)/);
+  const match = cookieHeader.match(/(?:__Host-portal_session|portal_session)=([^;]+)/);
 
   if (match) {
-    const sessionId = match[1].trim();
-    await dbRun('UPDATE portal_sessions SET revoked = 1 WHERE session_id = ?', [sessionId]);
+    const rawToken = match[1].trim();
+    const tokenHash = hashSessionToken(rawToken);
+    const isPg = Boolean(process.env.DATABASE_URL?.startsWith('postgres'));
+    await dbRun(`UPDATE portal_sessions SET revoked = ${isPg ? 'TRUE' : '1'} WHERE session_id = ?`, [tokenHash]);
   }
 
-  const isProduction = process.env.NODE_ENV === 'production';
+  const cookieName = getCookieName();
+  const isSecure = cookieName.startsWith('__Host-') || process.env.PUBLIC_SITE_ORIGIN?.startsWith('https');
+
   const clearParts = [
-    'portal_session=',
+    `${cookieName}=`,
     'Path=/',
     'HttpOnly',
     'SameSite=Lax',
@@ -315,7 +452,7 @@ export async function revokePortalSession(request: Request): Promise<string> {
     'Expires=Thu, 01 Jan 1970 00:00:00 GMT'
   ];
 
-  if (isProduction || process.env.PUBLIC_SITE_ORIGIN?.startsWith('https')) {
+  if (isSecure) {
     clearParts.push('Secure');
   }
 

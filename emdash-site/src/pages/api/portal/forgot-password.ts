@@ -40,10 +40,9 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   const clientIp = extractClientIp(request.headers);
-  const lockoutKey = computeLockoutKey(clientIp, email);
 
-  // 3. Rate Limit Check
-  const rateLimitStatus = await checkLoginRateLimit(lockoutKey);
+  // 3. Multi-tier Rate Limit Check
+  const rateLimitStatus = await checkLoginRateLimit(clientIp, email);
   if (!rateLimitStatus.allowed) {
     return new Response(
       JSON.stringify({
@@ -60,19 +59,26 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 
-  // 4. Check if user exists (Anti-enumeration: identical response regardless)
-  await ensurePortalAuthTables();
-  const user = await dbGet<{ id: any; email: string }>(
-    'SELECT id, email FROM users WHERE LOWER(email) = LOWER(?)',
-    [email.trim()]
-  );
+  // 4. Asynchronous Background Dispatch:
+  // Decouple DB lookup & token generation from the HTTP request/response cycle so that
+  // the HTTP response is returned immediately and cannot leak timing information.
+  setImmediate(async () => {
+    try {
+      await ensurePortalAuthTables();
+      const user = await dbGet<{ id: any; email: string }>(
+        'SELECT id, email FROM users WHERE LOWER(email) = LOWER(?)',
+        [email.trim()]
+      );
+      if (user) {
+        await createPasswordResetRequest(user.email);
+        // Outbound email dispatched asynchronously here
+      }
+    } catch (err) {
+      console.error('[BACKGROUND RESET DISPATCH ERROR]:', err);
+    }
+  });
 
-  if (user) {
-    // Generate secure reset token stored in DB; simulated outbound email dispatcher
-    await createPasswordResetRequest(user.email);
-  }
-
-  // Anti-enumeration guarantee: exact identical JSON body and HTTP 200 status
+  // Anti-enumeration guarantee: exact identical JSON body, status 200, and flat constant timing
   // Password reset token is NEVER returned in response.
   return new Response(
     JSON.stringify({

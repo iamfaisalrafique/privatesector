@@ -60,9 +60,22 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 
-  // Author identity strictly derived from portal session
-  const serverStudentAuthorId = portalStudent.profile_id ?? portalStudent.id;
-  const serverAuthorName = portalStudent.name || portalStudent.email;
+  // Author identity strictly derived from student profile
+  // Byline requirement: author_name must come from the student profile display name and never fall back to email.
+  const serverStudentAuthorId = parseInt(String(portalStudent.profile_id ?? portalStudent.id).replace(/\D/g, ''), 10) || 0;
+  const rawAuthorName = (portalStudent.name || '').trim();
+
+  // If display name is missing or matches email address, reject submission
+  if (!rawAuthorName || rawAuthorName.toLowerCase() === portalStudent.email.toLowerCase()) {
+    return new Response(
+      JSON.stringify({
+        error: 'Profile incomplete: A verified student profile display name is required to submit articles. Please complete your profile.'
+      }),
+      { status: 422, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+
+  const serverAuthorName = rawAuthorName;
 
   // 2. Safe JSON Parse
   let payload: any;
@@ -152,7 +165,7 @@ export const POST: APIRoute = async ({ request }) => {
         data: {
           title: title.trim(),
           subtitle: subtitle?.trim() || '',
-          student_author_id: typeof serverStudentAuthorId === 'number' ? serverStudentAuthorId : (parseInt(String(serverStudentAuthorId).replace(/\D/g, ''), 10) || 1),
+          student_author_id: Number(serverStudentAuthorId),
           author_name: serverAuthorName,
           content: portableTextBlocks
         }
@@ -173,7 +186,7 @@ export const POST: APIRoute = async ({ request }) => {
         message: 'Draft submitted successfully for editorial review.',
         id: data.id || data.data?.item?.id,
         author: {
-          student_author_id: serverStudentAuthorId,
+          student_author_id: Number(serverStudentAuthorId),
           author_name: serverAuthorName
         }
       }),
