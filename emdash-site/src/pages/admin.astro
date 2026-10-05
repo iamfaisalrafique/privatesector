@@ -1,0 +1,166 @@
+---
+// emdash-site/src/pages/admin.astro
+import Base from "../layouts/Base.astro";
+import { getNews, getCompanies, getInterviews, getBlogs, getJobs } from "../lib/legacy-db";
+
+const newsList = getNews(10);
+const companiesList = getCompanies();
+const interviewsList = getInterviews();
+const blogsList = getBlogs();
+const jobsList = getJobs();
+---
+
+<Base title="Admin Control Center | PrivateSector.ch" description="Executive management portal for PrivateSector.ch news, companies, and editorial operations.">
+  <div style="background-color: #F8FAFC; min-height: calc(100vh - 120px); padding: 32px 0 64px;">
+    <div style="max-width: 1400px; margin: 0 auto; padding: 0 24px;">
+      
+      <!-- Top Bar with Header & Logout -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; background-color: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; padding: 20px 24px;">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div style="width: 44px; height: 44px; border-radius: 8px; background-color: #0A0A0A; color: #FFFDF7; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+            🛡️
+          </div>
+          <div>
+            <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 24px; font-weight: 700; color: #0F172A; margin: 0;">
+              PrivateSector Administration Console
+            </h1>
+            <p style="font-size: 13px; color: #64748B; margin: 2px 0 0 0;">
+              Connected to Swiss SQLite Database & EmDash Engine
+            </p>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <a 
+            href="/_emdash/admin" 
+            style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; background-color: #0F172A; color: #FFFFFF; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600;"
+          >
+            Open EmDash CMS (/_emdash/admin) ↗
+          </a>
+          <button 
+            id="admin-logout-btn"
+            style="padding: 9px 16px; background-color: #FEE2E2; color: #B91C1C; border: 1px solid #FCA5A5; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+
+      <!-- Stat Counters Grid -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px;">
+        <div style="background-color: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; padding: 20px;">
+          <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #64748B; letter-spacing: 0.05em;">Published News</span>
+          <div style="font-size: 32px; font-weight: 800; color: #0F172A; font-family: 'JetBrains Mono', monospace; margin-top: 6px;">
+            {getNews().length}
+          </div>
+          <span style="font-size: 11px; color: #10B981; font-weight: 600;">Live across website</span>
+        </div>
+
+        <div style="background-color: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; padding: 20px;">
+          <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #64748B; letter-spacing: 0.05em;">Companies Directory</span>
+          <div style="font-size: 32px; font-weight: 800; color: #0F172A; font-family: 'JetBrains Mono', monospace; margin-top: 6px;">
+            {companiesList.length}
+          </div>
+          <span style="font-size: 11px; color: #3B82F6; font-weight: 600;">26 Cantons indexed</span>
+        </div>
+
+        <div style="background-color: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; padding: 20px;">
+          <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #64748B; letter-spacing: 0.05em;">Executive Interviews</span>
+          <div style="font-size: 32px; font-weight: 800; color: #0F172A; font-family: 'JetBrains Mono', monospace; margin-top: 6px;">
+            {interviewsList.length}
+          </div>
+          <span style="font-size: 11px; color: #8B5CF6; font-weight: 600;">Swiss & US Leaders</span>
+        </div>
+
+        <div style="background-color: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; padding: 20px;">
+          <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #64748B; letter-spacing: 0.05em;">Editorial Blogs</span>
+          <div style="font-size: 32px; font-weight: 800; color: #0F172A; font-family: 'JetBrains Mono', monospace; margin-top: 6px;">
+            {blogsList.length}
+          </div>
+          <span style="font-size: 11px; color: #F59E0B; font-weight: 600;">Editor's analysis</span>
+        </div>
+
+        <div style="background-color: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; padding: 20px;">
+          <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #64748B; letter-spacing: 0.05em;">Careers / Jobs</span>
+          <div style="font-size: 32px; font-weight: 800; color: #0F172A; font-family: 'JetBrains Mono', monospace; margin-top: 6px;">
+            {jobsList.length}
+          </div>
+          <span style="font-size: 11px; color: #EC4899; font-weight: 600;">Corporate listings</span>
+        </div>
+      </div>
+
+      <!-- Recent Intelligence Articles Table -->
+      <div style="background-color: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+        <div style="padding: 18px 24px; border-bottom: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center;">
+          <h2 style="font-family: 'Playfair Display', Georgia, serif; font-size: 18px; font-weight: 700; margin: 0; color: #0F172A;">
+            Latest Published Intelligence Articles
+          </h2>
+          <a href="/news" style="font-size: 12.5px; color: #D52B1E; font-weight: 600; text-decoration: none;">
+            View Public Feed →
+          </a>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px;">
+            <thead>
+              <tr style="background-color: #F8FAFC; border-bottom: 1px solid #E2E8F0; font-size: 11px; text-transform: uppercase; color: #64748B; letter-spacing: 0.05em;">
+                <th style="padding: 12px 20px; width: 60px;">ID</th>
+                <th style="padding: 12px 20px;">Title</th>
+                <th style="padding: 12px 20px;">Category</th>
+                <th style="padding: 12px 20px;">Published Date</th>
+                <th style="padding: 12px 20px; text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {newsList.map((item: any) => (
+                <tr style="border-bottom: 1px solid #F1F5F9;">
+                  <td style="padding: 14px 20px; font-family: 'JetBrains Mono', monospace; font-weight: 700; color: #94A3B8;">
+                    #{item.id}
+                  </td>
+                  <td style="padding: 14px 20px;">
+                    <a href={`/news/${item.slug || item.id}`} style="text-decoration: none; color: #0F172A; font-weight: 600;">
+                      {item.title}
+                    </a>
+                  </td>
+                  <td style="padding: 14px 20px;">
+                    <span style="font-size: 11px; background-color: #FEE2E2; color: #D52B1E; padding: 2px 8px; border-radius: 3px; font-weight: 600; text-transform: uppercase;">
+                      {item.category || 'News'}
+                    </span>
+                  </td>
+                  <td style="padding: 14px 20px; color: #64748B; font-size: 12.5px;">
+                    {item.date_published || 'N/A'}
+                  </td>
+                  <td style="padding: 14px 20px; text-align: right;">
+                    <a href={`/news/${item.slug || item.id}`} style="color: #2563EB; font-weight: 600; text-decoration: none; font-size: 12px; margin-right: 12px;">
+                      View ↗
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script is:inline data-astro-rerun>
+    // Verify Admin Session on client
+    const sessionStr = localStorage.getItem('userSession');
+    const user = sessionStr ? JSON.parse(sessionStr) : null;
+
+    if (!user || user.role !== 'admin') {
+      window.location.href = '/login';
+    }
+
+    // Logout Handler
+    const logoutBtn = document.getElementById('admin-logout-btn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('userSession');
+        window.location.href = '/login';
+      });
+    }
+  </script>
+</Base>
