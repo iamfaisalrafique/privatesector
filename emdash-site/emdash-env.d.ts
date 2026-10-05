@@ -21,6 +21,7 @@ export interface Blog {
   meta_title?: string;
   meta_description?: string;
   schema_markup?: string;
+  legacy_id?: number;
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;
@@ -39,6 +40,7 @@ export interface Briefing {
   audio_duration?: number;
   transcript?: string;
   featured_image?: { id: string; src?: string; alt?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown>; darkVariant?: { id: string; src?: string; alt?: string; width?: number; height?: number; filename?: string; mimeType?: string; blurhash?: string; dominantColor?: string; focalX?: number; focalY?: number; provider?: string; previewUrl?: string; meta?: Record<string, unknown> } };
+  legacy_id?: number;
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;
@@ -71,6 +73,7 @@ export interface Company {
   sustainability_summary?: string;
   meta_title?: string;
   meta_description?: string;
+  legacy_id?: number;
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;
@@ -94,6 +97,31 @@ export interface Interview {
   qa_content?: string;
   student_author_id?: number;
   category?: string;
+  legacy_id?: number;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  byline?: BylineSummary | null;
+  bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
+}
+
+export interface Job {
+  id: string;
+  slug: string | null;
+  status: string;
+  title: string;
+  company_name: string;
+  company_id?: number;
+  location?: string;
+  canton?: string;
+  employment_type?: string;
+  experience_level?: string;
+  department?: string;
+  apply_url?: string;
+  description?: PortableTextBlock[];
+  deadline?: string;
+  legacy_id?: number;
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;
@@ -133,6 +161,7 @@ export interface Post {
   meta_title?: string;
   meta_description?: string;
   schema_markup?: string;
+  legacy_id?: number;
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date | null;
@@ -147,6 +176,7 @@ declare module "emdash" {
     briefings: Briefing;
     companies: Company;
     interviews: Interview;
+    jobs: Job;
     pages: Page;
     posts: Post;
   }
