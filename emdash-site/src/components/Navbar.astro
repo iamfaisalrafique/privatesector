@@ -311,7 +311,7 @@ const sectionsData = [
     <div 
       id="desktop-mega-menu"
       class="desktop-mega-menu desktop-only"
-      style="display: none; position: absolute; top: 100%; left: 0; right: 0; background-color: #FFFFFF; border-top: 1px solid #E5E7EB; border-bottom: 1px solid #D1D5DB; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04); z-index: 999; padding: 28px 24px 36px 24px; animation: megaMenuFadeIn 0.2s ease-out;"
+      style="position: absolute; top: 100%; left: 0; right: 0; background-color: #FFFFFF; border-top: 1px solid #E5E7EB; border-bottom: 1px solid #D1D5DB; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04); z-index: 999; padding: 28px 24px 36px 24px;"
     >
       <div style="max-width: 1600px; width: 100%; margin: 0 auto; display: grid; grid-template-columns: repeat(7, 1fr); gap: 16px;">
         {sectionsData.map((sec, secIdx) => (
@@ -613,12 +613,29 @@ const sectionsData = [
     @keyframes megaMenuFadeIn {
       from {
         opacity: 0;
-        transform: translateY(-8px);
+        transform: translateY(-6px);
       }
       to {
         opacity: 1;
         transform: translateY(0);
       }
+    }
+
+    #desktop-mega-menu {
+      display: none !important;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateY(-6px);
+      transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s ease;
+    }
+
+    #desktop-mega-menu.is-active {
+      display: block !important;
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateY(0);
     }
 
     .top-market-bar::-webkit-scrollbar {
@@ -682,26 +699,52 @@ const sectionsData = [
     setInterval(initZurichClock, 30000);
 
     // Desktop Mega Menu Hover System
-    const navBar = document.getElementById('main-nav-bar');
+    const navLinksCluster = document.getElementById('desktop-nav-cluster');
     const megaMenu = document.getElementById('desktop-mega-menu');
     let megaTimeout = null;
 
-    if (navBar && megaMenu) {
+    if (navLinksCluster && megaMenu) {
       function showMega() {
         if (megaTimeout) clearTimeout(megaTimeout);
-        megaMenu.style.display = 'block';
+        megaMenu.classList.add('is-active');
       }
 
       function hideMega() {
+        if (megaTimeout) clearTimeout(megaTimeout);
         megaTimeout = setTimeout(() => {
-          megaMenu.style.display = 'none';
-        }, 250);
+          megaMenu.classList.remove('is-active');
+        }, 120);
       }
 
-      navBar.addEventListener('mouseenter', showMega);
-      navBar.addEventListener('mouseleave', hideMega);
+      navLinksCluster.addEventListener('mouseenter', showMega);
+      navLinksCluster.addEventListener('mouseleave', hideMega);
       megaMenu.addEventListener('mouseenter', showMega);
       megaMenu.addEventListener('mouseleave', hideMega);
+
+      // Close when cursor leaves navigation area towards logo or action buttons
+      const brandLogo = document.querySelector('a[href="/"]');
+      const searchBtn = document.getElementById('search-toggle-btn');
+      const adminBtn = document.querySelector('a[href="/login"]');
+      [brandLogo, searchBtn, adminBtn].forEach((el) => {
+        if (el) el.addEventListener('mouseenter', () => {
+          if (megaTimeout) clearTimeout(megaTimeout);
+          megaMenu.classList.remove('is-active');
+        });
+      });
+
+      // Close immediately on link click
+      document.querySelectorAll('.nav-link-item, .mega-menu-link').forEach((link) => {
+        link.addEventListener('click', () => {
+          megaMenu.classList.remove('is-active');
+        });
+      });
+
+      // Close on escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          megaMenu.classList.remove('is-active');
+        }
+      });
     }
 
     // Search Bar Overlay Toggle
