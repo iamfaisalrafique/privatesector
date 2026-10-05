@@ -1,0 +1,92 @@
+---
+// emdash-site/src/pages/cross-border-ranking.astro
+import Base from "../layouts/Base.astro";
+
+const rankData = [
+  { rank: 1, name: "Google Switzerland", category: "Technology", hq: "Mountain View / Zurich", score: 98, employees: "5,000+", metric: "$1.2B R&D local spend" },
+  { rank: 2, name: "Nestlé USA", category: "Consumer Goods", hq: "Vevey / Arlington", score: 95, employees: "48,000+", metric: "$12B US Revenue" },
+  { rank: 3, name: "Roche Genentech", category: "Pharmaceuticals", hq: "Basel / South San Francisco", score: 94, employees: "12,000+", metric: "Major California oncology lab" },
+  { rank: 4, name: "Disney Research Zurich", category: "Entertainment", hq: "Burbank / Zurich", score: 89, employees: "200+ Researchers", metric: "Core CGI & CGI AI breakthroughs" },
+  { rank: 5, name: "Logitech", category: "Technology", hq: "Lausanne / Newark", score: 88, employees: "3,500+", metric: "$4.3B global sales base" },
+  { rank: 6, name: "UBS Americas", category: "Financial Services", hq: "Zurich / Los Angeles", score: 87, employees: "20,000+", metric: "Wealth management leader" }
+];
+---
+
+<Base title="Cross-Border Ranking | PrivateSector.ch" description="Ranks the top corporations bridging the Swiss and California business sectors.">
+  <div style="background-color: var(--bg-ivory, #FFFFFF); min-height: calc(100vh - 120px); padding: 40px 0 64px;">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 0 24px;">
+      
+      <!-- Breadcrumb -->
+      <div style="font-size: 12px; color: #4B5563; margin-bottom: 24px; display: flex; gap: 6px; align-items: center;">
+        <a href="/" style="color: inherit; text-decoration: none;">Home</a>
+        <span>/</span>
+        <span style="font-weight: 600; color: #000000;">Cross-Border Ranking</span>
+      </div>
+
+      <!-- Header Block -->
+      <div style="text-align: center; margin-bottom: 40px;">
+        <span style="color: #D52B1E; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 700; display: block; margin-bottom: 8px;">
+          Transatlantic Index
+        </span>
+        <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 38px; font-weight: 700; color: #000000; margin: 0 0 16px;">
+          Cross-Border Ranking
+        </h1>
+        <p style="font-size: 16px; color: #4B5563; max-width: 680px; margin: 0 auto; line-height: 1.6;">
+          Ranks the top corporations bridging the Swiss and California business sectors based on local research and development investments, employee size, and transatlantic trade integration.
+        </p>
+      </div>
+
+      <!-- Table Card -->
+      <div style="background-color: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px;">
+            <thead>
+              <tr style="background-color: #0A0A0A; color: #FFFFFF; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em;">
+                <th style="padding: 16px 20px; width: 60px;">Rank</th>
+                <th style="padding: 16px 20px;">Corporation</th>
+                <th style="padding: 16px 20px;">Category</th>
+                <th style="padding: 16px 20px;">Dual HQ</th>
+                <th style="padding: 16px 20px;">Workforce</th>
+                <th style="padding: 16px 20px;">Transatlantic Footprint</th>
+                <th style="padding: 16px 20px; text-align: right;">Index Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rankData.map((item, idx) => (
+                <tr style={`border-bottom: 1px solid #E5E7EB; background-color: ${idx % 2 === 0 ? '#FFFFFF' : '#F9FAFB'};`}>
+                  <td style="padding: 16px 20px; font-weight: 800; color: #D52B1E; font-size: 16px;">
+                    #{item.rank}
+                  </td>
+                  <td style="padding: 16px 20px;">
+                    <strong style="color: #000000; font-size: 15px; display: block;">{item.name}</strong>
+                  </td>
+                  <td style="padding: 16px 20px;">
+                    <span style="font-size: 11px; background-color: #FEE2E2; color: #D52B1E; padding: 3px 8px; border-radius: 3px; font-weight: 600;">
+                      {item.category}
+                    </span>
+                  </td>
+                  <td style="padding: 16px 20px; color: #4B5563;">
+                    {item.hq}
+                  </td>
+                  <td style="padding: 16px 20px; color: #4B5563; font-family: 'JetBrains Mono', monospace; font-size: 13px;">
+                    {item.employees}
+                  </td>
+                  <td style="padding: 16px 20px; color: #4B5563; font-size: 13px;">
+                    {item.metric}
+                  </td>
+                  <td style="padding: 16px 20px; text-align: right;">
+                    <strong style="font-family: 'JetBrains Mono', monospace; font-size: 18px; color: #000000;">
+                      {item.score}
+                    </strong>
+                    <span style="font-size: 11px; color: #9CA3AF;">/100</span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</Base>

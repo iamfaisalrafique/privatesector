@@ -1,0 +1,91 @@
+---
+// emdash-site/src/pages/swiss.astro
+import Base from "../layouts/Base.astro";
+import NewsCard from "../components/NewsCard.astro";
+import CompanyCard from "../components/CompanyCard.astro";
+import { getNews, getCompanies } from "../lib/legacy-db";
+
+const allNews = getNews();
+const swissNews = allNews.filter((a: any) => 
+  a.title?.toLowerCase().includes('swiss') || 
+  a.content?.toLowerCase().includes('switzerland') || 
+  a.category?.toLowerCase() === 'economy' ||
+  a.category?.toLowerCase() === 'swiss'
+).slice(0, 9);
+
+const allCompanies = getCompanies();
+const swissCompanies = allCompanies.filter((c: any) => 
+  !c.country || c.country.toLowerCase() === 'switzerland' || c.country.toLowerCase() === 'ch'
+).slice(0, 8);
+---
+
+<Base title="Swiss Economy & Companies | PrivateSector.ch" description="Dedicated intelligence on the Swiss economy, multinational champions, and cantonal enterprises.">
+  <div style="background-color: var(--bg-ivory, #FFFFFF); min-height: calc(100vh - 120px); padding: 40px 0 64px;">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 0 24px;">
+      
+      <!-- Breadcrumb -->
+      <div style="font-size: 12px; color: #4B5563; margin-bottom: 24px; display: flex; gap: 6px; align-items: center;">
+        <a href="/" style="color: inherit; text-decoration: none;">Home</a>
+        <span>/</span>
+        <span style="font-weight: 600; color: #000000;">Swiss Economy</span>
+      </div>
+
+      <!-- Header Block -->
+      <div style="margin-bottom: 40px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+          <svg width="20" height="15" viewBox="0 0 32 24" style="border-radius: 2px;">
+            <rect width="32" height="24" fill="#D52B1E" />
+            <rect x="13" y="4" width="6" height="16" fill="#FFFFFF" />
+            <rect x="7" y="9" width="18" height="6" fill="#FFFFFF" />
+          </svg>
+          <span style="color: #D52B1E; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 700;">
+            Swiss Enterprise Radar
+          </span>
+        </div>
+        <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 38px; font-weight: 700; color: #000000; margin: 0 0 16px;">
+          Switzerland Business & Economy
+        </h1>
+        <p style="font-size: 16px; color: #4B5563; max-width: 720px; line-height: 1.6; margin: 0;">
+          Tracking the confederation's economic pillars, precision machinery exporters, banking titans, and pharma powerhouses across 26 cantons.
+        </p>
+      </div>
+
+      <!-- Section: Key Swiss Companies -->
+      <div style="margin-bottom: 48px;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid #000000; padding-bottom: 10px; margin-bottom: 24px;">
+          <h2 style="font-family: 'Playfair Display', Georgia, serif; font-size: 22px; font-weight: 700; color: #000000; margin: 0;">
+            Featured Swiss Enterprises
+          </h2>
+          <a href="/unternehmen" style="color: #D52B1E; text-decoration: none; font-size: 13px; font-weight: 600;">
+            View All Companies →
+          </a>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+          {swissCompanies.map((c: any) => (
+            <CompanyCard company={c} />
+          ))}
+        </div>
+      </div>
+
+      <!-- Section: Swiss Intelligence Stories -->
+      <div>
+        <div style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid #000000; padding-bottom: 10px; margin-bottom: 24px;">
+          <h2 style="font-family: 'Playfair Display', Georgia, serif; font-size: 22px; font-weight: 700; color: #000000; margin: 0;">
+            Swiss Business Intelligence
+          </h2>
+          <a href="/news" style="color: #D52B1E; text-decoration: none; font-size: 13px; font-weight: 600;">
+            View All News →
+          </a>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
+          {swissNews.map((art: any) => (
+            <NewsCard article={art} />
+          ))}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</Base>

@@ -1,0 +1,92 @@
+---
+// emdash-site/src/pages/translatic-transcript.astro
+import Base from "../layouts/Base.astro";
+
+const speakers = [
+  {
+    name: "Dr. Beat Schuler",
+    title: "Senior Trade Commissioner, VitalSwiss",
+    avatar: "🇨🇭",
+    bio: "Former delegate to the Swiss Federal Department of Economic Affairs, specializing in European-American bilateral investment frameworks."
+  },
+  {
+    name: "Sarah Jenkins, Esq.",
+    title: "Executive Director, California-Swiss Alliance",
+    avatar: "🇺🇸",
+    bio: "Silicon Valley policy attorney and expert on cross-border corporate governance, tax treaties, and trade compliance."
+  }
+];
+
+const transcript = [
+  { time: "00:12", speaker: "Dr. Beat Schuler", text: "Welcome everyone. Today we are addressing a critical nexus: how Swiss precision capital meets the sheer entrepreneurial velocity of Southern California. For a long time, the Silicon Valley route was the default, but we are witnessing an unprecedented shift towards SoCal—especially in biotech, aerospace, and advanced logistics." },
+  { time: "01:45", speaker: "Sarah Jenkins, Esq.", text: "Absolutely, Beat. Southern California presents a unique dual benefit: deep tech talent pools from institutions like Caltech and UCLA, combined with massive logistics gateways like the Ports of Los Angeles and Long Beach. Swiss firms aren't just finding customers here; they're establishing secondary R&D headquarters." },
+  { time: "03:10", speaker: "Dr. Beat Schuler", text: "Yes, and the regulatory environment is adapting. With the recent double-taxation updates, the friction points for Swiss SMEs expanding into the United States have been significantly minimized. Our role is to ensure that transition remains seamless." },
+  { time: "05:02", speaker: "Sarah Jenkins, Esq.", text: "The cross-border ranking we recently published underscores this. The cantons of Zurich and Zug are seeing direct reciprocal investment from SoCal-based venture funds. It's a bilateral highway of innovation, not just a one-way street." }
+];
+---
+
+<Base title="Translatic Transcript | PrivateSector.ch" description="A recorded transatlantic session featuring Dr. Beat Schuler and Sarah Jenkins, Esq. on Swiss-US bilateral trade corridors.">
+  <div style="background-color: var(--bg-ivory, #FFFFFF); min-height: calc(100vh - 120px); padding: 40px 0 64px;">
+    <div style="max-width: 960px; margin: 0 auto; padding: 0 24px;">
+      
+      <!-- Breadcrumb -->
+      <div style="font-size: 12px; color: #4B5563; margin-bottom: 24px; display: flex; gap: 6px; align-items: center;">
+        <a href="/" style="color: inherit; text-decoration: none;">Home</a>
+        <span>/</span>
+        <span style="font-weight: 600; color: #000000;">Translatic Transcript</span>
+      </div>
+
+      <!-- Editorial Header -->
+      <div style="border-bottom: 2px solid #000; padding-bottom: 24px; margin-bottom: 32px;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
+          <span style="color: #D52B1E; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;">Exclusive Briefing</span>
+          <span style="font-size: 13px; color: #4B5563; font-family: 'JetBrains Mono', monospace;">VOL. IV // NO. 12</span>
+        </div>
+        <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 38px; font-weight: 800; line-height: 1.2; color: #000000; margin-bottom: 16px;">
+          Translatic Transcript
+        </h1>
+        <p style="font-size: 18px; color: #4B5563; line-height: 1.5; margin: 0;">
+          A recorded transatlantic session featuring Dr. Beat Schuler and Sarah Jenkins, Esq. on how Swiss precision capital meets Southern California's venture velocity.
+        </p>
+      </div>
+
+      <!-- Speakers Box -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-bottom: 40px;">
+        {speakers.map((sp) => (
+          <div style="background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 20px;">
+            <div style="font-size: 32px; margin-bottom: 8px;">{sp.avatar}</div>
+            <strong style="display: block; font-size: 16px; color: #0F172A; margin-bottom: 4px;">{sp.name}</strong>
+            <span style="display: block; font-size: 12px; color: #D52B1E; font-weight: 600; margin-bottom: 10px;">{sp.title}</span>
+            <p style="font-size: 12.5px; color: #475569; line-height: 1.5; margin: 0;">{sp.bio}</p>
+          </div>
+        ))}
+      </div>
+
+      <!-- Transcript Flow -->
+      <div style="background-color: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; padding: 32px;">
+        <div style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #64748B; margin-bottom: 24px; border-bottom: 1px solid #E2E8F0; padding-bottom: 12px;">
+          Session Transcript
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+          {transcript.map((item) => (
+            <div style="display: flex; gap: 20px; align-items: flex-start;">
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #94A3B8; padding-top: 2px; flex-shrink: 0;">
+                {item.time}
+              </span>
+              <div style="flex: 1;">
+                <strong style="display: block; font-size: 14px; color: #0F172A; margin-bottom: 4px;">
+                  {item.speaker}
+                </strong>
+                <p style="font-size: 14.5px; line-height: 1.7; color: #334155; margin: 0;">
+                  {item.text}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</Base>

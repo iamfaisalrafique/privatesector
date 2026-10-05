@@ -13,14 +13,118 @@ const defaultTicker = [
   { flag: null, label: 'U.S. 10Y', value: '4.25%', change: '+0.03%', positive: true }
 ];
 
-const navItems = [
-  { label: 'HOME', path: '/', flag: null },
-  { label: 'SWITZERLAND', path: '/news', flag: 'swiss' },
-  { label: 'USA', path: '/news', flag: 'usa' },
-  { label: 'COMPANIES', path: '/unternehmen', flag: null },
-  { label: 'STARTUPS', path: '/statistiken', flag: null },
-  { label: 'MARKETS', path: '/statistiken', flag: null },
-  { label: 'OPPORTUNITIES', path: '/ranking', flag: null },
+const sectionsData = [
+  {
+    id: 'home',
+    label: 'HOME',
+    icon: 'home',
+    flag: null,
+    path: '/',
+    subtitle: "Today's top intelligence",
+    items: [
+      { label: 'Top Story', path: '/news', icon: 'file-text' },
+      { label: 'Latest Intelligence', path: '/news', icon: 'search' },
+      { label: 'Breaking News', path: '/news', icon: 'zap' },
+      { label: "Editor's Picks", path: '/blogs', icon: 'edit' },
+      { label: 'Most Read', path: '/ranking', icon: 'trending-up' }
+    ]
+  },
+  {
+    id: 'switzerland',
+    label: 'SWITZERLAND',
+    icon: null,
+    flag: 'swiss',
+    path: '/trade-policy-pulse',
+    subtitle: 'Swiss business & economy',
+    items: [
+      { label: 'Swiss Economy', path: '/news' },
+      { label: 'Swiss Companies', path: '/swiss' },
+      { label: 'Swiss Industries', path: '/unternehmen' },
+      { label: 'Trade & Policy', path: '/trade-policy-pulse' },
+      { label: 'Swiss Startups', path: '/statistiken' },
+      { label: 'Regional Focus', path: '/socal-gateway' }
+    ]
+  },
+  {
+    id: 'usa',
+    label: 'USA',
+    icon: null,
+    flag: 'usa',
+    path: '/socal-gateway',
+    subtitle: 'U.S. business & policy',
+    items: [
+      { label: 'U.S. Economy', path: '/news' },
+      { label: 'Federal News', path: '/trade-policy-pulse' },
+      { label: 'States & Cities', path: '/socal-gateway' },
+      { label: 'U.S. Companies', path: '/unternehmen?country=usa' },
+      { label: 'Trade & Policy', path: '/trade-policy-pulse' },
+      { label: 'Regional Focus', path: '/translatic-transcript' }
+    ]
+  },
+  {
+    id: 'companies',
+    label: 'COMPANIES',
+    icon: 'building',
+    flag: null,
+    path: '/unternehmen',
+    subtitle: 'Company intelligence',
+    items: [
+      { label: 'Company Intelligence', path: '/unternehmen' },
+      { label: 'Swiss Companies', path: '/swiss' },
+      { label: 'U.S. Companies', path: '/unternehmen?country=usa' },
+      { label: 'Industries', path: '/unternehmen' },
+      { label: 'Rankings', path: '/cross-border-ranking' },
+      { label: 'Company Directory', path: '/unternehmen' }
+    ]
+  },
+  {
+    id: 'startups',
+    label: 'STARTUPS',
+    icon: 'rocket',
+    flag: null,
+    path: '/statistiken',
+    subtitle: 'Innovation on both sides',
+    items: [
+      { label: 'U.S. Startup Radar', path: '/news' },
+      { label: 'Swiss Startup Radar', path: '/news' },
+      { label: 'Startup of the Week', path: '/interviews' },
+      { label: 'Top Founders', path: '/interviews' },
+      { label: 'Funding & VC', path: '/statistiken' },
+      { label: 'Startup Directory', path: '/unternehmen' }
+    ]
+  },
+  {
+    id: 'markets',
+    label: 'MARKETS',
+    icon: 'chart',
+    flag: null,
+    path: '/statistiken',
+    subtitle: 'Markets & financial insights',
+    items: [
+      { label: 'Markets Today', path: '/statistiken' },
+      { label: 'Investment', path: '/ranking' },
+      { label: 'Banking & Finance', path: '/news' },
+      { label: 'Technology', path: '/news' },
+      { label: 'Life Sciences', path: '/news' },
+      { label: 'Commodities', path: '/statistiken' }
+    ]
+  },
+  {
+    id: 'opportunities',
+    label: 'OPPORTUNITIES',
+    icon: 'target',
+    flag: null,
+    path: '/cross-border-ranking',
+    subtitle: 'Where opportunity meets action',
+    items: [
+      { label: 'Swiss → U.S.', path: '/socal-gateway' },
+      { label: 'U.S. → Switzerland', path: '/translatic-transcript' },
+      { label: 'Investment Opportunities', path: '/cross-border-ranking' },
+      { label: 'Partnerships', path: '/karriere' },
+      { label: 'Market Expansion', path: '/trade-policy-pulse' },
+      { label: 'U.S. States & Cities', path: '/socal-gateway' }
+    ]
+  }
 ];
 ---
 
@@ -59,6 +163,11 @@ const navItems = [
                 <rect y="18.46" width="32" height="1.85" fill="#FFFFFF" />
                 <rect y="22.15" width="32" height="1.85" fill="#FFFFFF" />
                 <rect width="13" height="13" fill="#3C3B6E" />
+                <circle cx="3.5" cy="3.5" r="1" fill="#FFFFFF" />
+                <circle cx="9.5" cy="3.5" r="1" fill="#FFFFFF" />
+                <circle cx="6.5" cy="6.5" r="1" fill="#FFFFFF" />
+                <circle cx="3.5" cy="9.5" r="1" fill="#FFFFFF" />
+                <circle cx="9.5" cy="9.5" r="1" fill="#FFFFFF" />
               </svg>
             )}
             <span style="color: #E5E7EB; font-weight: 600;">{item.label}</span>
@@ -73,12 +182,16 @@ const navItems = [
   </div>
 
   <!-- 2. MAIN NAVBAR: Desktop & Mobile Header -->
-  <nav style="background-color: #FFFFFF; border-bottom: 1px solid #E5E7EB; box-shadow: 0 1px 3px rgba(0,0,0,0.03); position: relative;">
+  <nav id="main-nav-bar" style="background-color: #FFFFFF; border-bottom: 1px solid #E5E7EB; box-shadow: 0 1px 3px rgba(0,0,0,0.03); position: relative;">
     <div style="max-width: 1600px; width: 100%; margin: 0 auto; padding: 0 24px; height: 76px; display: flex; align-items: center; justify-content: space-between; box-sizing: border-box;">
       
-      <!-- Mobile Hamburger Button -->
+      <!-- Mobile Hamburger Toggle (Left on mobile) -->
       <div class="mobile-only" style="display: none;">
-        <button id="mobile-menu-btn" aria-label="Toggle navigation menu" style="background: none; border: none; cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center; color: #111827;">
+        <button 
+          id="mobile-menu-btn"
+          aria-label="Toggle navigation menu"
+          style="background: none; border: none; cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center; color: #111827;"
+        >
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="4" x2="20" y1="12" y2="12"></line>
             <line x1="4" x2="20" y1="6" y2="6"></line>
@@ -88,7 +201,7 @@ const navItems = [
       </div>
 
       <!-- Brand Logo -->
-      <a href="/" style="text-decoration: none; display: flex; align-items: center; user-select: none;">
+      <a href="/" style="cursor: pointer; display: flex; align-items: center; text-decoration: none; user-select: none;">
         <img 
           src="/logo_highres.png" 
           alt="PrivateSector" 
@@ -97,41 +210,30 @@ const navItems = [
         />
       </a>
 
-      <!-- Desktop Navigation Links -->
-      <div class="desktop-only" style="display: flex; align-items: center; gap: 4px; height: 76px;">
-        {navItems.map((sec) => {
-          const isSecActive = currentPath === sec.path || (sec.path === '/' && currentPath === '/');
+      <!-- Desktop Navigation Links (7 Items with hover mega menu trigger) -->
+      <div 
+        id="desktop-nav-cluster"
+        class="desktop-only"
+        style="display: flex; align-items: center; gap: 4px; height: 76px;"
+      >
+        {sectionsData.map((sec) => {
+          const isSecActive = currentPath === sec.path || (sec.id === 'home' && currentPath === '/');
           return (
             <a
               href={sec.path}
-              style={`
-                text-decoration: none;
-                padding: 8px 12px;
-                height: 100%;
-                display: inline-flex;
-                align-items: center;
-                gap: 6px;
-                font-family: Inter, sans-serif;
-                font-size: 13px;
-                font-weight: ${isSecActive ? '700' : '600'};
-                color: ${isSecActive ? '#0A0A0A' : '#374151'};
-                position: relative;
-                border-bottom: ${isSecActive ? '3px solid #D52B1E' : '3px solid transparent'};
-                transition: all 0.15s ease;
-                box-sizing: border-box;
-              `}
-              onmouseover="if (!this.classList.contains('active')) this.style.color='#D52B1E'"
-              onmouseout="if (!this.classList.contains('active')) this.style.color='#374151'"
+              class={`nav-link-item ${isSecActive ? 'active' : ''}`}
+              data-sec-id={sec.id}
+              style={`background: none; border: none; padding: 8px 12px; height: 100%; display: inline-flex; align-items: center; gap: 6px; font-family: Inter, sans-serif; fontSize: 13px; font-weight: ${isSecActive ? 700 : 600}; color: ${isSecActive ? '#0A0A0A' : '#374151'}; text-decoration: none; position: relative; border-bottom: ${isSecActive ? '3px solid #D52B1E' : '3px solid transparent'}; transition: all 0.15s ease; box-sizing: border-box;`}
             >
               {sec.flag === 'swiss' && (
-                <svg width="15" height="11" viewBox="0 0 32 24" style="border-radius: 2px; vertical-align: middle;">
+                <svg width="15" height="11" viewBox="0 0 32 24" style="border-radius: 2px; flex-shrink: 0;">
                   <rect width="32" height="24" fill="#D52B1E" />
                   <rect x="13" y="4" width="6" height="16" fill="#FFFFFF" />
                   <rect x="7" y="9" width="18" height="6" fill="#FFFFFF" />
                 </svg>
               )}
               {sec.flag === 'usa' && (
-                <svg width="15" height="11" viewBox="0 0 32 24" style="border-radius: 2px; vertical-align: middle;">
+                <svg width="15" height="11" viewBox="0 0 32 24" style="border-radius: 2px; flex-shrink: 0;">
                   <rect width="32" height="24" fill="#B22234" />
                   <rect y="3.69" width="32" height="1.85" fill="#FFFFFF" />
                   <rect y="7.38" width="32" height="1.85" fill="#FFFFFF" />
@@ -140,6 +242,36 @@ const navItems = [
                   <rect y="18.46" width="32" height="1.85" fill="#FFFFFF" />
                   <rect y="22.15" width="32" height="1.85" fill="#FFFFFF" />
                   <rect width="13" height="13" fill="#3C3B6E" />
+                  <circle cx="3.5" cy="3.5" r="1" fill="#FFFFFF" />
+                  <circle cx="9.5" cy="3.5" r="1" fill="#FFFFFF" />
+                  <circle cx="6.5" cy="6.5" r="1" fill="#FFFFFF" />
+                  <circle cx="3.5" cy="9.5" r="1" fill="#FFFFFF" />
+                  <circle cx="9.5" cy="9.5" r="1" fill="#FFFFFF" />
+                </svg>
+              )}
+              {sec.icon === 'home' && (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style={`color: ${isSecActive ? '#D52B1E' : '#6B7280'};`}>
+                  <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+              )}
+              {sec.icon === 'building' && (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style={`color: ${isSecActive ? '#D52B1E' : '#6B7280'};`}>
+                  <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/>
+                </svg>
+              )}
+              {sec.icon === 'rocket' && (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style={`color: ${isSecActive ? '#D52B1E' : '#6B7280'};`}>
+                  <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+                </svg>
+              )}
+              {sec.icon === 'chart' && (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style={`color: ${isSecActive ? '#D52B1E' : '#6B7280'};`}>
+                  <path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>
+                </svg>
+              )}
+              {sec.icon === 'target' && (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style={`color: ${isSecActive ? '#D52B1E' : '#6B7280'};`}>
+                  <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
                 </svg>
               )}
               <span>{sec.label}</span>
@@ -150,7 +282,7 @@ const navItems = [
 
       <!-- Right Action Deck: Search & Admin -->
       <div style="display: flex; align-items: center; gap: 12px;">
-        <!-- Search Trigger Button -->
+        <!-- Circular Search Trigger Button -->
         <button 
           id="search-toggle-btn"
           aria-label="Search"
@@ -162,26 +294,141 @@ const navItems = [
           </svg>
         </button>
 
-        <!-- Admin Dashboard Shortcut -->
+        <!-- Admin Shortcut Button -->
         <a 
           href="/_emdash/admin"
           style="display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; background-color: #0A0A0A; color: #FFFDF7; border: 1px solid rgba(213, 43, 30, 0.5); border-radius: 4px; font-size: 12px; font-weight: 600; text-decoration: none; transition: background-color 0.15s ease;"
         >
-          <span style="color: #D52B1E;">🛡️</span> Admin
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D52B1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>
+          </svg>
+          Admin
         </a>
+      </div>
+    </div>
+
+    <!-- 3. DESKTOP MEGA MENU DROPDOWN (7 Columns) -->
+    <div 
+      id="desktop-mega-menu"
+      class="desktop-mega-menu desktop-only"
+      style="display: none; position: absolute; top: 100%; left: 0; right: 0; background-color: #FFFFFF; border-top: 1px solid #E5E7EB; border-bottom: 1px solid #D1D5DB; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04); z-index: 999; padding: 28px 24px 36px 24px; animation: megaMenuFadeIn 0.2s ease-out;"
+    >
+      <div style="max-width: 1600px; width: 100%; margin: 0 auto; display: grid; grid-template-columns: repeat(7, 1fr); gap: 16px;">
+        {sectionsData.map((sec, secIdx) => (
+          <div style={`border-right: ${secIdx < sectionsData.length - 1 ? '1px solid #F3F4F6' : 'none'}; padding-right: 14px; display: flex; flex-direction: column;`}>
+            
+            <!-- Column Header -->
+            <a href={sec.path} style="text-decoration: none; cursor: pointer; margin-bottom: 14px; display: block;">
+              <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                {sec.flag === 'swiss' && (
+                  <svg width="16" height="12" viewBox="0 0 32 24" style="border-radius: 2px;">
+                    <rect width="32" height="24" fill="#D52B1E" />
+                    <rect x="13" y="4" width="6" height="16" fill="#FFFFFF" />
+                    <rect x="7" y="9" width="18" height="6" fill="#FFFFFF" />
+                  </svg>
+                )}
+                {sec.flag === 'usa' && (
+                  <svg width="16" height="12" viewBox="0 0 32 24" style="border-radius: 2px;">
+                    <rect width="32" height="24" fill="#B22234" />
+                    <rect y="3.69" width="32" height="1.85" fill="#FFFFFF" />
+                    <rect y="7.38" width="32" height="1.85" fill="#FFFFFF" />
+                    <rect y="11.08" width="32" height="1.85" fill="#FFFFFF" />
+                    <rect y="14.77" width="32" height="1.85" fill="#FFFFFF" />
+                    <rect y="18.46" width="32" height="1.85" fill="#FFFFFF" />
+                    <rect y="22.15" width="32" height="1.85" fill="#FFFFFF" />
+                    <rect width="13" height="13" fill="#3C3B6E" />
+                    <circle cx="3.5" cy="3.5" r="1" fill="#FFFFFF" />
+                    <circle cx="9.5" cy="3.5" r="1" fill="#FFFFFF" />
+                    <circle cx="6.5" cy="6.5" r="1" fill="#FFFFFF" />
+                    <circle cx="3.5" cy="9.5" r="1" fill="#FFFFFF" />
+                    <circle cx="9.5" cy="9.5" r="1" fill="#FFFFFF" />
+                  </svg>
+                )}
+                {sec.icon === 'home' && (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D52B1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+                  </svg>
+                )}
+                {sec.icon === 'building' && (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D52B1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/>
+                  </svg>
+                )}
+                {sec.icon === 'rocket' && (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D52B1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+                  </svg>
+                )}
+                {sec.icon === 'chart' && (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D52B1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>
+                  </svg>
+                )}
+                {sec.icon === 'target' && (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D52B1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+                  </svg>
+                )}
+                <span style="font-family: Inter, sans-serif; font-size: 13px; font-weight: 700; color: #111827; letter-spacing: 0.02em;">
+                  {sec.label}
+                </span>
+              </div>
+              <p style="margin: 0; font-size: 11px; color: #2563EB; font-weight: 500; line-height: 1.3;">
+                {sec.subtitle}
+              </p>
+            </a>
+
+            <!-- Links List -->
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              {sec.items.map((item) => (
+                <a
+                  href={item.path}
+                  class="mega-menu-link"
+                  style="display: flex; align-items: center; justify-content: space-between; color: #4B5563; text-decoration: none; font-size: 12.5px; font-family: Inter, sans-serif; font-weight: 500; padding: 4px 0; transition: all 0.15s ease;"
+                >
+                  <span style="display: inline-flex; align-items: center; gap: 6px;">
+                    {item.icon === 'file-text' && (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+                    )}
+                    {item.icon === 'search' && (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    )}
+                    {item.icon === 'zap' && (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    )}
+                    {item.icon === 'edit' && (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                    )}
+                    {item.icon === 'trending-up' && (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+                    )}
+                    {item.label}
+                  </span>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
+                    <path d="m9 18 6-6-6-6"/>
+                  </svg>
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   </nav>
 
-  <!-- 3. SEARCH OVERLAY BAR -->
+  <!-- 4. SEARCH OVERLAY BAR -->
   <div id="search-overlay" style="display: none; background-color: #0F172A; border-bottom: 1px solid #1E293B; padding: 14px 24px; position: absolute; top: 100%; left: 0; right: 0; z-index: 998; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);">
-    <form action="/news" method="GET" style="max-width: 720px; margin: 0 auto; display: flex; gap: 10px; align-items: center;">
+    <form action="/unternehmen" method="GET" style="max-width: 720px; margin: 0 auto; display: flex; gap: 10px; align-items: center;">
       <div style="position: relative; flex: 1;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%);">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
         <input 
           type="text" 
           name="search"
           placeholder="Search intelligence, companies, executive interviews..." 
-          style="width: 100%; background-color: #1E293B; border: 1px solid #334155; border-radius: 6px; padding: 10px 14px 10px 16px; color: #FFFFFF; font-size: 14px; font-family: Inter, sans-serif; outline: none; box-sizing: border-box;"
+          style="width: 100%; background-color: #1E293B; border: 1px solid #334155; border-radius: 6px; padding: 10px 14px 10px 42px; color: #FFFFFF; font-size: 14px; font-family: Inter, sans-serif; outline: none; box-sizing: border-box;"
         />
       </div>
       <button 
@@ -190,73 +437,355 @@ const navItems = [
       >
         Search
       </button>
+      <button 
+        type="button" 
+        id="search-close-btn"
+        style="background: none; border: none; color: #94A3B8; cursor: pointer; padding: 6px;"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6 6 18"></path><path d="m6 6 12 12"></path>
+        </svg>
+      </button>
     </form>
   </div>
 
-  <!-- 4. MOBILE DRAWER -->
-  <div id="mobile-drawer" style="display: none; background: #FFFFFF; border-bottom: 1px solid #E5E7EB; padding: 16px 24px;">
-    <div style="display: flex; flex-direction: column; gap: 12px;">
-      {navItems.map((item) => (
-        <a href={item.path} style="text-decoration: none; color: #111827; font-weight: 600; font-size: 15px; padding: 8px 0; border-bottom: 1px solid #F3F4F6;">
-          {item.label}
-        </a>
+  <!-- 5. MOBILE EXPANDED DRAWER MENU -->
+  <div 
+    id="mobile-drawer-overlay" 
+    class="mobile-drawer-overlay mobile-only"
+    style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: #FFFFFF; z-index: 10000; flex-direction: column; overflow-y: auto;"
+  >
+    <!-- Drawer Header -->
+    <div style="padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #E5E7EB;">
+      <button 
+        id="mobile-drawer-close"
+        aria-label="Close menu"
+        style="background: none; border: none; color: #111827; cursor: pointer; padding: 6px;"
+      >
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6 6 18"></path><path d="m6 6 12 12"></path>
+        </svg>
+      </button>
+
+      <!-- Centered Brand Logo -->
+      <a href="/" style="display: flex; justify-content: center; text-decoration: none;">
+        <img 
+          src="/logo_highres.png" 
+          alt="PrivateSector" 
+          style="height: 38px; width: auto; object-fit: contain; display: block;" 
+          onerror="this.src='/logo.png'"
+        />
+      </a>
+
+      <!-- Search Trigger Icon -->
+      <button 
+        id="mobile-search-btn"
+        aria-label="Search"
+        style="background: none; border: none; color: #111827; cursor: pointer; padding: 6px;"
+      >
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile Clean Focus Banner -->
+    <div style="background-color: #F0F9FF; border-bottom: 1px solid #E0F2FE; padding: 12px 20px;">
+      <p style="margin: 0; font-size: 12px; font-weight: 600; color: #0369A1;">
+        Clean. Simple. Focused.
+      </p>
+      <p style="margin: 2px 0 0 0; font-size: 11px; color: #0284C7;">
+        7 main sections that power our Switzerland ↔ U.S. intelligence.
+      </p>
+    </div>
+
+    <!-- Mobile Navigation List with Accordions -->
+    <div style="padding: 12px 16px; flex: 1;">
+      {sectionsData.map((sec) => (
+        <div class="mobile-accordion-group" style="border-bottom: 1px solid #F3F4F6;">
+          <div 
+            class="mobile-accordion-header"
+            data-target={`mob-acc-${sec.id}`}
+            data-is-home={sec.id === 'home' ? 'true' : 'false'}
+            data-path={sec.path}
+            style="display: flex; align-items: center; justify-content: space-between; padding: 14px 8px; cursor: pointer;"
+          >
+            <div style="display: flex; align-items: center; gap: 12px;">
+              {sec.flag === 'swiss' && (
+                <svg width="18" height="13" viewBox="0 0 32 24" style="border-radius: 2px;">
+                  <rect width="32" height="24" fill="#D52B1E" />
+                  <rect x="13" y="4" width="6" height="16" fill="#FFFFFF" />
+                  <rect x="7" y="9" width="18" height="6" fill="#FFFFFF" />
+                </svg>
+              )}
+              {sec.flag === 'usa' && (
+                <svg width="18" height="13" viewBox="0 0 32 24" style="border-radius: 2px;">
+                  <rect width="32" height="24" fill="#B22234" />
+                  <rect y="3.69" width="32" height="1.85" fill="#FFFFFF" />
+                  <rect y="7.38" width="32" height="1.85" fill="#FFFFFF" />
+                  <rect y="11.08" width="32" height="1.85" fill="#FFFFFF" />
+                  <rect y="14.77" width="32" height="1.85" fill="#FFFFFF" />
+                  <rect y="18.46" width="32" height="1.85" fill="#FFFFFF" />
+                  <rect y="22.15" width="32" height="1.85" fill="#FFFFFF" />
+                  <rect width="13" height="13" fill="#3C3B6E" />
+                  <circle cx="3.5" cy="3.5" r="1" fill="#FFFFFF" />
+                  <circle cx="9.5" cy="3.5" r="1" fill="#FFFFFF" />
+                  <circle cx="6.5" cy="6.5" r="1" fill="#FFFFFF" />
+                  <circle cx="3.5" cy="9.5" r="1" fill="#FFFFFF" />
+                  <circle cx="9.5" cy="9.5" r="1" fill="#FFFFFF" />
+                </svg>
+              )}
+              {sec.icon === 'home' && (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D52B1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+              )}
+              {sec.icon === 'building' && (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D52B1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/>
+                </svg>
+              )}
+              {sec.icon === 'rocket' && (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D52B1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+                </svg>
+              )}
+              {sec.icon === 'chart' && (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D52B1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>
+                </svg>
+              )}
+              {sec.icon === 'target' && (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D52B1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+                </svg>
+              )}
+              <span style="font-family: Inter, sans-serif; font-size: 15px; font-weight: 600; color: #111827;">
+                {sec.label}
+              </span>
+            </div>
+            {sec.id !== 'home' ? (
+              <svg class="chevron-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transition: transform 0.2s ease;">
+                <path d="m6 9 6 6 6-6"/>
+              </svg>
+            ) : null}
+          </div>
+
+          <!-- Sub-items Accordion Body -->
+          {sec.id !== 'home' && (
+            <div id={`mob-acc-${sec.id}`} class="mobile-accordion-body" style="display: none; background-color: #F9FAFB; padding: 8px 16px 14px 40px; flex-direction: column; gap: 8px;">
+              <p style="margin: 4px 0 8px 0; font-size: 11px; color: #2563EB; font-weight: 600;">
+                {sec.subtitle}
+              </p>
+              {sec.items.map((item) => (
+                <a
+                  href={item.path}
+                  style="display: flex; align-items: center; justify-content: space-between; color: #4B5563; text-decoration: none; font-size: 13px; padding: 6px 0; font-family: Inter, sans-serif;"
+                >
+                  <span>{item.label}</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m9 18 6-6-6-6"/>
+                  </svg>
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
       ))}
-      <a href="/_emdash/admin" style="text-decoration: none; color: #D52B1E; font-weight: 700; font-size: 15px; padding: 8px 0;">
-        🛡️ Admin Dashboard
+    </div>
+
+    <!-- Drawer Footer: Admin Button -->
+    <div style="padding: 20px; border-top: 1px solid #E5E7EB; background-color: #F9FAFB;">
+      <a 
+        href="/_emdash/admin"
+        style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px; background-color: #0A0A0A; color: #FFFDF7; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 600; box-sizing: border-box;"
+      >
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#D52B1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>
+        </svg>
+        Admin Dashboard / Member Access
       </a>
     </div>
   </div>
-</header>
 
-<script is:inline data-astro-rerun>
-  // Dynamic Zurich Time
-  function updateZurichTime() {
-    try {
+  <style>
+    @keyframes megaMenuFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .top-market-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .mega-menu-link:hover {
+      color: #D52B1E !important;
+      transform: translateX(2px);
+    }
+
+    .mega-menu-link:hover svg {
+      stroke: #D52B1E !important;
+    }
+
+    .nav-link-item:hover {
+      color: #D52B1E !important;
+    }
+
+    @media (min-width: 1025px) {
+      .desktop-only {
+        display: flex !important;
+      }
+      .mobile-only {
+        display: none !important;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .desktop-only {
+        display: none !important;
+      }
+      .mobile-only {
+        display: block !important;
+      }
+      .mobile-drawer-overlay.is-open {
+        display: flex !important;
+      }
+    }
+  </style>
+
+  <script is:inline data-astro-rerun>
+    // Live Zurich CET Time
+    function initZurichClock() {
       const el = document.getElementById('zurich-live-time');
       if (!el) return;
-      const formatted = new Intl.DateTimeFormat('en-GB', {
-        timeZone: 'Europe/Zurich',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true
-      }).format(new Date());
-      el.textContent = formatted + ' CET';
-    } catch (e) {}
-  }
-  updateZurichTime();
-  setInterval(updateZurichTime, 10000);
+      try {
+        const now = new Date();
+        const formatted = new Intl.DateTimeFormat('en-GB', {
+          timeZone: 'Europe/Zurich',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true
+        }).format(now);
+        el.textContent = formatted + ' CET';
+      } catch (e) {
+        el.textContent = '08:30 AM CET';
+      }
+    }
+    initZurichClock();
+    setInterval(initZurichClock, 30000);
 
-  // Search Toggle
-  const searchBtn = document.getElementById('search-toggle-btn');
-  const searchOverlay = document.getElementById('search-overlay');
-  if (searchBtn && searchOverlay) {
-    searchBtn.addEventListener('click', () => {
-      const isHidden = searchOverlay.style.display === 'none';
-      searchOverlay.style.display = isHidden ? 'block' : 'none';
-      if (isHidden) {
+    // Desktop Mega Menu Hover System
+    const navBar = document.getElementById('main-nav-bar');
+    const megaMenu = document.getElementById('desktop-mega-menu');
+    let megaTimeout = null;
+
+    if (navBar && megaMenu) {
+      function showMega() {
+        if (megaTimeout) clearTimeout(megaTimeout);
+        megaMenu.style.display = 'block';
+      }
+
+      function hideMega() {
+        megaTimeout = setTimeout(() => {
+          megaMenu.style.display = 'none';
+        }, 250);
+      }
+
+      navBar.addEventListener('mouseenter', showMega);
+      navBar.addEventListener('mouseleave', hideMega);
+      megaMenu.addEventListener('mouseenter', showMega);
+      megaMenu.addEventListener('mouseleave', hideMega);
+    }
+
+    // Search Bar Overlay Toggle
+    const searchBtn = document.getElementById('search-toggle-btn');
+    const searchCloseBtn = document.getElementById('search-close-btn');
+    const searchOverlay = document.getElementById('search-overlay');
+
+    if (searchBtn && searchOverlay) {
+      searchBtn.addEventListener('click', () => {
+        const isHidden = searchOverlay.style.display === 'none' || !searchOverlay.style.display;
+        searchOverlay.style.display = isHidden ? 'block' : 'none';
+        if (isHidden) {
+          const input = searchOverlay.querySelector('input');
+          if (input) input.focus();
+        }
+      });
+    }
+
+    if (searchCloseBtn && searchOverlay) {
+      searchCloseBtn.addEventListener('click', () => {
+        searchOverlay.style.display = 'none';
+      });
+    }
+
+    // Mobile Drawer Open & Close
+    const mobOpenBtn = document.getElementById('mobile-menu-btn');
+    const mobCloseBtn = document.getElementById('mobile-drawer-close');
+    const mobSearchBtn = document.getElementById('mobile-search-btn');
+    const mobDrawer = document.getElementById('mobile-drawer-overlay');
+
+    if (mobOpenBtn && mobDrawer) {
+      mobOpenBtn.addEventListener('click', () => {
+        mobDrawer.classList.add('is-open');
+        mobDrawer.style.display = 'flex';
+      });
+    }
+
+    if (mobCloseBtn && mobDrawer) {
+      mobCloseBtn.addEventListener('click', () => {
+        mobDrawer.classList.remove('is-open');
+        mobDrawer.style.display = 'none';
+      });
+    }
+
+    if (mobSearchBtn && mobDrawer && searchOverlay) {
+      mobSearchBtn.addEventListener('click', () => {
+        mobDrawer.classList.remove('is-open');
+        mobDrawer.style.display = 'none';
+        searchOverlay.style.display = 'block';
         const input = searchOverlay.querySelector('input');
         if (input) input.focus();
-      }
-    });
-  }
-
-  // Mobile Menu Toggle
-  const mobileBtn = document.getElementById('mobile-menu-btn');
-  const mobileDrawer = document.getElementById('mobile-drawer');
-  if (mobileBtn && mobileDrawer) {
-    mobileBtn.addEventListener('click', () => {
-      mobileDrawer.style.display = mobileDrawer.style.display === 'none' ? 'block' : 'none';
-    });
-  }
-</script>
-
-<style>
-  @media (max-width: 900px) {
-    .desktop-only {
-      display: none !important;
+      });
     }
-    .mobile-only {
-      display: block !important;
-    }
-  }
-</style>
+
+    // Mobile Accordion Expansions
+    const accordions = document.querySelectorAll('.mobile-accordion-header');
+    accordions.forEach((header) => {
+      header.addEventListener('click', () => {
+        const isHome = header.getAttribute('data-is-home') === 'true';
+        if (isHome) {
+          window.location.href = '/';
+          return;
+        }
+
+        const targetId = header.getAttribute('data-target');
+        const body = document.getElementById(targetId);
+        const chevron = header.querySelector('.chevron-icon');
+
+        if (body) {
+          const isOpen = body.style.display === 'flex';
+          // Close all other accordions
+          document.querySelectorAll('.mobile-accordion-body').forEach((b) => {
+            b.style.display = 'none';
+          });
+          document.querySelectorAll('.chevron-icon').forEach((c) => {
+            c.style.transform = 'rotate(0deg)';
+          });
+
+          if (!isOpen) {
+            body.style.display = 'flex';
+            if (chevron) chevron.style.transform = 'rotate(180deg)';
+          }
+        }
+      });
+    });
+  </script>
+</header>

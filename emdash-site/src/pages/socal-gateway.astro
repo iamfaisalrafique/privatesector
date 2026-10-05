@@ -1,0 +1,136 @@
+---
+// emdash-site/src/pages/socal-gateway.astro
+import Base from "../layouts/Base.astro";
+
+const hubs = [
+  { name: "Silicon Beach (LA)", sector: "Aerospace, Gaming, SaaS", desc: "Home to space exploration tech pioneers and major creative studios." },
+  { name: "San Diego County", sector: "Biotech & Genomics", desc: "A world-leading cluster of life sciences research and commercialization." },
+  { name: "Orange County", sector: "Clean Tech & Medical Devices", desc: "Strong manufacturing, medical equipment development, and capital presence." }
+];
+---
+
+<Base title="The SoCal Gateway | PrivateSector.ch" description="Accelerating Swiss-American trade. Connecting Zurich, Geneva, and Zug to Southern California business ecosystems.">
+  <div style="background-color: var(--bg-ivory, #FFFFFF); min-height: calc(100vh - 120px); padding: 40px 0 64px;">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 0 24px;">
+      
+      <!-- Breadcrumb -->
+      <div style="font-size: 12px; color: #4B5563; margin-bottom: 24px; display: flex; gap: 6px; align-items: center;">
+        <a href="/" style="color: inherit; text-decoration: none;">Home</a>
+        <span>/</span>
+        <span style="font-weight: 600; color: #000000;">The SoCal Gateway</span>
+      </div>
+
+      <!-- Header Block -->
+      <div style="text-align: center; margin-bottom: 48px;">
+        <span style="color: #D52B1E; font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em; font-weight: 700; display: block; margin-bottom: 8px;">
+          Transatlantic Corridors
+        </span>
+        <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 38px; font-weight: 700; color: #000000; margin: 0 0 16px;">
+          The SoCal Gateway
+        </h1>
+        <p style="font-size: 16px; color: #4B5563; max-width: 680px; margin: 0 auto; lineHeight: 1.6;">
+          Accelerating Swiss-American trade. We connect Zurich, Geneva, and Zug to Los Angeles, San Diego, and Orange County business ecosystems.
+        </p>
+      </div>
+
+      <!-- Content Area split -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px;">
+        
+        <!-- Main expansion checklist / details -->
+        <div style="background-color: #FFF; border: 1px solid #E5E7EB; padding: 32px;">
+          <h2 style="font-family: 'Playfair Display', Georgia, serif; font-size: 24px; font-weight: 700; margin-bottom: 24px; color: #000000;">
+            Expanding to Southern California
+          </h2>
+
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+            <div style="display: flex; gap: 16px;">
+              <div style="display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background-color: #FEE2E2; color: #D52B1E; flex-shrink: 0; font-weight: bold;">1</div>
+              <div>
+                <strong style="font-size: 15px; color: #000000; display: block; margin-bottom: 4px;">Local Incorporation & Entity Setup</strong>
+                <p style="font-size: 13px; color: #4B5563; line-height: 1.5; margin: 0;">Evaluate LLC vs. C-Corp state registrations. Delaware filing with California physical operations is the standard route for Swiss technical startups.</p>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 16px;">
+              <div style="display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background-color: #FEE2E2; color: #D52B1E; flex-shrink: 0; font-weight: bold;">2</div>
+              <div>
+                <strong style="font-size: 15px; color: #000000; display: block; margin-bottom: 4px;">Tax Treaty Advisory & Compliance</strong>
+                <p style="font-size: 13px; color: #4B5563; line-height: 1.5; margin: 0;">Ensure alignment with the US-Swiss double taxation treaty to prevent redundant fiscal liabilities on cross-border licensing, dividends, and royalties.</p>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 16px;">
+              <div style="display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background-color: #FEE2E2; color: #D52B1E; flex-shrink: 0; font-weight: bold;">3</div>
+              <div>
+                <strong style="font-size: 15px; color: #000000; display: block; margin-bottom: 4px;">Visa & Executive Relocation</strong>
+                <p style="font-size: 13px; color: #4B5563; line-height: 1.5; margin: 0;">Secure L-1 intra-company transfer visas or E-2 treaty investor visas for Swiss key executives establishing the Southern California footprint.</p>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #E5E7EB;">
+            <h2 style="font-family: 'Playfair Display', Georgia, serif; font-size: 24px; font-weight: 700; margin-bottom: 24px; color: #000000;">
+              Establishing Swiss Entity from California
+            </h2>
+            <div style="display: flex; flex-direction: column; gap: 20px;">
+              <div style="display: flex; gap: 16px;">
+                <div style="display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background-color: #EAEAEA; color: #000; flex-shrink: 0; font-weight: bold;">1</div>
+                <div>
+                  <strong style="font-size: 15px; color: #000000; display: block; margin-bottom: 4px;">Selecting the Ideal Canton</strong>
+                  <p style="font-size: 13px; color: #4B5563; line-height: 1.5; margin: 0;">Zurich is ideal for global financial integrations, Zug for blockchain/DLT systems, and Vaud/Geneva for biological and health tech innovations.</p>
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 16px;">
+                <div style="display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background-color: #EAEAEA; color: #000; flex-shrink: 0; font-weight: bold;">2</div>
+                <div>
+                  <strong style="font-size: 15px; color: #000000; display: block; margin-bottom: 4px;">Notary & Capital Deposit</strong>
+                  <p style="font-size: 13px; color: #4B5563; line-height: 1.5; margin: 0;">Create blocked bank accounts to deposit statutory capital (CHF 20,000 for GmbH, CHF 100,000 for AG) and execute the public deed of incorporation before a Swiss notary.</p>
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 16px;">
+                <div style="display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background-color: #EAEAEA; color: #000; flex-shrink: 0; font-weight: bold;">3</div>
+                <div>
+                  <strong style="font-size: 15px; color: #000000; display: block; margin-bottom: 4px;">Workforce Integration & Permits</strong>
+                  <p style="font-size: 13px; color: #4B5563; line-height: 1.5; margin: 0;">Understand labor regulations. Recruit technical talent locally or navigate the quotas for non-EU/EFTA highly skilled specialists from California.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hub highlights & Advisory Support -->
+        <div>
+          <h3 style="font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; color: #D52B1E; margin-bottom: 16px; font-weight: 700;">
+            Key SoCal Hubs
+          </h3>
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            {hubs.map((hub) => (
+              <div style="border: 1px solid #E5E7EB; border-left: 3px solid #D52B1E; padding: 20px; background-color: #FFFFFF;">
+                <span style="font-size: 10px; background-color: #FEE2E2; color: #D52B1E; padding: 2px 6px; font-weight: 600; text-transform: uppercase; display: inline-block; margin-bottom: 8px;">{hub.sector}</span>
+                <strong style="display: block; font-size: 16px; color: #000000; margin-bottom: 6px;">{hub.name}</strong>
+                <p style="font-size: 12px; color: #4B5563; line-height: 1.5; margin: 0;">{hub.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <!-- Support section -->
+          <div style="margin-top: 24px; background-color: #F9F9F9; border: 1px solid #E5E7EB; padding: 24px; text-align: center;">
+            <div style="font-size: 28px; margin-bottom: 12px;">🤝</div>
+            <strong style="display: block; font-size: 15px; margin-bottom: 4px; color: #000000;">Need Advisory Help?</strong>
+            <p style="font-size: 12px; color: #4B5563; margin-bottom: 16px;">Our bi-national desks provide customized introductions to legal counsel, banks, and office space.</p>
+            <a 
+              href="/contact"
+              style="display: inline-block; width: 100%; padding: 10px; background-color: #0A0A0A; color: #FFFFFF; text-decoration: none; border-radius: 4px; font-size: 12px; font-weight: 600; box-sizing: border-box;"
+            >
+              Inquire With Gateway Team
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</Base>
