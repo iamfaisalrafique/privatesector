@@ -1,0 +1,116 @@
+---
+// emdash-site/src/pages/unternehmen/index.astro
+import Base from "../../layouts/Base.astro";
+import CompanyCard from "../../components/CompanyCard.astro";
+import { getCompanies } from "../../lib/legacy-db";
+
+const searchParam = Astro.url.searchParams.get("search")?.toLowerCase() || "";
+const cantonParam = Astro.url.searchParams.get("canton")?.toUpperCase() || "";
+const verifiedOnly = Astro.url.searchParams.get("verified") === "true";
+
+let companies = getCompanies(false, 100);
+
+if (verifiedOnly) {
+  companies = companies.filter((c: any) => c.verified === 1 || c.verified === true);
+}
+
+if (cantonParam) {
+  companies = companies.filter((c: any) => c.canton && c.canton.toUpperCase() === cantonParam);
+}
+
+if (searchParam) {
+  companies = companies.filter((c: any) => 
+    (c.name && c.name.toLowerCase().includes(searchParam)) ||
+    (c.description && c.description.toLowerCase().includes(searchParam)) ||
+    (c.industry && c.industry.toLowerCase().includes(searchParam))
+  );
+}
+
+const cantons = ["All", "ZH", "BE", "GE", "VD", "BS", "ZG", "SG", "AG"];
+---
+
+<Base 
+  title="Swiss Company Directory & Verified Registry — PrivateSector.ch"
+  description="Search and explore verified Swiss enterprises, market leaders, and commercial entities across all 26 Cantons."
+>
+  <!-- Directory Header -->
+  <div style="background-color: #FFFFFF; border-bottom: 1px solid #E5E7EB; padding: 48px 24px;">
+    <div style="max-width: 1600px; margin: 0 auto;">
+      <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #D52B1E; display: block; margin-bottom: 8px;">
+        COMMERCIAL DIRECTORY
+      </span>
+      <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 700; color: #000000; margin: 0 0 16px 0;">
+        Swiss Enterprise Directory
+      </h1>
+      <p style="font-size: 16px; color: #4B5563; max-width: 720px; margin: 0 0 28px 0;">
+        Verified commercial registry data, corporate structure dossiers, ESG ratings, and key statistics on Switzerland's private sector powerhouses.
+      </p>
+
+      <!-- Filters Deck -->
+      <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+        
+        <!-- Canton Filter Buttons -->
+        <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+          {cantons.map((can) => {
+            const isCanActive = (!cantonParam && can === "All") || (cantonParam === can);
+            return (
+              <a 
+                href={can === "All" ? "/unternehmen" : `/unternehmen?canton=${can}`}
+                style={`
+                  text-decoration: none;
+                  padding: 6px 12px;
+                  border-radius: 4px;
+                  font-size: 12px;
+                  font-weight: 600;
+                  font-family: Inter, sans-serif;
+                  background-color: ${isCanActive ? '#D52B1E' : '#F3F4F6'};
+                  color: ${isCanActive ? '#FFFFFF' : '#374151'};
+                  border: 1px solid ${isCanActive ? '#D52B1E' : '#E5E7EB'};
+                `}
+              >
+                {can}
+              </a>
+            );
+          })}
+        </div>
+
+        <!-- Search Bar -->
+        <form action="/unternehmen" method="GET" style="display: flex; gap: 8px;">
+          <input 
+            type="text" 
+            name="search" 
+            placeholder="Search by company or sector..." 
+            value={searchParam}
+            style="padding: 8px 14px; border: 1px solid #D1D5DB; border-radius: 6px; font-size: 13px; font-family: Inter, sans-serif; outline: none; width: 240px;"
+          />
+          <button type="submit" style="background-color: #D52B1E; color: #FFFFFF; border: none; border-radius: 6px; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer;">
+            Search
+          </button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Directory Cards Grid -->
+  <main style="max-width: 1600px; margin: 0 auto; padding: 48px 24px 96px;">
+    {companies.length === 0 ? (
+      <div style="text-align: center; padding: 64px 0; color: #6B7280;">
+        <h3 style="font-size: 18px; margin-bottom: 8px;">No companies found matching your query</h3>
+        <p><a href="/unternehmen" style="color: #D52B1E; font-weight: 600;">Clear all search filters</a></p>
+      </div>
+    ) : (
+      <div>
+        <div style="font-size: 13px; color: #6B7280; margin-bottom: 24px; font-weight: 500;">
+          Displaying {companies.length} verified commercial enterprises
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px;">
+          {companies.map((comp: any) => (
+            <CompanyCard company={comp} />
+          ))}
+        </div>
+      </div>
+    )}
+  </main>
+</Base>

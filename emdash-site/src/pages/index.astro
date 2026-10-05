@@ -1,50 +1,97 @@
 ---
-import { getEmDashCollection, getSiteSettings } from "emdash";
-import { Image } from "emdash/ui";
+// emdash-site/src/pages/index.astro
 import Base from "../layouts/Base.astro";
-import { resolveStarterSiteIdentity } from "../utils/site-identity";
+import BreakingBanner from "../components/BreakingBanner.astro";
+import DailyAudioNews from "../components/DailyAudioNews.astro";
+import Hero from "../components/Hero.astro";
+import NewsCard from "../components/NewsCard.astro";
+import CompanyCard from "../components/CompanyCard.astro";
+import HomepageGraphics from "../components/HomepageGraphics.astro";
+import { getNews, getCompanies } from "../lib/legacy-db";
 
-const { entries: posts, cacheHint } = await getEmDashCollection("posts", {
-	orderBy: { published_at: "desc" },
-	limit: 10,
-});
-const { siteTitle, siteTagline } = resolveStarterSiteIdentity(
-	await getSiteSettings(),
-);
-if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+// Fetch news and featured companies directly from native backend
+const allNews = getNews(12);
+const featuredCompanies = getCompanies(true, 3);
 ---
 
-<Base title={siteTitle} description={siteTagline}>
-	<h1>Recent Posts</h1>
+<Base 
+  title="privatesector.ch — Swiss Private Sector Business Platform"
+  description="Switzerland's authoritative Private Sector Intelligence Platform. Daily morning briefings, verified Swiss B2B directory, and corporate market dossiers."
+>
+  <!-- 1. Breaking News Red Ticker Banner -->
+  <BreakingBanner />
 
-	{
-		posts.length === 0 ? (
-			<p>
-				No posts yet. <a href="/_emdash/admin/content/posts/new">Create one</a>.
-			</p>
-		) : (
-			<ul>
-				{posts.map((post) => (
-					<li>
-						<a href={`/posts/${post.id}`}>
-							{post.data.featured_image && (
-								<div {...post.edit.featured_image}><Image image={post.data.featured_image} /></div>
-							)}
-							<h2 {...post.edit.title}>{post.data.title}</h2>
-						</a>
-						{post.data.excerpt && <p {...post.edit.excerpt}>{post.data.excerpt}</p>}
-						{post.data.publishedAt && (
-							<time datetime={post.data.publishedAt.toISOString()}>
-								{post.data.publishedAt.toLocaleDateString("en-US", {
-									year: "numeric",
-									month: "long",
-									day: "numeric",
-								})}
-							</time>
-						)}
-					</li>
-				))}
-			</ul>
-		)
-	}
+  <!-- 2. Daily Audio Briefing (Top before Hero) -->
+  <div class="container" style="max-width: 1600px; margin: 0 auto; padding: 20px 24px 0;">
+    <DailyAudioNews />
+  </div>
+
+  <!-- 3. Prestige Editorial Hero -->
+  <Hero />
+
+  <!-- 4. Homepage Body Content -->
+  <div class="container" style="max-width: 1600px; margin: 0 auto; padding: 48px 24px 96px;">
+    
+    <!-- Latest News & Market Archive Section -->
+    <div style="margin-bottom: 64px;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid #E5E7EB; padding-bottom: 16px; margin-bottom: 28px; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #D52B1E; display: block; margin-bottom: 4px;">
+            DAILY BUSINESS NEWS & ARCHIVE
+          </span>
+          <h2 style="font-size: 28px; font-family: 'Playfair Display', Georgia, serif; font-weight: 700; margin: 0; color: #000000;">
+            Latest News & Market Archive
+          </h2>
+        </div>
+        
+        <a 
+          href="/news"
+          style="font-size: 13px; padding: 9px 20px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; border-radius: 4px; text-decoration: none; background-color: #D52B1E; color: #FFFFFF; font-family: Inter, sans-serif;"
+        >
+          <span>View All News Archives</span>
+          <span>→</span>
+        </a>
+      </div>
+
+      <!-- Responsive News Cards Grid -->
+      <div 
+        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px;"
+      >
+        {allNews.map((article: any) => (
+          <NewsCard article={article} />
+        ))}
+      </div>
+    </div>
+
+    <!-- Premium Business Spotlight Section -->
+    <div style="margin-top: 64px; margin-bottom: 64px;">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid #E5E7EB; padding-bottom: 12px; margin-bottom: 28px;">
+        <div>
+          <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #D52B1E; display: block; margin-bottom: 4px;">
+            VERIFIED DIRECTORY
+          </span>
+          <h2 style="font-size: 26px; font-family: 'Playfair Display', Georgia, serif; font-weight: 700; margin: 0; color: #000000;">
+            Premium Business Spotlight
+          </h2>
+        </div>
+        <a 
+          href="/unternehmen" 
+          style="font-size: 13px; color: #D52B1E; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;"
+        >
+          <span>Open Directory</span>
+          <span>→</span>
+        </a>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+        {featuredCompanies.map((comp: any) => (
+          <CompanyCard company={comp} />
+        ))}
+      </div>
+    </div>
+
+    <!-- Cantonal & Commercial Register Intelligence -->
+    <HomepageGraphics />
+
+  </div>
 </Base>

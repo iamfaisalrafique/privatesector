@@ -1,4 +1,5 @@
 ---
+// emdash-site/src/pages/news/[slug].astro
 import {
   getEmDashEntry,
   getSeoMeta,
@@ -9,6 +10,8 @@ import { Image, PortableText } from "emdash/ui";
 import Base from "../../layouts/Base.astro";
 import { resolveStarterSiteIdentity } from "../../utils/site-identity";
 import newsRedirects from "../../data/news-redirects.json";
+import { getNewsBySlug, getNews } from "../../lib/legacy-db";
+import { marked } from "marked";
 
 const rawSlug = Astro.params.slug;
 const slug = decodeSlug(rawSlug);
@@ -18,78 +21,223 @@ if (!slug) {
 }
 
 // 1. Production-Only Numeric ID Legacy Redirection (Strict 301)
-// If the slug is numeric, check against production ID map (excluding local-only IDs 6, 43, 47)
 if (/^\d+$/.test(slug)) {
   const targetSlug = (newsRedirects as Record<string, string>)[slug];
   if (targetSlug) {
     return Astro.redirect(`/news/${targetSlug}`, 301);
   }
-  return Astro.redirect("/404");
 }
 
-// 2. Fetch Content from EmDash Live Content Collection
-const { entry: post, cacheHint } = await getEmDashEntry("posts", slug);
+// 2. Try fetching from EmDash Live Collection
+let post: any = null;
+let isEmDash = false;
+try {
+  const res = await getEmDashEntry("posts", slug);
+  if (res?.entry) {
+    post = res.entry;
+    isEmDash = true;
+    if (Astro.cache?.enabled) Astro.cache.set(res.cacheHint);
+  }
+} catch (e) {}
 
+// 3. Fallback to native backend database
+let nativeArticle: any = null;
+let renderedHtml = "";
 if (!post) {
-  return Astro.redirect("/404");
+  nativeArticle = getNewsBySlug(slug);
+  if (!nativeArticle) {
+    return Astro.redirect("/404");
+  }
+  renderedHtml = nativeArticle.content_body ? (marked.parse(nativeArticle.content_body) as string) : "";
 }
 
-if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+const pageTitle = isEmDash ? post.data.title : nativeArticle.title;
+const pageSubtitle = isEmDash ? post.data.subtitle : nativeArticle.subtitle;
+const pageDate = isEmDash 
+  ? (post.data.publishedAt ? new Date(post.data.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) : "") 
+  : nativeArticle.date_published;
+const pageCategory = isEmDash 
+  ? (post.data.terms?.category?.[0]?.label || "Intelligence") 
+  : (nativeArticle.category || "Intelligence");
+const pageImage = isEmDash ? null : nativeArticle.image_url;
+const authorName = isEmDash ? (post.data.author_name || "PrivateSector Editorial") : (nativeArticle.author_name || "PrivateSector Editorial");
+const readTime = isEmDash ? post.data.read_time_mins : nativeArticle.read_time_mins;
+const pullQuote = isEmDash ? post.data.pull_quote : nativeArticle.pull_quote;
 
-const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
-const seo = getSeoMeta(post, {
-  siteTitle,
-  siteUrl: Astro.url.origin,
-  path: Astro.url.pathname.replace(/\/$/, "")
-});
-
-const categories = post.data.terms?.category ?? [];
+// Related articles for footer
+const relatedArticles = getNews(6).filter((n: any) => n.slug !== slug && String(n.id) !== slug).slice(0, 3);
 ---
 
 <Base
-  title={seo.title}
-  pageTitle={seo.ogTitle}
-  description={seo.description}
-  canonical={seo.canonical}
-  image={seo.ogImage}
-  content={{ collection: "posts", id: post.data.id, slug }}
+  title={pageTitle}
+  description={pageSubtitle || pageTitle}
+  image={pageImage || "/logo.png"}
 >
-  <main class="max-w-4xl mx-auto px-4 py-8">
-    <article class="prose lg:prose-xl dark:prose-invert mx-auto">
-      <header class="mb-8">
-        <h1 class="text-3xl md:text-5xl font-bold tracking-tight mb-4">{post.data.title}</h1>
-        {post.data.subtitle && (
-          <p class="text-xl text-neutral-600 dark:text-neutral-400 font-medium leading-relaxed">{post.data.subtitle}</p>
-        )}
-        <div class="flex items-center gap-4 text-sm text-neutral-500 mt-6 pt-4 border-t border-neutral-200 dark:border-neutral-800">
-          {post.data.publishedAt && (
-            <time datetime={post.data.publishedAt.toISOString()}>
-              {new Date(post.data.publishedAt).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric"
-              })}
-            </time>
-          )}
-          {categories.length > 0 && (
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200">
-              {categories[0].label}
-            </span>
-          )}
-        </div>
-      </header>
+  <div style="background-color: #FFFFFF; border-bottom: 1px solid #E5E7EB;">
+    <div style="max-width: 960px; margin: 0 auto; padding: 24px 24px 0;">
+      <!-- Breadcrumbs -->
+      <nav style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6B7280; margin-bottom: 24px;">
+        <a href="/" style="color: #6B7280; text-decoration: none;">Home</a>
+        <span>›</span>
+        <a href="/news" style="color: #6B7280; text-decoration: none;">News</a>
+        <span>›</span>
+        <span style="color: #D52B1E; font-weight: 600;">{pageCategory}</span>
+      </nav>
 
-      {post.data.featured_image && (
-        <div class="my-8 rounded-xl overflow-hidden shadow-lg">
-          <Image image={post.data.featured_image} />
-        </div>
+      <!-- Category Label -->
+      <span style="display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #D52B1E; margin-bottom: 12px;">
+        {pageCategory}
+      </span>
+
+      <!-- Title -->
+      <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: clamp(28px, 4vw, 42px); font-weight: 700; line-height: 1.25; color: #000000; margin: 0 0 16px 0;">
+        {pageTitle}
+      </h1>
+
+      <!-- Subtitle -->
+      {pageSubtitle && (
+        <p style="font-size: 19px; line-height: 1.6; color: #4B5563; margin: 0 0 24px 0; font-family: Inter, sans-serif;">
+          {pageSubtitle}
+        </p>
       )}
 
-      {post.data.content && (
-        <div class="mt-8 leading-relaxed space-y-6">
-          <PortableText value={post.data.content} />
+      <!-- Author Byline Bar -->
+      <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #E5E7EB; border-bottom: 1px solid #E5E7EB; padding: 14px 0; margin-bottom: 32px; flex-wrap: wrap; gap: 12px; font-size: 13px; color: #6B7280;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 32px; height: 32px; border-radius: 50%; background-color: #0A0A0A; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px;">
+            PS
+          </div>
+          <div>
+            <span style="font-weight: 600; color: #111827; display: block;">{authorName}</span>
+            <span style="font-size: 11px;">PrivateSector Bureau Zurich</span>
+          </div>
         </div>
+
+        <div style="display: flex; align-items: center; gap: 16px;">
+          {pageDate && <span>📅 {pageDate}</span>}
+          {readTime && <span>⏱️ {readTime} min read</span>}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Article Body Content -->
+  <main style="max-width: 960px; margin: 0 auto; padding: 32px 24px 80px;">
+    
+    <!-- Featured Image -->
+    {isEmDash && post.data.featured_image && (
+      <div style="margin-bottom: 36px; border-radius: 8px; overflow: hidden; border: 1px solid #E5E7EB;">
+        <Image image={post.data.featured_image} />
+      </div>
+    )}
+    {!isEmDash && pageImage && (
+      <div style="margin-bottom: 36px; border-radius: 8px; overflow: hidden; border: 1px solid #E5E7EB;">
+        <img src={pageImage} alt={pageTitle} style="width: 100%; height: auto; display: block; max-height: 520px; object-fit: cover;" onerror="this.style.display='none'" />
+      </div>
+    )}
+
+    <!-- Pull Quote -->
+    {pullQuote && (
+      <blockquote style="border-left: 3px solid #D52B1E; background-color: #F9FAFB; padding: 20px 24px; margin: 0 0 36px 0; font-family: 'Playfair Display', Georgia, serif; font-size: 19px; font-style: italic; color: #1F2937; line-height: 1.6; border-radius: 0 6px 6px 0;">
+        "{pullQuote}"
+      </blockquote>
+    )}
+
+    <!-- Article Prose -->
+    <article class="article-content" style="font-family: Inter, sans-serif; font-size: 17px; line-height: 1.8; color: #1F2937;">
+      {isEmDash && post.data.content && (
+        <PortableText value={post.data.content} />
+      )}
+      {!isEmDash && renderedHtml && (
+        <div set:html={renderedHtml} />
       )}
     </article>
+
+    <!-- Post Article Share & Tags -->
+    <div style="border-top: 1px solid #E5E7EB; margin-top: 48px; padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <span style="font-size: 12px; font-weight: 600; color: #6B7280;">SHARE THIS REPORT:</span>
+        <button onclick="navigator.clipboard.writeText(window.location.href); alert('Link copied to clipboard!');" style="background: #F3F4F6; border: 1px solid #E5E7EB; border-radius: 4px; padding: 6px 12px; font-size: 12px; cursor: pointer; font-weight: 500;">
+          📋 Copy Link
+        </button>
+      </div>
+
+      <a href="/news" style="color: #D52B1E; font-weight: 600; text-decoration: none; font-size: 13px;">
+        ← Back to All News Archives
+      </a>
+    </div>
+
+    <!-- Related Articles Section -->
+    {relatedArticles.length > 0 && (
+      <div style="margin-top: 64px; border-top: 2px solid #F3F4F6; padding-top: 36px;">
+        <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #D52B1E; display: block; margin-bottom: 6px;">
+          CONTINUE READING
+        </span>
+        <h3 style="font-family: 'Playfair Display', Georgia, serif; font-size: 22px; font-weight: 700; color: #000000; margin: 0 0 24px 0;">
+          Related Swiss Intelligence
+        </h3>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;">
+          {relatedArticles.map((rel: any) => (
+            <a 
+              href={`/news/${rel.slug || rel.id}`}
+              style="text-decoration: none; background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.15s ease;"
+              onmouseover="this.style.transform='translateY(-3px)'"
+              onmouseout="this.style.transform='translateY(0)'"
+            >
+              {rel.image_url && (
+                <div style="height: 120px; overflow: hidden;">
+                  <img src={rel.image_url} alt="" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'" />
+                </div>
+              )}
+              <div style="padding: 14px;">
+                <span style="font-size: 10px; font-weight: 700; color: #D52B1E; text-transform: uppercase;">
+                  {rel.category || 'News'}
+                </span>
+                <h4 style="font-family: 'Playfair Display', Georgia, serif; font-size: 14px; font-weight: 700; color: #000000; margin: 4px 0 0 0; line-height: 1.35;">
+                  {rel.title}
+                </h4>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
+
   </main>
 </Base>
+
+<style is:global>
+  .article-content h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 36px 0 16px;
+    color: #000000;
+  }
+  .article-content h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin: 28px 0 12px;
+    color: #111827;
+  }
+  .article-content p {
+    margin-bottom: 20px;
+  }
+  .article-content ul, .article-content ol {
+    margin: 0 0 20px 24px;
+  }
+  .article-content li {
+    margin-bottom: 8px;
+  }
+  .article-content a {
+    color: #D52B1E;
+    text-decoration: underline;
+  }
+  .article-content hr {
+    border: none;
+    border-top: 1px solid #E5E7EB;
+    margin: 36px 0;
+  }
+</style>

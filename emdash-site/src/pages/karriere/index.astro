@@ -1,0 +1,66 @@
+---
+// emdash-site/src/pages/karriere/index.astro
+import Base from "../../layouts/Base.astro";
+import { getJobs } from "../../lib/legacy-db";
+
+const jobs = getJobs(50);
+---
+
+<Base
+  title="Swiss Executive & Commercial Career Board — PrivateSector.ch"
+  description="Career opportunities, executive mandates, and student internships across Switzerland's leading private sector employers."
+>
+  <div style="background-color: #FFFFFF; border-bottom: 1px solid #E5E7EB; padding: 48px 24px;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+      <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #D52B1E; display: block; margin-bottom: 8px;">
+        CAREER OPPORTUNITIES
+      </span>
+      <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 700; color: #000000; margin: 0 0 16px 0;">
+        Swiss Executive & Commercial Careers
+      </h1>
+      <p style="font-size: 16px; color: #4B5563; max-width: 720px; margin: 0;">
+        Direct career opportunities across Swiss financial hubs, pharmaceutical centers, and technology clusters.
+      </p>
+    </div>
+  </div>
+
+  <main style="max-width: 1200px; margin: 0 auto; padding: 48px 24px 96px;">
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+      {jobs.map((job: any) => (
+        <div style="background-color: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 8px; padding: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; transition: box-shadow 0.15s ease;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+              <span style="font-size: 11px; font-weight: 700; color: #D52B1E; background-color: #FFF5F5; padding: 2px 8px; border-radius: 4px;">
+                {job.job_type || 'Full-time'}
+              </span>
+              <span style="font-size: 12px; color: #6B7280;">📍 {job.location || 'Switzerland'}</span>
+            </div>
+            
+            <h2 style="font-family: 'Playfair Display', Georgia, serif; font-size: 20px; font-weight: 700; color: #000000; margin: 0 0 6px 0;">
+              {job.title}
+            </h2>
+
+            <div style="font-size: 14px; font-weight: 600; color: #374151; margin-bottom: 8px;">
+              {job.company_name}
+            </div>
+
+            <p style="font-size: 13.5px; color: #6B7280; line-height: 1.5; margin: 0; max-width: 720px;">
+              {job.description}
+            </p>
+          </div>
+
+          <div>
+            <a 
+              href={job.apply_url || "mailto:careers@privatesector.ch"}
+              target="_blank"
+              rel="noopener noreferrer"
+              style="display: inline-block; background-color: #D52B1E; color: #FFFFFF; font-weight: 600; font-size: 13px; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-family: Inter, sans-serif;"
+            >
+              Apply Mandate →
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+  </main>
+</Base>

@@ -1,0 +1,110 @@
+---
+// emdash-site/src/pages/news/index.astro
+import Base from "../../layouts/Base.astro";
+import NewsCard from "../../components/NewsCard.astro";
+import { getNews } from "../../lib/legacy-db";
+
+const searchParam = Astro.url.searchParams.get("search")?.toLowerCase() || "";
+const categoryParam = Astro.url.searchParams.get("category")?.toLowerCase() || "";
+
+let allNews = getNews(100);
+
+if (categoryParam) {
+  allNews = allNews.filter((n: any) => n.category && n.category.toLowerCase().includes(categoryParam));
+}
+
+if (searchParam) {
+  allNews = allNews.filter((n: any) => 
+    (n.title && n.title.toLowerCase().includes(searchParam)) ||
+    (n.subtitle && n.subtitle.toLowerCase().includes(searchParam))
+  );
+}
+
+const categories = ["All", "Pharma", "Banking", "Technology", "Logistics", "Energy", "Startups", "Trade"];
+---
+
+<Base 
+  title="News & Market Intelligence — PrivateSector.ch"
+  description="Comprehensive editorial reporting and independent intelligence on Switzerland's private sector enterprises."
+>
+  <!-- Page Header -->
+  <div style="background-color: #FFFFFF; border-bottom: 1px solid #E5E7EB; padding: 48px 24px;">
+    <div style="max-width: 1600px; margin: 0 auto;">
+      <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #D52B1E; display: block; margin-bottom: 8px;">
+        EDITORIAL ARCHIVE
+      </span>
+      <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 700; color: #000000; margin: 0 0 16px 0;">
+        News & Market Intelligence
+      </h1>
+      <p style="font-size: 16px; color: #4B5563; max-width: 720px; margin: 0 0 28px 0;">
+        Authoritative investigations, economic briefings, and market updates across Switzerland's leading corporate sectors.
+      </p>
+
+      <!-- Search & Filters -->
+      <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+        <!-- Category Filter Pills -->
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          {categories.map((cat) => {
+            const isCatActive = (!categoryParam && cat === "All") || (categoryParam === cat.toLowerCase());
+            return (
+              <a 
+                href={cat === "All" ? "/news" : `/news?category=${encodeURIComponent(cat.toLowerCase())}`}
+                style={`
+                  text-decoration: none;
+                  padding: 6px 14px;
+                  border-radius: 20px;
+                  font-size: 12.5px;
+                  font-weight: 600;
+                  font-family: Inter, sans-serif;
+                  background-color: ${isCatActive ? '#D52B1E' : '#F3F4F6'};
+                  color: ${isCatActive ? '#FFFFFF' : '#374151'};
+                  border: 1px solid ${isCatActive ? '#D52B1E' : '#E5E7EB'};
+                  transition: all 0.15s ease;
+                `}
+              >
+                {cat}
+              </a>
+            );
+          })}
+        </div>
+
+        <!-- Search input -->
+        <form action="/news" method="GET" style="display: flex; gap: 8px;">
+          <input 
+            type="text" 
+            name="search" 
+            placeholder="Search news articles..." 
+            value={searchParam}
+            style="padding: 8px 14px; border: 1px solid #D1D5DB; border-radius: 6px; font-size: 13px; font-family: Inter, sans-serif; outline: none; width: 220px;"
+          />
+          <button type="submit" style="background-color: #0A0A0A; color: #FFFFFF; border: none; border-radius: 6px; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer;">
+            Filter
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- News Grid -->
+  <main style="max-width: 1600px; margin: 0 auto; padding: 48px 24px 96px;">
+    {allNews.length === 0 ? (
+      <div style="text-align: center; padding: 64px 0; color: #6B7280;">
+        <h3 style="font-size: 18px; margin-bottom: 8px;">No news articles match your criteria</h3>
+        <p><a href="/news" style="color: #D52B1E; font-weight: 600;">Reset all filters</a></p>
+      </div>
+    ) : (
+      <div>
+        <div style="font-size: 13px; color: #6B7280; margin-bottom: 24px; font-weight: 500;">
+          Showing {allNews.length} published intelligence reports
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px;">
+          {allNews.map((article: any) => (
+            <NewsCard article={article} />
+          ))}
+        </div>
+      </div>
+    )}
+  </main>
+</Base>

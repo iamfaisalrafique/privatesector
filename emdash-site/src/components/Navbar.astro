@@ -1,0 +1,262 @@
+---
+// emdash-site/src/components/Navbar.astro
+const currentPath = Astro.url.pathname;
+
+const defaultTicker = [
+  { flag: 'swiss', label: 'SMI', value: '12,123.42', change: '+0.45%', positive: true },
+  { flag: 'usa', label: 'S&P 500', value: '5,344.16', change: '-0.31%', positive: false },
+  { flag: null, label: 'NASDAQ', value: '16,745.30', change: '-0.22%', positive: false },
+  { flag: null, label: 'USD/CHF', value: '0.8742', change: '+0.21%', positive: true },
+  { flag: null, label: 'EUR/CHF', value: '0.9431', change: '+0.18%', positive: true },
+  { flag: null, label: 'GOLD', value: '$2,345.10', change: '+0.35%', positive: true },
+  { flag: null, label: 'BRENT', value: '$82.56', change: '-0.12%', positive: false },
+  { flag: null, label: 'U.S. 10Y', value: '4.25%', change: '+0.03%', positive: true }
+];
+
+const navItems = [
+  { label: 'HOME', path: '/', flag: null },
+  { label: 'SWITZERLAND', path: '/news', flag: 'swiss' },
+  { label: 'USA', path: '/news', flag: 'usa' },
+  { label: 'COMPANIES', path: '/unternehmen', flag: null },
+  { label: 'STARTUPS', path: '/statistiken', flag: null },
+  { label: 'MARKETS', path: '/statistiken', flag: null },
+  { label: 'OPPORTUNITIES', path: '/ranking', flag: null },
+];
+---
+
+<header class="site-header-container" style="position: sticky; top: 0; z-index: 1000; background-color: #FFFFFF;">
+  <!-- 1. TOP BAR: Dark Live Market Update Bar -->
+  <div class="top-market-bar" style="background-color: #06101E; color: #FFFFFF; font-size: 11px; font-weight: 500; border-bottom: 1px solid rgba(255, 255, 255, 0.08); padding: 0 16px; height: 34px; display: flex; align-items: center; overflow-x: auto; scrollbar-width: none;">
+    <div style="max-width: 1600px; width: 100%; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; min-width: max-content;">
+      <!-- Market Update Badge -->
+      <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+        <span style="background-color: #0E1F38; color: #93C5FD; padding: 2px 8px; border-radius: 3px; font-weight: 700; letter-spacing: 0.05em; font-size: 10px; border: 1px solid rgba(147, 197, 253, 0.2);">
+          MARKET UPDATE
+        </span>
+        <span id="zurich-live-time" style="color: #9CA3AF; font-size: 11px;">
+          08:30 AM CET
+        </span>
+      </div>
+
+      <!-- Tickers -->
+      <div style="display: flex; align-items: center; gap: 20px; flex-wrap: nowrap;">
+        {defaultTicker.map((item) => (
+          <div style="display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;">
+            {item.flag === 'swiss' && (
+              <svg width="14" height="11" viewBox="0 0 32 24" style="border-radius: 2px; vertical-align: middle;">
+                <rect width="32" height="24" fill="#D52B1E" />
+                <rect x="13" y="4" width="6" height="16" fill="#FFFFFF" />
+                <rect x="7" y="9" width="18" height="6" fill="#FFFFFF" />
+              </svg>
+            )}
+            {item.flag === 'usa' && (
+              <svg width="14" height="11" viewBox="0 0 32 24" style="border-radius: 2px; vertical-align: middle;">
+                <rect width="32" height="24" fill="#B22234" />
+                <rect y="3.69" width="32" height="1.85" fill="#FFFFFF" />
+                <rect y="7.38" width="32" height="1.85" fill="#FFFFFF" />
+                <rect y="11.08" width="32" height="1.85" fill="#FFFFFF" />
+                <rect y="14.77" width="32" height="1.85" fill="#FFFFFF" />
+                <rect y="18.46" width="32" height="1.85" fill="#FFFFFF" />
+                <rect y="22.15" width="32" height="1.85" fill="#FFFFFF" />
+                <rect width="13" height="13" fill="#3C3B6E" />
+              </svg>
+            )}
+            <span style="color: #E5E7EB; font-weight: 600;">{item.label}</span>
+            <span style="color: #9CA3AF;">{item.value}</span>
+            <span style={`color: ${item.positive ? '#10B981' : '#EF4444'}; font-weight: 600; font-size: 11px;`}>
+              {item.change}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. MAIN NAVBAR: Desktop & Mobile Header -->
+  <nav style="background-color: #FFFFFF; border-bottom: 1px solid #E5E7EB; box-shadow: 0 1px 3px rgba(0,0,0,0.03); position: relative;">
+    <div style="max-width: 1600px; width: 100%; margin: 0 auto; padding: 0 24px; height: 76px; display: flex; align-items: center; justify-content: space-between; box-sizing: border-box;">
+      
+      <!-- Mobile Hamburger Button -->
+      <div class="mobile-only" style="display: none;">
+        <button id="mobile-menu-btn" aria-label="Toggle navigation menu" style="background: none; border: none; cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center; color: #111827;">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="4" x2="20" y1="12" y2="12"></line>
+            <line x1="4" x2="20" y1="6" y2="6"></line>
+            <line x1="4" x2="20" y1="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Brand Logo -->
+      <a href="/" style="text-decoration: none; display: flex; align-items: center; user-select: none;">
+        <img 
+          src="/logo_highres.png" 
+          alt="PrivateSector" 
+          style="height: 46px; width: auto; object-fit: contain; display: block;" 
+          onerror="this.src='/logo.png'"
+        />
+      </a>
+
+      <!-- Desktop Navigation Links -->
+      <div class="desktop-only" style="display: flex; align-items: center; gap: 4px; height: 76px;">
+        {navItems.map((sec) => {
+          const isSecActive = currentPath === sec.path || (sec.path === '/' && currentPath === '/');
+          return (
+            <a
+              href={sec.path}
+              style={`
+                text-decoration: none;
+                padding: 8px 12px;
+                height: 100%;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                font-family: Inter, sans-serif;
+                font-size: 13px;
+                font-weight: ${isSecActive ? '700' : '600'};
+                color: ${isSecActive ? '#0A0A0A' : '#374151'};
+                position: relative;
+                border-bottom: ${isSecActive ? '3px solid #D52B1E' : '3px solid transparent'};
+                transition: all 0.15s ease;
+                box-sizing: border-box;
+              `}
+              onmouseover="if (!this.classList.contains('active')) this.style.color='#D52B1E'"
+              onmouseout="if (!this.classList.contains('active')) this.style.color='#374151'"
+            >
+              {sec.flag === 'swiss' && (
+                <svg width="15" height="11" viewBox="0 0 32 24" style="border-radius: 2px; vertical-align: middle;">
+                  <rect width="32" height="24" fill="#D52B1E" />
+                  <rect x="13" y="4" width="6" height="16" fill="#FFFFFF" />
+                  <rect x="7" y="9" width="18" height="6" fill="#FFFFFF" />
+                </svg>
+              )}
+              {sec.flag === 'usa' && (
+                <svg width="15" height="11" viewBox="0 0 32 24" style="border-radius: 2px; vertical-align: middle;">
+                  <rect width="32" height="24" fill="#B22234" />
+                  <rect y="3.69" width="32" height="1.85" fill="#FFFFFF" />
+                  <rect y="7.38" width="32" height="1.85" fill="#FFFFFF" />
+                  <rect y="11.08" width="32" height="1.85" fill="#FFFFFF" />
+                  <rect y="14.77" width="32" height="1.85" fill="#FFFFFF" />
+                  <rect y="18.46" width="32" height="1.85" fill="#FFFFFF" />
+                  <rect y="22.15" width="32" height="1.85" fill="#FFFFFF" />
+                  <rect width="13" height="13" fill="#3C3B6E" />
+                </svg>
+              )}
+              <span>{sec.label}</span>
+            </a>
+          );
+        })}
+      </div>
+
+      <!-- Right Action Deck: Search & Admin -->
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <!-- Search Trigger Button -->
+        <button 
+          id="search-toggle-btn"
+          aria-label="Search"
+          style="width: 38px; height: 38px; border-radius: 50%; border: 1px solid #E5E7EB; background-color: #FFFFFF; color: #374151; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s ease;"
+        >
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+
+        <!-- Admin Dashboard Shortcut -->
+        <a 
+          href="/_emdash/admin"
+          style="display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; background-color: #0A0A0A; color: #FFFDF7; border: 1px solid rgba(213, 43, 30, 0.5); border-radius: 4px; font-size: 12px; font-weight: 600; text-decoration: none; transition: background-color 0.15s ease;"
+        >
+          <span style="color: #D52B1E;">🛡️</span> Admin
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 3. SEARCH OVERLAY BAR -->
+  <div id="search-overlay" style="display: none; background-color: #0F172A; border-bottom: 1px solid #1E293B; padding: 14px 24px; position: absolute; top: 100%; left: 0; right: 0; z-index: 998; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);">
+    <form action="/news" method="GET" style="max-width: 720px; margin: 0 auto; display: flex; gap: 10px; align-items: center;">
+      <div style="position: relative; flex: 1;">
+        <input 
+          type="text" 
+          name="search"
+          placeholder="Search intelligence, companies, executive interviews..." 
+          style="width: 100%; background-color: #1E293B; border: 1px solid #334155; border-radius: 6px; padding: 10px 14px 10px 16px; color: #FFFFFF; font-size: 14px; font-family: Inter, sans-serif; outline: none; box-sizing: border-box;"
+        />
+      </div>
+      <button 
+        type="submit" 
+        style="background-color: #D52B1E; color: #FFFFFF; border: none; border-radius: 6px; padding: 10px 20px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: Inter, sans-serif; white-space: nowrap;"
+      >
+        Search
+      </button>
+    </form>
+  </div>
+
+  <!-- 4. MOBILE DRAWER -->
+  <div id="mobile-drawer" style="display: none; background: #FFFFFF; border-bottom: 1px solid #E5E7EB; padding: 16px 24px;">
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      {navItems.map((item) => (
+        <a href={item.path} style="text-decoration: none; color: #111827; font-weight: 600; font-size: 15px; padding: 8px 0; border-bottom: 1px solid #F3F4F6;">
+          {item.label}
+        </a>
+      ))}
+      <a href="/_emdash/admin" style="text-decoration: none; color: #D52B1E; font-weight: 700; font-size: 15px; padding: 8px 0;">
+        🛡️ Admin Dashboard
+      </a>
+    </div>
+  </div>
+</header>
+
+<script is:inline data-astro-rerun>
+  // Dynamic Zurich Time
+  function updateZurichTime() {
+    try {
+      const el = document.getElementById('zurich-live-time');
+      if (!el) return;
+      const formatted = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Europe/Zurich',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      }).format(new Date());
+      el.textContent = formatted + ' CET';
+    } catch (e) {}
+  }
+  updateZurichTime();
+  setInterval(updateZurichTime, 10000);
+
+  // Search Toggle
+  const searchBtn = document.getElementById('search-toggle-btn');
+  const searchOverlay = document.getElementById('search-overlay');
+  if (searchBtn && searchOverlay) {
+    searchBtn.addEventListener('click', () => {
+      const isHidden = searchOverlay.style.display === 'none';
+      searchOverlay.style.display = isHidden ? 'block' : 'none';
+      if (isHidden) {
+        const input = searchOverlay.querySelector('input');
+        if (input) input.focus();
+      }
+    });
+  }
+
+  // Mobile Menu Toggle
+  const mobileBtn = document.getElementById('mobile-menu-btn');
+  const mobileDrawer = document.getElementById('mobile-drawer');
+  if (mobileBtn && mobileDrawer) {
+    mobileBtn.addEventListener('click', () => {
+      mobileDrawer.style.display = mobileDrawer.style.display === 'none' ? 'block' : 'none';
+    });
+  }
+</script>
+
+<style>
+  @media (max-width: 900px) {
+    .desktop-only {
+      display: none !important;
+    }
+    .mobile-only {
+      display: block !important;
+    }
+  }
+</style>

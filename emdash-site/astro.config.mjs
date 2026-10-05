@@ -27,6 +27,7 @@ const storageConfig = process.env.STORAGE_DRIVER === "s3" && process.env.S3_BUCK
 		});
 
 export default defineConfig({
+	publicDir: "../public",
 	output: "server",
 	adapter: node({
 		mode: "standalone",

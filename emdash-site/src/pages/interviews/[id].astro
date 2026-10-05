@@ -1,0 +1,115 @@
+---
+// emdash-site/src/pages/interviews/[id].astro
+import Base from "../../layouts/Base.astro";
+import { DatabaseSync } from "node:sqlite";
+import path from "node:path";
+
+const idOrSlug = Astro.params.id;
+if (!idOrSlug) {
+  return Astro.redirect("/interviews");
+}
+
+const dbPath = path.resolve(process.cwd(), '../server/database.sqlite');
+const db = new DatabaseSync(dbPath);
+
+const interview = db.prepare("SELECT * FROM interviews WHERE slug = ? OR id = ? LIMIT 1").get(idOrSlug, idOrSlug) as any;
+
+if (!interview) {
+  return Astro.redirect("/404");
+}
+
+let parsedQA: any[] = [];
+if (interview.qa_content) {
+  try {
+    parsedQA = typeof interview.qa_content === 'string' ? JSON.parse(interview.qa_content) : interview.qa_content;
+  } catch (e) {
+    parsedQA = [];
+  }
+}
+---
+
+<Base
+  title={`${interview.title} — Executive Interview | PrivateSector.ch`}
+  description={interview.subtitle || `In-depth executive discussion with ${interview.interviewee_name}, ${interview.interviewee_title}.`}
+>
+  <div style="background-color: #FFFFFF; border-bottom: 1px solid #E5E7EB; padding: 40px 24px;">
+    <div style="max-width: 900px; margin: 0 auto;">
+      
+      <nav style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6B7280; margin-bottom: 24px;">
+        <a href="/" style="color: #6B7280; text-decoration: none;">Home</a>
+        <span>›</span>
+        <a href="/interviews" style="color: #6B7280; text-decoration: none;">Interviews</a>
+        <span>›</span>
+        <span style="color: #D52B1E; font-weight: 600;">{interview.interviewee_name}</span>
+      </nav>
+
+      <span style="display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #D52B1E; margin-bottom: 12px;">
+        EXECUTIVE INTERVIEW
+      </span>
+
+      <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: clamp(28px, 4vw, 40px); font-weight: 700; color: #000000; margin: 0 0 16px 0; line-height: 1.25;">
+        {interview.title}
+      </h1>
+
+      {interview.subtitle && (
+        <p style="font-size: 18px; line-height: 1.6; color: #4B5563; margin: 0 0 28px 0;">
+          {interview.subtitle}
+        </p>
+      )}
+
+      <!-- Interviewee Profile Bar -->
+      <div style="background-color: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 8px; padding: 20px; display: flex; gap: 16px; align-items: center;">
+        <div style="width: 56px; height: 56px; border-radius: 50%; background-color: #0A0A0A; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px;">
+          {interview.interviewee_name ? interview.interviewee_name.charAt(0) : 'I'}
+        </div>
+        <div>
+          <h3 style="margin: 0; font-size: 17px; font-weight: 700; color: #111827;">{interview.interviewee_name}</h3>
+          <p style="margin: 2px 0 0; font-size: 13px; color: #6B7280;">
+            {interview.interviewee_title} at <strong style="color: #111827;">{interview.company_name}</strong>
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <main style="max-width: 900px; margin: 0 auto; padding: 40px 24px 96px;">
+    
+    <!-- Audio Player if present -->
+    {interview.audio_url && (
+      <div style="background-color: #0F172A; border-radius: 8px; padding: 20px; margin-bottom: 40px; color: #FFFFFF;">
+        <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #93C5FD; margin-bottom: 10px;">
+          🎙️ Listen to the Full Conversation
+        </div>
+        <audio controls src={interview.audio_url} style="width: 100%; outline: none;"></audio>
+      </div>
+    )}
+
+    <!-- Q&A Content -->
+    {parsedQA.length > 0 ? (
+      <div style="display: flex; flex-direction: column; gap: 32px;">
+        {parsedQA.map((item: any, idx: number) => (
+          <div style="border-bottom: 1px solid #E5E7EB; padding-bottom: 24px;">
+            <h3 style="font-family: 'Playfair Display', Georgia, serif; font-size: 19px; font-weight: 700; color: #D52B1E; margin: 0 0 12px 0;">
+              Q{idx + 1}: {item.q || item.question}
+            </h3>
+            <div style="font-size: 16px; line-height: 1.8; color: #1F2937;">
+              {item.a || item.answer}
+            </div>
+          </div>
+        ))}
+      </div>
+    ) : (
+      <div style="font-size: 16px; line-height: 1.8; color: #1F2937; white-space: pre-wrap;">
+        {interview.qa_content}
+      </div>
+    )}
+
+    <div style="margin-top: 48px; padding-top: 24px; border-top: 1px solid #E5E7EB;">
+      <a href="/interviews" style="color: #D52B1E; text-decoration: none; font-weight: 600; font-size: 13px;">
+        ← Back to All Interviews
+      </a>
+    </div>
+
+  </main>
+</Base>

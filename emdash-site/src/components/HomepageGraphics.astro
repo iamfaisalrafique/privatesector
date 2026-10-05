@@ -1,0 +1,104 @@
+---
+// emdash-site/src/components/HomepageGraphics.astro
+const cantons = [
+  { code: 'ZH', name: 'Zürich', count: "124'820", gdp: '21.5%', color: '#D52B1E' },
+  { code: 'BE', name: 'Bern', count: "78'410", gdp: '12.8%', color: '#003453' },
+  { code: 'GE', name: 'Genf', count: "46'950", gdp: '9.2%', color: '#8B0000' },
+  { code: 'VD', name: 'Waadt', count: "42'110", gdp: '8.7%', color: '#4A6741' },
+  { code: 'BS', name: 'Basel-Stadt', count: "28'730", gdp: '7.1%', color: '#D4AF37' },
+  { code: 'ZG', name: 'Zug', count: "24'550", gdp: '4.8%', color: '#5A5A5A' },
+  { code: 'SG', name: 'St. Gallen', count: "22'180", gdp: '4.2%', color: '#C5A059' },
+  { code: 'AG', name: 'Aargau', count: "19'400", gdp: '3.9%', color: '#2B4C7E' },
+];
+
+const registerEvents = [
+  { id: 1, time: '2 mins ago', company: 'Roche Holding AG', canton: 'BS', action: 'Board Member mutation registered', type: 'mutation' },
+  { id: 2, time: '5 mins ago', company: 'UBS Group AG', canton: 'ZH', action: 'Capital increase published in commercial register', type: 'capital' },
+  { id: 3, time: '12 mins ago', company: 'Stadler Rail AG', canton: 'TG', action: 'Articles of association amendment approved', type: 'statutes' },
+  { id: 4, time: '18 mins ago', company: 'Glencore International AG', canton: 'ZG', action: 'Power of attorney signed for 2 signatories', type: 'deletion' },
+  { id: 5, time: '25 mins ago', company: 'Nestlé S.A.', canton: 'VD', action: 'New branch office registered in Vevey', type: 'new' },
+  { id: 6, time: '35 mins ago', company: 'Swisscom AG', canton: 'BE', action: 'Branch office mutation', type: 'mutation' }
+];
+---
+
+<div style="margin-top: 64px;">
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;" class="graphics-grid">
+    
+    <!-- 1. Regional Canton Distribution -->
+    <div style="background-color: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 8px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid #F3F4F6; padding-bottom: 12px; margin-bottom: 20px;">
+        <div>
+          <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #D52B1E; display: block;">
+            CANTONAL DISTRIBUTION
+          </span>
+          <h3 style="font-family: 'Playfair Display', Georgia, serif; font-size: 19px; font-weight: 700; color: #000000; margin: 4px 0 0 0;">
+            GDP & Enterprise Density
+          </h3>
+        </div>
+        <a href="/statistiken" style="font-size: 12px; color: #D52B1E; font-weight: 600; text-decoration: none;">
+          Full Matrix →
+        </a>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        {cantons.map((c) => (
+          <div>
+            <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px;">
+              <span style="font-weight: 600; color: #111827;">
+                {c.name} ({c.code})
+              </span>
+              <span style="color: #6B7280; font-size: 12px;">
+                {c.count} firms • {c.gdp} GDP
+              </span>
+            </div>
+            <div style="height: 6px; background-color: #F3F4F6; border-radius: 3px; overflow: hidden;">
+              <div style={`width: ${c.gdp}; height: 100%; background-color: ${c.color}; border-radius: 3px;`}></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- 2. Live Commercial Register Feed -->
+    <div style="background-color: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 8px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid #F3F4F6; padding-bottom: 12px; margin-bottom: 20px;">
+        <div>
+          <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #D52B1E; display: block;">
+            COMMERCIAL REGISTER (SOGC/SHAB)
+          </span>
+          <h3 style="font-family: 'Playfair Display', Georgia, serif; font-size: 19px; font-weight: 700; color: #000000; margin: 4px 0 0 0;">
+            Live Registry Ledger
+          </h3>
+        </div>
+        <span style="font-size: 11px; color: #10B981; font-weight: 600; display: flex; align-items: center; gap: 4px;">
+          ● Live Stream
+        </span>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        {registerEvents.map((evt) => (
+          <div style="border-left: 2px solid #D52B1E; padding-left: 12px; padding-top: 2px; padding-bottom: 2px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+              <span style="font-weight: 700; font-size: 13px; color: #000000;">
+                {evt.company}
+              </span>
+              <span style="font-size: 11px; color: #9CA3AF;">
+                {evt.time}
+              </span>
+            </div>
+            <div style="font-size: 12px; color: #4B5563;">
+              {evt.action} ({evt.canton})
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid #F3F4F6; text-align: center;">
+        <a href="/unternehmen" style="font-size: 12px; font-weight: 600; color: #D52B1E; text-decoration: none;">
+          Search Complete Commercial Register →
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>

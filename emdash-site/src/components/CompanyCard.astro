@@ -1,0 +1,120 @@
+---
+// emdash-site/src/components/CompanyCard.astro
+interface Props {
+  company: {
+    id: number | string;
+    name: string;
+    logo_bg?: string | null;
+    canton?: string | null;
+    industry?: string | null;
+    size_class?: string | null;
+    description?: string | null;
+    premium?: number | boolean | null;
+    verified?: number | boolean | null;
+    founded?: number | string | null;
+    employees?: number | string | null;
+    slug?: string | null;
+  };
+}
+
+const { company: comp } = Astro.props;
+const logoInitial = comp.name ? comp.name.charAt(0) : 'C';
+const isPremium = comp.premium === 1 || comp.premium === true;
+const isVerified = comp.verified === 1 || comp.verified === true;
+const targetUrl = `/unternehmen/${comp.slug || comp.id}`;
+---
+
+<a 
+  href={targetUrl}
+  class="company-card"
+  style={`
+    text-decoration: none;
+    background-color: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
+    position: relative;
+    border-top: ${isPremium ? '3px solid #D52B1E' : '1px solid #E5E7EB'};
+  `}
+>
+  {isPremium && (
+    <div style="position: absolute; top: 12px; right: 12px; background-color: #FFF5F5; color: #D52B1E; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(213,43,30,0.2); letter-spacing: 0.05em; text-transform: uppercase;">
+      PREMIUM
+    </div>
+  )}
+
+  <div>
+    <!-- Top Details -->
+    <div style="display: flex; gap: 14px; margin-bottom: 14px; align-items: flex-start;">
+      <!-- Logo initial box -->
+      <div 
+        style={`
+          width: 54px;
+          height: 54px;
+          background-color: ${comp.logo_bg || '#F9FAFB'};
+          border: 1px solid #E5E7EB;
+          border-radius: 6px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #000000;
+          font-size: 22px;
+          font-weight: 700;
+          font-family: 'Playfair Display', Georgia, serif;
+          flex-shrink: 0;
+        `}
+      >
+        {logoInitial}
+      </div>
+
+      <div style="overflow: hidden; flex: 1;">
+        <h3 style="font-size: 16px; font-family: 'Playfair Display', Georgia, serif; font-weight: 700; color: #000000; margin: 0 0 4px 0; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
+          {comp.name}
+        </h3>
+        <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+          {comp.canton && (
+            <span style="font-size: 11px; background-color: #F3F4F6; color: #374151; padding: 2px 6px; border-radius: 3px; font-weight: 600;">
+              📍 {comp.canton}
+            </span>
+          )}
+          {comp.industry && (
+            <span style="font-size: 11px; color: #6B7280; font-weight: 500;">
+              {comp.industry}
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+
+    <!-- Description -->
+    {comp.description && (
+      <p style="font-size: 12.5px; color: #4B5563; line-height: 1.5; margin: 0 0 16px 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+        {comp.description}
+      </p>
+    )}
+  </div>
+
+  <!-- Meta footer -->
+  <div style="border-top: 1px solid #F3F4F6; padding-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #9CA3AF;">
+    <span>
+      {comp.founded ? `Est. ${comp.founded}` : 'Verified Registry'}
+    </span>
+    {isVerified && (
+      <span style="color: #10B981; font-weight: 600; display: flex; align-items: center; gap: 3px;">
+        ✓ Verified Swiss
+      </span>
+    )}
+  </div>
+</a>
+
+<style>
+  .company-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 18px -3px rgba(0, 0, 0, 0.08);
+    border-color: #D52B1E;
+  }
+</style>

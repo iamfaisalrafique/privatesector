@@ -1,0 +1,76 @@
+---
+// emdash-site/src/components/Footer.astro
+---
+
+<footer 
+  style="background-color: #f3f4f6; border-top: 1px solid rgba(191, 155, 48, 0.4); color: #374151; padding: 64px 24px 80px; font-size: 13px; font-family: Inter, sans-serif;"
+>
+  <div 
+    style="max-width: 1280px; width: 100%; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 48px; margin-bottom: 40px;"
+  >
+    <!-- Brand Info -->
+    <div>
+      <a href="/" style="cursor: pointer; margin-bottom: 12px; display: flex; align-items: center; height: 70px; text-decoration: none;">
+        <img 
+          src="/logo_highres.png" 
+          alt="privatesector.ch Logo" 
+          style="height: 70px; width: auto; object-fit: contain; display: block;" 
+          onerror="this.src='/logo.png'"
+        />
+      </a>
+      <p style="color: #4b5563; font-size: 12px; line-height: 1.5; margin-top: 8px;">
+        Swiss business and B2B data platform. Verified information on companies, market data, and analyses.
+      </p>
+    </div>
+    
+    <!-- Column: Directory -->
+    <div>
+      <strong style="color: var(--primary-red, #D52B1E); display: block; margin-bottom: 16px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;">Directory</strong>
+      <a href="/unternehmen" style="color: #4b5563; text-decoration: none; display: block; margin: 8px 0;">Search Companies</a>
+      <a href="/unternehmen?verified=true" style="color: #4b5563; text-decoration: none; display: block; margin: 8px 0;">Verified Partners</a>
+      <a href="/ranking" style="color: #4b5563; text-decoration: none; display: block; margin: 8px 0;">Market Rankings</a>
+    </div>
+
+    <!-- Column: Editorial -->
+    <div>
+      <strong style="color: var(--primary-red, #D52B1E); display: block; margin-bottom: 16px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;">Editorial</strong>
+      <a href="/news" style="color: #4b5563; text-decoration: none; display: block; margin: 8px 0;">Business Reports</a>
+      <a href="/interviews" style="color: #4b5563; text-decoration: none; display: block; margin: 8px 0;">CEO Interviews</a>
+      <a href="/blogs" style="color: #4b5563; text-decoration: none; display: block; margin: 8px 0;">Market Perspectives</a>
+    </div>
+
+    <!-- Column: Console & Admin -->
+    <div>
+      <strong style="color: var(--primary-red, #D52B1E); display: block; margin-bottom: 16px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;">Console</strong>
+      <a href="/_emdash/admin" style="color: #4b5563; text-decoration: none; display: block; margin: 8px 0; font-weight: 600;">Admin Dashboard</a>
+      <a href="/statistiken" style="color: #4b5563; text-decoration: none; display: block; margin: 8px 0;">Statistics & Heatmaps</a>
+      <a href="/karriere" style="color: #4b5563; text-decoration: none; display: block; margin: 8px 0;">Career Board</a>
+    </div>
+  </div>
+
+  <div style="max-width: 1280px; margin: 0 auto; border-top: 0.5px solid #d1d5db; padding-top: 16px; display: flex; justify-content: space-between; color: #4b5563; font-size: 11px; flex-wrap: wrap; gap: 8px;">
+    <span>© 2026 privatesector.ch. All rights reserved.</span>
+    <span>GDPR & Swiss Data Protection Act compliant 🇨🇭</span>
+  </div>
+</footer>
+
+<!-- Floating Scroll-to-Top Button -->
+<button
+  id="scroll-to-top-btn"
+  aria-label="Scroll to top"
+  style="position: fixed; bottom: 40px; right: 40px; width: 44px; height: 44px; border-radius: 50%; background-color: #D52B1E; color: #FFFFFF; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.15); cursor: pointer; display: none; align-items: center; justify-content: center; font-size: 18px; z-index: 9999; transition: all 150ms ease;"
+>
+  ▲
+</button>
+
+<script is:inline data-astro-rerun>
+  const scrollBtn = document.getElementById('scroll-to-top-btn');
+  if (scrollBtn) {
+    window.addEventListener('scroll', () => {
+      scrollBtn.style.display = window.scrollY > 300 ? 'flex' : 'none';
+    });
+    scrollBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+</script>

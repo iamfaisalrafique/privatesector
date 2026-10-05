@@ -1,0 +1,79 @@
+---
+// emdash-site/src/components/NewsCard.astro
+interface Props {
+  article: {
+    id: number | string;
+    title: string;
+    subtitle?: string | null;
+    category?: string | null;
+    date_published?: string | null;
+    image_url?: string | null;
+    slug?: string | null;
+  };
+}
+
+const { article: art } = Astro.props;
+const targetUrl = `/news/${art.slug || art.id}`;
+---
+
+<a 
+  href={targetUrl}
+  class="home-news-card"
+  style="text-decoration: none; background-color: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;"
+>
+  {art.image_url ? (
+    <div style="height: 160px; width: 100%; overflow: hidden; background-color: #F3F4F6;">
+      <img 
+        src={art.image_url} 
+        alt={art.title} 
+        style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;"
+        onerror="this.src='/logo.png'"
+      />
+    </div>
+  ) : (
+    <div style="height: 160px; width: 100%; background-color: #F3F4F6; display: flex; align-items: center; justify-content: center;">
+      <span style="color: #9CA3AF; font-size: 12px; font-weight: 600;">PrivateSector Intelligence</span>
+    </div>
+  )}
+
+  <div style="padding: 20px; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <span style="font-size: 11px; color: #D52B1E; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;">
+          {art.category || 'MARKETS'}
+        </span>
+        {art.date_published && (
+          <span style="font-size: 11px; color: #9CA3AF;">
+            {art.date_published}
+          </span>
+        )}
+      </div>
+      
+      <h3 style="font-size: 17px; font-family: 'Playfair Display', Georgia, serif; color: #000000; margin: 0 0 8px 0; font-weight: 700; line-height: 1.35;">
+        {art.title}
+      </h3>
+      
+      {art.subtitle && (
+        <p style="font-size: 13px; color: #4B5563; line-height: 1.5; margin: 0 0 16px 0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+          {art.subtitle}
+        </p>
+      )}
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 6px; font-size: 13px; color: #D52B1E; font-weight: 600; margin-top: 12px;">
+      <span>Read Article</span>
+      <span>→</span>
+    </div>
+  </div>
+</a>
+
+<style>
+  .home-news-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 20px -4px rgba(0, 0, 0, 0.08);
+    border-color: #D52B1E !important;
+  }
+  .home-news-card:hover img {
+    transform: scale(1.03);
+  }
+</style>

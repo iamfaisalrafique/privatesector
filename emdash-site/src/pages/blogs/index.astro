@@ -1,28 +1,43 @@
 ---
+// emdash-site/src/pages/blogs/index.astro
 import Base from "../../layouts/Base.astro";
-import { getSiteSettings } from "emdash";
-import { resolveStarterSiteIdentity } from "../../utils/site-identity";
+import { getBlogs } from "../../lib/legacy-db";
+import NewsCard from "../../components/NewsCard.astro";
 
 export const prerender = false;
 
-const { siteTitle } = resolveStarterSiteIdentity(await getSiteSettings());
+const blogs = getBlogs(50);
 ---
 
 <Base
-  title={`Market Commentary & Blogs | ${siteTitle}`}
-  pageTitle="Market Commentary & Blogs"
-  description="Expert perspectives and market intelligence on Swiss enterprise and private sector developments."
+  title="Market Commentary & Blogs — PrivateSector.ch"
+  description="In-depth market commentary, macroeconomic perspectives, and editorial opinions on Swiss private enterprise."
 >
-  <main class="max-w-5xl mx-auto px-4 py-12">
-    <header class="mb-12 border-b border-neutral-200 dark:border-neutral-800 pb-8">
-      <h1 class="text-3xl md:text-5xl font-bold tracking-tight mb-4">Market Commentary</h1>
-      <p class="text-lg text-neutral-600 dark:text-neutral-400">
-        In-depth commentary, macroeconomic analysis, and opinion from Swiss industry observers.
+  <div style="background-color: #FFFFFF; border-bottom: 1px solid #E5E7EB; padding: 48px 24px;">
+    <div style="max-width: 1600px; margin: 0 auto;">
+      <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #D52B1E; display: block; margin-bottom: 8px;">
+        OPINION & ANALYSIS
+      </span>
+      <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 700; color: #000000; margin: 0 0 16px 0;">
+        Market Perspectives & Commentary
+      </h1>
+      <p style="font-size: 16px; color: #4B5563; max-width: 720px; margin: 0;">
+        Specialist insights, regulatory breakdowns, and strategic commentary from Swiss industry analysts.
       </p>
-    </header>
-
-    <div class="py-12 text-center text-neutral-500">
-      <p class="text-base">New editorial commentary and guest columns are coming soon.</p>
     </div>
+  </div>
+
+  <main style="max-width: 1600px; margin: 0 auto; padding: 48px 24px 96px;">
+    {blogs.length === 0 ? (
+      <div style="text-align: center; padding: 64px 0; color: #6B7280;">
+        <p>No blog posts published yet.</p>
+      </div>
+    ) : (
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px;">
+        {blogs.map((b: any) => (
+          <NewsCard article={b} />
+        ))}
+      </div>
+    )}
   </main>
 </Base>

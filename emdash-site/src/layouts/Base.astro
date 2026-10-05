@@ -2,8 +2,12 @@
 import { getMenuWithCacheHint, getSiteSettingsWithCacheHint } from "emdash";
 import { EmDashHead, EmDashBodyStart, EmDashBodyEnd } from "emdash/ui";
 import { createPublicPageContext } from "emdash/page";
-import LiveSearch from "emdash/ui/search";
 import { resolveStarterSiteIdentity } from "../utils/site-identity";
+import { ClientRouter } from "astro:transitions";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+import "../styles/index.css";
+import "../styles/App.css";
 
 interface Props {
 	title: string;
@@ -11,7 +15,7 @@ interface Props {
 	description?: string | null;
 	image?: string | null;
 	canonical?: string | null;
-	/** Pass content reference for plugin page contributions on content pages */
+	showBreaking?: boolean;
 	content?: { collection: string; id: string; slug?: string | null };
 }
 
@@ -26,16 +30,15 @@ if (Astro.cache?.enabled) {
 	Astro.cache.set(menuResult.cacheHint);
 }
 
-const { siteTitle, siteTagline, siteLogo } = resolveStarterSiteIdentity(
+const { siteTitle, siteTagline } = resolveStarterSiteIdentity(
 	settingsResult.data,
 );
 const titleIncludesSiteName =
 	title === siteTitle ||
 	title.endsWith(` | ${siteTitle}`) ||
 	title.endsWith(` — ${siteTitle}`);
-const fullTitle = titleIncludesSiteName ? title : `${title} — ${siteTitle}`;
-const pageDescription = description ?? siteTagline;
-const menu = menuResult.data;
+const fullTitle = titleIncludesSiteName ? title : `${title} — ${siteTitle || 'PrivateSector.ch'}`;
+const pageDescription = description ?? siteTagline ?? "Switzerland's Independent Private Sector & Business Intelligence Platform.";
 
 const pageCtx = createPublicPageContext({
 	Astro,
@@ -45,9 +48,9 @@ const pageCtx = createPublicPageContext({
 	pageTitle: pageTitle ?? title,
 	description: pageDescription,
 	canonical,
-	image,
+	image: image || "/logo.png",
 	content,
-	siteName: siteTitle,
+	siteName: siteTitle || "privatesector.ch",
 });
 ---
 
@@ -56,45 +59,28 @@ const pageCtx = createPublicPageContext({
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇨🇭</text></svg>" />
 		<title>{fullTitle}</title>
+		<meta name="theme-color" content="#D52B1E" />
+		
+		<!-- Google Fonts: Inter, Playfair Display, JetBrains Mono, Roboto Slab -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500;700&family=Roboto+Slab:wght@300;400;700&display=swap" rel="stylesheet">
+
+		<ClientRouter />
 		<EmDashHead page={pageCtx} />
 	</head>
-	<body>
+	<body style="background-color: var(--bg-ivory, #FFFFFF); color: var(--text-ink, #000000); min-height: 100vh; display: flex; flex-direction: column;">
 		<EmDashBodyStart page={pageCtx} />
 
-		<header>
-			<nav>
-				<a href="/">
-					{
-						siteLogo ? (
-							<img
-								src={siteLogo.url}
-								alt={siteLogo.alt || siteTitle}
-								style="height:48px;width:auto;margin:-8px 0;display:block;"
-							/>
-						) : (
-							siteTitle
-						)
-					}
-				</a>
-				{
-					menu?.items.map((item) => (
-						<a
-							href={item.url}
-							target={item.target}
-							rel={item.target === "_blank" ? "noopener noreferrer" : undefined}
-						>
-							{item.label}
-						</a>
-					))
-				}
-				<LiveSearch placeholder="Search..." collections={["posts", "pages"]} />
-			</nav>
-		</header>
+		<Navbar />
 
-		<main>
+		<div style="flex: 1;">
 			<slot />
-		</main>
+		</div>
+
+		<Footer />
 
 		<EmDashBodyEnd page={pageCtx} />
 	</body>

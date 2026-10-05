@@ -1,0 +1,79 @@
+---
+// emdash-site/src/pages/ranking/index.astro
+import Base from "../../layouts/Base.astro";
+import { getCompanies } from "../../lib/legacy-db";
+
+const companies = getCompanies(false, 50);
+---
+
+<Base
+  title="Swiss Company League Rankings 2026 — PrivateSector.ch"
+  description="Authoritative ranking and league table of Switzerland's top commercial enterprises and private sector powerhouses."
+>
+  <div style="background-color: #FFFFFF; border-bottom: 1px solid #E5E7EB; padding: 48px 24px;">
+    <div style="max-width: 1400px; margin: 0 auto;">
+      <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #D52B1E; display: block; margin-bottom: 8px;">
+        LEADERBOARDS & BENCHMARKS
+      </span>
+      <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 700; color: #000000; margin: 0 0 16px 0;">
+        Swiss Enterprise Leaderboard & Rankings
+      </h1>
+      <p style="font-size: 16px; color: #4B5563; max-width: 720px; margin: 0;">
+        Benchmarked directory ranking Switzerland's leading corporate multinationals, mid-market champions, and ESG leaders.
+      </p>
+    </div>
+  </div>
+
+  <main style="max-width: 1400px; margin: 0 auto; padding: 48px 24px 96px;">
+    <div style="background-color: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 14px; text-align: left;">
+          <thead>
+            <tr style="background-color: #F9FAFB; border-bottom: 1px solid #E5E7EB; color: #6B7280; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;">
+              <th style="padding: 14px 20px;">Rank</th>
+              <th style="padding: 14px 20px;">Enterprise</th>
+              <th style="padding: 14px 20px;">Canton</th>
+              <th style="padding: 14px 20px;">Sector</th>
+              <th style="padding: 14px 20px;">Employees</th>
+              <th style="padding: 14px 20px;">Registry Status</th>
+              <th style="padding: 14px 20px; text-align: right;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {companies.map((c: any, idx: number) => (
+              <tr style="border-bottom: 1px solid #F3F4F6;">
+                <td style="padding: 16px 20px; font-weight: 700; color: #D52B1E; font-size: 15px;">
+                  #{idx + 1}
+                </td>
+                <td style="padding: 16px 20px;">
+                  <a href={`/unternehmen/${c.slug || c.id}`} style="text-decoration: none; color: #000000; font-weight: 700; font-family: 'Playfair Display', Georgia, serif; font-size: 16px;">
+                    {c.name}
+                  </a>
+                </td>
+                <td style="padding: 16px 20px; color: #374151;">
+                  📍 {c.canton || 'Switzerland'}
+                </td>
+                <td style="padding: 16px 20px; color: #6B7280;">
+                  {c.industry || 'Enterprise'}
+                </td>
+                <td style="padding: 16px 20px; color: #374151;">
+                  {c.employees || 'Confidential'}
+                </td>
+                <td style="padding: 16px 20px;">
+                  <span style="background: #ECFDF5; color: #059669; padding: 3px 8px; border-radius: 4px; font-weight: 600; font-size: 11px;">
+                    ✓ CH-UID Active
+                  </span>
+                </td>
+                <td style="padding: 16px 20px; text-align: right;">
+                  <a href={`/unternehmen/${c.slug || c.id}`} style="color: #D52B1E; font-weight: 600; text-decoration: none; font-size: 13px;">
+                    View Profile →
+                  </a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</Base>

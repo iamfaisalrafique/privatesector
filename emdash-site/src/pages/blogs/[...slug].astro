@@ -1,7 +1,86 @@
 ---
-// Catch-all route for legacy /blogs/* paths (Option 2 decision: do not migrate 24 seed blogs)
-// Performs strict 301 redirect back to the /blogs index.
+// emdash-site/src/pages/blogs/[...slug].astro
+import Base from "../../layouts/Base.astro";
+import { DatabaseSync } from "node:sqlite";
+import path from "node:path";
+import { marked } from "marked";
+
 export const prerender = false;
 
-return Astro.redirect("/blogs", 301);
+const rawSlug = Astro.params.slug;
+if (!rawSlug) {
+  return Astro.redirect("/blogs", 301);
+}
+
+const dbPath = path.resolve(process.cwd(), '../server/database.sqlite');
+const db = new DatabaseSync(dbPath);
+
+const blog = db.prepare("SELECT * FROM blogs WHERE slug = ? OR id = ? LIMIT 1").get(rawSlug, rawSlug) as any;
+
+if (!blog) {
+  return Astro.redirect("/blogs", 301);
+}
+
+const renderedHtml = blog.content_body ? (marked.parse(blog.content_body) as string) : "";
 ---
+
+<Base
+  title={`${blog.title} — Market Perspective | PrivateSector.ch`}
+  description={blog.subtitle || blog.title}
+  image={blog.image_url || "/logo.png"}
+>
+  <div style="background-color: #FFFFFF; border-bottom: 1px solid #E5E7EB; padding: 40px 24px;">
+    <div style="max-width: 900px; margin: 0 auto;">
+      <nav style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6B7280; margin-bottom: 24px;">
+        <a href="/" style="color: #6B7280; text-decoration: none;">Home</a>
+        <span>›</span>
+        <a href="/blogs" style="color: #6B7280; text-decoration: none;">Blogs</a>
+        <span>›</span>
+        <span style="color: #D52B1E; font-weight: 600;">{blog.category || 'Perspective'}</span>
+      </nav>
+
+      <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #D52B1E; display: block; margin-bottom: 12px;">
+        {blog.category || 'MARKET PERSPECTIVE'}
+      </span>
+
+      <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: clamp(28px, 4vw, 40px); font-weight: 700; color: #000000; margin: 0 0 16px 0; line-height: 1.25;">
+        {blog.title}
+      </h1>
+
+      {blog.subtitle && (
+        <p style="font-size: 18px; line-height: 1.6; color: #4B5563; margin: 0 0 24px 0;">
+          {blog.subtitle}
+        </p>
+      )}
+
+      <div style="display: flex; gap: 16px; font-size: 13px; color: #6B7280; border-top: 1px solid #E5E7EB; padding-top: 14px;">
+        <span>By <strong>{blog.author_name || 'PrivateSector Analyst'}</strong></span>
+        {blog.date_published && <span>• 📅 {blog.date_published}</span>}
+      </div>
+    </div>
+  </div>
+
+  <main style="max-width: 900px; margin: 0 auto; padding: 40px 24px 96px;">
+    {blog.image_url && (
+      <div style="margin-bottom: 36px; border-radius: 8px; overflow: hidden; border: 1px solid #E5E7EB;">
+        <img src={blog.image_url} alt="" style="width: 100%; height: auto; max-height: 500px; object-fit: cover;" onerror="this.style.display='none'" />
+      </div>
+    )}
+
+    {blog.pull_quote && (
+      <blockquote style="border-left: 3px solid #D52B1E; background-color: #F9FAFB; padding: 20px 24px; margin: 0 0 36px 0; font-family: 'Playfair Display', Georgia, serif; font-size: 19px; font-style: italic; color: #1F2937; line-height: 1.6;">
+        "{blog.pull_quote}"
+      </blockquote>
+    )}
+
+    <article class="article-content" style="font-family: Inter, sans-serif; font-size: 17px; line-height: 1.8; color: #1F2937;">
+      <div set:html={renderedHtml} />
+    </article>
+
+    <div style="margin-top: 48px; padding-top: 24px; border-top: 1px solid #E5E7EB;">
+      <a href="/blogs" style="color: #D52B1E; text-decoration: none; font-weight: 600; font-size: 13px;">
+        ← Back to All Blogs
+      </a>
+    </div>
+  </main>
+</Base>
