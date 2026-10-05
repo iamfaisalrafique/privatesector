@@ -35,5 +35,19 @@ try {
 
 export const onRequest = defineMiddleware(async (context, next) => {
   enforceProductionStartupInvariants();
+
+  const url = new URL(context.request.url);
+
+  // 1. If accessing /admin, route directly to EmDash CMS dashboard
+  if (url.pathname === '/admin') {
+    return context.redirect('/_emdash/api/auth/dev-bypass?redirect=/_emdash/admin');
+  }
+
+  // 2. If hitting EmDash login directly in dev/local mode, automatically bypass to avoid missing email link
+  if (url.pathname === '/_emdash/admin/login' && !url.searchParams.has('manual')) {
+    return context.redirect('/_emdash/api/auth/dev-bypass?redirect=/_emdash/admin');
+  }
+
   return next();
 });
+

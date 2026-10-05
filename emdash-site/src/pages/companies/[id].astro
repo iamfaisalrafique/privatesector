@@ -1,0 +1,5 @@
+---
+// emdash-site/src/pages/companies/[id].astro
+const { id } = Astro.params;
+return Astro.redirect(`/unternehmen/${id}` + (Astro.url.search || ""), 301);
+---
