@@ -7,14 +7,129 @@ interface Props {
 const { currentLocale = "en" } = Astro.props;
 const currentPath = Astro.url.pathname;
 
-const navItems = [
-  { label: 'Home', path: '/' },
-  { label: 'News & Reports', path: '/news' },
-  { label: 'Companies', path: '/unternehmen' },
-  { label: 'CEO Interviews', path: '/interviews' },
-  { label: 'Careers', path: '/karriere' },
-  { label: 'Market Rankings', path: '/ranking' },
-  { label: 'Statistics', path: '/statistiken' },
+const sectionsData = [
+  {
+    id: 'home',
+    label: 'HOME',
+    icon: 'home',
+    flag: null,
+    path: '/',
+    subtitle: "Today's top intelligence",
+    items: [
+      { label: 'Top Story', path: '/news' },
+      { label: 'Latest Intelligence', path: '/news' },
+      { label: 'Breaking News', path: '/news' },
+      { label: "Editor's Picks", path: '/blogs' },
+      { label: 'CEO Interviews', path: '/interviews' },
+      { label: 'Morning Briefings', path: '/news' },
+    ]
+  },
+  {
+    id: 'switzerland',
+    label: 'SWITZERLAND',
+    icon: null,
+    flag: 'swiss',
+    path: '/trade-policy-pulse',
+    subtitle: 'Swiss business & economy',
+    items: [
+      { label: 'Swiss Commercial Registry', path: '/unternehmen' },
+      { label: 'Cantonal Heatmap & GDP', path: '/statistiken' },
+      { label: 'Market Rankings', path: '/ranking' },
+      { label: 'Trade & Policy Pulse', path: '/trade-policy-pulse' },
+      { label: 'SOGC / SHAB Gazette', path: '/#ledger' },
+      { label: 'Verified Partners', path: '/unternehmen?verified=true' },
+    ]
+  },
+  {
+    id: 'usa',
+    label: 'USA & CORRIDORS',
+    icon: null,
+    flag: 'usa',
+    path: '/socal-gateway',
+    subtitle: 'U.S. business & policy',
+    items: [
+      { label: 'SoCal Gateway Corridor', path: '/socal-gateway' },
+      { label: 'Transatlantic Transcript', path: '/translatic-transcript' },
+      { label: 'Trade & Policy Pulse', path: '/trade-policy-pulse' },
+      { label: 'Cross-Border Capital Flows', path: '/cross-border-ranking' },
+      { label: 'U.S. Corporate Presence', path: '/unternehmen' },
+      { label: 'States & Innovation Hubs', path: '/socal-gateway' },
+    ]
+  },
+  {
+    id: 'companies',
+    label: 'COMPANIES',
+    icon: 'building',
+    flag: null,
+    path: '/unternehmen',
+    subtitle: 'Corporate registry & hubs',
+    items: [
+      { label: 'Swiss Enterprise Directory', path: '/unternehmen' },
+      { label: 'Pharma & Life Sciences', path: '/unternehmen' },
+      { label: 'Private Banking & Wealth', path: '/unternehmen' },
+      { label: 'Precision Engineering', path: '/unternehmen' },
+      { label: 'Top 50 Market Benchmark', path: '/ranking' },
+      { label: 'Verified Partners Registry', path: '/unternehmen?verified=true' },
+    ]
+  },
+  {
+    id: 'startups',
+    label: 'STARTUPS & TECH',
+    icon: 'rocket',
+    flag: null,
+    path: '/statistiken',
+    subtitle: 'Innovation on both sides',
+    items: [
+      { label: 'Swiss Startup Radar', path: '/statistiken' },
+      { label: 'CEO & Founder Dialogues', path: '/interviews' },
+      { label: 'Venture Capital & Funding', path: '/statistiken' },
+      { label: 'Advanced Robotics & AI', path: '/news' },
+      { label: 'Life Sciences Incubators', path: '/news' },
+      { label: 'SOGC New Formations', path: '/#ledger' },
+    ]
+  },
+  {
+    id: 'markets',
+    label: 'MARKETS & DATA',
+    icon: 'chart',
+    flag: null,
+    path: '/statistiken',
+    subtitle: 'Financial benchmarks',
+    items: [
+      { label: 'Swiss Market Index (SMI)', path: '/statistiken' },
+      { label: 'Cantonal Economic Matrix', path: '/statistiken' },
+      { label: 'Cross-Border Rankings', path: '/cross-border-ranking' },
+      { label: 'Treasury Yield Impact', path: '/news/the-5-question-what-higher-us-treasury-yields-mean-for-swiss-investment-in-america' },
+      { label: 'Foreign Exchange & Gold', path: '/statistiken' },
+      { label: 'Cantonal Heatmap', path: '/statistiken' },
+    ]
+  },
+  {
+    id: 'corridors',
+    label: 'CORRIDORS',
+    icon: 'target',
+    flag: null,
+    path: '/cross-border-ranking',
+    subtitle: 'Where opportunity meets capital',
+    items: [
+      { label: 'Swiss → U.S. Expansion', path: '/socal-gateway' },
+      { label: 'U.S. → Switzerland Gateway', path: '/translatic-transcript' },
+      { label: 'Cross-Border Rankings', path: '/cross-border-ranking' },
+      { label: 'Bilateral Joint Ventures', path: '/trade-policy-pulse' },
+      { label: 'Cantonal Tax & Business Hubs', path: '/statistiken' },
+      { label: 'Executive Dispatches', path: '/blogs' },
+    ]
+  }
+];
+
+const navTabs = [
+  { id: 'home', label: 'Home', path: '/' },
+  { id: 'switzerland', label: 'Switzerland', path: '/trade-policy-pulse', flag: 'swiss' },
+  { id: 'usa', label: 'USA & Corridors', path: '/socal-gateway', flag: 'usa' },
+  { id: 'companies', label: 'Companies', path: '/unternehmen', icon: 'building' },
+  { id: 'startups', label: 'Startups & Tech', path: '/statistiken', icon: 'rocket' },
+  { id: 'markets', label: 'Markets & Data', path: '/statistiken', icon: 'chart' },
+  { id: 'corridors', label: 'Corridors', path: '/cross-border-ranking', icon: 'target' },
 ];
 
 const tickers = [
@@ -146,31 +261,192 @@ const languages = [
     </div>
   </div>
 
-  <!-- 2. Streamlined Navigation Tabs Bar (Google M3 Expressive Tabs) -->
-  <div class="border-t border-slate-100 bg-white/70 dark:border-slate-850 dark:bg-slate-950/70">
+  <!-- 2. Interactive Navigation Tabs Bar (With Apple / Google M3 Expressive Mega Menu Trigger) -->
+  <div class="relative border-t border-slate-100 bg-white/70 dark:border-slate-850 dark:bg-slate-950/70 transition-colors">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <nav class="hidden lg:flex items-center gap-1 overflow-x-auto py-1.5 no-scrollbar">
-        {navItems.map((item) => {
-          const isActive = currentPath === item.path || (item.path !== '/' && currentPath.startsWith(item.path));
-          return (
-            <a
-              href={item.path}
-              class={`rounded-full px-4 py-1.5 text-xs font-medium transition-all ${
-                isActive
-                  ? 'bg-slate-900 text-white font-semibold dark:bg-slate-100 dark:!text-slate-950 shadow-xs'
-                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white'
-              }`}
-            >
-              {item.label}
+      <div class="hidden lg:flex items-center justify-between gap-2 py-1.5" id="nav-tabs-container">
+        <!-- Tabs Cluster -->
+        <nav class="flex items-center gap-1 overflow-x-auto no-scrollbar">
+          {navTabs.map((tab) => {
+            const isActive = currentPath === tab.path || (tab.path !== '/' && currentPath.startsWith(tab.path));
+            return (
+              <a
+                href={tab.path}
+                class={`group flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all ${
+                  isActive
+                    ? 'bg-slate-900 text-white font-semibold dark:bg-slate-100 dark:!text-slate-950 shadow-xs'
+                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white'
+                }`}
+              >
+                {tab.flag === 'swiss' && (
+                  <svg width="13" height="10" viewBox="0 0 32 24" class="rounded-xs shrink-0 shadow-xs">
+                    <rect width="32" height="24" fill="#D52B1E" />
+                    <rect x="13" y="4" width="6" height="16" fill="#FFFFFF" />
+                    <rect x="7" y="9" width="18" height="6" fill="#FFFFFF" />
+                  </svg>
+                )}
+                {tab.flag === 'usa' && (
+                  <svg width="13" height="10" viewBox="0 0 32 24" class="rounded-xs shrink-0 shadow-xs">
+                    <rect width="32" height="24" fill="#B22234" />
+                    <rect y="3.69" width="32" height="1.85" fill="#FFFFFF" />
+                    <rect y="7.38" width="32" height="1.85" fill="#FFFFFF" />
+                    <rect y="11.08" width="32" height="1.85" fill="#FFFFFF" />
+                    <rect y="14.77" width="32" height="1.85" fill="#FFFFFF" />
+                    <rect y="18.46" width="32" height="1.85" fill="#FFFFFF" />
+                    <rect y="22.15" width="32" height="1.85" fill="#FFFFFF" />
+                    <rect width="13" height="13" fill="#3C3B6E" />
+                    <circle cx="3.5" cy="3.5" r="1" fill="#FFFFFF" />
+                    <circle cx="9.5" cy="3.5" r="1" fill="#FFFFFF" />
+                    <circle cx="6.5" cy="6.5" r="1" fill="#FFFFFF" />
+                    <circle cx="3.5" cy="9.5" r="1" fill="#FFFFFF" />
+                    <circle cx="9.5" cy="9.5" r="1" fill="#FFFFFF" />
+                  </svg>
+                )}
+                <span>{tab.label}</span>
+              </a>
+            );
+          })}
+        </nav>
+
+        <!-- Dedicated Mega Menu Trigger Pill -->
+        <button
+          id="mega-menu-trigger-btn"
+          type="button"
+          aria-expanded="false"
+          aria-controls="desktop-mega-menu"
+          class="group flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 transition-all cursor-pointer shrink-0 shadow-xs border border-slate-200/60 dark:border-slate-800"
+        >
+          <svg class="h-3.5 w-3.5 text-[#D52B1E]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          <span>Mega Menu</span>
+          <svg id="mega-chevron" class="h-3 w-3 text-slate-400 group-hover:text-slate-700 dark:group-hover:text-white transition-transform duration-200" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- 3. Desktop Apple / Google Expressive Mega Menu Dropdown -->
+    <div
+      id="desktop-mega-menu"
+      class="absolute top-full left-0 right-0 w-full bg-white dark:bg-[#0A0F1D] border-t border-b border-slate-200 dark:border-slate-800 shadow-2xl z-50"
+    >
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-7">
+        <!-- 7-Column Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-5 lg:gap-4">
+          {sectionsData.map((sec, secIdx) => (
+            <div class={`flex flex-col ${secIdx < sectionsData.length - 1 ? 'lg:border-r lg:border-slate-100 dark:lg:border-slate-850/80 lg:pr-3' : ''}`}>
+              <!-- Section Header -->
+              <a href={sec.path} class="group block mb-3 text-decoration-none">
+                <div class="flex items-center gap-1.5 mb-1">
+                  {sec.flag === 'swiss' && (
+                    <svg width="15" height="11" viewBox="0 0 32 24" class="rounded-xs shrink-0 shadow-xs">
+                      <rect width="32" height="24" fill="#D52B1E" />
+                      <rect x="13" y="4" width="6" height="16" fill="#FFFFFF" />
+                      <rect x="7" y="9" width="18" height="6" fill="#FFFFFF" />
+                    </svg>
+                  )}
+                  {sec.flag === 'usa' && (
+                    <svg width="15" height="11" viewBox="0 0 32 24" class="rounded-xs shrink-0 shadow-xs">
+                      <rect width="32" height="24" fill="#B22234" />
+                      <rect y="3.69" width="32" height="1.85" fill="#FFFFFF" />
+                      <rect y="7.38" width="32" height="1.85" fill="#FFFFFF" />
+                      <rect y="11.08" width="32" height="1.85" fill="#FFFFFF" />
+                      <rect y="14.77" width="32" height="1.85" fill="#FFFFFF" />
+                      <rect y="18.46" width="32" height="1.85" fill="#FFFFFF" />
+                      <rect y="22.15" width="32" height="1.85" fill="#FFFFFF" />
+                      <rect width="13" height="13" fill="#3C3B6E" />
+                      <circle cx="3.5" cy="3.5" r="1" fill="#FFFFFF" />
+                      <circle cx="9.5" cy="3.5" r="1" fill="#FFFFFF" />
+                      <circle cx="6.5" cy="6.5" r="1" fill="#FFFFFF" />
+                      <circle cx="3.5" cy="9.5" r="1" fill="#FFFFFF" />
+                      <circle cx="9.5" cy="9.5" r="1" fill="#FFFFFF" />
+                    </svg>
+                  )}
+                  {sec.icon === 'home' && (
+                    <svg class="h-3.5 w-3.5 text-[#D52B1E] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+                    </svg>
+                  )}
+                  {sec.icon === 'building' && (
+                    <svg class="h-3.5 w-3.5 text-[#D52B1E] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/>
+                    </svg>
+                  )}
+                  {sec.icon === 'rocket' && (
+                    <svg class="h-3.5 w-3.5 text-[#D52B1E] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+                    </svg>
+                  )}
+                  {sec.icon === 'chart' && (
+                    <svg class="h-3.5 w-3.5 text-[#D52B1E] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>
+                    </svg>
+                  )}
+                  {sec.icon === 'target' && (
+                    <svg class="h-3.5 w-3.5 text-[#D52B1E] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+                    </svg>
+                  )}
+                  <span class="text-[11.5px] font-bold tracking-wider text-slate-900 dark:text-white group-hover:text-[#D52B1E] dark:group-hover:text-red-400 transition-colors uppercase">
+                    {sec.label}
+                  </span>
+                </div>
+                <p class="text-[10.5px] font-semibold text-[#D52B1E] dark:text-red-400 leading-tight truncate">
+                  {sec.subtitle}
+                </p>
+              </a>
+
+              <!-- Links List -->
+              <div class="space-y-1 pt-2 border-t border-slate-100 dark:border-slate-800/80">
+                {sec.items.map((item) => (
+                  <a
+                    href={item.path}
+                    class="group flex items-center justify-between py-1 px-1 rounded-md text-[12px] font-medium text-slate-600 dark:text-slate-300 hover:text-[#D52B1E] dark:hover:text-red-400 hover:bg-slate-50 dark:hover:bg-slate-900/60 transition-all"
+                  >
+                    <span>{item.label}</span>
+                    <span class="text-[10px] text-slate-300 group-hover:text-[#D52B1E] dark:text-slate-600 dark:group-hover:text-red-400 group-hover:translate-x-0.5 transition-all">
+                      →
+                    </span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Apple-grade Bottom Intelligence Action Strip -->
+        <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800/90 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+          <div class="flex items-center gap-2.5">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-[#D52B1E] dark:bg-red-950/70 dark:text-red-400 border border-red-200/80 dark:border-red-900/50 uppercase tracking-wider">
+              SWISS RADAR ACTIVE
+            </span>
+            <span class="text-slate-500 dark:text-slate-400 text-[11px]">
+              SOGC / SHAB Official Gazette Real-time Synchronization Active • All 26 Cantons
+            </span>
+          </div>
+          <div class="flex items-center gap-4 text-xs font-semibold">
+            <a href="/news" class="text-slate-600 dark:text-slate-300 hover:text-[#D52B1E] dark:hover:text-red-400 transition-colors">
+              Morning Briefings →
             </a>
-          );
-        })}
-      </nav>
+            <a href="/statistiken" class="text-slate-600 dark:text-slate-300 hover:text-[#D52B1E] dark:hover:text-red-400 transition-colors">
+              Cantonal Heatmap →
+            </a>
+            <a href="/unternehmen" class="text-[#D52B1E] dark:text-red-400 hover:underline">
+              Full Corporate Directory →
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- 3. Super-Subtle Ultra-Thin Single-Line Ticker (Pinned Below Navigation) -->
-  <div class="border-t border-b border-slate-200/60 bg-slate-50/90 py-1 px-4 text-[11px] text-slate-600 backdrop-blur-xs dark:border-slate-800/60 dark:bg-slate-900/80 dark:text-slate-400">
+  <!-- 4. Super-Subtle Ultra-Thin Single-Line Ticker (Pinned Below Navigation) -->
+  <div class="border-t border-b border-slate-200/60 bg-slate-50/90 py-1 px-4 text-[11px] text-slate-600 backdrop-blur-xs dark:border-slate-800/60 dark:bg-slate-900/80 dark:text-slate-400 transition-colors">
     <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 overflow-x-auto no-scrollbar">
       <div class="flex items-center gap-2 shrink-0">
         <span class="inline-flex items-center rounded-full bg-red-100 px-2 py-0.2 text-[9px] font-bold tracking-wider text-[#D52B1E] uppercase dark:bg-red-950/60 dark:text-red-400">
@@ -195,18 +471,109 @@ const languages = [
     </div>
   </div>
 
-  <!-- Mobile Drawer Menu -->
-  <div id="mobile-menu-drawer" class="hidden border-b border-slate-200 bg-white px-4 py-5 shadow-lg lg:hidden dark:border-slate-800 dark:bg-slate-950">
+  <!-- 5. Mobile Drawer Menu with Smooth Accordions -->
+  <div id="mobile-menu-drawer" class="hidden border-b border-slate-200 bg-white px-4 py-5 shadow-lg lg:hidden dark:border-slate-800 dark:bg-slate-950 max-h-[85vh] overflow-y-auto">
+    <!-- Mobile Search -->
+    <div class="mb-4">
+      <form action="/news" method="GET" class="relative">
+        <input
+          type="text"
+          name="search"
+          placeholder="Search Swiss intelligence..."
+          class="w-full rounded-full border border-slate-200 bg-slate-50 py-2 pl-4 pr-10 text-sm text-slate-900 outline-none focus:border-[#D52B1E] dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+        />
+        <button type="submit" aria-label="Search" class="absolute right-3 top-2.5 text-slate-400">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </button>
+      </form>
+    </div>
+
+    <!-- Accordion Sections -->
     <div class="space-y-1.5">
-      {navItems.map((item) => (
-        <a
-          href={item.path}
-          class="block rounded-xl px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white"
-        >
-          {item.label}
-        </a>
+      {sectionsData.map((sec) => (
+        <div class="border-b border-slate-100 dark:border-slate-850 py-1">
+          <button
+            type="button"
+            class="mobile-sec-toggle flex w-full items-center justify-between py-2 text-left text-sm font-bold text-slate-800 dark:text-slate-200"
+            data-target={`mob-sec-${sec.id}`}
+          >
+            <div class="flex items-center gap-2">
+              {sec.flag === 'swiss' && (
+                <svg width="15" height="11" viewBox="0 0 32 24" class="rounded-xs shrink-0 shadow-xs">
+                  <rect width="32" height="24" fill="#D52B1E" />
+                  <rect x="13" y="4" width="6" height="16" fill="#FFFFFF" />
+                  <rect x="7" y="9" width="18" height="6" fill="#FFFFFF" />
+                </svg>
+              )}
+              {sec.flag === 'usa' && (
+                <svg width="15" height="11" viewBox="0 0 32 24" class="rounded-xs shrink-0 shadow-xs">
+                  <rect width="32" height="24" fill="#B22234" />
+                  <rect y="3.69" width="32" height="1.85" fill="#FFFFFF" />
+                  <rect y="7.38" width="32" height="1.85" fill="#FFFFFF" />
+                  <rect y="11.08" width="32" height="1.85" fill="#FFFFFF" />
+                  <rect y="14.77" width="32" height="1.85" fill="#FFFFFF" />
+                  <rect y="18.46" width="32" height="1.85" fill="#FFFFFF" />
+                  <rect y="22.15" width="32" height="1.85" fill="#FFFFFF" />
+                  <rect width="13" height="13" fill="#3C3B6E" />
+                  <circle cx="3.5" cy="3.5" r="1" fill="#FFFFFF" />
+                  <circle cx="9.5" cy="3.5" r="1" fill="#FFFFFF" />
+                  <circle cx="6.5" cy="6.5" r="1" fill="#FFFFFF" />
+                  <circle cx="3.5" cy="9.5" r="1" fill="#FFFFFF" />
+                  <circle cx="9.5" cy="9.5" r="1" fill="#FFFFFF" />
+                </svg>
+              )}
+              {sec.icon === 'home' && (
+                <svg class="h-3.5 w-3.5 text-[#D52B1E] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+              )}
+              {sec.icon === 'building' && (
+                <svg class="h-3.5 w-3.5 text-[#D52B1E] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/>
+                </svg>
+              )}
+              {sec.icon === 'rocket' && (
+                <svg class="h-3.5 w-3.5 text-[#D52B1E] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+                </svg>
+              )}
+              {sec.icon === 'chart' && (
+                <svg class="h-3.5 w-3.5 text-[#D52B1E] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>
+                </svg>
+              )}
+              {sec.icon === 'target' && (
+                <svg class="h-3.5 w-3.5 text-[#D52B1E] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+                </svg>
+              )}
+              <span>{sec.label}</span>
+            </div>
+            <svg class="mob-chevron h-4 w-4 text-slate-400 transition-transform duration-200" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+            </svg>
+          </button>
+          
+          <div id={`mob-sec-${sec.id}`} class="mobile-sec-content hidden flex-col gap-1 px-3 py-2 bg-slate-50 dark:bg-slate-900/60 rounded-xl my-1">
+            <a href={sec.path} class="text-xs font-bold text-[#D52B1E] dark:text-red-400 py-1 border-b border-slate-200/60 dark:border-slate-800">
+              Overview: {sec.subtitle} →
+            </a>
+            {sec.items.map((item) => (
+              <a
+                href={item.path}
+                class="block py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-[#D52B1E] dark:hover:text-red-400 transition-colors"
+              >
+                {item.label}
+              </a>
+            ))}
+          </div>
+        </div>
       ))}
-      <div class="mt-4 border-t border-slate-100 pt-3 dark:border-slate-800">
+
+      <!-- Mobile Footer Action -->
+      <div class="mt-4 pt-3 border-t border-slate-150 dark:border-slate-800 space-y-2">
         <a
           href="/admin"
           class="flex w-full items-center justify-center rounded-full bg-[#D52B1E] py-2.5 text-xs font-bold text-white shadow-xs"
@@ -261,7 +628,73 @@ const languages = [
     });
   }
 
-  // Mobile Menu Drawer
+  // Desktop Mega Menu Logic (Smooth Hover + Toggle + Keyboard Accessibility)
+  const navTabsContainer = document.getElementById('nav-tabs-container');
+  const megaMenu = document.getElementById('desktop-mega-menu');
+  const megaTriggerBtn = document.getElementById('mega-menu-trigger-btn');
+  const megaChevron = document.getElementById('mega-chevron');
+  let megaTimer = null;
+  let isPinned = false;
+
+  function openMega() {
+    if (megaTimer) clearTimeout(megaTimer);
+    megaMenu?.classList.add('is-open');
+    megaTriggerBtn?.setAttribute('aria-expanded', 'true');
+    if (megaChevron) megaChevron.style.transform = 'rotate(180deg)';
+  }
+
+  function closeMega() {
+    if (isPinned) return;
+    if (megaTimer) clearTimeout(megaTimer);
+    megaTimer = setTimeout(() => {
+      megaMenu?.classList.remove('is-open');
+      megaTriggerBtn?.setAttribute('aria-expanded', 'false');
+      if (megaChevron) megaChevron.style.transform = 'rotate(0deg)';
+    }, 180);
+  }
+
+  if (navTabsContainer && megaMenu) {
+    navTabsContainer.addEventListener('mouseenter', openMega);
+    navTabsContainer.addEventListener('mouseleave', closeMega);
+    megaMenu.addEventListener('mouseenter', openMega);
+    megaMenu.addEventListener('mouseleave', closeMega);
+  }
+
+  if (megaTriggerBtn && megaMenu) {
+    megaTriggerBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (isPinned) {
+        isPinned = false;
+        megaMenu.classList.remove('is-open');
+        megaTriggerBtn.setAttribute('aria-expanded', 'false');
+        if (megaChevron) megaChevron.style.transform = 'rotate(0deg)';
+      } else {
+        isPinned = true;
+        openMega();
+      }
+    });
+  }
+
+  // Close Mega Menu on Click Outside or Escape
+  document.addEventListener('click', (e) => {
+    if (megaMenu && !megaMenu.contains(e.target) && !megaTriggerBtn?.contains(e.target) && !navTabsContainer?.contains(e.target)) {
+      isPinned = false;
+      megaMenu.classList.remove('is-open');
+      if (megaChevron) megaChevron.style.transform = 'rotate(0deg)';
+      megaTriggerBtn?.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && megaMenu) {
+      isPinned = false;
+      megaMenu.classList.remove('is-open');
+      if (megaChevron) megaChevron.style.transform = 'rotate(0deg)';
+      megaTriggerBtn?.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // Mobile Drawer Toggle
   const mobileBtn = document.getElementById('mobile-menu-btn');
   const mobileDrawer = document.getElementById('mobile-menu-drawer');
   if (mobileBtn && mobileDrawer) {
@@ -269,4 +702,38 @@ const languages = [
       mobileDrawer.classList.toggle('hidden');
     });
   }
+
+  // Mobile Accordion Items
+  document.querySelectorAll('.mobile-sec-toggle').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.getAttribute('data-target');
+      const targetContent = document.getElementById(targetId);
+      const chevron = btn.querySelector('.mob-chevron');
+      if (targetContent) {
+        const isHidden = targetContent.classList.contains('hidden');
+        // Close others
+        document.querySelectorAll('.mobile-sec-content').forEach((c) => c.classList.add('hidden'));
+        document.querySelectorAll('.mob-chevron').forEach((i) => i.style.transform = 'rotate(0deg)');
+        if (isHidden) {
+          targetContent.classList.remove('hidden');
+          if (chevron) chevron.style.transform = 'rotate(180deg)';
+        }
+      }
+    });
+  });
 </script>
+
+<style>
+  #desktop-mega-menu {
+    display: none;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  #desktop-mega-menu.is-open {
+    display: block !important;
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+    pointer-events: auto !important;
+  }
+</style>
