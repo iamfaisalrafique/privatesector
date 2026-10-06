@@ -54,3 +54,9 @@ traefik-bin/
 
 # Impeccable skill artifacts
 .impeccable/
+
+# Test artifacts & screenshots
+docs/screenshot_*.png
+scripts/*.png
+scripts/live_inspection_data.json
+

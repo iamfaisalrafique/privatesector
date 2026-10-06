@@ -1,0 +1,201 @@
+{
+  "id": 3,
+  "jsonrpc": "2.0",
+  "result": {
+    "content": [
+      {
+        "text": "{\"name\":\"projects/3778423755897913498\",\"title\":\"PrivateSector Google Material 3 Expressive & Apple Polish Redesign\",\"visibility\":\"PRIVATE\",\"createTime\":\"2026-10-06T17:09:36.725660Z\",\"updateTime\":\"2026-10-06T17:11:49.785484Z\",\"projectType\":\"PROJECT_DESIGN\",\"thumbnailScreenshot\":{\"name\":\"projects/3778423755897913498/files/fa095ee2ed164dea97f1e11e38bcc4f5\",\"downloadUrl\":\"https://lh3.googleusercontent.com/aida/AEtjO1UJMYeY7sM4FS4B_BvBt58RMkVb-5IXvA4YVxyvHCxfPIA1nfTGuKzL2y0F67FGrqJdUej8Jv3y2322TLn1WzSPjesp58FGQ9KccwcSmvgNGthFXocEUNubP_t7O8Vl2UEKGKBauszovUc1zzhikn0TFj5LTfleeBIpgYEczGZMD_AdZe8JcXsecNbZ83-1UCLCqAKCj-AlkxvPTUT4A3rlXPx6yoxLraQCZnBVqWuTwgCsnJynw_ddW64\"},\"origin\":\"STITCH\",\"deviceType\":\"MOBILE\",\"designTheme\":{\"colorMode\":\"LIGHT\",\"font\":\"INTER\",\"roundness\":\"ROUND_FOUR\",\"customColor\":\"#d52b1e\",\"headlineFont\":\"INTER\",\"bodyFont\":\"INTER\",\"labelFont\":\"JETBRAINS_MONO\",\"namedColors\":{\"on_primary_fixed\":\"#410000\",\"secondary_container\":\"#dae2fd\",\"on_background\":\"#0b1c30\",\"surface_container\":\"#e5eeff\",\"tertiary\":\"#4a586c\",\"on_tertiary\":\"#ffffff\",\"primary_container\":\"#d52b1e\",\"on_secondary_fixed_variant\":\"#3f465c\",\"primary_fixed_dim\":\"#ffb4a8\",\"inverse_surface\":\"#213145\",\"on_primary_container\":\"#fff1ef\",\"on_surface\":\"#0b1c30\",\"inverse_on_surface\":\"#eaf1ff\",\"tertiary_fixed\":\"#d5e3fc\",\"surface_container_lowest\":\"#ffffff\",\"surface\":\"#f8f9ff\",\"surface_container_low\":\"#eff4ff\",\"on_surface_variant\":\"#5c403b\",\"on_error\":\"#ffffff\",\"background\":\"#f8f9ff\",\"secondary\":\"#565e74\",\"on_primary_fixed_variant\":\"#930001\",\"outline_variant\":\"#e5bdb7\",\"on_secondary_fixed\":\"#131b2e\",\"outline\":\"#906f6a\",\"surface_tint\":\"#bc160e\",\"primary_fixed\":\"#ffdad5\",\"on_primary\":\"#ffffff\",\"surface_dim\":\"#cbdbf5\",\"tertiary_container\":\"#627085\",\"on_tertiary_container\":\"#eff3ff\",\"on_tertiary_fixed_variant\":\"#3a485b\",\"on_secondary_container\":\"#5c647a\",\"on_error_container\":\"#93000a\",\"surface_container_high\":\"#dce9ff\",\"secondary_fixed_dim\":\"#bec6e0\",\"secondary_fixed\":\"#dae2fd\",\"error\":\"#ba1a1a\",\"on_secondary\":\"#ffffff\",\"on_tertiary_fixed\":\"#0d1c2e\",\"tertiary_fixed_dim\":\"#b9c7df\",\"primary\":\"#b10806\",\"surface_container_highest\":\"#d3e4fe\",\"surface_bright\":\"#f8f9ff\",\"inverse_primary\":\"#ffb4a8\",\"surface_variant\":\"#d3e4fe\",\"error_container\":\"#ffdad6\"},\"designMd\":\"---\\nname: Helvetic Precision Intelligence\\ncolors:\\n  surface: '#f8f9ff'\\n  surface-dim: '#cbdbf5'\\n  surface-bright: '#f8f9ff'\\n  surface-container-lowest: '#ffffff'\\n  surface-container-low: '#eff4ff'\\n  surface-container: '#e5eeff'\\n  surface-container-high: '#dce9ff'\\n  surface-container-highest: '#d3e4fe'\\n  on-surface: '#0b1c30'\\n  on-surface-variant: '#5c403b'\\n  inverse-surface: '#213145'\\n  inverse-on-surface: '#eaf1ff'\\n  outline: '#906f6a'\\n  outline-variant: '#e5bdb7'\\n  surface-tint: '#bc160e'\\n  primary: '#b10806'\\n  on-primary: '#ffffff'\\n  primary-container: '#d52b1e'\\n  on-primary-container: '#fff1ef'\\n  inverse-primary: '#ffb4a8'\\n  secondary: '#565e74'\\n  on-secondary: '#ffffff'\\n  secondary-container: '#dae2fd'\\n  on-secondary-container: '#5c647a'\\n  tertiary: '#4a586c'\\n  on-tertiary: '#ffffff'\\n  tertiary-container: '#627085'\\n  on-tertiary-container: '#eff3ff'\\n  error: '#ba1a1a'\\n  on-error: '#ffffff'\\n  error-container: '#ffdad6'\\n  on-error-container: '#93000a'\\n  primary-fixed: '#ffdad5'\\n  primary-fixed-dim: '#ffb4a8'\\n  on-primary-fixed: '#410000'\\n  on-primary-fixed-variant: '#930001'\\n  secondary-fixed: '#dae2fd'\\n  secondary-fixed-dim: '#bec6e0'\\n  on-secondary-fixed: '#131b2e'\\n  on-secondary-fixed-variant: '#3f465c'\\n  tertiary-fixed: '#d5e3fc'\\n  tertiary-fixed-dim: '#b9c7df'\\n  on-tertiary-fixed: '#0d1c2e'\\n  on-tertiary-fixed-variant: '#3a485b'\\n  background: '#f8f9ff'\\n  on-background: '#0b1c30'\\n  surface-variant: '#d3e4fe'\\ntypography:\\n  display-lg:\\n    fontFamily: Inter\\n    fontSize: 56px\\n    fontWeight: '700'\\n    lineHeight: 64px\\n    letterSpacing: -0.03em\\n  display-lg-mobile:\\n    fontFamily: Inter\\n    fontSize: 36px\\n    fontWeight: '700'\\n    lineHeight: 44px\\n    letterSpacing: -0.025em\\n  headline-lg:\\n    fontFamily: Inter\\n    fontSize: 32px\\n    fontWeight: '600'\\n    lineHeight: 40px\\n    letterSpacing: -0.02em\\n  headline-lg-mobile:\\n    fontFamily: Inter\\n    fontSize: 26px\\n    fontWeight: '600'\\n    lineHeight: 32px\\n    letterSpacing: -0.015em\\n  headline-md:\\n    fontFamily: Inter\\n    fontSize: 24px\\n    fontWeight: '600'\\n    lineHeight: 32px\\n    letterSpacing: -0.015em\\n  headline-sm:\\n    fontFamily: Inter\\n    fontSize: 20px\\n    fontWeight: '600'\\n    lineHeight: 28px\\n    letterSpacing: -0.01em\\n  title-md:\\n    fontFamily: Inter\\n    fontSize: 16px\\n    fontWeight: '600'\\n    lineHeight: 24px\\n    letterSpacing: -0.005em\\n  body-lg:\\n    fontFamily: Inter\\n    fontSize: 16px\\n    fontWeight: '400'\\n    lineHeight: 26px\\n    letterSpacing: -0.005em\\n  body-md:\\n    fontFamily: Inter\\n    fontSize: 14px\\n    fontWeight: '400'\\n    lineHeight: 22px\\n    letterSpacing: 0em\\n  body-sm:\\n    fontFamily: Inter\\n    fontSize: 13px\\n    fontWeight: '400'\\n    lineHeight: 18px\\n    letterSpacing: 0.005em\\n  label-lg:\\n    fontFamily: JetBrains Mono\\n    fontSize: 13px\\n    fontWeight: '500'\\n    lineHeight: 16px\\n    letterSpacing: 0.02em\\n  label-md:\\n    fontFamily: JetBrains Mono\\n    fontSize: 11px\\n    fontWeight: '500'\\n    lineHeight: 14px\\n    letterSpacing: 0.04em\\n  label-sm:\\n    fontFamily: JetBrains Mono\\n    fontSize: 10px\\n    fontWeight: '600'\\n    lineHeight: 12px\\n    letterSpacing: 0.06em\\nrounded:\\n  sm: 0.125rem\\n  DEFAULT: 0.25rem\\n  md: 0.375rem\\n  lg: 0.5rem\\n  xl: 0.75rem\\n  full: 9999px\\nspacing:\\n  gutter: 1.5rem\\n  gutter-sm: 1rem\\n  margin: 2.5rem\\n  margin-sm: 1rem\\n  space-xs: 0.25rem\\n  space-sm: 0.5rem\\n  space-md: 1rem\\n  space-lg: 1.5rem\\n  space-xl: 2.5rem\\n---\\n\\n## Brand & Style\\n\\nThis design system embodies the tension between Swiss graphic discipline and contemporary sovereign intelligence. Designed for private wealth managers, geopolitical strategists, and institutional investors interacting with macroeconomic datasets, the interface projects absolute discretion, structural integrity, and architectural clarity.\\n\\nThe aesthetic fuses mid-century Swiss Style (die Neue Graphik) with Apple-grade tactile finish and Material 3 Expressive utility:\\n- **Architectural Rigor**: Relentless horizontal and vertical grid alignment, high-contrast monochrome foundations, and razor-sharp division lines.\\n- **Precision Micro-Craftsmanship**: Subtle specular highlights, hair-line optical borders (1px, sub-pixel rendering), and glass-frosted contextual overlays.\\n- **Sovereign Accentuation**: The iconic Federal Red accent acts exclusively as an editorial punctum—marking critical delta anomalies, verified status badges, and imperative calls to action without polluting analytical space.\\n- **Controlled Density**: Extreme information density executed with scrupulous typographic rhythm, preventing visual fatigue across data-intensive financial instruments.\\n\\n## Colors\\n\\nThe palette establishes an authoritative, high-contrast environment rooted in Swiss monochrome traditions, complemented by surgical operational accents.\\n\\n### Palette Architecture\\n- **Primary (`#D52B1E`)**: Federal Swiss Vermilion. Reserved strictly for primary state anchors, alert flags, negative financial variance, and sovereign confirmation states. It is never used for broad surface fills.\\n- **Secondary (`#0F172A`)**: Deep Graphite Slate. Forms the authoritative core—display typography, focused navigation planes, and high-impact structural framing in light mode.\\n- **Tertiary (`#475569`)**: Structural Steel. Utilized for meta-labels, directional icons, muted analytical toggles, and data grid headers.\\n- **Neutral (`#64748B`)**: Precision Slate. Drives subtle borders, micro-grids, inactive divider rules, and secondary analytical text.\\n\\n### Surface System\\n- **Light Mode (Default)**:\\n  - Base Canvas: `#FFFFFF`\\n  - Elevated Surface: `#F8FAFC`\\n  - Accent Inset Canvas: `#F1F5F9`\\n  - Hairline Rule: `#E2E8F0`\\n- **Dark Mode Support**:\\n  - Base Canvas: `#020617`\\n  - Elevated Surface: `#0F172A`\\n  - Accent Inset Canvas: `#1E293B`\\n  - Hairline Rule: `#334155`\\n\\n## Typography\\n\\nTypographic execution prioritizes cold legibility and mathematical proportions.\\n\\n- **Primary Matrix (Inter)**: Handles all structural hierarchy, narrative synthesis, and body copy. OpenType features must activate tabular figures (`tnum`), slashed zero (`zero`), and contextual alternates (`calt`) for absolute visual stability during real-time data streaming.\\n- **Analytical Matrix (JetBrains Mono)**: Exclusively designated for ticker codes, currency denominations, percentage variations, transaction hashes, and metadata stamps. Its mechanical spacing maintains strict horizontal and vertical alignment across analytical tables.\\n- **Case Conventions**: Section indices, column category labels, and institutional status chips must be formatted in full uppercase with expanded tracking (`0.04em` to `0.06em`).\\n\\n## Layout & Spacing\\n\\nThe layout is structured around an asymmetrical 12-column master grid engineered for multi-pane financial intelligence.\\n\\n### Grid Geometry\\n- **Desktop (1440px+)**: 12-column grid, `2.5rem` outside margin, `1.5rem` gutters. Content containers can lock to a maximum width of `1600px` to maintain optimal data scanning distances.\\n- **Tablet (768px – 1439px)**: 8-column grid, `1.5rem` outside margin, `1rem` gutters. Secondary analytical panels collapse into slide-out drawer sheets.\\n- **Mobile (\\u003c 768px)**: 4-column grid, `1rem` outside margin, `1rem` gutters. High-density data tables convert to vertically stacked ledger cells.\\n\\n### Rhythm & Alignment\\nSpacing adheres strictly to a 4px baseline sub-grid. Component padding scales cleanly from `space-xs` (compact table cells, status tags) through `space-xl` (section breaks, dashboard module boundaries). White space is never purely decorative; it functions as an active structural divider to separate complex operational domains.\\n\\n## Elevation & Depth\\n\\nVisual hierarchy rejects exaggerated drop shadows in favor of a dual-layer strategy: crisp physical perimeter lines paired with soft Apple-inspired ambient diffusion and frosted blurs.\\n\\n### Structural Layering\\n1. **Level 0 (Base Canvas)**: Monolithic background plane (`#FFFFFF` in light, `#020617` in dark).\\n2. **Level 1 (Docked Containers & Grids)**: Crisp 1px solid border (`#E2E8F0` / `#334155`), zero blur shadow. Structural surfaces stay flat to maximize legibility.\\n3. **Level 2 (Hover Surfaces & Interactive Cards)**: Ambient depth via `0 4px 16px -2px rgba(15, 23, 42, 0.04), 0 1px 2px 0 rgba(15, 23, 42, 0.02)`.\\n4. **Level 3 (Command Palettes, Popovers & Context Menus)**: Frosted backdrop blur (`backdrop-filter: blur(16px)`), 85% opacity surface tint, paired with an inner optical hairline highlight (`inset 0 1px 0 0 rgba(255, 255, 255, 0.6)` in light mode, `inset 0 1px 0 0 rgba(255, 255, 255, 0.08)` in dark mode).\\n5. **Level 4 (Modals & Sovereign Alerts)**: Elevated floating scrim with deep ambient light dispersion: `0 24px 48px -12px rgba(15, 23, 42, 0.18)`.\\n\\n## Shapes\\n\\nThe design system implements a disciplined geometric posture (`roundedness: 1`), keeping analytical and structural elements grounded while employing full capsules purely for dynamic state indicators.\\n\\n### Geometry Rules\\n- **Base Components**: Standard containers, data cards, analytical blocks, and input fields utilize `0.25rem` (4px) corner radii. This produces a tailored, architectural silhouette that respects strict grid alignments.\\n- **Intermediate Modals & Flyouts**: Sized at `0.5rem` (8px) using `rounded-lg`.\\n- **Pills & Status Micro-Badges**: Sized using full radius (`9999px`) to create an immediate visual distinction between functional UI surfaces and semantic status indicators (e.g., market open/closed, verified Swiss legal entity chips, volatility index tags).\\n\\n## Components\\n\\n### Buttons\\n- **Primary**: Solid Deep Slate (`#0F172A`) fill, pure white text, `4px` corner radius. Subtle inner bevel (`inset 0 1px 0 rgba(255, 255, 255, 0.15)`). Hover triggers a transition to `#1E293B` with 100ms cubic-bezier curve.\\n- **Sovereign Alert (Action)**: Solid Swiss Red (`#D52B1E`) fill, pure white text. Reserved for decisive analytical overrides, secure logins, or emergency trading circuit breakers.\\n- **Secondary / Outline**: 1px perimeter border (`#E2E8F0`), transparent background, slate text. On hover, background shifts to `#F8FAFC`.\\n- **Ghost**: Zero perimeter border, tabular mono text, slate-tinted hover state.\\n\\n### Input Fields\\n- Razor-thin 1px border (`#CBD5E1`), 4px border radius, white background.\\n- Focus state switches border to `#0F172A` with an ambient `0 0 0 1px #0F172A` ring; never utilizes fuzzy glow rings.\\n- Placeholder text rendered in muted neutral mono typography (`label-md`).\\n\\n### Data Chips & Badges\\n- Continuous pill form (`9999px` border radius).\\n- Neutral variant: `#F1F5F9` background, `#0F172A` mono typography (`label-sm`).\\n- Critical Swiss indicator: Soft vermilion tint background (`rgba(213, 43, 30, 0.08)`), solid `#D52B1E` text, and a real-time pulsing 6px dot indicator.\\n\\n### Data Cards & Analytical Tables\\n- Cards use explicit 1px exterior borders (`#E2E8F0`) with 4px border radii; no drop shadows in resting state.\\n- Table headers set in JetBrains Mono uppercase (`label-sm`), `#475569`, tracking `0.06em`, pinned with a 1px border-b division.\\n- Rows feature interactive hover states with immediate color transitions to `#F8FAFC`, maintaining hairline horizontal dividers (`#F1F5F9`).\\n\\n### Checkboxes & Segmented Controls\\n- **Checkboxes**: 14x14px square boxes with 2px radius. In active state, filled with `#0F172A` and marked with an optical 1.5px white checkmark vector.\\n- **Segmented Sliders**: Pill or 4px container with a recessed `#F1F5F9` background. Active selection slides across an elevated white chip surface secured with a 1px border and micro-shadow (`0 1px 3px rgba(0, 0, 0, 0.08)`).\",\"colorVariant\":\"FIDELITY\",\"overridePrimaryColor\":\"#d52b1e\",\"overrideSecondaryColor\":\"#0f172a\",\"overrideTertiaryColor\":\"#475569\",\"overrideNeutralColor\":\"#64748b\",\"spacingScale\":2,\"typography\":{\"body-md\":{\"fontFamily\":\"Inter\",\"fontSize\":\"14px\",\"fontWeight\":\"400\",\"lineHeight\":\"22px\",\"letterSpacing\":\"0em\"},\"label-sm\":{\"fontFamily\":\"JetBrains Mono\",\"fontSize\":\"10px\",\"fontWeight\":\"600\",\"lineHeight\":\"12px\",\"letterSpacing\":\"0.06em\"},\"display-lg\":{\"fontFamily\":\"Inter\",\"fontSize\":\"56px\",\"fontWeight\":\"700\",\"lineHeight\":\"64px\",\"letterSpacing\":\"-0.03em\"},\"title-md\":{\"fontFamily\":\"Inter\",\"fontSize\":\"16px\",\"fontWeight\":\"600\",\"lineHeight\":\"24px\",\"letterSpacing\":\"-0.005em\"},\"headline-lg\":{\"fontFamily\":\"Inter\",\"fontSize\":\"32px\",\"fontWeight\":\"600\",\"lineHeight\":\"40px\",\"letterSpacing\":\"-0.02em\"},\"label-lg\":{\"fontFamily\":\"JetBrains Mono\",\"fontSize\":\"13px\",\"fontWeight\":\"500\",\"lineHeight\":\"16px\",\"letterSpacing\":\"0.02em\"},\"headline-sm\":{\"fontFamily\":\"Inter\",\"fontSize\":\"20px\",\"fontWeight\":\"600\",\"lineHeight\":\"28px\",\"letterSpacing\":\"-0.01em\"},\"headline-lg-mobile\":{\"fontFamily\":\"Inter\",\"fontSize\":\"26px\",\"fontWeight\":\"600\",\"lineHeight\":\"32px\",\"letterSpacing\":\"-0.015em\"},\"label-md\":{\"fontFamily\":\"JetBrains Mono\",\"fontSize\":\"11px\",\"fontWeight\":\"500\",\"lineHeight\":\"14px\",\"letterSpacing\":\"0.04em\"},\"headline-md\":{\"fontFamily\":\"Inter\",\"fontSize\":\"24px\",\"fontWeight\":\"600\",\"lineHeight\":\"32px\",\"letterSpacing\":\"-0.015em\"},\"display-lg-mobile\":{\"fontFamily\":\"Inter\",\"fontSize\":\"36px\",\"fontWeight\":\"700\",\"lineHeight\":\"44px\",\"letterSpacing\":\"-0.025em\"},\"body-sm\":{\"fontFamily\":\"Inter\",\"fontSize\":\"13px\",\"fontWeight\":\"400\",\"lineHeight\":\"18px\",\"letterSpacing\":\"0.005em\"},\"body-lg\":{\"fontFamily\":\"Inter\",\"fontSize\":\"16px\",\"fontWeight\":\"400\",\"lineHeight\":\"26px\",\"letterSpacing\":\"-0.005em\"}},\"spacing\":{\"space-xs\":\"0.25rem\",\"space-md\":\"1rem\",\"gutter\":\"1.5rem\",\"space-xl\":\"2.5rem\",\"gutter-sm\":\"1rem\",\"space-sm\":\"0.5rem\",\"margin-sm\":\"1rem\",\"margin\":\"2.5rem\",\"space-lg\":\"1.5rem\"},\"headlineFontFamily\":\"Inter\",\"bodyFontFamily\":\"Inter\",\"labelFontFamily\":\"JetBrains Mono\"},\"metadata\":{\"userRole\":\"OWNER\"}}",
+        "type": "text"
+      }
+    ],
+    "structuredContent": {
+      "createTime": "2026-10-06T17:09:36.725660Z",
+      "designTheme": {
+        "bodyFont": "INTER",
+        "bodyFontFamily": "Inter",
+        "colorMode": "LIGHT",
+        "colorVariant": "FIDELITY",
+        "customColor": "#d52b1e",
+        "designMd": "---\nname: Helvetic Precision Intelligence\ncolors:\n  surface: '#f8f9ff'\n  surface-dim: '#cbdbf5'\n  surface-bright: '#f8f9ff'\n  surface-container-lowest: '#ffffff'\n  surface-container-low: '#eff4ff'\n  surface-container: '#e5eeff'\n  surface-container-high: '#dce9ff'\n  surface-container-highest: '#d3e4fe'\n  on-surface: '#0b1c30'\n  on-surface-variant: '#5c403b'\n  inverse-surface: '#213145'\n  inverse-on-surface: '#eaf1ff'\n  outline: '#906f6a'\n  outline-variant: '#e5bdb7'\n  surface-tint: '#bc160e'\n  primary: '#b10806'\n  on-primary: '#ffffff'\n  primary-container: '#d52b1e'\n  on-primary-container: '#fff1ef'\n  inverse-primary: '#ffb4a8'\n  secondary: '#565e74'\n  on-secondary: '#ffffff'\n  secondary-container: '#dae2fd'\n  on-secondary-container: '#5c647a'\n  tertiary: '#4a586c'\n  on-tertiary: '#ffffff'\n  tertiary-container: '#627085'\n  on-tertiary-container: '#eff3ff'\n  error: '#ba1a1a'\n  on-error: '#ffffff'\n  error-container: '#ffdad6'\n  on-error-container: '#93000a'\n  primary-fixed: '#ffdad5'\n  primary-fixed-dim: '#ffb4a8'\n  on-primary-fixed: '#410000'\n  on-primary-fixed-variant: '#930001'\n  secondary-fixed: '#dae2fd'\n  secondary-fixed-dim: '#bec6e0'\n  on-secondary-fixed: '#131b2e'\n  on-secondary-fixed-variant: '#3f465c'\n  tertiary-fixed: '#d5e3fc'\n  tertiary-fixed-dim: '#b9c7df'\n  on-tertiary-fixed: '#0d1c2e'\n  on-tertiary-fixed-variant: '#3a485b'\n  background: '#f8f9ff'\n  on-background: '#0b1c30'\n  surface-variant: '#d3e4fe'\ntypography:\n  display-lg:\n    fontFamily: Inter\n    fontSize: 56px\n    fontWeight: '700'\n    lineHeight: 64px\n    letterSpacing: -0.03em\n  display-lg-mobile:\n    fontFamily: Inter\n    fontSize: 36px\n    fontWeight: '700'\n    lineHeight: 44px\n    letterSpacing: -0.025em\n  headline-lg:\n    fontFamily: Inter\n    fontSize: 32px\n    fontWeight: '600'\n    lineHeight: 40px\n    letterSpacing: -0.02em\n  headline-lg-mobile:\n    fontFamily: Inter\n    fontSize: 26px\n    fontWeight: '600'\n    lineHeight: 32px\n    letterSpacing: -0.015em\n  headline-md:\n    fontFamily: Inter\n    fontSize: 24px\n    fontWeight: '600'\n    lineHeight: 32px\n    letterSpacing: -0.015em\n  headline-sm:\n    fontFamily: Inter\n    fontSize: 20px\n    fontWeight: '600'\n    lineHeight: 28px\n    letterSpacing: -0.01em\n  title-md:\n    fontFamily: Inter\n    fontSize: 16px\n    fontWeight: '600'\n    lineHeight: 24px\n    letterSpacing: -0.005em\n  body-lg:\n    fontFamily: Inter\n    fontSize: 16px\n    fontWeight: '400'\n    lineHeight: 26px\n    letterSpacing: -0.005em\n  body-md:\n    fontFamily: Inter\n    fontSize: 14px\n    fontWeight: '400'\n    lineHeight: 22px\n    letterSpacing: 0em\n  body-sm:\n    fontFamily: Inter\n    fontSize: 13px\n    fontWeight: '400'\n    lineHeight: 18px\n    letterSpacing: 0.005em\n  label-lg:\n    fontFamily: JetBrains Mono\n    fontSize: 13px\n    fontWeight: '500'\n    lineHeight: 16px\n    letterSpacing: 0.02em\n  label-md:\n    fontFamily: JetBrains Mono\n    fontSize: 11px\n    fontWeight: '500'\n    lineHeight: 14px\n    letterSpacing: 0.04em\n  label-sm:\n    fontFamily: JetBrains Mono\n    fontSize: 10px\n    fontWeight: '600'\n    lineHeight: 12px\n    letterSpacing: 0.06em\nrounded:\n  sm: 0.125rem\n  DEFAULT: 0.25rem\n  md: 0.375rem\n  lg: 0.5rem\n  xl: 0.75rem\n  full: 9999px\nspacing:\n  gutter: 1.5rem\n  gutter-sm: 1rem\n  margin: 2.5rem\n  margin-sm: 1rem\n  space-xs: 0.25rem\n  space-sm: 0.5rem\n  space-md: 1rem\n  space-lg: 1.5rem\n  space-xl: 2.5rem\n---\n\n## Brand & Style\n\nThis design system embodies the tension between Swiss graphic discipline and contemporary sovereign intelligence. Designed for private wealth managers, geopolitical strategists, and institutional investors interacting with macroeconomic datasets, the interface projects absolute discretion, structural integrity, and architectural clarity.\n\nThe aesthetic fuses mid-century Swiss Style (die Neue Graphik) with Apple-grade tactile finish and Material 3 Expressive utility:\n- **Architectural Rigor**: Relentless horizontal and vertical grid alignment, high-contrast monochrome foundations, and razor-sharp division lines.\n- **Precision Micro-Craftsmanship**: Subtle specular highlights, hair-line optical borders (1px, sub-pixel rendering), and glass-frosted contextual overlays.\n- **Sovereign Accentuation**: The iconic Federal Red accent acts exclusively as an editorial punctum—marking critical delta anomalies, verified status badges, and imperative calls to action without polluting analytical space.\n- **Controlled Density**: Extreme information density executed with scrupulous typographic rhythm, preventing visual fatigue across data-intensive financial instruments.\n\n## Colors\n\nThe palette establishes an authoritative, high-contrast environment rooted in Swiss monochrome traditions, complemented by surgical operational accents.\n\n### Palette Architecture\n- **Primary (`#D52B1E`)**: Federal Swiss Vermilion. Reserved strictly for primary state anchors, alert flags, negative financial variance, and sovereign confirmation states. It is never used for broad surface fills.\n- **Secondary (`#0F172A`)**: Deep Graphite Slate. Forms the authoritative core—display typography, focused navigation planes, and high-impact structural framing in light mode.\n- **Tertiary (`#475569`)**: Structural Steel. Utilized for meta-labels, directional icons, muted analytical toggles, and data grid headers.\n- **Neutral (`#64748B`)**: Precision Slate. Drives subtle borders, micro-grids, inactive divider rules, and secondary analytical text.\n\n### Surface System\n- **Light Mode (Default)**:\n  - Base Canvas: `#FFFFFF`\n  - Elevated Surface: `#F8FAFC`\n  - Accent Inset Canvas: `#F1F5F9`\n  - Hairline Rule: `#E2E8F0`\n- **Dark Mode Support**:\n  - Base Canvas: `#020617`\n  - Elevated Surface: `#0F172A`\n  - Accent Inset Canvas: `#1E293B`\n  - Hairline Rule: `#334155`\n\n## Typography\n\nTypographic execution prioritizes cold legibility and mathematical proportions.\n\n- **Primary Matrix (Inter)**: Handles all structural hierarchy, narrative synthesis, and body copy. OpenType features must activate tabular figures (`tnum`), slashed zero (`zero`), and contextual alternates (`calt`) for absolute visual stability during real-time data streaming.\n- **Analytical Matrix (JetBrains Mono)**: Exclusively designated for ticker codes, currency denominations, percentage variations, transaction hashes, and metadata stamps. Its mechanical spacing maintains strict horizontal and vertical alignment across analytical tables.\n- **Case Conventions**: Section indices, column category labels, and institutional status chips must be formatted in full uppercase with expanded tracking (`0.04em` to `0.06em`).\n\n## Layout & Spacing\n\nThe layout is structured around an asymmetrical 12-column master grid engineered for multi-pane financial intelligence.\n\n### Grid Geometry\n- **Desktop (1440px+)**: 12-column grid, `2.5rem` outside margin, `1.5rem` gutters. Content containers can lock to a maximum width of `1600px` to maintain optimal data scanning distances.\n- **Tablet (768px – 1439px)**: 8-column grid, `1.5rem` outside margin, `1rem` gutters. Secondary analytical panels collapse into slide-out drawer sheets.\n- **Mobile (< 768px)**: 4-column grid, `1rem` outside margin, `1rem` gutters. High-density data tables convert to vertically stacked ledger cells.\n\n### Rhythm & Alignment\nSpacing adheres strictly to a 4px baseline sub-grid. Component padding scales cleanly from `space-xs` (compact table cells, status tags) through `space-xl` (section breaks, dashboard module boundaries). White space is never purely decorative; it functions as an active structural divider to separate complex operational domains.\n\n## Elevation & Depth\n\nVisual hierarchy rejects exaggerated drop shadows in favor of a dual-layer strategy: crisp physical perimeter lines paired with soft Apple-inspired ambient diffusion and frosted blurs.\n\n### Structural Layering\n1. **Level 0 (Base Canvas)**: Monolithic background plane (`#FFFFFF` in light, `#020617` in dark).\n2. **Level 1 (Docked Containers & Grids)**: Crisp 1px solid border (`#E2E8F0` / `#334155`), zero blur shadow. Structural surfaces stay flat to maximize legibility.\n3. **Level 2 (Hover Surfaces & Interactive Cards)**: Ambient depth via `0 4px 16px -2px rgba(15, 23, 42, 0.04), 0 1px 2px 0 rgba(15, 23, 42, 0.02)`.\n4. **Level 3 (Command Palettes, Popovers & Context Menus)**: Frosted backdrop blur (`backdrop-filter: blur(16px)`), 85% opacity surface tint, paired with an inner optical hairline highlight (`inset 0 1px 0 0 rgba(255, 255, 255, 0.6)` in light mode, `inset 0 1px 0 0 rgba(255, 255, 255, 0.08)` in dark mode).\n5. **Level 4 (Modals & Sovereign Alerts)**: Elevated floating scrim with deep ambient light dispersion: `0 24px 48px -12px rgba(15, 23, 42, 0.18)`.\n\n## Shapes\n\nThe design system implements a disciplined geometric posture (`roundedness: 1`), keeping analytical and structural elements grounded while employing full capsules purely for dynamic state indicators.\n\n### Geometry Rules\n- **Base Components**: Standard containers, data cards, analytical blocks, and input fields utilize `0.25rem` (4px) corner radii. This produces a tailored, architectural silhouette that respects strict grid alignments.\n- **Intermediate Modals & Flyouts**: Sized at `0.5rem` (8px) using `rounded-lg`.\n- **Pills & Status Micro-Badges**: Sized using full radius (`9999px`) to create an immediate visual distinction between functional UI surfaces and semantic status indicators (e.g., market open/closed, verified Swiss legal entity chips, volatility index tags).\n\n## Components\n\n### Buttons\n- **Primary**: Solid Deep Slate (`#0F172A`) fill, pure white text, `4px` corner radius. Subtle inner bevel (`inset 0 1px 0 rgba(255, 255, 255, 0.15)`). Hover triggers a transition to `#1E293B` with 100ms cubic-bezier curve.\n- **Sovereign Alert (Action)**: Solid Swiss Red (`#D52B1E`) fill, pure white text. Reserved for decisive analytical overrides, secure logins, or emergency trading circuit breakers.\n- **Secondary / Outline**: 1px perimeter border (`#E2E8F0`), transparent background, slate text. On hover, background shifts to `#F8FAFC`.\n- **Ghost**: Zero perimeter border, tabular mono text, slate-tinted hover state.\n\n### Input Fields\n- Razor-thin 1px border (`#CBD5E1`), 4px border radius, white background.\n- Focus state switches border to `#0F172A` with an ambient `0 0 0 1px #0F172A` ring; never utilizes fuzzy glow rings.\n- Placeholder text rendered in muted neutral mono typography (`label-md`).\n\n### Data Chips & Badges\n- Continuous pill form (`9999px` border radius).\n- Neutral variant: `#F1F5F9` background, `#0F172A` mono typography (`label-sm`).\n- Critical Swiss indicator: Soft vermilion tint background (`rgba(213, 43, 30, 0.08)`), solid `#D52B1E` text, and a real-time pulsing 6px dot indicator.\n\n### Data Cards & Analytical Tables\n- Cards use explicit 1px exterior borders (`#E2E8F0`) with 4px border radii; no drop shadows in resting state.\n- Table headers set in JetBrains Mono uppercase (`label-sm`), `#475569`, tracking `0.06em`, pinned with a 1px border-b division.\n- Rows feature interactive hover states with immediate color transitions to `#F8FAFC`, maintaining hairline horizontal dividers (`#F1F5F9`).\n\n### Checkboxes & Segmented Controls\n- **Checkboxes**: 14x14px square boxes with 2px radius. In active state, filled with `#0F172A` and marked with an optical 1.5px white checkmark vector.\n- **Segmented Sliders**: Pill or 4px container with a recessed `#F1F5F9` background. Active selection slides across an elevated white chip surface secured with a 1px border and micro-shadow (`0 1px 3px rgba(0, 0, 0, 0.08)`).",
+        "font": "INTER",
+        "headlineFont": "INTER",
+        "headlineFontFamily": "Inter",
+        "labelFont": "JETBRAINS_MONO",
+        "labelFontFamily": "JetBrains Mono",
+        "namedColors": {
+          "background": "#f8f9ff",
+          "error": "#ba1a1a",
+          "error_container": "#ffdad6",
+          "inverse_on_surface": "#eaf1ff",
+          "inverse_primary": "#ffb4a8",
+          "inverse_surface": "#213145",
+          "on_background": "#0b1c30",
+          "on_error": "#ffffff",
+          "on_error_container": "#93000a",
+          "on_primary": "#ffffff",
+          "on_primary_container": "#fff1ef",
+          "on_primary_fixed": "#410000",
+          "on_primary_fixed_variant": "#930001",
+          "on_secondary": "#ffffff",
+          "on_secondary_container": "#5c647a",
+          "on_secondary_fixed": "#131b2e",
+          "on_secondary_fixed_variant": "#3f465c",
+          "on_surface": "#0b1c30",
+          "on_surface_variant": "#5c403b",
+          "on_tertiary": "#ffffff",
+          "on_tertiary_container": "#eff3ff",
+          "on_tertiary_fixed": "#0d1c2e",
+          "on_tertiary_fixed_variant": "#3a485b",
+          "outline": "#906f6a",
+          "outline_variant": "#e5bdb7",
+          "primary": "#b10806",
+          "primary_container": "#d52b1e",
+          "primary_fixed": "#ffdad5",
+          "primary_fixed_dim": "#ffb4a8",
+          "secondary": "#565e74",
+          "secondary_container": "#dae2fd",
+          "secondary_fixed": "#dae2fd",
+          "secondary_fixed_dim": "#bec6e0",
+          "surface": "#f8f9ff",
+          "surface_bright": "#f8f9ff",
+          "surface_container": "#e5eeff",
+          "surface_container_high": "#dce9ff",
+          "surface_container_highest": "#d3e4fe",
+          "surface_container_low": "#eff4ff",
+          "surface_container_lowest": "#ffffff",
+          "surface_dim": "#cbdbf5",
+          "surface_tint": "#bc160e",
+          "surface_variant": "#d3e4fe",
+          "tertiary": "#4a586c",
+          "tertiary_container": "#627085",
+          "tertiary_fixed": "#d5e3fc",
+          "tertiary_fixed_dim": "#b9c7df"
+        },
+        "overrideNeutralColor": "#64748b",
+        "overridePrimaryColor": "#d52b1e",
+        "overrideSecondaryColor": "#0f172a",
+        "overrideTertiaryColor": "#475569",
+        "roundness": "ROUND_FOUR",
+        "spacing": {
+          "gutter": "1.5rem",
+          "gutter-sm": "1rem",
+          "margin": "2.5rem",
+          "margin-sm": "1rem",
+          "space-lg": "1.5rem",
+          "space-md": "1rem",
+          "space-sm": "0.5rem",
+          "space-xl": "2.5rem",
+          "space-xs": "0.25rem"
+        },
+        "spacingScale": 2,
+        "typography": {
+          "body-lg": {
+            "fontFamily": "Inter",
+            "fontSize": "16px",
+            "fontWeight": "400",
+            "letterSpacing": "-0.005em",
+            "lineHeight": "26px"
+          },
+          "body-md": {
+            "fontFamily": "Inter",
+            "fontSize": "14px",
+            "fontWeight": "400",
+            "letterSpacing": "0em",
+            "lineHeight": "22px"
+          },
+          "body-sm": {
+            "fontFamily": "Inter",
+            "fontSize": "13px",
+            "fontWeight": "400",
+            "letterSpacing": "0.005em",
+            "lineHeight": "18px"
+          },
+          "display-lg": {
+            "fontFamily": "Inter",
+            "fontSize": "56px",
+            "fontWeight": "700",
+            "letterSpacing": "-0.03em",
+            "lineHeight": "64px"
+          },
+          "display-lg-mobile": {
+            "fontFamily": "Inter",
+            "fontSize": "36px",
+            "fontWeight": "700",
+            "letterSpacing": "-0.025em",
+            "lineHeight": "44px"
+          },
+          "headline-lg": {
+            "fontFamily": "Inter",
+            "fontSize": "32px",
+            "fontWeight": "600",
+            "letterSpacing": "-0.02em",
+            "lineHeight": "40px"
+          },
+          "headline-lg-mobile": {
+            "fontFamily": "Inter",
+            "fontSize": "26px",
+            "fontWeight": "600",
+            "letterSpacing": "-0.015em",
+            "lineHeight": "32px"
+          },
+          "headline-md": {
+            "fontFamily": "Inter",
+            "fontSize": "24px",
+            "fontWeight": "600",
+            "letterSpacing": "-0.015em",
+            "lineHeight": "32px"
+          },
+          "headline-sm": {
+            "fontFamily": "Inter",
+            "fontSize": "20px",
+            "fontWeight": "600",
+            "letterSpacing": "-0.01em",
+            "lineHeight": "28px"
+          },
+          "label-lg": {
+            "fontFamily": "JetBrains Mono",
+            "fontSize": "13px",
+            "fontWeight": "500",
+            "letterSpacing": "0.02em",
+            "lineHeight": "16px"
+          },
+          "label-md": {
+            "fontFamily": "JetBrains Mono",
+            "fontSize": "11px",
+            "fontWeight": "500",
+            "letterSpacing": "0.04em",
+            "lineHeight": "14px"
+          },
+          "label-sm": {
+            "fontFamily": "JetBrains Mono",
+            "fontSize": "10px",
+            "fontWeight": "600",
+            "letterSpacing": "0.06em",
+            "lineHeight": "12px"
+          },
+          "title-md": {
+            "fontFamily": "Inter",
+            "fontSize": "16px",
+            "fontWeight": "600",
+            "letterSpacing": "-0.005em",
+            "lineHeight": "24px"
+          }
+        }
+      },
+      "deviceType": "MOBILE",
+      "metadata": {
+        "userRole": "OWNER"
+      },
+      "name": "projects/3778423755897913498",
+      "origin": "STITCH",
+      "projectType": "PROJECT_DESIGN",
+      "thumbnailScreenshot": {
+        "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1UJMYeY7sM4FS4B_BvBt58RMkVb-5IXvA4YVxyvHCxfPIA1nfTGuKzL2y0F67FGrqJdUej8Jv3y2322TLn1WzSPjesp58FGQ9KccwcSmvgNGthFXocEUNubP_t7O8Vl2UEKGKBauszovUc1zzhikn0TFj5LTfleeBIpgYEczGZMD_AdZe8JcXsecNbZ83-1UCLCqAKCj-AlkxvPTUT4A3rlXPx6yoxLraQCZnBVqWuTwgCsnJynw_ddW64",
+        "name": "projects/3778423755897913498/files/fa095ee2ed164dea97f1e11e38bcc4f5"
+      },
+      "title": "PrivateSector Google Material 3 Expressive & Apple Polish Redesign",
+      "updateTime": "2026-10-06T17:11:49.785484Z",
+      "visibility": "PRIVATE"
+    }
+  }
+}
