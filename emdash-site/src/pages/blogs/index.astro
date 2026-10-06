@@ -17,15 +17,15 @@ const blogs = getBlogs(50);
   locale={currentLocale}
 >
   <!-- Page Header -->
-  <section class="bg-white dark:bg-[#0E1524] border-b border-slate-200/80 dark:border-slate-800/80 py-10 sm:py-14 transition-colors">
+  <section class="bg-white dark:bg-[#0B0F19] border-b border-slate-200/80 dark:border-slate-800/80 py-10 sm:py-14 transition-colors">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
-      <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-red-100 dark:bg-red-950/80 text-red-700 dark:text-red-400 uppercase tracking-wider">
+      <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-red-50 dark:bg-red-950/80 text-red-700 dark:text-red-400 border border-red-200/60 dark:border-red-900/40 uppercase tracking-wider">
         OPINION & ANALYSIS
       </span>
-      <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white">
         Market Perspectives & Commentary
       </h1>
-      <p class="text-base text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
+      <p class="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
         Specialist insights, regulatory breakdowns, and strategic commentary from Swiss industry analysts.
       </p>
     </div>
@@ -34,11 +34,11 @@ const blogs = getBlogs(50);
   <!-- Blog Cards Grid -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
     {blogs.length === 0 ? (
-      <div class="text-center py-16 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-8 shadow-xs">
+      <div class="text-center py-16 bg-white dark:bg-[#0E1524] rounded-3xl border border-slate-200/80 dark:border-slate-800/80 p-8 shadow-xs">
         <p class="text-sm text-slate-500">No blog posts published yet.</p>
       </div>
     ) : (
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
         {blogs.map((b: any) => (
           <NewsCard article={b} />
         ))}

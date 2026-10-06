@@ -26,22 +26,22 @@ const peerCompanies = getCompanies(false, 4).filter((c: any) => String(c.id) !==
   description={company.description || `Verified commercial intelligence and corporate factsheet for ${company.name}.`}
 >
   <!-- Header Bar -->
-  <header class="bg-white dark:bg-[#0E1524] border-b border-slate-200/80 dark:border-slate-800/80 py-10 sm:py-14 transition-colors">
+  <header class="bg-white dark:bg-[#0B0F19] border-b border-slate-200/80 dark:border-slate-800/80 py-10 sm:py-14 transition-colors">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
       
       <!-- Breadcrumb Navigation -->
       <nav class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-        <a href="/" class="hover:text-slate-900 dark:hover:text-white transition-colors">Home</a>
-        <span>›</span>
+        <a href="/" class="hover:text-slate-900 dark:hover:white transition-colors">Home</a>
+        <span class="text-slate-300 dark:text-slate-700">/</span>
         <a href="/unternehmen" class="hover:text-slate-900 dark:hover:text-white transition-colors">Directory</a>
-        <span>›</span>
-        <span class="text-red-600 dark:text-red-400 font-semibold">{company.name}</span>
+        <span class="text-slate-300 dark:text-slate-700">/</span>
+        <span class="text-red-600 dark:text-red-400 font-semibold truncate max-w-[200px]">{company.name}</span>
       </nav>
 
       <div class="flex flex-col sm:flex-row gap-6 items-start">
         <!-- Logo Initial Avatar Container -->
         <div 
-          class="w-20 h-20 rounded-2xl flex items-center justify-center font-extrabold text-2xl text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 shadow-sm shrink-0"
+          class="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl flex items-center justify-center font-extrabold text-2xl sm:text-3xl text-slate-900 dark:text-white border border-slate-200/80 dark:border-slate-700/80 shadow-sm shrink-0"
           style={`background-color: ${company.logo_bg || '#F1F5F9'};`}
         >
           {logoInitial}
@@ -53,7 +53,7 @@ const peerCompanies = getCompanies(false, 4).filter((c: any) => String(c.id) !==
               {company.name}
             </h1>
             {isVerified && (
-              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-800/60 shadow-2xs">
                 <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                 </svg>
@@ -61,16 +61,28 @@ const peerCompanies = getCompanies(false, 4).filter((c: any) => String(c.id) !==
               </span>
             )}
             {isPremium && (
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-100 dark:bg-red-950/80 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-900/60 uppercase tracking-wider">
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 dark:bg-red-950/80 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-900/60 uppercase tracking-wider">
                 PREMIUM
               </span>
             )}
           </div>
 
-          <div class="flex items-center gap-2.5 text-xs text-slate-500 dark:text-slate-400 flex-wrap font-medium">
-            {company.canton && <span>📍 Canton {company.canton}</span>}
-            {company.industry && <span>• 🏭 {company.industry}</span>}
-            {company.founded && <span>• 🏛️ Est. {company.founded}</span>}
+          <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 flex-wrap font-medium">
+            {company.canton && (
+              <span class="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                📍 Canton {company.canton}
+              </span>
+            )}
+            {company.industry && (
+              <span class="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                🏭 {company.industry}
+              </span>
+            )}
+            {company.founded && (
+              <span class="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono">
+                Est. {company.founded}
+              </span>
+            )}
           </div>
 
           {company.description && (
@@ -92,48 +104,57 @@ const peerCompanies = getCompanies(false, 4).filter((c: any) => String(c.id) !==
       <div class="lg:col-span-8 space-y-8">
         
         <!-- Corporate Factsheet Matrix -->
-        <section class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-6 sm:p-7 shadow-xs">
-          <h2 class="text-lg font-bold text-slate-900 dark:text-white pb-3 mb-5 border-b border-slate-100 dark:border-slate-800">
-            Corporate Indicators & Commercial Matrix
-          </h2>
+        <section class="bg-white dark:bg-[#0E1524] border border-slate-200/80 dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xs">
+          <div class="flex items-center justify-between pb-4 mb-6 border-b border-slate-100 dark:border-slate-800/80">
+            <div>
+              <span class="text-[11px] font-bold text-red-600 dark:text-red-400 uppercase tracking-wider block">STATUTORY INDICATORS</span>
+              <h2 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
+                Corporate Factsheet & Commercial Matrix
+              </h2>
+            </div>
+            <span class="text-xs font-mono px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500">UID: SOGC-SYNCHRONIZED</span>
+          </div>
 
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80">
+            <div class="p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800/60">
               <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Headquarters</span>
               <strong class="text-sm font-semibold text-slate-900 dark:text-white">Canton {company.canton || 'Switzerland'}</strong>
             </div>
 
-            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80">
+            <div class="p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800/60">
               <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Primary Industry</span>
               <strong class="text-sm font-semibold text-slate-900 dark:text-white truncate block">{company.industry || 'Commercial Enterprise'}</strong>
             </div>
 
-            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80">
+            <div class="p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800/60">
               <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Workforce</span>
-              <strong class="text-sm font-semibold text-slate-900 dark:text-white tabular-nums">{company.employees || 'Confidential'}</strong>
+              <strong class="text-sm font-semibold font-mono text-slate-900 dark:text-white tabular-nums">{company.employees || 'Confidential'}</strong>
             </div>
 
-            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80">
+            <div class="p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800/60">
               <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Revenue Band</span>
               <strong class="text-sm font-semibold text-slate-900 dark:text-white">{company.revenue_band || 'Disclosed to SOGC'}</strong>
             </div>
 
-            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80">
+            <div class="p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800/60">
               <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">ESG Rating</span>
               <strong class="text-sm font-semibold text-emerald-600 dark:text-emerald-400">{company.esg_rating || 'Tier-1 Rated'}</strong>
             </div>
 
-            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80">
+            <div class="p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800/60">
               <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Registry Status</span>
-              <strong class="text-sm font-semibold text-slate-900 dark:text-white">Active (CH-UID)</strong>
+              <strong class="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                Active (CH-UID)
+              </strong>
             </div>
           </div>
         </section>
 
         <!-- Executive Overview -->
         {company.about_text && (
-          <section class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-6 sm:p-7 shadow-xs space-y-3">
-            <h2 class="text-lg font-bold text-slate-900 dark:text-white">
+          <section class="bg-white dark:bg-[#0E1524] border border-slate-200/80 dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xs space-y-4">
+            <h2 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white pb-3 border-b border-slate-100 dark:border-slate-800/80">
               Executive Overview
             </h2>
             <div class="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-wrap">
@@ -144,8 +165,8 @@ const peerCompanies = getCompanies(false, 4).filter((c: any) => String(c.id) !==
 
         <!-- Sustainability / ESG Summary -->
         {company.sustainability_summary && (
-          <section class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-6 sm:p-7 shadow-xs space-y-3">
-            <h2 class="text-lg font-bold text-slate-900 dark:text-white">
+          <section class="bg-white dark:bg-[#0E1524] border border-slate-200/80 dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xs space-y-4">
+            <h2 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white pb-3 border-b border-slate-100 dark:border-slate-800/80">
               Sustainability & ESG Compliance
             </h2>
             <p class="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
@@ -160,8 +181,8 @@ const peerCompanies = getCompanies(false, 4).filter((c: any) => String(c.id) !==
       <div class="lg:col-span-4 space-y-6">
         
         <!-- Official Links Card -->
-        <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-6 shadow-xs space-y-4">
-          <h3 class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white pb-2 border-b border-slate-100 dark:border-slate-800">
+        <div class="bg-white dark:bg-[#0E1524] border border-slate-200/80 dark:border-slate-800/80 rounded-3xl p-6 sm:p-7 shadow-xs space-y-4">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white pb-3 border-b border-slate-100 dark:border-slate-800">
             Corporate Channels
           </h3>
 
@@ -171,10 +192,13 @@ const peerCompanies = getCompanies(false, 4).filter((c: any) => String(c.id) !==
                 href={String(company.website)} 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                class="flex items-center gap-2 text-red-600 dark:text-red-400 font-semibold hover:underline"
+                class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 hover:bg-red-50 dark:hover:bg-red-950/40 text-red-600 dark:text-red-400 font-semibold transition-colors group"
               >
-                <span>🌐</span>
-                <span class="truncate">Official Website ↗</span>
+                <div class="flex items-center gap-2 truncate">
+                  <span>🌐</span>
+                  <span class="truncate">Official Website</span>
+                </div>
+                <span class="text-xs group-hover:translate-x-0.5 transition-transform">↗</span>
               </a>
             )}
             {company.linkedin && (
@@ -182,19 +206,22 @@ const peerCompanies = getCompanies(false, 4).filter((c: any) => String(c.id) !==
                 href={String(company.linkedin)} 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                class="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-semibold hover:underline"
+                class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 hover:bg-blue-50 dark:hover:bg-blue-950/40 text-blue-600 dark:text-blue-400 font-semibold transition-colors group"
               >
-                <span>💼</span>
-                <span class="truncate">LinkedIn Corporate Page ↗</span>
+                <div class="flex items-center gap-2 truncate">
+                  <span>💼</span>
+                  <span class="truncate">LinkedIn Corporate Page</span>
+                </div>
+                <span class="text-xs group-hover:translate-x-0.5 transition-transform">↗</span>
               </a>
             )}
             {company.contact_email && (
               <a 
                 href={`mailto:${String(company.contact_email)}`} 
-                class="flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:text-red-600 transition-colors"
+                class="flex items-center gap-2.5 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 transition-colors"
               >
                 <span>✉️</span>
-                <span class="truncate">{company.contact_email}</span>
+                <span class="truncate font-mono text-xs">{company.contact_email}</span>
               </a>
             )}
           </div>
@@ -202,21 +229,21 @@ const peerCompanies = getCompanies(false, 4).filter((c: any) => String(c.id) !==
 
         <!-- Industry Peers Card -->
         {peerCompanies.length > 0 && (
-          <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-6 shadow-xs space-y-4">
-            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white pb-2 border-b border-slate-100 dark:border-slate-800">
+          <div class="bg-white dark:bg-[#0E1524] border border-slate-200/80 dark:border-slate-800/80 rounded-3xl p-6 sm:p-7 shadow-xs space-y-4">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white pb-3 border-b border-slate-100 dark:border-slate-800">
               Sector Peers
             </h3>
 
-            <div class="space-y-2.5">
+            <div class="space-y-2">
               {peerCompanies.map((peer: any) => (
                 <a 
                   href={`/unternehmen/${peer.slug || peer.id}`} 
-                  class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group"
+                  class="flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/70 transition-colors group"
                 >
-                  <span class="font-semibold text-xs sm:text-sm text-slate-800 dark:text-slate-200 group-hover:text-red-600 transition-colors truncate">
+                  <span class="font-semibold text-xs sm:text-sm text-slate-800 dark:text-slate-200 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors truncate">
                     {peer.name}
                   </span>
-                  <span class="text-xs text-slate-400 px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 shrink-0 font-medium">
+                  <span class="text-xs text-slate-500 px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 shrink-0 font-medium">
                     {peer.canton}
                   </span>
                 </a>

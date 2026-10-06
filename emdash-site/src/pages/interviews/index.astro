@@ -14,15 +14,15 @@ const interviews = getInterviews(50);
   locale={currentLocale}
 >
   <!-- Page Header -->
-  <section class="bg-white dark:bg-[#0E1524] border-b border-slate-200/80 dark:border-slate-800/80 py-10 sm:py-14 transition-colors">
+  <section class="bg-white dark:bg-[#0B0F19] border-b border-slate-200/80 dark:border-slate-800/80 py-10 sm:py-14 transition-colors">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
-      <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-red-100 dark:bg-red-950/80 text-red-700 dark:text-red-400 uppercase tracking-wider">
+      <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-red-50 dark:bg-red-950/80 text-red-700 dark:text-red-400 border border-red-200/60 dark:border-red-900/40 uppercase tracking-wider">
         EXECUTIVE ACCESS & DIALOGUE
       </span>
-      <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white">
         CEO & Executive Interviews
       </h1>
-      <p class="text-base text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
+      <p class="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
         Direct perspectives from leaders guiding Switzerland's industrial, financial, and pharmaceutical champions.
       </p>
     </div>
@@ -30,16 +30,16 @@ const interviews = getInterviews(50);
 
   <!-- Grid of Interviews -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
       {interviews.map((item: any) => (
         <a 
           href={`/interviews/${item.slug || item.id}`}
-          class="group flex flex-col justify-between bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-6 shadow-xs hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
+          class="group flex flex-col justify-between bg-white dark:bg-[#0E1524] border border-slate-200/80 dark:border-slate-800/80 rounded-3xl p-6 sm:p-7 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
         >
-          <div class="space-y-4">
+          <div class="space-y-5">
             <!-- Executive Profile Header -->
             <div class="flex items-center gap-3.5">
-              <div class="w-12 h-12 rounded-full bg-slate-900 dark:bg-slate-800 text-white flex items-center justify-center font-bold text-base shadow-xs shrink-0 border border-slate-700">
+              <div class="w-12 h-12 rounded-2xl bg-slate-900 dark:bg-slate-800 text-white flex items-center justify-center font-bold text-base shadow-xs shrink-0 border border-slate-700">
                 {item.interviewee_name ? item.interviewee_name.charAt(0) : 'I'}
               </div>
               <div class="min-w-0 flex-1">
@@ -47,7 +47,7 @@ const interviews = getInterviews(50);
                   {item.interviewee_name}
                 </strong>
                 <span class="text-xs text-slate-500 dark:text-slate-400 truncate block">
-                  {item.interviewee_title} • {item.company_name}
+                  {item.interviewee_title} • <span class="font-semibold text-slate-700 dark:text-slate-300">{item.company_name}</span>
                 </span>
               </div>
             </div>
@@ -63,12 +63,12 @@ const interviews = getInterviews(50);
             )}
           </div>
 
-          <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
-            <span class="text-slate-400 font-medium">
-              {item.audio_url ? '🎙️ Audio & Q&A' : '📝 Transcript Q&A'}
+          <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
+            <span class="px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium">
+              {item.audio_url ? '🎙️ Audio Recording' : '📝 Transcript Q&A'}
             </span>
-            <span class="font-semibold text-red-600 dark:text-red-400 group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
-              <span>Read Interview</span>
+            <span class="font-semibold text-red-600 dark:text-red-400 group-hover:translate-x-1 transition-transform flex items-center gap-1">
+              <span>Read Dialogue</span>
               <span>→</span>
             </span>
           </div>

@@ -29,18 +29,18 @@ const renderedHtml = blog.content_body ? (marked.parse(blog.content_body) as str
   description={blog.subtitle || blog.title}
   image={blog.image_url || "/logo.png"}
 >
-  <header class="bg-white dark:bg-[#0E1524] border-b border-slate-200/80 dark:border-slate-800/80 py-10 sm:py-14 transition-colors">
+  <header class="bg-white dark:bg-[#0B0F19] border-b border-slate-200/80 dark:border-slate-800/80 py-10 sm:py-14 transition-colors">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
       <nav class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
         <a href="/" class="hover:text-slate-900 dark:hover:text-white transition-colors">Home</a>
-        <span>›</span>
+        <span class="text-slate-300 dark:text-slate-700">/</span>
         <a href="/blogs" class="hover:text-slate-900 dark:hover:text-white transition-colors">Blogs</a>
-        <span>›</span>
-        <span class="text-red-600 dark:text-red-400 font-semibold">{blog.category || 'Perspective'}</span>
+        <span class="text-slate-300 dark:text-slate-700">/</span>
+        <span class="text-red-600 dark:text-red-400 font-semibold truncate max-w-[200px]">{blog.category || 'Perspective'}</span>
       </nav>
 
       <div>
-        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 dark:bg-red-950/80 text-red-700 dark:text-red-400 uppercase tracking-wider">
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-50 dark:bg-red-950/80 text-red-700 dark:text-red-400 border border-red-200/60 dark:border-red-900/40 uppercase tracking-wider">
           {blog.category || 'MARKET PERSPECTIVE'}
         </span>
       </div>
@@ -55,8 +55,13 @@ const renderedHtml = blog.content_body ? (marked.parse(blog.content_body) as str
         </p>
       )}
 
-      <div class="pt-6 border-t border-slate-200/80 dark:border-slate-800/80 flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
-        <span>By <strong class="text-slate-900 dark:text-white font-semibold">{blog.author_name || 'PrivateSector Analyst'}</strong></span>
+      <div class="pt-6 border-t border-slate-200/80 dark:border-slate-800/80 flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
+        <div class="flex items-center gap-2">
+          <div class="w-6 h-6 rounded-full bg-slate-900 dark:bg-slate-700 text-white flex items-center justify-center font-bold text-[10px]">
+            {blog.author_name ? blog.author_name.charAt(0) : 'P'}
+          </div>
+          <span>By <strong class="text-slate-900 dark:text-white font-semibold">{blog.author_name || 'PrivateSector Analyst'}</strong></span>
+        </div>
         {blog.date_published && <span>• 📅 {blog.date_published}</span>}
       </div>
     </div>
@@ -64,13 +69,13 @@ const renderedHtml = blog.content_body ? (marked.parse(blog.content_body) as str
 
   <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
     {blog.image_url && (
-      <div class="mb-10 rounded-2xl overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-md bg-slate-100 dark:bg-slate-800 aspect-[16/10] sm:aspect-[2/1]">
+      <div class="mb-10 rounded-3xl overflow-hidden border border-slate-200/80 dark:border-slate-800/80 shadow-md bg-slate-100 dark:bg-slate-800 aspect-[16/10] sm:aspect-[2/1]">
         <img src={blog.image_url} alt="" class="w-full h-full object-cover" onerror="this.style.display='none'" />
       </div>
     )}
 
     {blog.pull_quote && (
-      <blockquote class="my-8 p-6 rounded-2xl bg-slate-100 dark:bg-slate-800/60 border-l-4 border-red-600 text-lg sm:text-xl font-medium italic text-slate-800 dark:text-slate-200 shadow-2xs leading-relaxed">
+      <blockquote class="my-8 p-6 sm:p-8 rounded-3xl bg-slate-50 dark:bg-slate-850/60 border-l-4 border-red-600 text-lg sm:text-xl font-medium italic text-slate-800 dark:text-slate-200 shadow-2xs leading-relaxed">
         "{blog.pull_quote}"
       </blockquote>
     )}
@@ -79,8 +84,8 @@ const renderedHtml = blog.content_body ? (marked.parse(blog.content_body) as str
       <div set:html={renderedHtml} />
     </article>
 
-    <div class="mt-12 pt-8 border-t border-slate-200 dark:border-slate-800">
-      <a href="/blogs" class="text-xs font-semibold text-red-600 dark:text-red-400 hover:underline">
+    <div class="mt-12 pt-8 border-t border-slate-200/80 dark:border-slate-800/80">
+      <a href="/blogs" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors">
         ← Back to All Blogs
       </a>
     </div>

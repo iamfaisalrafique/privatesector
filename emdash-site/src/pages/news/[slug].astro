@@ -101,8 +101,8 @@ const relatedArticles = getNews(6).filter((n: any) => n.slug !== slug && String(
   image={pageImage || "/logo.png"}
 >
   <!-- Article Header & Hero Container -->
-  <header class="bg-white dark:bg-[#0E1524] border-b border-slate-200/80 dark:border-slate-800/80 pt-8 pb-10 transition-colors">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+  <header class="border-b border-slate-200/80 bg-white/70 pt-10 pb-12 backdrop-blur-md dark:border-slate-800/80 dark:bg-slate-900/70 transition-colors">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 space-y-6">
       
       <!-- Breadcrumb Navigation -->
       <nav class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
@@ -110,12 +110,13 @@ const relatedArticles = getNews(6).filter((n: any) => n.slug !== slug && String(
         <span>›</span>
         <a href="/news" class="hover:text-slate-900 dark:hover:text-white transition-colors">News</a>
         <span>›</span>
-        <span class="text-red-600 dark:text-red-400 font-semibold">{pageCategory}</span>
+        <span class="text-[#D52B1E] dark:text-red-400 font-semibold">{pageCategory}</span>
       </nav>
 
       <!-- Category Pill -->
       <div>
-        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 dark:bg-red-950/80 text-red-700 dark:text-red-400 uppercase tracking-wider">
+        <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-bold bg-red-50 dark:bg-red-950/80 text-[#D52B1E] dark:text-red-400 border border-red-200/80 dark:border-red-900/50 uppercase tracking-wider">
+          <span class="w-1.5 h-1.5 rounded-full bg-[#D52B1E] dark:bg-red-400"></span>
           {pageCategory}
         </span>
       </div>
@@ -133,9 +134,9 @@ const relatedArticles = getNews(6).filter((n: any) => n.slug !== slug && String(
       )}
 
       <!-- Author Byline & Meta Strip -->
-      <div class="pt-6 border-t border-slate-200/80 dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
+      <div class="pt-6 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-full bg-slate-900 dark:bg-slate-800 text-white flex items-center justify-center font-bold text-xs shadow-2xs">
+          <div class="w-10 h-10 rounded-2xl bg-slate-900 dark:bg-slate-800 text-white flex items-center justify-center font-bold text-xs shadow-xs">
             PS
           </div>
           <div>
@@ -148,7 +149,7 @@ const relatedArticles = getNews(6).filter((n: any) => n.slug !== slug && String(
           </div>
         </div>
 
-        <div class="flex items-center gap-4 tabular-nums text-xs">
+        <div class="flex items-center gap-4 tabular-nums text-xs font-mono">
           {displayDate && (
             <span class="flex items-center gap-1.5">
               <span>📅</span>
@@ -168,11 +169,11 @@ const relatedArticles = getNews(6).filter((n: any) => n.slug !== slug && String(
   </header>
 
   <!-- Main Article Body -->
-  <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+  <main class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
     
     <!-- High-Resolution Featured Image -->
     {pageImage && (
-      <div class="mb-10 rounded-2xl overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-md bg-slate-100 dark:bg-slate-800 aspect-[16/10] sm:aspect-[2/1]">
+      <div class="mb-12 rounded-3xl overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-md bg-slate-100 dark:bg-slate-800 aspect-[16/10] sm:aspect-[2/1]">
         <img 
           src={pageImage} 
           alt={pageTitle} 
@@ -184,12 +185,12 @@ const relatedArticles = getNews(6).filter((n: any) => n.slug !== slug && String(
 
     <!-- Editorial Pullquote -->
     {pullQuote && (
-      <blockquote class="my-8 p-6 rounded-2xl bg-slate-100 dark:bg-slate-800/60 border-l-4 border-red-600 text-lg sm:text-xl font-medium italic text-slate-800 dark:text-slate-200 shadow-2xs leading-relaxed">
+      <blockquote class="my-10 p-7 rounded-3xl bg-slate-50 dark:bg-slate-800/60 border-l-4 border-[#D52B1E] text-lg sm:text-xl font-medium italic text-slate-800 dark:text-slate-200 shadow-xs leading-relaxed">
         "{pullQuote}"
       </blockquote>
     )}
 
-    <!-- Word-by-Word Exact Article Prose -->
+    <!-- Word-by-Word Exact Article Prose (1000% Fidelity) -->
     <article class="editorial-prose dark:prose-invert max-w-none text-slate-700 dark:text-slate-300 leading-relaxed text-base sm:text-lg">
       {isEmDash && post.data.content ? (
         <PortableText value={post.data.content} />
@@ -199,13 +200,13 @@ const relatedArticles = getNews(6).filter((n: any) => n.slug !== slug && String(
     </article>
 
     <!-- Social Share & Return Actions -->
-    <div class="mt-12 pt-8 border-t border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
+    <div class="mt-14 pt-8 border-t border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
       <div class="flex items-center gap-3">
         <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">SHARE:</span>
         <button 
           id="copy-share-btn"
           type="button"
-          class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition-colors flex items-center gap-1.5"
+          class="px-4 py-2 rounded-full text-xs font-semibold bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition-colors flex items-center gap-1.5 shadow-2xs"
         >
           <span>📋</span>
           <span id="copy-btn-text">Copy Link</span>
@@ -214,7 +215,7 @@ const relatedArticles = getNews(6).filter((n: any) => n.slug !== slug && String(
 
       <a 
         href="/news" 
-        class="text-xs font-semibold text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 flex items-center gap-1"
+        class="text-xs font-bold text-[#D52B1E] dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 flex items-center gap-1"
       >
         <span>← Back to All News Archives</span>
       </a>
@@ -224,7 +225,7 @@ const relatedArticles = getNews(6).filter((n: any) => n.slug !== slug && String(
     {relatedArticles.length > 0 && (
       <section class="mt-16 pt-10 border-t border-slate-200/80 dark:border-slate-800">
         <div class="mb-6">
-          <span class="text-[11px] font-bold text-red-600 dark:text-red-400 uppercase tracking-wider block">
+          <span class="text-[11px] font-bold text-[#D52B1E] dark:text-red-400 uppercase tracking-wider block">
             CONTINUE READING
           </span>
           <h3 class="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">
@@ -236,7 +237,7 @@ const relatedArticles = getNews(6).filter((n: any) => n.slug !== slug && String(
           {relatedArticles.map((rel: any) => (
             <a 
               href={`/news/${rel.slug || rel.id}`}
-              class="group flex flex-col justify-between bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 overflow-hidden shadow-xs hover:shadow-md hover:-translate-y-1 transition-all"
+              class="group flex flex-col justify-between bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 overflow-hidden shadow-xs hover:shadow-md hover:-translate-y-1 transition-all"
             >
               {rel.image_url && (
                 <div class="aspect-[16/10] overflow-hidden bg-slate-100 dark:bg-slate-800">
@@ -248,17 +249,17 @@ const relatedArticles = getNews(6).filter((n: any) => n.slug !== slug && String(
                   />
                 </div>
               )}
-              <div class="p-4 space-y-2 flex-1 flex flex-col justify-between">
+              <div class="p-5 space-y-2 flex-1 flex flex-col justify-between">
                 <div>
-                  <span class="text-[10px] font-bold text-red-600 dark:text-red-400 uppercase tracking-wider block">
+                  <span class="text-[10px] font-bold text-[#D52B1E] dark:text-red-400 uppercase tracking-wider block">
                     {rel.category || 'News'}
                   </span>
-                  <h4 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors line-clamp-2 mt-1">
+                  <h4 class="text-sm font-bold text-slate-900 dark:text-white group-hover:text-[#D52B1E] dark:group-hover:text-red-400 transition-colors line-clamp-2 mt-1">
                     {rel.title}
                   </h4>
                 </div>
-                <span class="text-xs font-semibold text-red-600 dark:text-red-400 mt-2 block">
-                  Read →
+                <span class="text-xs font-bold text-[#D52B1E] dark:text-red-400 mt-3 block">
+                  Read Analysis →
                 </span>
               </div>
             </a>

@@ -7,18 +7,22 @@ import Base from "../layouts/Base.astro";
   <div class="flex min-h-[calc(100vh-130px)] flex-col lg:flex-row">
     
     <!-- Left Hero Brand Column -->
-    <div class="relative flex flex-1 flex-col justify-between overflow-hidden bg-slate-950 p-8 text-white sm:p-12 lg:p-16">
-      <div class="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-red-600/10 blur-3xl"></div>
+    <div class="relative flex flex-1 flex-col justify-between overflow-hidden bg-[#070A12] p-8 text-white sm:p-12 lg:p-16">
+      <div class="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-red-600/15 blur-3xl"></div>
       <div class="absolute -bottom-32 -right-32 h-96 w-96 rounded-full bg-blue-600/10 blur-3xl"></div>
 
       <div class="relative z-10 my-auto max-w-md">
-        <h2 class="text-3xl font-extrabold tracking-tight sm:text-4xl">
+        <div class="mb-4 inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-950/40 px-3 py-1 text-[11px] font-bold tracking-widest text-red-400 uppercase">
+          <span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>
+          ACCESS PORTAL
+        </div>
+        <h2 class="text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">
           Swiss Economic Intelligence, <span class="text-[#D52B1E] italic">Fully Verified.</span>
         </h2>
         
         <div class="mt-10 space-y-6">
           <div class="flex items-start gap-4">
-            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-red-500/10 font-bold text-[#D52B1E]">
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-red-500/10 font-bold text-[#D52B1E] border border-red-500/20">
               ✓
             </div>
             <div>
@@ -28,7 +32,7 @@ import Base from "../layouts/Base.astro";
           </div>
 
           <div class="flex items-start gap-4">
-            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-red-500/10 font-bold text-[#D52B1E]">
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-red-500/10 font-bold text-[#D52B1E] border border-red-500/20">
               🛡️
             </div>
             <div>
@@ -38,7 +42,7 @@ import Base from "../layouts/Base.astro";
           </div>
 
           <div class="flex items-start gap-4">
-            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-red-500/10 font-bold text-[#D52B1E]">
+            <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-red-500/10 font-bold text-[#D52B1E] border border-red-500/20">
               🔒
             </div>
             <div>
@@ -59,8 +63,8 @@ import Base from "../layouts/Base.astro";
     </div>
 
     <!-- Right Login Column -->
-    <div class="flex flex-1 flex-col items-center justify-center bg-white p-8 dark:bg-slate-900 sm:p-12 lg:p-16">
-      <div class="w-full max-w-sm">
+    <div class="flex flex-1 flex-col items-center justify-center bg-white p-8 dark:bg-[#0B0F19] sm:p-12 lg:p-16">
+      <div class="w-full max-w-sm space-y-6">
         
         <div class="text-center">
           <h2 class="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl dark:text-white">
@@ -72,10 +76,10 @@ import Base from "../layouts/Base.astro";
         </div>
 
         <!-- Feedback Alert Box -->
-        <div id="login-feedback" class="mt-6 hidden rounded-xl p-4 text-xs font-semibold"></div>
+        <div id="login-feedback" class="hidden rounded-2xl p-4 text-xs font-semibold border"></div>
 
         <!-- Login Form -->
-        <form id="login-form" class="mt-6 space-y-5">
+        <form id="login-form" class="space-y-5">
           <div>
             <label class="block text-xs font-semibold tracking-wider text-slate-700 uppercase dark:text-slate-300">
               Email Address
@@ -84,8 +88,8 @@ import Base from "../layouts/Base.astro";
               type="email" 
               id="login-email" 
               required 
-              placeholder="admin@private.com" 
-              class="mt-2 w-full rounded-xl border border-slate-300 bg-slate-50/50 px-4 py-3 text-sm text-slate-900 transition outline-none focus:border-[#D52B1E] focus:bg-white focus:ring-2 focus:ring-red-100 dark:border-slate-700 dark:bg-slate-800/50 dark:text-white dark:focus:border-red-500 dark:focus:ring-red-950/40"
+              placeholder="admin@privatesector.ch" 
+              class="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-50/50 px-4 py-3.5 text-sm text-slate-900 transition outline-none focus:border-[#D52B1E] focus:bg-white focus:ring-2 focus:ring-red-100 dark:border-slate-700 dark:bg-slate-800/50 dark:text-white dark:focus:border-red-500 dark:focus:ring-red-950/40"
             />
           </div>
 
@@ -100,26 +104,26 @@ import Base from "../layouts/Base.astro";
               id="login-password" 
               required 
               placeholder="••••••••••••" 
-              class="mt-2 w-full rounded-xl border border-slate-300 bg-slate-50/50 px-4 py-3 text-sm text-slate-900 transition outline-none focus:border-[#D52B1E] focus:bg-white focus:ring-2 focus:ring-red-100 dark:border-slate-700 dark:bg-slate-800/50 dark:text-white dark:focus:border-red-500 dark:focus:ring-red-950/40"
+              class="mt-2 w-full rounded-2xl border border-slate-300 bg-slate-50/50 px-4 py-3.5 text-sm text-slate-900 transition outline-none focus:border-[#D52B1E] focus:bg-white focus:ring-2 focus:ring-red-100 dark:border-slate-700 dark:bg-slate-800/50 dark:text-white dark:focus:border-red-500 dark:focus:ring-red-950/40"
             />
           </div>
 
           <button 
             type="submit" 
             id="login-submit-btn"
-            class="w-full rounded-full bg-[#0F172A] py-3.5 text-sm font-bold text-white shadow-xs transition hover:bg-slate-800 hover:shadow-md dark:bg-red-600 dark:hover:bg-red-500"
+            class="w-full rounded-full bg-slate-900 dark:bg-[#D52B1E] py-4 text-sm font-bold text-white shadow-xs transition-all hover:bg-slate-800 dark:hover:bg-red-700 hover:scale-102"
           >
             Sign In →
           </button>
         </form>
 
-        <div class="mt-8 border-t border-slate-200/80 pt-6 text-center dark:border-slate-800">
+        <div class="border-t border-slate-200/80 pt-6 text-center dark:border-slate-800/80">
           <p class="text-xs text-slate-500 dark:text-slate-400">
             Administrator or Editorial Team?
           </p>
           <a 
             href="/_emdash/api/auth/dev-bypass?redirect=/_emdash/admin"
-            class="mt-3 inline-flex w-full items-center justify-center rounded-xl border border-slate-300 bg-white px-4 py-3 text-xs font-semibold text-slate-800 shadow-xs transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+            class="mt-3 inline-flex w-full items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3.5 text-xs font-semibold text-slate-800 shadow-xs transition hover:bg-slate-50 dark:border-slate-700 dark:bg-[#0E1524] dark:text-slate-200 dark:hover:bg-slate-800"
           >
             ⚡ Open EmDash CMS Dashboard (Direct Access) →
           </a>

@@ -26,13 +26,13 @@ const swissCompanies = allCompanies.filter((c: any) =>
       <!-- Breadcrumb -->
       <nav class="mb-8 flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
         <a href="/" class="transition hover:text-slate-900 dark:hover:text-white">Home</a>
-        <span>/</span>
+        <span class="text-slate-300 dark:text-slate-700">/</span>
         <span class="font-semibold text-slate-900 dark:text-white">Swiss Economy</span>
       </nav>
 
       <!-- Header Block -->
-      <div class="mb-12">
-        <div class="mb-4 inline-flex items-center gap-2 rounded-full border border-red-200/60 bg-red-50/80 px-3.5 py-1 text-[11px] font-bold tracking-widest text-[#D52B1E] uppercase dark:border-red-900/40 dark:bg-red-950/40 dark:text-red-400">
+      <div class="mb-14">
+        <div class="mb-4 inline-flex items-center gap-2 rounded-full border border-red-200/60 bg-red-50 dark:border-red-900/40 dark:bg-red-950/40 px-3.5 py-1 text-[11px] font-bold tracking-widest text-[#D52B1E] uppercase dark:text-red-400">
           <svg width="16" height="12" viewBox="0 0 32 24" class="rounded-xs shrink-0">
             <rect width="32" height="24" fill="#D52B1E" />
             <rect x="13" y="4" width="6" height="16" fill="#FFFFFF" />
@@ -43,19 +43,20 @@ const swissCompanies = allCompanies.filter((c: any) =>
         <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl dark:text-white">
           Switzerland Business & Economy
         </h1>
-        <p class="mt-4 max-w-3xl text-base leading-relaxed text-slate-600 sm:text-lg dark:text-slate-300">
+        <p class="mt-4 max-w-3xl text-base sm:text-lg leading-relaxed text-slate-600 dark:text-slate-300">
           Tracking the confederation's economic pillars, precision machinery exporters, banking titans, and pharma powerhouses across 26 cantons.
         </p>
       </div>
 
       <!-- Section: Key Swiss Companies -->
       <section class="mb-16">
-        <div class="mb-8 flex items-center justify-between border-b border-slate-200/80 pb-4 dark:border-slate-800">
-          <h2 class="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl dark:text-white">
+        <div class="mb-8 flex items-center justify-between border-b border-slate-200/80 pb-4 dark:border-slate-800/80">
+          <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
             Featured Swiss Enterprises
           </h2>
-          <a href="/unternehmen" class="text-xs font-bold text-[#D52B1E] transition hover:text-red-700 dark:text-red-400 dark:hover:text-red-300">
-            View All Companies →
+          <a href="/unternehmen" class="text-xs font-bold text-[#D52B1E] transition hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 flex items-center gap-1">
+            <span>View All Companies</span>
+            <span>→</span>
           </a>
         </div>
 

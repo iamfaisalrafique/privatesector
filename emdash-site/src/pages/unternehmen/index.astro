@@ -37,34 +37,35 @@ const cantons = ["All", "ZH", "BE", "GE", "VD", "BS", "ZG", "SG", "AG"];
   locale={currentLocale}
 >
   <!-- Directory Header -->
-  <section class="bg-white dark:bg-[#0E1524] border-b border-slate-200/80 dark:border-slate-800/80 py-10 sm:py-14 transition-colors">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+  <section class="border-b border-slate-200/80 bg-white/70 py-12 sm:py-16 backdrop-blur-md dark:border-slate-800/80 dark:bg-slate-900/70 transition-colors">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-6">
       
-      <div class="space-y-2">
-        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-red-100 dark:bg-red-950/80 text-red-700 dark:text-red-400 uppercase tracking-wider">
+      <div class="space-y-3">
+        <span class="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-3 py-1 text-[11px] font-bold tracking-widest text-[#D52B1E] uppercase dark:border-red-900/40 dark:bg-red-950/40 dark:text-red-400">
+          <span class="h-1.5 w-1.5 rounded-full bg-[#D52B1E] dark:bg-red-400"></span>
           SWISS COMMERCIAL REGISTRY
         </span>
-        <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+        <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl dark:text-white">
           Swiss Enterprise Directory
         </h1>
-        <p class="text-base text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
+        <p class="max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg dark:text-slate-300">
           Verified commercial registry dossiers, corporate structure intelligence, and key market analytics across Switzerland's leading commercial enterprises.
         </p>
       </div>
 
       <!-- Filters & Search -->
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-2">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-4 border-t border-slate-100 dark:border-slate-800">
         <!-- Canton Filter Chips -->
-        <div class="flex items-center gap-1.5 flex-wrap">
+        <div class="flex items-center gap-2 flex-wrap">
           {cantons.map((can) => {
             const isCanActive = (!cantonParam && can === "All") || (cantonParam === can);
             return (
               <a 
                 href={can === "All" ? "/unternehmen" : `/unternehmen?canton=${can}`}
-                class={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all shadow-2xs ${
+                class={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all shadow-2xs ${
                   isCanActive
                     ? 'bg-[#D52B1E] text-white shadow-xs'
-                    : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
+                    : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
                 }`}
               >
                 {can}
@@ -80,7 +81,7 @@ const cantons = ["All", "ZH", "BE", "GE", "VD", "BS", "ZG", "SG", "AG"];
             name="search" 
             placeholder="Search by company or sector..." 
             value={searchParam}
-            class="w-full pl-9 pr-4 py-2 text-xs bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white rounded-full border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-1 focus:ring-red-500"
+            class="w-full pl-9 pr-4 py-2 text-xs bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-full border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-[#D52B1E] focus:ring-2 focus:ring-red-100 dark:focus:ring-red-950/40"
           />
           <svg class="absolute left-3 w-3.5 h-3.5 text-slate-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <circle cx="11" cy="11" r="8" stroke-width="2"></circle>
@@ -93,22 +94,23 @@ const cantons = ["All", "ZH", "BE", "GE", "VD", "BS", "ZG", "SG", "AG"];
   </section>
 
   <!-- Directory Cards Grid -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-    <div class="flex items-center justify-between mb-6 text-xs text-slate-500 dark:text-slate-400 font-medium">
-      <span>Showing {companies.length} corporate profiles</span>
+  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+    <div class="flex items-center justify-between mb-8 text-xs text-slate-500 dark:text-slate-400 font-medium">
+      <span class="font-mono">Showing {companies.length} corporate profiles</span>
       {(cantonParam || searchParam || verifiedOnly) && (
-        <a href="/unternehmen" class="text-red-600 dark:text-red-400 font-semibold hover:underline">
-          Clear all filters ✕
+        <a href="/unternehmen" class="text-[#D52B1E] dark:text-red-400 font-semibold hover:underline">
+          Clear filters ✕
         </a>
       )}
     </div>
 
     {companies.length === 0 ? (
-      <div class="text-center py-16 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-8 shadow-xs">
-        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">No enterprises match your search query</h3>
-        <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">Try clearing filters or searching across all cantons.</p>
-        <a href="/unternehmen" class="inline-flex items-center px-4 py-2 rounded-xl text-xs font-semibold bg-red-600 text-white">
-          Reset all filters
+      <div class="text-center py-20 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8">
+        <span class="text-3xl block mb-2">🏢</span>
+        <h3 class="text-lg font-bold text-slate-900 dark:text-white">No enterprises match your criteria</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Try another canton or search query.</p>
+        <a href="/unternehmen" class="mt-4 inline-block px-4 py-2 rounded-full bg-[#0F172A] text-white text-xs font-semibold">
+          Reset Filter
         </a>
       </div>
     ) : (
