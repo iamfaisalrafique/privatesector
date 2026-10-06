@@ -171,13 +171,13 @@ const relatedArticles = getNews(6).filter((n: any) => n.slug !== slug && String(
   <!-- Main Article Body -->
   <main class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
     
-    <!-- High-Resolution Featured Image -->
+    <!-- High-Resolution Featured Image (Fitted without cropping or cutting) -->
     {pageImage && (
-      <div class="mb-12 rounded-3xl overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-md bg-slate-100 dark:bg-slate-800 aspect-[16/10] sm:aspect-[2/1]">
+      <div class="mb-12 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-md bg-slate-50 dark:bg-slate-900/60 p-2 sm:p-3 overflow-hidden">
         <img 
           src={pageImage} 
           alt={pageTitle} 
-          class="w-full h-full object-cover" 
+          class="w-full h-auto max-h-[700px] rounded-2xl object-contain mx-auto" 
           onerror="this.style.display='none'" 
         />
       </div>

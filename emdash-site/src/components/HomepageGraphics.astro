@@ -1,111 +1,200 @@
 ---
 // emdash-site/src/components/HomepageGraphics.astro
 const cantons = [
-  { code: 'ZH', name: 'Zürich', count: "124'820", gdp: '21.5%', color: '#D52B1E' },
-  { code: 'BE', name: 'Bern', count: "78'410", gdp: '12.8%', color: '#003453' },
-  { code: 'GE', name: 'Geneva', count: "46'950", gdp: '9.2%', color: '#8B0000' },
-  { code: 'VD', name: 'Vaud', count: "42'110", gdp: '8.7%', color: '#4A6741' },
-  { code: 'BS', name: 'Basel-Stadt', count: "28'730", gdp: '7.1%', color: '#D4AF37' },
-  { code: 'ZG', name: 'Zug', count: "24'550", gdp: '4.8%', color: '#5A5A5A' },
-  { code: 'SG', name: 'St. Gallen', count: "22'180", gdp: '4.2%', color: '#C5A059' },
-  { code: 'AG', name: 'Aargau', count: "19'400", gdp: '3.9%', color: '#2B4C7E' },
+  { code: 'ZH', name: 'Zürich', count: "124'820", gdp: '21.5%', gradient: 'from-red-600 to-rose-500', color: '#D52B1E' },
+  { code: 'BE', name: 'Bern', count: "78'410", gdp: '12.8%', gradient: 'from-sky-700 to-blue-900', color: '#003453' },
+  { code: 'GE', name: 'Geneva', count: "46'950", gdp: '9.2%', gradient: 'from-red-800 to-amber-700', color: '#8B0000' },
+  { code: 'VD', name: 'Vaud', count: "42'110", gdp: '8.7%', gradient: 'from-emerald-700 to-teal-800', color: '#4A6741' },
+  { code: 'BS', name: 'Basel-Stadt', count: "28'730", gdp: '7.1%', gradient: 'from-amber-600 to-yellow-500', color: '#D4AF37' },
+  { code: 'ZG', name: 'Zug', count: "24'550", gdp: '4.8%', gradient: 'from-blue-600 to-indigo-600', color: '#5A5A5A' },
+  { code: 'SG', name: 'St. Gallen', count: "22'180", gdp: '4.2%', gradient: 'from-emerald-600 to-green-700', color: '#C5A059' },
+  { code: 'AG', name: 'Aargau', count: "19'400", gdp: '3.9%', gradient: 'from-blue-700 to-slate-800', color: '#2B4C7E' },
 ];
 
 const registerEvents = [
-  { id: 1, time: '2m ago', company: 'Roche Holding AG', canton: 'BS', action: 'Board mutation registered', type: 'mutation' },
-  { id: 2, time: '5m ago', company: 'UBS Group AG', canton: 'ZH', action: 'Capital increase published', type: 'capital' },
-  { id: 3, time: '12m ago', company: 'Stadler Rail AG', canton: 'TG', action: 'Articles of association amended', type: 'statutes' },
-  { id: 4, time: '18m ago', company: 'Glencore International AG', canton: 'ZG', action: 'Power of attorney registered', type: 'signatory' },
-  { id: 5, time: '25m ago', company: 'Nestlé S.A.', canton: 'VD', action: 'New branch registered in Vevey', type: 'branch' },
-  { id: 6, time: '35m ago', company: 'Swisscom AG', canton: 'BE', action: 'Corporate signatory update', type: 'mutation' }
+  { 
+    id: 1, 
+    time: '2m ago', 
+    company: 'Roche Holding AG', 
+    canton: 'BS', 
+    action: 'Board mutation & supervisory update registered', 
+    type: 'Board Mutation', 
+    pillClass: 'bg-indigo-50 text-indigo-700 border-indigo-200/80 dark:bg-indigo-950/60 dark:text-indigo-400 dark:border-indigo-900/60' 
+  },
+  { 
+    id: 2, 
+    time: '5m ago', 
+    company: 'UBS Group AG', 
+    canton: 'ZH', 
+    action: 'Capital increase published in SOGC registry', 
+    type: 'Capital Increase', 
+    pillClass: 'bg-emerald-50 text-emerald-700 border-emerald-200/80 dark:bg-emerald-950/60 dark:text-emerald-400 dark:border-emerald-900/60' 
+  },
+  { 
+    id: 3, 
+    time: '12m ago', 
+    company: 'Stadler Rail AG', 
+    canton: 'TG', 
+    action: 'Articles of association amended by general assembly', 
+    type: 'Statutes', 
+    pillClass: 'bg-purple-50 text-purple-700 border-purple-200/80 dark:bg-purple-950/60 dark:text-purple-400 dark:border-purple-900/60' 
+  },
+  { 
+    id: 4, 
+    time: '18m ago', 
+    company: 'Glencore International AG', 
+    canton: 'ZG', 
+    action: 'Power of attorney & signatory rights registered', 
+    type: 'Signatory', 
+    pillClass: 'bg-amber-50 text-amber-700 border-amber-200/80 dark:bg-amber-950/60 dark:text-amber-400 dark:border-amber-900/60' 
+  },
+  { 
+    id: 5, 
+    time: '25m ago', 
+    company: 'Nestlé S.A.', 
+    canton: 'VD', 
+    action: 'New operating branch registered in Vevey', 
+    type: 'Branch Entity', 
+    pillClass: 'bg-rose-50 text-rose-700 border-rose-200/80 dark:bg-rose-950/60 dark:text-rose-400 dark:border-rose-900/60' 
+  },
+  { 
+    id: 6, 
+    time: '35m ago', 
+    company: 'Swisscom AG', 
+    canton: 'BE', 
+    action: 'Corporate signatory update approved by registry', 
+    type: 'Corporate Signatory', 
+    pillClass: 'bg-sky-50 text-sky-700 border-sky-200/80 dark:bg-sky-950/60 dark:text-sky-400 dark:border-sky-900/60' 
+  }
 ];
 ---
 
-<section class="my-12">
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<section class="my-10 md:my-14">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
     
-    <!-- 1. Cantonal GDP & Density Card -->
-    <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-6 sm:p-7 shadow-xs">
-      <div class="flex items-center justify-between pb-4 mb-5 border-b border-slate-100 dark:border-slate-800">
-        <div>
-          <span class="text-[10px] font-bold text-red-600 dark:text-red-400 uppercase tracking-wider block">
-            REGIONAL DENSITY
-          </span>
-          <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
-            Cantonal GDP & Enterprise Share
-          </h3>
+    <!-- 1. Cantonal GDP & Density Card (Google Finance / Apple Health Dashboard) -->
+    <div class="flex flex-col justify-between bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xs hover:shadow-md transition-shadow">
+      <div>
+        <div class="flex items-center justify-between pb-5 mb-6 border-b border-slate-100 dark:border-slate-800">
+          <div>
+            <span class="text-[10px] font-extrabold text-[#D52B1E] dark:text-red-400 uppercase tracking-widest block mb-1">
+              REGIONAL ECONOMIC DENSITY
+            </span>
+            <h3 class="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white">
+              Cantonal GDP & Enterprise Share
+            </h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              Federal Statistical Office (BFS) & SECO Registry
+            </p>
+          </div>
+          <a 
+            href="/statistiken" 
+            class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold text-[#D52B1E] dark:text-red-400 bg-red-50 dark:bg-red-950/50 hover:bg-red-100 dark:hover:bg-red-900/60 border border-red-200/60 dark:border-red-900/40 transition-colors"
+          >
+            <span>Full Matrix</span>
+            <span>→</span>
+          </a>
         </div>
-        <a href="/statistiken" class="text-xs font-semibold text-red-600 dark:text-red-400 hover:underline">
-          Full Matrix →
-        </a>
+
+        <div class="space-y-4">
+          {cantons.map((c) => (
+            <div class="group/bar p-1.5 -mx-1.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+              <div class="flex items-center justify-between text-xs mb-1.5">
+                <div class="flex items-center gap-2">
+                  <span class="inline-flex items-center justify-center w-7 h-5 rounded text-[10px] font-black bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700/60">
+                    {c.code}
+                  </span>
+                  <span class="font-bold text-slate-800 dark:text-slate-200">
+                    {c.name}
+                  </span>
+                </div>
+                <div class="flex items-center gap-2 font-mono text-[11px] tabular-nums">
+                  <span class="text-slate-500 dark:text-slate-400 font-medium">
+                    {c.count} firms
+                  </span>
+                  <span class="font-bold text-slate-900 dark:text-white">
+                    {c.gdp} GDP
+                  </span>
+                </div>
+              </div>
+              
+              <!-- Refined Dual-Tone Progress Bar -->
+              <div class="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden p-[1px]">
+                <div 
+                  class={`h-full rounded-full bg-gradient-to-r ${c.gradient} transition-all duration-700 shadow-2xs`} 
+                  style={`width: ${c.gdp};`}
+                ></div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
-      <div class="space-y-3.5">
-        {cantons.map((c) => (
-          <div>
-            <div class="flex items-center justify-between text-xs mb-1.5">
-              <span class="font-semibold text-slate-800 dark:text-slate-200">
-                {c.name} ({c.code})
-              </span>
-              <span class="text-slate-500 dark:text-slate-400 tabular-nums font-medium">
-                {c.count} firms • {c.gdp} GDP
-              </span>
-            </div>
-            <div class="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-              <div 
-                class="h-full rounded-full transition-all duration-500" 
-                style={`width: ${c.gdp}; background-color: ${c.color};`}
-              ></div>
-            </div>
-          </div>
-        ))}
+      <!-- Footer Micro Summary -->
+      <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-500">
+        <span>Coverage: 26 Cantons</span>
+        <span class="font-semibold text-slate-600 dark:text-slate-400">72.2% National GDP Output</span>
       </div>
     </div>
 
-    <!-- 2. Live Commercial Register Feed Card -->
-    <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-6 sm:p-7 shadow-xs">
-      <div class="flex items-center justify-between pb-4 mb-5 border-b border-slate-100 dark:border-slate-800">
-        <div>
-          <span class="text-[10px] font-bold text-red-600 dark:text-red-400 uppercase tracking-wider block">
-            REGISTRY RADAR
-          </span>
-          <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
-            Commercial Register Ledger (SOGC/SHAB)
-          </h3>
-        </div>
-        <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span>Live Feed</span>
-        </span>
-      </div>
-
-      <div class="space-y-3">
-        {registerEvents.map((evt) => (
-          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800/60 flex items-start justify-between gap-3">
-            <div class="space-y-0.5 min-w-0 flex-1">
-              <div class="flex items-center gap-2">
-                <span class="font-bold text-xs text-slate-900 dark:text-white truncate">
-                  {evt.company}
-                </span>
-                <span class="px-1.5 py-0.2 rounded text-[10px] font-semibold bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
-                  {evt.canton}
-                </span>
-              </div>
-              <p class="text-xs text-slate-500 dark:text-slate-400 truncate">
-                {evt.action}
-              </p>
-            </div>
-            <span class="text-[11px] text-slate-400 dark:text-slate-500 shrink-0 tabular-nums">
-              {evt.time}
+    <!-- 2. Live Commercial Register Feed Card (SOGC / SHAB Official Gazette) -->
+    <div class="flex flex-col justify-between bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xs hover:shadow-md transition-shadow">
+      <div>
+        <div class="flex items-center justify-between pb-5 mb-6 border-b border-slate-100 dark:border-slate-800">
+          <div>
+            <span class="text-[10px] font-extrabold text-[#D52B1E] dark:text-red-400 uppercase tracking-widest block mb-1">
+              REGISTRY RADAR
             </span>
+            <h3 class="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white">
+              Commercial Register Ledger (SOGC/SHAB)
+            </h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              Official Swiss Official Gazette of Commerce
+            </p>
           </div>
-        ))}
+          <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-800/60 shadow-2xs">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span>LIVE FEED</span>
+          </span>
+        </div>
+
+        <div class="space-y-3">
+          {registerEvents.map((evt) => (
+            <div class="p-3.5 rounded-2xl bg-slate-50/80 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800/60 hover:border-slate-300 dark:hover:border-slate-700 transition-all flex items-start justify-between gap-3 group">
+              <div class="space-y-1 min-w-0 flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="font-extrabold text-xs text-slate-900 dark:text-white group-hover:text-[#D52B1E] dark:group-hover:text-red-400 transition-colors truncate">
+                    {evt.company}
+                  </span>
+                  <span class="px-1.5 py-0.5 rounded text-[9px] font-bold bg-slate-200/70 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
+                    {evt.canton}
+                  </span>
+                  <span class={`px-2 py-0.5 rounded-full text-[9px] font-bold border uppercase tracking-wider ${evt.pillClass}`}>
+                    {evt.type}
+                  </span>
+                </div>
+                <p class="text-xs text-slate-600 dark:text-slate-400 truncate leading-relaxed">
+                  {evt.action}
+                </p>
+              </div>
+              <span class="text-[11px] font-mono text-slate-400 dark:text-slate-500 shrink-0 tabular-nums pt-0.5">
+                {evt.time}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
 
-      <div class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800 text-center">
-        <a href="/unternehmen" class="text-xs font-semibold text-red-600 dark:text-red-400 hover:underline">
-          Search Complete Commercial Register →
-        </a>
+      <!-- Footer Micro Summary -->
+      <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-500">
+        <span class="flex items-center gap-1.5">
+          <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+          <span>SHAB Central Database Sync</span>
+        </span>
+        <span class="font-semibold text-slate-600 dark:text-slate-400">Fedlex Legal Format</span>
       </div>
     </div>
 
