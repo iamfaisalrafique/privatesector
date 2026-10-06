@@ -26,59 +26,64 @@ const transcript = [
 ---
 
 <Base title="Translatic Transcript | PrivateSector.ch" description="A recorded transatlantic session featuring Dr. Beat Schuler and Sarah Jenkins, Esq. on Swiss-US bilateral trade corridors.">
-  <div style="background-color: var(--bg-ivory, #FFFFFF); min-height: calc(100vh - 120px); padding: 40px 0 64px;">
-    <div style="max-width: 960px; margin: 0 auto; padding: 0 24px;">
+  <div class="min-h-[calc(100vh-120px)] py-10 sm:py-16">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6">
       
       <!-- Breadcrumb -->
-      <div style="font-size: 12px; color: #4B5563; margin-bottom: 24px; display: flex; gap: 6px; align-items: center;">
-        <a href="/" style="color: inherit; text-decoration: none;">Home</a>
+      <nav class="mb-8 flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+        <a href="/" class="transition hover:text-slate-900 dark:hover:text-white">Home</a>
         <span>/</span>
-        <span style="font-weight: 600; color: #000000;">Translatic Transcript</span>
-      </div>
+        <span class="font-semibold text-slate-900 dark:text-white">Translatic Transcript</span>
+      </nav>
 
       <!-- Editorial Header -->
-      <div style="border-bottom: 2px solid #000; padding-bottom: 24px; margin-bottom: 32px;">
-        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
-          <span style="color: #D52B1E; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;">Exclusive Briefing</span>
-          <span style="font-size: 13px; color: #4B5563; font-family: 'JetBrains Mono', monospace;">VOL. IV // NO. 12</span>
+      <div class="border-b border-slate-200/80 pb-8 dark:border-slate-800">
+        <div class="flex items-center justify-between gap-4">
+          <span class="inline-flex items-center gap-2 rounded-full border border-red-200/60 bg-red-50/80 px-3.5 py-1 text-[11px] font-bold tracking-widest text-[#D52B1E] uppercase dark:border-red-900/40 dark:bg-red-950/40 dark:text-red-400">
+            <span class="h-1.5 w-1.5 rounded-full bg-[#D52B1E] dark:bg-red-400"></span>
+            Exclusive Briefing
+          </span>
+          <span class="font-mono text-xs font-semibold text-slate-500 dark:text-slate-400">
+            VOL. IV // NO. 12
+          </span>
         </div>
-        <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 38px; font-weight: 800; line-height: 1.2; color: #000000; margin-bottom: 16px;">
+        <h1 class="mt-6 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl dark:text-white">
           Translatic Transcript
         </h1>
-        <p style="font-size: 18px; color: #4B5563; line-height: 1.5; margin: 0;">
+        <p class="mt-4 text-lg leading-relaxed text-slate-600 sm:text-xl dark:text-slate-300">
           A recorded transatlantic session featuring Dr. Beat Schuler and Sarah Jenkins, Esq. on how Swiss precision capital meets Southern California's venture velocity.
         </p>
       </div>
 
       <!-- Speakers Box -->
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin-bottom: 40px;">
+      <div class="mt-10 grid gap-6 sm:grid-cols-2">
         {speakers.map((sp) => (
-          <div style="background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 8px; padding: 20px;">
-            <div style="font-size: 32px; margin-bottom: 8px;">{sp.avatar}</div>
-            <strong style="display: block; font-size: 16px; color: #0F172A; margin-bottom: 4px;">{sp.name}</strong>
-            <span style="display: block; font-size: 12px; color: #D52B1E; font-weight: 600; margin-bottom: 10px;">{sp.title}</span>
-            <p style="font-size: 12.5px; color: #475569; line-height: 1.5; margin: 0;">{sp.bio}</p>
+          <div class="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+            <div class="text-3xl">{sp.avatar}</div>
+            <strong class="mt-3 block text-base font-bold text-slate-900 dark:text-white">{sp.name}</strong>
+            <span class="mt-0.5 block text-xs font-semibold text-[#D52B1E] dark:text-red-400">{sp.title}</span>
+            <p class="mt-2 text-xs leading-relaxed text-slate-600 dark:text-slate-400">{sp.bio}</p>
           </div>
         ))}
       </div>
 
       <!-- Transcript Flow -->
-      <div style="background-color: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; padding: 32px;">
-        <div style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #64748B; margin-bottom: 24px; border-bottom: 1px solid #E2E8F0; padding-bottom: 12px;">
+      <div class="mt-10 rounded-3xl border border-slate-200/80 bg-white p-8 shadow-xs dark:border-slate-800 dark:bg-slate-900 sm:p-10">
+        <div class="border-b border-slate-100 pb-4 text-xs font-bold tracking-widest text-slate-400 uppercase dark:border-slate-800 dark:text-slate-500">
           Session Transcript
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 24px;">
+        <div class="mt-8 space-y-8">
           {transcript.map((item) => (
-            <div style="display: flex; gap: 20px; align-items: flex-start;">
-              <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #94A3B8; padding-top: 2px; flex-shrink: 0;">
+            <div class="flex items-start gap-5">
+              <span class="shrink-0 pt-0.5 font-mono text-xs font-semibold text-slate-400 dark:text-slate-500">
                 {item.time}
               </span>
-              <div style="flex: 1;">
-                <strong style="display: block; font-size: 14px; color: #0F172A; margin-bottom: 4px;">
+              <div class="flex-1">
+                <strong class="block text-sm font-bold text-slate-900 dark:text-white">
                   {item.speaker}
                 </strong>
-                <p style="font-size: 14.5px; line-height: 1.7; color: #334155; margin: 0;">
+                <p class="mt-1.5 text-sm leading-relaxed text-slate-700 sm:text-base dark:text-slate-300">
                   {item.text}
                 </p>
               </div>

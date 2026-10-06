@@ -29,56 +29,58 @@ const renderedHtml = blog.content_body ? (marked.parse(blog.content_body) as str
   description={blog.subtitle || blog.title}
   image={blog.image_url || "/logo.png"}
 >
-  <div style="background-color: #FFFFFF; border-bottom: 1px solid #E5E7EB; padding: 40px 24px;">
-    <div style="max-width: 900px; margin: 0 auto;">
-      <nav style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6B7280; margin-bottom: 24px;">
-        <a href="/" style="color: #6B7280; text-decoration: none;">Home</a>
+  <header class="bg-white dark:bg-[#0E1524] border-b border-slate-200/80 dark:border-slate-800/80 py-10 sm:py-14 transition-colors">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      <nav class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+        <a href="/" class="hover:text-slate-900 dark:hover:text-white transition-colors">Home</a>
         <span>›</span>
-        <a href="/blogs" style="color: #6B7280; text-decoration: none;">Blogs</a>
+        <a href="/blogs" class="hover:text-slate-900 dark:hover:text-white transition-colors">Blogs</a>
         <span>›</span>
-        <span style="color: #D52B1E; font-weight: 600;">{blog.category || 'Perspective'}</span>
+        <span class="text-red-600 dark:text-red-400 font-semibold">{blog.category || 'Perspective'}</span>
       </nav>
 
-      <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #D52B1E; display: block; margin-bottom: 12px;">
-        {blog.category || 'MARKET PERSPECTIVE'}
-      </span>
+      <div>
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 dark:bg-red-950/80 text-red-700 dark:text-red-400 uppercase tracking-wider">
+          {blog.category || 'MARKET PERSPECTIVE'}
+        </span>
+      </div>
 
-      <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: clamp(28px, 4vw, 40px); font-weight: 700; color: #000000; margin: 0 0 16px 0; line-height: 1.25;">
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.18] hyphen-guard">
         {blog.title}
       </h1>
 
       {blog.subtitle && (
-        <p style="font-size: 18px; line-height: 1.6; color: #4B5563; margin: 0 0 24px 0;">
+        <p class="text-lg sm:text-xl text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
           {blog.subtitle}
         </p>
       )}
 
-      <div style="display: flex; gap: 16px; font-size: 13px; color: #6B7280; border-top: 1px solid #E5E7EB; padding-top: 14px;">
-        <span>By <strong>{blog.author_name || 'PrivateSector Analyst'}</strong></span>
+      <div class="pt-6 border-t border-slate-200/80 dark:border-slate-800/80 flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
+        <span>By <strong class="text-slate-900 dark:text-white font-semibold">{blog.author_name || 'PrivateSector Analyst'}</strong></span>
         {blog.date_published && <span>• 📅 {blog.date_published}</span>}
       </div>
     </div>
-  </div>
+  </header>
 
-  <main style="max-width: 900px; margin: 0 auto; padding: 40px 24px 96px;">
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
     {blog.image_url && (
-      <div style="margin-bottom: 36px; border-radius: 8px; overflow: hidden; border: 1px solid #E5E7EB;">
-        <img src={blog.image_url} alt="" style="width: 100%; height: auto; max-height: 500px; object-fit: cover;" onerror="this.style.display='none'" />
+      <div class="mb-10 rounded-2xl overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-md bg-slate-100 dark:bg-slate-800 aspect-[16/10] sm:aspect-[2/1]">
+        <img src={blog.image_url} alt="" class="w-full h-full object-cover" onerror="this.style.display='none'" />
       </div>
     )}
 
     {blog.pull_quote && (
-      <blockquote style="border-left: 3px solid #D52B1E; background-color: #F9FAFB; padding: 20px 24px; margin: 0 0 36px 0; font-family: 'Playfair Display', Georgia, serif; font-size: 19px; font-style: italic; color: #1F2937; line-height: 1.6;">
+      <blockquote class="my-8 p-6 rounded-2xl bg-slate-100 dark:bg-slate-800/60 border-l-4 border-red-600 text-lg sm:text-xl font-medium italic text-slate-800 dark:text-slate-200 shadow-2xs leading-relaxed">
         "{blog.pull_quote}"
       </blockquote>
     )}
 
-    <article class="article-content" style="font-family: Inter, sans-serif; font-size: 17px; line-height: 1.8; color: #1F2937;">
+    <article class="editorial-prose dark:prose-invert max-w-none text-slate-700 dark:text-slate-300 leading-relaxed text-base sm:text-lg">
       <div set:html={renderedHtml} />
     </article>
 
-    <div style="margin-top: 48px; padding-top: 24px; border-top: 1px solid #E5E7EB;">
-      <a href="/blogs" style="color: #D52B1E; text-decoration: none; font-weight: 600; font-size: 13px;">
+    <div class="mt-12 pt-8 border-t border-slate-200 dark:border-slate-800">
+      <a href="/blogs" class="text-xs font-semibold text-red-600 dark:text-red-400 hover:underline">
         ← Back to All Blogs
       </a>
     </div>

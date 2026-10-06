@@ -54,6 +54,34 @@ function renderBlocks(blocks: any[]): string {
   }).join('');
 }
 
+function resolveMediaUrl(rawImage: any): string | null {
+  if (!rawImage) return null;
+  if (typeof rawImage === 'string') {
+    if (rawImage.startsWith('/') || rawImage.startsWith('http')) return rawImage;
+    if (rawImage.trim().startsWith('{')) {
+      try {
+        const parsed = JSON.parse(rawImage);
+        if (parsed.meta?.storageKey) {
+          return `/_emdash/api/media/file/${parsed.meta.storageKey}`;
+        }
+        if (parsed.filename) {
+          return `/_emdash/api/media/file/${parsed.filename}`;
+        }
+      } catch {}
+    }
+    return rawImage;
+  }
+  if (typeof rawImage === 'object') {
+    if (rawImage.meta?.storageKey) {
+      return `/_emdash/api/media/file/${rawImage.meta.storageKey}`;
+    }
+    if (rawImage.filename) {
+      return `/_emdash/api/media/file/${rawImage.filename}`;
+    }
+  }
+  return null;
+}
+
 export function getNews(limit = 50) {
   try {
     const edb = getEmdashDb();
@@ -78,6 +106,7 @@ export function getNews(limit = 50) {
       if (rows && rows.length > 0) {
         return rows.map(r => ({
           ...r,
+          image_url: resolveMediaUrl(r.image_url),
           content_body: portableTextToString(r.content_body)
         }));
       }
@@ -118,6 +147,7 @@ export function getNewsBySlug(slug: string) {
       if (row) {
         return {
           ...row,
+          image_url: resolveMediaUrl(row.image_url),
           content_body: portableTextToString(row.content_body)
         };
       }
@@ -186,7 +216,7 @@ export function getActiveMorningBriefings(limit = 2) {
       if (rows && rows.length > 0) {
         return rows.map(b => ({
           ...b,
-          image_url: b.featured_image,
+          image_url: resolveMediaUrl(b.featured_image),
           linked_articles: [],
           articles: []
         }));
@@ -244,7 +274,7 @@ export function getBlogs(limit = 20) {
       if (rows && rows.length > 0) {
         return rows.map(r => ({
           ...r,
-          image_url: r.featured_image,
+          image_url: resolveMediaUrl(r.featured_image),
           content_body: portableTextToString(r.content)
         }));
       }

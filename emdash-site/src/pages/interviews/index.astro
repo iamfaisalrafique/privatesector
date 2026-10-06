@@ -3,63 +3,73 @@
 import Base from "../../layouts/Base.astro";
 import { getInterviews } from "../../lib/legacy-db";
 
+const url = new URL(Astro.request.url);
+const currentLocale = url.searchParams.get("locale") || "en";
 const interviews = getInterviews(50);
 ---
 
 <Base 
   title="CEO & Executive Interviews — PrivateSector.ch"
   description="Exclusive in-depth conversations with corporate leaders, founders, and policy decision-makers across the Swiss private sector."
+  locale={currentLocale}
 >
-  <div style="background-color: #FFFFFF; border-bottom: 1px solid #E5E7EB; padding: 48px 24px;">
-    <div style="max-width: 1600px; margin: 0 auto;">
-      <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #D52B1E; display: block; margin-bottom: 8px;">
-        EXECUTIVE ACCESS
+  <!-- Page Header -->
+  <section class="bg-white dark:bg-[#0E1524] border-b border-slate-200/80 dark:border-slate-800/80 py-10 sm:py-14 transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
+      <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-red-100 dark:bg-red-950/80 text-red-700 dark:text-red-400 uppercase tracking-wider">
+        EXECUTIVE ACCESS & DIALOGUE
       </span>
-      <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 700; color: #000000; margin: 0 0 16px 0;">
+      <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
         CEO & Executive Interviews
       </h1>
-      <p style="font-size: 16px; color: #4B5563; max-width: 720px; margin: 0;">
+      <p class="text-base text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
         Direct perspectives from leaders guiding Switzerland's industrial, financial, and pharmaceutical champions.
       </p>
     </div>
-  </div>
+  </section>
 
-  <main style="max-width: 1600px; margin: 0 auto; padding: 48px 24px 96px;">
-    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 28px;">
+  <!-- Grid of Interviews -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {interviews.map((item: any) => (
         <a 
           href={`/interviews/${item.slug || item.id}`}
-          style="text-decoration: none; background-color: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.15s ease, box-shadow 0.15s ease;"
-          class="interview-card"
+          class="group flex flex-col justify-between bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-6 shadow-xs hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
         >
-          <div style="padding: 24px;">
-            <div style="display: flex; gap: 14px; align-items: center; margin-bottom: 16px;">
-              <div style="width: 48px; height: 48px; border-radius: 50%; background-color: #0A0A0A; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
+          <div class="space-y-4">
+            <!-- Executive Profile Header -->
+            <div class="flex items-center gap-3.5">
+              <div class="w-12 h-12 rounded-full bg-slate-900 dark:bg-slate-800 text-white flex items-center justify-center font-bold text-base shadow-xs shrink-0 border border-slate-700">
                 {item.interviewee_name ? item.interviewee_name.charAt(0) : 'I'}
               </div>
-              <div>
-                <strong style="font-size: 15px; color: #111827; display: block;">{item.interviewee_name}</strong>
-                <span style="font-size: 12px; color: #6B7280;">{item.interviewee_title} • {item.company_name}</span>
+              <div class="min-w-0 flex-1">
+                <strong class="text-sm font-bold text-slate-900 dark:text-white block truncate">
+                  {item.interviewee_name}
+                </strong>
+                <span class="text-xs text-slate-500 dark:text-slate-400 truncate block">
+                  {item.interviewee_title} • {item.company_name}
+                </span>
               </div>
             </div>
 
-            <h2 style="font-family: 'Playfair Display', Georgia, serif; font-size: 18px; font-weight: 700; color: #000000; margin: 0 0 10px 0; line-height: 1.35;">
+            <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors leading-snug line-clamp-2">
               {item.title}
             </h2>
 
             {item.subtitle && (
-              <p style="font-size: 13px; color: #4B5563; line-height: 1.5; margin: 0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+              <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 line-clamp-3 leading-relaxed">
                 {item.subtitle}
               </p>
             )}
           </div>
 
-          <div style="border-top: 1px solid #F3F4F6; padding: 14px 24px; background-color: #FAFAFA; display: flex; justify-content: space-between; align-items: center; font-size: 12px;">
-            <span style="color: #6B7280;">
-              {item.audio_url ? '🎙️ Audio & Q&A' : '📝 Full Q&A Transcript'}
+          <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
+            <span class="text-slate-400 font-medium">
+              {item.audio_url ? '🎙️ Audio & Q&A' : '📝 Transcript Q&A'}
             </span>
-            <span style="color: #D52B1E; font-weight: 600;">
-              Read Interview →
+            <span class="font-semibold text-red-600 dark:text-red-400 group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
+              <span>Read Interview</span>
+              <span>→</span>
             </span>
           </div>
         </a>
@@ -67,11 +77,3 @@ const interviews = getInterviews(50);
     </div>
   </main>
 </Base>
-
-<style>
-  .interview-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 20px -4px rgba(0,0,0,0.08);
-    border-color: #D52B1E !important;
-  }
-</style>

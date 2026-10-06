@@ -32,82 +32,100 @@ if (interview.qa_content) {
   title={`${interview.title} — Executive Interview | PrivateSector.ch`}
   description={interview.subtitle || `In-depth executive discussion with ${interview.interviewee_name}, ${interview.interviewee_title}.`}
 >
-  <div style="background-color: #FFFFFF; border-bottom: 1px solid #E5E7EB; padding: 40px 24px;">
-    <div style="max-width: 900px; margin: 0 auto;">
+  <!-- Interview Header -->
+  <header class="bg-white dark:bg-[#0E1524] border-b border-slate-200/80 dark:border-slate-800/80 py-10 sm:py-14 transition-colors">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
       
-      <nav style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6B7280; margin-bottom: 24px;">
-        <a href="/" style="color: #6B7280; text-decoration: none;">Home</a>
+      <!-- Breadcrumb Navigation -->
+      <nav class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+        <a href="/" class="hover:text-slate-900 dark:hover:text-white transition-colors">Home</a>
         <span>›</span>
-        <a href="/interviews" style="color: #6B7280; text-decoration: none;">Interviews</a>
+        <a href="/interviews" class="hover:text-slate-900 dark:hover:text-white transition-colors">Interviews</a>
         <span>›</span>
-        <span style="color: #D52B1E; font-weight: 600;">{interview.interviewee_name}</span>
+        <span class="text-red-600 dark:text-red-400 font-semibold">{interview.interviewee_name}</span>
       </nav>
 
-      <span style="display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #D52B1E; margin-bottom: 12px;">
-        EXECUTIVE INTERVIEW
-      </span>
+      <div>
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 dark:bg-red-950/80 text-red-700 dark:text-red-400 uppercase tracking-wider">
+          EXECUTIVE INTERVIEW
+        </span>
+      </div>
 
-      <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: clamp(28px, 4vw, 40px); font-weight: 700; color: #000000; margin: 0 0 16px 0; line-height: 1.25;">
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.18] hyphen-guard">
         {interview.title}
       </h1>
 
       {interview.subtitle && (
-        <p style="font-size: 18px; line-height: 1.6; color: #4B5563; margin: 0 0 28px 0;">
+        <p class="text-lg sm:text-xl text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
           {interview.subtitle}
         </p>
       )}
 
-      <!-- Interviewee Profile Bar -->
-      <div style="background-color: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 8px; padding: 20px; display: flex; gap: 16px; align-items: center;">
-        <div style="width: 56px; height: 56px; border-radius: 50%; background-color: #0A0A0A; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px;">
+      <!-- Interviewee Profile Card -->
+      <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 flex items-center gap-4 shadow-2xs">
+        <div class="w-14 h-14 rounded-full bg-slate-900 dark:bg-slate-700 text-white flex items-center justify-center font-bold text-lg shadow-xs shrink-0 border border-slate-700">
           {interview.interviewee_name ? interview.interviewee_name.charAt(0) : 'I'}
         </div>
-        <div>
-          <h3 style="margin: 0; font-size: 17px; font-weight: 700; color: #111827;">{interview.interviewee_name}</h3>
-          <p style="margin: 2px 0 0; font-size: 13px; color: #6B7280;">
-            {interview.interviewee_title} at <strong style="color: #111827;">{interview.company_name}</strong>
+        <div class="min-w-0 flex-1">
+          <h3 class="font-bold text-base sm:text-lg text-slate-900 dark:text-white">
+            {interview.interviewee_name}
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+            {interview.interviewee_title} at <strong class="text-slate-900 dark:text-white font-semibold">{interview.company_name}</strong>
           </p>
         </div>
       </div>
 
     </div>
-  </div>
+  </header>
 
-  <main style="max-width: 900px; margin: 0 auto; padding: 40px 24px 96px;">
+  <!-- Q&A Conversation Stream -->
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
     
     <!-- Audio Player if present -->
     {interview.audio_url && (
-      <div style="background-color: #0F172A; border-radius: 8px; padding: 20px; margin-bottom: 40px; color: #FFFFFF;">
-        <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #93C5FD; margin-bottom: 10px;">
-          🎙️ Listen to the Full Conversation
+      <div class="bg-slate-900 text-white rounded-2xl p-5 mb-10 shadow-sm border border-slate-800 flex items-center gap-4">
+        <div class="w-10 h-10 rounded-full bg-red-600 text-white flex items-center justify-center shrink-0">
+          <svg class="w-5 h-5 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
         </div>
-        <audio controls src={interview.audio_url} style="width: 100%; outline: none;"></audio>
+        <div class="flex-1 min-w-0 space-y-1">
+          <span class="text-[11px] font-bold text-red-400 uppercase tracking-wider block">
+            AUDIO INTERVIEW RECORDING
+          </span>
+          <audio controls src={interview.audio_url} class="w-full h-8 outline-none"></audio>
+        </div>
       </div>
     )}
 
-    <!-- Q&A Content -->
+    <!-- Q&A Content Block -->
     {parsedQA.length > 0 ? (
-      <div style="display: flex; flex-direction: column; gap: 32px;">
+      <div class="space-y-8">
         {parsedQA.map((item: any, idx: number) => (
-          <div style="border-bottom: 1px solid #E5E7EB; padding-bottom: 24px;">
-            <h3 style="font-family: 'Playfair Display', Georgia, serif; font-size: 19px; font-weight: 700; color: #D52B1E; margin: 0 0 12px 0;">
-              Q{idx + 1}: {item.q || item.question}
+          <div class="p-6 sm:p-7 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-4">
+            <h3 class="text-base sm:text-lg font-bold text-red-600 dark:text-red-400 flex items-start gap-2.5 leading-snug">
+              <span class="px-2 py-0.5 rounded-md bg-red-100 dark:bg-red-950/80 text-xs font-extrabold text-red-700 dark:text-red-400 shrink-0">
+                Q{idx + 1}
+              </span>
+              <span>{item.q || item.question}</span>
             </h3>
-            <div style="font-size: 16px; line-height: 1.8; color: #1F2937;">
+            <div class="text-base text-slate-700 dark:text-slate-300 leading-relaxed border-t border-slate-100 dark:border-slate-800 pt-4">
               {item.a || item.answer}
             </div>
           </div>
         ))}
       </div>
     ) : (
-      <div style="font-size: 16px; line-height: 1.8; color: #1F2937; white-space: pre-wrap;">
-        {interview.qa_content}
+      <div class="editorial-prose dark:prose-invert">
+        {interview.content && <p>{interview.content}</p>}
       </div>
     )}
 
-    <div style="margin-top: 48px; padding-top: 24px; border-top: 1px solid #E5E7EB;">
-      <a href="/interviews" style="color: #D52B1E; text-decoration: none; font-weight: 600; font-size: 13px;">
-        ← Back to All Interviews
+    <!-- Back to Interviews -->
+    <div class="mt-12 pt-8 border-t border-slate-200 dark:border-slate-800 text-center">
+      <a href="/interviews" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors">
+        <span>← All Executive Interviews</span>
       </a>
     </div>
 

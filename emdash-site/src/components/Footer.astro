@@ -2,72 +2,158 @@
 // emdash-site/src/components/Footer.astro
 ---
 
-<footer 
-  style="background-color: #f3f4f6; border-top: 1px solid rgba(191, 155, 48, 0.4); color: #374151; padding: 64px 24px 80px; font-size: 13px; font-family: Inter, sans-serif;"
->
-  <div 
-    style="max-width: 1280px; width: 100%; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 48px; margin-bottom: 40px;"
-  >
-    <!-- Brand Info -->
-    <div>
-      <a href="/" style="cursor: pointer; margin-bottom: 12px; display: flex; align-items: center; height: 70px; text-decoration: none;">
-        <img 
-          src="/logo_highres.png" 
-          alt="privatesector.ch Logo" 
-          style="height: 70px; width: auto; object-fit: contain; display: block;" 
-          onerror="this.src='/logo.png'"
-        />
-      </a>
-      <p style="color: #4b5563; font-size: 12px; line-height: 1.5; margin-top: 8px;">
-        Swiss business and B2B data platform. Verified information on companies, market data, and analyses.
-      </p>
-    </div>
-    
-    <!-- Column: Directory -->
-    <div>
-      <strong style="color: var(--primary-red, #D52B1E); display: block; margin-bottom: 16px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;">Directory</strong>
-      <a href="/unternehmen" style="color: #4b5563; text-decoration: none; display: block; margin: 8px 0;">Search Companies</a>
-      <a href="/unternehmen?verified=true" style="color: #4b5563; text-decoration: none; display: block; margin: 8px 0;">Verified Partners</a>
-      <a href="/ranking" style="color: #4b5563; text-decoration: none; display: block; margin: 8px 0;">Market Rankings</a>
+<footer class="bg-slate-100 dark:bg-[#070A12] border-t border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 text-sm transition-colors mt-auto">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
+      
+      <!-- Brand & Mission Column -->
+      <div class="lg:col-span-2 space-y-4">
+        <a href="/" class="inline-block focus:outline-none">
+          <img 
+            src="/logo.png" 
+            alt="PrivateSector.ch" 
+            class="h-9 w-auto object-contain dark:brightness-0 dark:invert opacity-95" 
+          />
+        </a>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-sm leading-relaxed">
+          Switzerland's authoritative private sector and corporate intelligence platform. Daily executive morning briefings, verified commercial registry dossiers, and market analytics across all 26 cantons.
+        </p>
+        <div class="flex items-center gap-2 pt-2">
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-900/60">
+            <span>🇨🇭</span>
+            <span>Swiss Federal Standard</span>
+          </span>
+          <span class="text-xs text-slate-400">Zurich • Geneva • Basel</span>
+        </div>
+      </div>
+
+      <!-- Column 1: Directory -->
+      <div class="space-y-3">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-200">
+          Directory
+        </h4>
+        <ul class="space-y-2 text-xs sm:text-sm">
+          <li>
+            <a href="/unternehmen" class="hover:text-red-600 dark:hover:text-red-400 transition-colors">
+              Swiss Companies
+            </a>
+          </li>
+          <li>
+            <a href="/unternehmen?verified=true" class="hover:text-red-600 dark:hover:text-red-400 transition-colors">
+              Verified Partners
+            </a>
+          </li>
+          <li>
+            <a href="/ranking" class="hover:text-red-600 dark:hover:text-red-400 transition-colors">
+              Market Rankings
+            </a>
+          </li>
+          <li>
+            <a href="/statistiken" class="hover:text-red-600 dark:hover:text-red-400 transition-colors">
+              Cantonal Heatmap
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Column 2: Editorial -->
+      <div class="space-y-3">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-200">
+          Editorial
+        </h4>
+        <ul class="space-y-2 text-xs sm:text-sm">
+          <li>
+            <a href="/news" class="hover:text-red-600 dark:hover:text-red-400 transition-colors">
+              Business News
+            </a>
+          </li>
+          <li>
+            <a href="/interviews" class="hover:text-red-600 dark:hover:text-red-400 transition-colors">
+              Executive Interviews
+            </a>
+          </li>
+          <li>
+            <a href="/blogs" class="hover:text-red-600 dark:hover:text-red-400 transition-colors">
+              Perspectives & Analysis
+            </a>
+          </li>
+          <li>
+            <a href="/karriere" class="hover:text-red-600 dark:hover:text-red-400 transition-colors">
+              Career Board
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Column 3: Platform & Legal -->
+      <div class="space-y-3">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-200">
+          Platform
+        </h4>
+        <ul class="space-y-2 text-xs sm:text-sm">
+          <li>
+            <a href="/_emdash/admin" class="hover:text-red-600 dark:hover:text-red-400 transition-colors font-semibold">
+              Admin Console
+            </a>
+          </li>
+          <li>
+            <a href="/privacy" class="hover:text-red-600 dark:hover:text-red-400 transition-colors">
+              Privacy Policy
+            </a>
+          </li>
+          <li>
+            <a href="/terms" class="hover:text-red-600 dark:hover:text-red-400 transition-colors">
+              Terms & Legal
+            </a>
+          </li>
+          <li>
+            <a href="/contact" class="hover:text-red-600 dark:hover:text-red-400 transition-colors">
+              Editorial Contact
+            </a>
+          </li>
+        </ul>
+      </div>
+
     </div>
 
-    <!-- Column: Editorial -->
-    <div>
-      <strong style="color: var(--primary-red, #D52B1E); display: block; margin-bottom: 16px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;">Editorial</strong>
-      <a href="/news" style="color: #4b5563; text-decoration: none; display: block; margin: 8px 0;">Business Reports</a>
-      <a href="/interviews" style="color: #4b5563; text-decoration: none; display: block; margin: 8px 0;">CEO Interviews</a>
-      <a href="/blogs" style="color: #4b5563; text-decoration: none; display: block; margin: 8px 0;">Market Perspectives</a>
+    <!-- Bottom Compliance Strip -->
+    <div class="mt-12 pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-500">
+      <div class="flex items-center gap-4 flex-wrap">
+        <span>© 2026 privatesector.ch. All rights reserved.</span>
+        <span>•</span>
+        <span>Swiss Federal Act on Data Protection (nDSG) & GDPR Compliant</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span class="text-slate-600 dark:text-slate-400 font-medium">All Swiss Systems Operational</span>
+      </div>
     </div>
-
-    <!-- Column: Console & Admin -->
-    <div>
-      <strong style="color: var(--primary-red, #D52B1E); display: block; margin-bottom: 16px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;">Console</strong>
-      <a href="/_emdash/admin" style="color: #4b5563; text-decoration: none; display: block; margin: 8px 0; font-weight: 600;">Admin Dashboard</a>
-      <a href="/statistiken" style="color: #4b5563; text-decoration: none; display: block; margin: 8px 0;">Statistics & Heatmaps</a>
-      <a href="/karriere" style="color: #4b5563; text-decoration: none; display: block; margin: 8px 0;">Career Board</a>
-    </div>
-  </div>
-
-  <div style="max-width: 1280px; margin: 0 auto; border-top: 0.5px solid #d1d5db; padding-top: 16px; display: flex; justify-content: space-between; color: #4b5563; font-size: 11px; flex-wrap: wrap; gap: 8px;">
-    <span>© 2026 privatesector.ch. All rights reserved.</span>
-    <span>GDPR & Swiss Data Protection Act compliant 🇨🇭</span>
   </div>
 </footer>
 
 <!-- Floating Scroll-to-Top Button -->
 <button
   id="scroll-to-top-btn"
+  type="button"
   aria-label="Scroll to top"
-  style="position: fixed; bottom: 40px; right: 40px; width: 44px; height: 44px; border-radius: 50%; background-color: #D52B1E; color: #FFFFFF; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.15); cursor: pointer; display: none; align-items: center; justify-content: center; font-size: 18px; z-index: 9999; transition: all 150ms ease;"
+  class="fixed bottom-6 right-6 z-40 p-3 rounded-full bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 shadow-lg border border-slate-200 dark:border-slate-700 hover:scale-105 transition-all opacity-0 pointer-events-none"
 >
-  ▲
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path d="M5 15l7-7 7 7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+  </svg>
 </button>
 
 <script is:inline data-astro-rerun>
   const scrollBtn = document.getElementById('scroll-to-top-btn');
   if (scrollBtn) {
     window.addEventListener('scroll', () => {
-      scrollBtn.style.display = window.scrollY > 300 ? 'flex' : 'none';
+      if (window.scrollY > 300) {
+        scrollBtn.classList.remove('opacity-0', 'pointer-events-none');
+        scrollBtn.classList.add('opacity-100');
+      } else {
+        scrollBtn.classList.add('opacity-0', 'pointer-events-none');
+        scrollBtn.classList.remove('opacity-100');
+      }
     });
     scrollBtn.addEventListener('click', () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });

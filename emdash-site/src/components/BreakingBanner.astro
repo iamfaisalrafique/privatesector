@@ -1,16 +1,39 @@
 ---
 // emdash-site/src/components/BreakingBanner.astro
+const breakingItems = [
+  "Swiss Federal Council outlines tax incentives for innovation hubs",
+  "UBS completes sovereign bond pilot on Swiss digital exchange",
+  "Roche expands international biotechnology footprint with Zurich laboratory",
+  "ABB secures clean electrification supply agreements across Swiss cantons",
+];
 ---
 
-<div class="breaking-banner" style="background-color: #D52B1E; color: #FFFFFF; padding: 6px 0; border-bottom: 1px solid rgba(0, 0, 0, 0.15); overflow: hidden;">
-  <div class="container" style="max-width: 1600px; margin: 0 auto; padding: 0 16px; display: flex; align-items: center; gap: 16px;">
-    <span class="breaking-label" style="background-color: #000000; color: #FFFFFF; font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 2px; letter-spacing: 0.1em; flex-shrink: 0; text-transform: uppercase;">
-      BREAKING NEWS
-    </span>
-    <div style="flex: 1; overflow: hidden; white-space: nowrap;">
-      <marquee scrollamount="4" style="font-family: Inter, sans-serif; font-size: 12px; color: #FFFFFF; font-weight: 500; vertical-align: middle;">
-        +++ Swiss Federal Council announces tax relief for private R&D hubs +++ Nestlé expands sustainability audits across agricultural supply chains +++ UBS receives approval for tokenized bond pilot project in Geneva +++ ABB secures major clean electrification agreement in Zurich +++
-      </marquee>
+<div class="bg-red-50 dark:bg-red-950/40 border-b border-red-200/80 dark:border-red-900/50 py-2 px-4 transition-colors">
+  <div class="max-w-7xl mx-auto flex items-center justify-between gap-3 text-xs">
+    
+    <div class="flex items-center gap-2.5 overflow-hidden">
+      <!-- Animated Pulsing Live Indicator -->
+      <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full font-bold text-[10px] bg-red-600 text-white uppercase tracking-wider shrink-0 shadow-xs">
+        <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+        <span>BREAKING</span>
+      </span>
+
+      <!-- News Item Stream -->
+      <div class="text-red-950 dark:text-red-200 font-medium truncate flex items-center gap-2">
+        <a href="/news" class="hover:underline hover:text-red-700 dark:hover:text-red-300 transition-colors truncate">
+          {breakingItems[0]}
+        </a>
+      </div>
     </div>
+
+    <!-- Quick Link -->
+    <a 
+      href="/news" 
+      class="hidden sm:inline-flex items-center gap-1 font-semibold text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 shrink-0 text-[11px]"
+    >
+      <span>All Bulletins</span>
+      <span aria-hidden="true">→</span>
+    </a>
+
   </div>
 </div>

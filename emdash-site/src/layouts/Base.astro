@@ -7,7 +7,6 @@ import { ClientRouter } from "astro:transitions";
 import Navbar from "../components/Navbar.astro";
 import Footer from "../components/Footer.astro";
 import "../styles/index.css";
-import "../styles/App.css";
 
 interface Props {
 	title: string;
@@ -16,10 +15,11 @@ interface Props {
 	image?: string | null;
 	canonical?: string | null;
 	showBreaking?: boolean;
+	locale?: string;
 	content?: { collection: string; id: string; slug?: string | null };
 }
 
-const { title, pageTitle, description, image, canonical, content } =
+const { title, pageTitle, description, image, canonical, content, locale = "en" } =
 	Astro.props;
 const [settingsResult, menuResult] = await Promise.all([
 	getSiteSettingsWithCacheHint(),
@@ -52,10 +52,12 @@ const pageCtx = createPublicPageContext({
 	content,
 	siteName: siteTitle || "privatesector.ch",
 });
+
+const isRtl = locale === "ar";
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={locale} dir={isRtl ? "rtl" : "ltr"} class="scroll-smooth">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -63,22 +65,35 @@ const pageCtx = createPublicPageContext({
 		<title>{fullTitle}</title>
 		<meta name="theme-color" content="#D52B1E" />
 		
-		<!-- Google Fonts: Inter, Playfair Display, JetBrains Mono, Roboto Slab -->
+		<!-- Preconnect & Inter + Noto Sans Arabic typography -->
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500;700&family=Roboto+Slab:wght@300;400;700&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
+
+		<!-- Inline theme resolver to prevent flash of wrong theme -->
+		<script is:inline>
+			(function() {
+				const saved = localStorage.getItem('ps_theme');
+				const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+				if (saved === 'dark' || (!saved && prefersDark)) {
+					document.documentElement.classList.add('dark');
+				} else {
+					document.documentElement.classList.remove('dark');
+				}
+			})();
+		</script>
 
 		<ClientRouter />
 		<EmDashHead page={pageCtx} />
 	</head>
-	<body style="background-color: var(--bg-ivory, #FFFFFF); color: var(--text-ink, #000000); min-height: 100vh; display: flex; flex-direction: column;">
+	<body class="bg-slate-50 dark:bg-[#0B0F19] text-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-red-500/15 selection:text-[#D52B1E]">
 		<EmDashBodyStart page={pageCtx} />
 
-		<Navbar />
+		<Navbar currentLocale={locale} />
 
-		<div style="flex: 1;">
+		<main class="flex-1">
 			<slot />
-		</div>
+		</main>
 
 		<Footer />
 

@@ -26,6 +26,8 @@ const storageConfig = process.env.STORAGE_DRIVER === "s3" && process.env.S3_BUCK
 			baseUrl: "/_emdash/api/media/file",
 		});
 
+import tailwindcss from "@tailwindcss/vite";
+
 export default defineConfig({
 	publicDir: "../public",
 	output: "server",
@@ -36,6 +38,9 @@ export default defineConfig({
 		layout: "constrained",
 		responsiveStyles: true,
 	},
+	vite: {
+		plugins: [tailwindcss()],
+	},
 	integrations: [
 		react(),
 		emdash({
@@ -45,4 +50,5 @@ export default defineConfig({
 	],
 	devToolbar: { enabled: false },
 });
+
 

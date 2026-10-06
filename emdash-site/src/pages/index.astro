@@ -9,88 +9,88 @@ import CompanyCard from "../components/CompanyCard.astro";
 import HomepageGraphics from "../components/HomepageGraphics.astro";
 import { getNews, getCompanies } from "../lib/legacy-db";
 
+const url = new URL(Astro.request.url);
+const currentLocale = url.searchParams.get("locale") || "en";
+
 // Fetch news and featured companies directly from native backend
 const allNews = getNews(12);
-const featuredCompanies = getCompanies(true, 3);
+const featuredCompanies = getCompanies(true, 4);
 ---
 
 <Base 
   title="privatesector.ch — Swiss Private Sector Business Platform"
   description="Switzerland's authoritative Private Sector Intelligence Platform. Daily morning briefings, verified Swiss B2B directory, and corporate market dossiers."
+  locale={currentLocale}
 >
   <!-- 1. Breaking News Red Ticker Banner -->
   <BreakingBanner />
 
-  <!-- 2. Daily Audio Briefing (Top before Hero) -->
-  <div class="container" style="max-width: 1600px; margin: 0 auto; padding: 20px 24px 0;">
-    <DailyAudioNews />
-  </div>
-
-  <!-- 3. Prestige Editorial Hero -->
+  <!-- 2. Apple / Google Modern Hero -->
   <Hero />
 
-  <!-- 4. Homepage Body Content -->
-  <div class="container" style="max-width: 1600px; margin: 0 auto; padding: 48px 24px 96px;">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 space-y-12 md:space-y-16">
     
-    <!-- Latest News & Market Archive Section -->
-    <div style="margin-bottom: 64px;">
-      <div style="display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 1px solid #E5E7EB; padding-bottom: 16px; margin-bottom: 28px; flex-wrap: wrap; gap: 12px;">
+    <!-- 3. Daily Audio Briefing (Podcast Player) -->
+    <DailyAudioNews />
+
+    <!-- 4. Latest News & Market Archive Section -->
+    <section>
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-4 mb-6 border-b border-slate-200/80 dark:border-slate-800">
         <div>
-          <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #D52B1E; display: block; margin-bottom: 4px;">
-            DAILY BUSINESS NEWS & ARCHIVE
+          <span class="text-[11px] font-bold uppercase tracking-wider text-red-600 dark:text-red-400 block mb-1">
+            INTELLIGENCE DESK
           </span>
-          <h2 style="font-size: 28px; font-family: 'Playfair Display', Georgia, serif; font-weight: 700; margin: 0; color: #000000;">
-            Latest News & Market Archive
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            Latest News & Market Bulletins
           </h2>
         </div>
         
         <a 
           href="/news"
-          style="font-size: 13px; padding: 9px 20px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; border-radius: 4px; text-decoration: none; background-color: #D52B1E; color: #FFFFFF; font-family: Inter, sans-serif;"
+          class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-red-500/50 hover:text-red-600 dark:hover:text-red-400 shadow-2xs transition-all self-start sm:self-auto"
         >
-          <span>View All News Archives</span>
+          <span>View All 50 News Archives</span>
           <span>→</span>
         </a>
       </div>
 
       <!-- Responsive News Cards Grid -->
-      <div 
-        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px;"
-      >
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {allNews.map((article: any) => (
           <NewsCard article={article} />
         ))}
       </div>
-    </div>
+    </section>
 
-    <!-- Premium Business Spotlight Section -->
-    <div style="margin-top: 64px; margin-bottom: 64px;">
-      <div style="display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid #E5E7EB; padding-bottom: 12px; margin-bottom: 28px;">
+    <!-- 5. Premium Business Spotlight Section -->
+    <section>
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-4 mb-6 border-b border-slate-200/80 dark:border-slate-800">
         <div>
-          <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #D52B1E; display: block; margin-bottom: 4px;">
-            VERIFIED DIRECTORY
+          <span class="text-[11px] font-bold uppercase tracking-wider text-red-600 dark:text-red-400 block mb-1">
+            VERIFIED ENTERPRISE DIRECTORY
           </span>
-          <h2 style="font-size: 26px; font-family: 'Playfair Display', Georgia, serif; font-weight: 700; margin: 0; color: #000000;">
-            Premium Business Spotlight
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            Swiss Business Spotlight
           </h2>
         </div>
+        
         <a 
           href="/unternehmen" 
-          style="font-size: 13px; color: #D52B1E; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;"
+          class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-red-500/50 hover:text-red-600 dark:hover:text-red-400 shadow-2xs transition-all self-start sm:self-auto"
         >
-          <span>Open Directory</span>
+          <span>Explore All 17 Companies</span>
           <span>→</span>
         </a>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {featuredCompanies.map((comp: any) => (
           <CompanyCard company={comp} />
         ))}
       </div>
-    </div>
+    </section>
 
-    <!-- Cantonal & Commercial Register Intelligence -->
+    <!-- 6. Cantonal & Commercial Register Intelligence -->
     <HomepageGraphics />
 
   </div>

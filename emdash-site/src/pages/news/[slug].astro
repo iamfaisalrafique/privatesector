@@ -2,13 +2,10 @@
 // emdash-site/src/pages/news/[slug].astro
 import {
   getEmDashEntry,
-  getSeoMeta,
   decodeSlug,
-  getSiteSettings
 } from "emdash";
-import { Image, PortableText } from "emdash/ui";
+import { PortableText } from "emdash/ui";
 import Base from "../../layouts/Base.astro";
-import { resolveStarterSiteIdentity } from "../../utils/site-identity";
 import newsRedirects from "../../data/news-redirects.json";
 import { getNewsBySlug, getNews } from "../../lib/legacy-db";
 import { marked } from "marked";
@@ -28,7 +25,7 @@ if (/^\d+$/.test(slug)) {
   }
 }
 
-// 2. Try fetching from EmDash Live Collection
+// 2. Fetch from EmDash Live Collection
 let post: any = null;
 let isEmDash = false;
 try {
@@ -51,20 +48,50 @@ if (!post) {
   renderedHtml = nativeArticle.content_body ? (marked.parse(nativeArticle.content_body) as string) : "";
 }
 
+function resolveMediaUrl(rawImage: any): string | null {
+  if (!rawImage) return null;
+  if (typeof rawImage === 'string') {
+    if (rawImage.startsWith('/') || rawImage.startsWith('http')) return rawImage;
+    if (rawImage.trim().startsWith('{')) {
+      try {
+        const parsed = JSON.parse(rawImage);
+        if (parsed.meta?.storageKey) return `/_emdash/api/media/file/${parsed.meta.storageKey}`;
+        if (parsed.filename) return `/_emdash/api/media/file/${parsed.filename}`;
+      } catch {}
+    }
+    return rawImage;
+  }
+  if (typeof rawImage === 'object') {
+    if (rawImage.meta?.storageKey) return `/_emdash/api/media/file/${rawImage.meta.storageKey}`;
+    if (rawImage.filename) return `/_emdash/api/media/file/${rawImage.filename}`;
+  }
+  return null;
+}
+
 const pageTitle = isEmDash ? post.data.title : nativeArticle.title;
 const pageSubtitle = isEmDash ? post.data.subtitle : nativeArticle.subtitle;
-const pageDate = isEmDash 
-  ? (post.data.publishedAt ? new Date(post.data.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }) : "") 
-  : nativeArticle.date_published;
+const pageDateRaw = isEmDash ? post.data.publishedAt : nativeArticle.date_published;
 const pageCategory = isEmDash 
-  ? (post.data.terms?.category?.[0]?.label || "Intelligence") 
-  : (nativeArticle.category || "Intelligence");
-const pageImage = isEmDash ? null : nativeArticle.image_url;
+  ? (post.data.terms?.category?.[0]?.label || "Swiss Intelligence") 
+  : (nativeArticle.category || "Swiss Intelligence");
+const pageImage = isEmDash ? resolveMediaUrl(post.data.featured_image) : nativeArticle.image_url;
 const authorName = isEmDash ? (post.data.author_name || "PrivateSector Editorial") : (nativeArticle.author_name || "PrivateSector Editorial");
 const readTime = isEmDash ? post.data.read_time_mins : nativeArticle.read_time_mins;
 const pullQuote = isEmDash ? post.data.pull_quote : nativeArticle.pull_quote;
 
-// Related articles for footer
+function formatDisplayDate(d?: string | null): string {
+  if (!d) return '';
+  try {
+    const dt = new Date(d);
+    if (isNaN(dt.getTime())) return d;
+    return dt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  } catch {
+    return d;
+  }
+}
+const displayDate = formatDisplayDate(pageDateRaw);
+
+// Related articles for sidebar / footer
 const relatedArticles = getNews(6).filter((n: any) => n.slug !== slug && String(n.id) !== slug).slice(0, 3);
 ---
 
@@ -73,171 +100,190 @@ const relatedArticles = getNews(6).filter((n: any) => n.slug !== slug && String(
   description={pageSubtitle || pageTitle}
   image={pageImage || "/logo.png"}
 >
-  <div style="background-color: #FFFFFF; border-bottom: 1px solid #E5E7EB;">
-    <div style="max-width: 960px; margin: 0 auto; padding: 24px 24px 0;">
-      <!-- Breadcrumbs -->
-      <nav style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6B7280; margin-bottom: 24px;">
-        <a href="/" style="color: #6B7280; text-decoration: none;">Home</a>
+  <!-- Article Header & Hero Container -->
+  <header class="bg-white dark:bg-[#0E1524] border-b border-slate-200/80 dark:border-slate-800/80 pt-8 pb-10 transition-colors">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      
+      <!-- Breadcrumb Navigation -->
+      <nav class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+        <a href="/" class="hover:text-slate-900 dark:hover:text-white transition-colors">Home</a>
         <span>›</span>
-        <a href="/news" style="color: #6B7280; text-decoration: none;">News</a>
+        <a href="/news" class="hover:text-slate-900 dark:hover:text-white transition-colors">News</a>
         <span>›</span>
-        <span style="color: #D52B1E; font-weight: 600;">{pageCategory}</span>
+        <span class="text-red-600 dark:text-red-400 font-semibold">{pageCategory}</span>
       </nav>
 
-      <!-- Category Label -->
-      <span style="display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #D52B1E; margin-bottom: 12px;">
-        {pageCategory}
-      </span>
+      <!-- Category Pill -->
+      <div>
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 dark:bg-red-950/80 text-red-700 dark:text-red-400 uppercase tracking-wider">
+          {pageCategory}
+        </span>
+      </div>
 
-      <!-- Title -->
-      <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: clamp(28px, 4vw, 42px); font-weight: 700; line-height: 1.25; color: #000000; margin: 0 0 16px 0;">
+      <!-- Main Title -->
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.18] hyphen-guard">
         {pageTitle}
       </h1>
 
-      <!-- Subtitle -->
+      <!-- Subtitle Lead -->
       {pageSubtitle && (
-        <p style="font-size: 19px; line-height: 1.6; color: #4B5563; margin: 0 0 24px 0; font-family: Inter, sans-serif;">
+        <p class="text-lg sm:text-xl text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
           {pageSubtitle}
         </p>
       )}
 
-      <!-- Author Byline Bar -->
-      <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #E5E7EB; border-bottom: 1px solid #E5E7EB; padding: 14px 0; margin-bottom: 32px; flex-wrap: wrap; gap: 12px; font-size: 13px; color: #6B7280;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <div style="width: 32px; height: 32px; border-radius: 50%; background-color: #0A0A0A; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px;">
+      <!-- Author Byline & Meta Strip -->
+      <div class="pt-6 border-t border-slate-200/80 dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-slate-900 dark:bg-slate-800 text-white flex items-center justify-center font-bold text-xs shadow-2xs">
             PS
           </div>
           <div>
-            <span style="font-weight: 600; color: #111827; display: block;">{authorName}</span>
-            <span style="font-size: 11px;">PrivateSector Bureau Zurich</span>
+            <span class="font-bold text-slate-900 dark:text-white text-sm block">
+              {authorName}
+            </span>
+            <span class="text-[11px] text-slate-400">
+              PrivateSector Bureau Zurich • Editorial Staff
+            </span>
           </div>
         </div>
 
-        <div style="display: flex; align-items: center; gap: 16px;">
-          {pageDate && <span>📅 {pageDate}</span>}
-          {readTime && <span>⏱️ {readTime} min read</span>}
+        <div class="flex items-center gap-4 tabular-nums text-xs">
+          {displayDate && (
+            <span class="flex items-center gap-1.5">
+              <span>📅</span>
+              <span>{displayDate}</span>
+            </span>
+          )}
+          {readTime && (
+            <span class="flex items-center gap-1.5">
+              <span>⏱️</span>
+              <span>{readTime} min read</span>
+            </span>
+          )}
         </div>
       </div>
+
     </div>
-  </div>
+  </header>
 
-  <!-- Main Article Body Content -->
-  <main style="max-width: 960px; margin: 0 auto; padding: 32px 24px 80px;">
+  <!-- Main Article Body -->
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
     
-    <!-- Featured Image -->
-    {isEmDash && post.data.featured_image && (
-      <div style="margin-bottom: 36px; border-radius: 8px; overflow: hidden; border: 1px solid #E5E7EB;">
-        <Image image={post.data.featured_image} />
-      </div>
-    )}
-    {!isEmDash && pageImage && (
-      <div style="margin-bottom: 36px; border-radius: 8px; overflow: hidden; border: 1px solid #E5E7EB;">
-        <img src={pageImage} alt={pageTitle} style="width: 100%; height: auto; display: block; max-height: 520px; object-fit: cover;" onerror="this.style.display='none'" />
+    <!-- High-Resolution Featured Image -->
+    {pageImage && (
+      <div class="mb-10 rounded-2xl overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-md bg-slate-100 dark:bg-slate-800 aspect-[16/10] sm:aspect-[2/1]">
+        <img 
+          src={pageImage} 
+          alt={pageTitle} 
+          class="w-full h-full object-cover" 
+          onerror="this.style.display='none'" 
+        />
       </div>
     )}
 
-    <!-- Pull Quote -->
+    <!-- Editorial Pullquote -->
     {pullQuote && (
-      <blockquote style="border-left: 3px solid #D52B1E; background-color: #F9FAFB; padding: 20px 24px; margin: 0 0 36px 0; font-family: 'Playfair Display', Georgia, serif; font-size: 19px; font-style: italic; color: #1F2937; line-height: 1.6; border-radius: 0 6px 6px 0;">
+      <blockquote class="my-8 p-6 rounded-2xl bg-slate-100 dark:bg-slate-800/60 border-l-4 border-red-600 text-lg sm:text-xl font-medium italic text-slate-800 dark:text-slate-200 shadow-2xs leading-relaxed">
         "{pullQuote}"
       </blockquote>
     )}
 
-    <!-- Article Prose -->
-    <article class="article-content" style="font-family: Inter, sans-serif; font-size: 17px; line-height: 1.8; color: #1F2937;">
-      {isEmDash && post.data.content && (
+    <!-- Word-by-Word Exact Article Prose -->
+    <article class="editorial-prose dark:prose-invert max-w-none text-slate-700 dark:text-slate-300 leading-relaxed text-base sm:text-lg">
+      {isEmDash && post.data.content ? (
         <PortableText value={post.data.content} />
-      )}
-      {!isEmDash && renderedHtml && (
+      ) : renderedHtml ? (
         <div set:html={renderedHtml} />
-      )}
+      ) : null}
     </article>
 
-    <!-- Post Article Share & Tags -->
-    <div style="border-top: 1px solid #E5E7EB; margin-top: 48px; padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
-      <div style="display: flex; gap: 8px; align-items: center;">
-        <span style="font-size: 12px; font-weight: 600; color: #6B7280;">SHARE THIS REPORT:</span>
-        <button onclick="navigator.clipboard.writeText(window.location.href); alert('Link copied to clipboard!');" style="background: #F3F4F6; border: 1px solid #E5E7EB; border-radius: 4px; padding: 6px 12px; font-size: 12px; cursor: pointer; font-weight: 500;">
-          📋 Copy Link
+    <!-- Social Share & Return Actions -->
+    <div class="mt-12 pt-8 border-t border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">SHARE:</span>
+        <button 
+          id="copy-share-btn"
+          type="button"
+          class="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition-colors flex items-center gap-1.5"
+        >
+          <span>📋</span>
+          <span id="copy-btn-text">Copy Link</span>
         </button>
       </div>
 
-      <a href="/news" style="color: #D52B1E; font-weight: 600; text-decoration: none; font-size: 13px;">
-        ← Back to All News Archives
+      <a 
+        href="/news" 
+        class="text-xs font-semibold text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 flex items-center gap-1"
+      >
+        <span>← Back to All News Archives</span>
       </a>
     </div>
 
     <!-- Related Articles Section -->
     {relatedArticles.length > 0 && (
-      <div style="margin-top: 64px; border-top: 2px solid #F3F4F6; padding-top: 36px;">
-        <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #D52B1E; display: block; margin-bottom: 6px;">
-          CONTINUE READING
-        </span>
-        <h3 style="font-family: 'Playfair Display', Georgia, serif; font-size: 22px; font-weight: 700; color: #000000; margin: 0 0 24px 0;">
-          Related Swiss Intelligence
-        </h3>
+      <section class="mt-16 pt-10 border-t border-slate-200/80 dark:border-slate-800">
+        <div class="mb-6">
+          <span class="text-[11px] font-bold text-red-600 dark:text-red-400 uppercase tracking-wider block">
+            CONTINUE READING
+          </span>
+          <h3 class="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">
+            Related Swiss Intelligence
+          </h3>
+        </div>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {relatedArticles.map((rel: any) => (
             <a 
               href={`/news/${rel.slug || rel.id}`}
-              style="text-decoration: none; background: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.15s ease;"
-              onmouseover="this.style.transform='translateY(-3px)'"
-              onmouseout="this.style.transform='translateY(0)'"
+              class="group flex flex-col justify-between bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 overflow-hidden shadow-xs hover:shadow-md hover:-translate-y-1 transition-all"
             >
               {rel.image_url && (
-                <div style="height: 120px; overflow: hidden;">
-                  <img src={rel.image_url} alt="" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.style.display='none'" />
+                <div class="aspect-[16/10] overflow-hidden bg-slate-100 dark:bg-slate-800">
+                  <img 
+                    src={rel.image_url} 
+                    alt="" 
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
+                    onerror="this.style.display='none'" 
+                  />
                 </div>
               )}
-              <div style="padding: 14px;">
-                <span style="font-size: 10px; font-weight: 700; color: #D52B1E; text-transform: uppercase;">
-                  {rel.category || 'News'}
+              <div class="p-4 space-y-2 flex-1 flex flex-col justify-between">
+                <div>
+                  <span class="text-[10px] font-bold text-red-600 dark:text-red-400 uppercase tracking-wider block">
+                    {rel.category || 'News'}
+                  </span>
+                  <h4 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors line-clamp-2 mt-1">
+                    {rel.title}
+                  </h4>
+                </div>
+                <span class="text-xs font-semibold text-red-600 dark:text-red-400 mt-2 block">
+                  Read →
                 </span>
-                <h4 style="font-family: 'Playfair Display', Georgia, serif; font-size: 14px; font-weight: 700; color: #000000; margin: 4px 0 0 0; line-height: 1.35;">
-                  {rel.title}
-                </h4>
               </div>
             </a>
           ))}
         </div>
-      </div>
+      </section>
     )}
 
   </main>
 </Base>
 
-<style is:global>
-  .article-content h2 {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 24px;
-    font-weight: 700;
-    margin: 36px 0 16px;
-    color: #000000;
+<script is:inline data-astro-rerun>
+  const copyBtn = document.getElementById('copy-share-btn');
+  const copyText = document.getElementById('copy-btn-text');
+  if (copyBtn && copyText) {
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        copyText.textContent = 'Copied! ✓';
+        setTimeout(() => {
+          copyText.textContent = 'Copy Link';
+        }, 2000);
+      } catch (err) {
+        copyText.textContent = 'Link Copied';
+      }
+    });
   }
-  .article-content h3 {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 20px;
-    font-weight: 700;
-    margin: 28px 0 12px;
-    color: #111827;
-  }
-  .article-content p {
-    margin-bottom: 20px;
-  }
-  .article-content ul, .article-content ol {
-    margin: 0 0 20px 24px;
-  }
-  .article-content li {
-    margin-bottom: 8px;
-  }
-  .article-content a {
-    color: #D52B1E;
-    text-decoration: underline;
-  }
-  .article-content hr {
-    border: none;
-    border-top: 1px solid #E5E7EB;
-    margin: 36px 0;
-  }
-</style>
+</script>

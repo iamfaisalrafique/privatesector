@@ -8,14 +8,14 @@ if (!idOrSlug) {
   return Astro.redirect("/unternehmen");
 }
 
-const company = getCompanyById(idOrSlug);
+const company = getCompanyById(idOrSlug) as any;
 if (!company) {
   return Astro.redirect("/404");
 }
 
-const logoInitial = company.name ? company.name.charAt(0) : 'C';
-const isPremium = company.premium === 1 || company.premium === true;
-const isVerified = company.verified === 1 || company.verified === true;
+const logoInitial = company.name ? String(company.name).charAt(0) : 'C';
+const isPremium = company.premium === 1 || Boolean(company.premium);
+const isVerified = company.verified === 1 || Boolean(company.verified);
 
 // Peer companies in same industry or canton
 const peerCompanies = getCompanies(false, 4).filter((c: any) => String(c.id) !== String(company.id)).slice(0, 3);
@@ -26,65 +26,55 @@ const peerCompanies = getCompanies(false, 4).filter((c: any) => String(c.id) !==
   description={company.description || `Verified commercial intelligence and corporate factsheet for ${company.name}.`}
 >
   <!-- Header Bar -->
-  <div style="background-color: #FFFFFF; border-bottom: 1px solid #E5E7EB; padding: 40px 24px;">
-    <div style="max-width: 1100px; margin: 0 auto;">
+  <header class="bg-white dark:bg-[#0E1524] border-b border-slate-200/80 dark:border-slate-800/80 py-10 sm:py-14 transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
       
-      <nav style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6B7280; margin-bottom: 24px;">
-        <a href="/" style="color: #6B7280; text-decoration: none;">Home</a>
+      <!-- Breadcrumb Navigation -->
+      <nav class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+        <a href="/" class="hover:text-slate-900 dark:hover:text-white transition-colors">Home</a>
         <span>›</span>
-        <a href="/unternehmen" style="color: #6B7280; text-decoration: none;">Directory</a>
+        <a href="/unternehmen" class="hover:text-slate-900 dark:hover:text-white transition-colors">Directory</a>
         <span>›</span>
-        <span style="color: #D52B1E; font-weight: 600;">{company.name}</span>
+        <span class="text-red-600 dark:text-red-400 font-semibold">{company.name}</span>
       </nav>
 
-      <div style="display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap;">
-        <!-- Logo initial box -->
+      <div class="flex flex-col sm:flex-row gap-6 items-start">
+        <!-- Logo Initial Avatar Container -->
         <div 
-          style={`
-            width: 80px;
-            height: 80px;
-            background-color: ${company.logo_bg || '#F9FAFB'};
-            border: 1px solid #E5E7EB;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #000000;
-            font-size: 36px;
-            font-weight: 700;
-            font-family: 'Playfair Display', Georgia, serif;
-            flex-shrink: 0;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-          `}
+          class="w-20 h-20 rounded-2xl flex items-center justify-center font-extrabold text-2xl text-slate-900 dark:text-white border border-slate-200 dark:border-slate-700 shadow-sm shrink-0"
+          style={`background-color: ${company.logo_bg || '#F1F5F9'};`}
         >
           {logoInitial}
         </div>
 
-        <div style="flex: 1; min-width: 280px;">
-          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap;">
-            <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 32px; font-weight: 700; color: #000000; margin: 0;">
+        <div class="flex-1 space-y-3">
+          <div class="flex items-center gap-3 flex-wrap">
+            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white">
               {company.name}
             </h1>
             {isVerified && (
-              <span style="background-color: #ECFDF5; color: #059669; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; border: 1px solid #A7F3D0; display: inline-flex; align-items: center; gap: 4px;">
-                ✓ Verified Swiss Enterprise
+              <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
+                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                <span>Verified Swiss Entity</span>
               </span>
             )}
             {isPremium && (
-              <span style="background-color: #FFF5F5; color: #D52B1E; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(213,43,30,0.2);">
-                Premium Member
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-100 dark:bg-red-950/80 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-900/60 uppercase tracking-wider">
+                PREMIUM
               </span>
             )}
           </div>
 
-          <div style="display: flex; align-items: center; gap: 12px; font-size: 13px; color: #6B7280; flex-wrap: wrap;">
-            {company.canton && <span>📍 Canton of {company.canton}</span>}
+          <div class="flex items-center gap-2.5 text-xs text-slate-500 dark:text-slate-400 flex-wrap font-medium">
+            {company.canton && <span>📍 Canton {company.canton}</span>}
             {company.industry && <span>• 🏭 {company.industry}</span>}
-            {company.founded && <span>• 🏛️ Established {company.founded}</span>}
+            {company.founded && <span>• 🏛️ Est. {company.founded}</span>}
           </div>
 
           {company.description && (
-            <p style="font-size: 15px; color: #4B5563; line-height: 1.6; margin: 16px 0 0 0;">
+            <p class="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed max-w-3xl pt-1">
               {company.description}
             </p>
           )}
@@ -92,62 +82,61 @@ const peerCompanies = getCompanies(false, 4).filter((c: any) => String(c.id) !==
       </div>
 
     </div>
-  </div>
+  </header>
 
   <!-- Main Profile Body -->
-  <main style="max-width: 1100px; margin: 0 auto; padding: 48px 24px 96px;">
-    
-    <div style="display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 48px;" class="profile-layout">
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       
-      <!-- Left Column: Dossier -->
-      <div>
+      <!-- Left Column: Dossier Indicators & Narrative -->
+      <div class="lg:col-span-8 space-y-8">
         
         <!-- Corporate Factsheet Matrix -->
-        <section style="background-color: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 8px; padding: 24px; margin-bottom: 36px;">
-          <h2 style="font-family: 'Playfair Display', Georgia, serif; font-size: 20px; font-weight: 700; color: #000000; margin: 0 0 20px 0; border-bottom: 1px solid #F3F4F6; padding-bottom: 12px;">
-            Corporate Indicators & Metrics
+        <section class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-6 sm:p-7 shadow-xs">
+          <h2 class="text-lg font-bold text-slate-900 dark:text-white pb-3 mb-5 border-b border-slate-100 dark:border-slate-800">
+            Corporate Indicators & Commercial Matrix
           </h2>
 
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
-            <div>
-              <span style="font-size: 11px; text-transform: uppercase; color: #6B7280; font-weight: 600; display: block;">Headquarters</span>
-              <strong style="font-size: 15px; color: #111827;">Canton {company.canton || 'Switzerland'}</strong>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80">
+              <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Headquarters</span>
+              <strong class="text-sm font-semibold text-slate-900 dark:text-white">Canton {company.canton || 'Switzerland'}</strong>
             </div>
 
-            <div>
-              <span style="font-size: 11px; text-transform: uppercase; color: #6B7280; font-weight: 600; display: block;">Primary Industry</span>
-              <strong style="font-size: 15px; color: #111827;">{company.industry || 'Commercial Enterprise'}</strong>
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80">
+              <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Primary Industry</span>
+              <strong class="text-sm font-semibold text-slate-900 dark:text-white truncate block">{company.industry || 'Commercial Enterprise'}</strong>
             </div>
 
-            <div>
-              <span style="font-size: 11px; text-transform: uppercase; color: #6B7280; font-weight: 600; display: block;">Workforce Size</span>
-              <strong style="font-size: 15px; color: #111827;">{company.employees || 'Confidential'}</strong>
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80">
+              <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Workforce</span>
+              <strong class="text-sm font-semibold text-slate-900 dark:text-white tabular-nums">{company.employees || 'Confidential'}</strong>
             </div>
 
-            <div>
-              <span style="font-size: 11px; text-transform: uppercase; color: #6B7280; font-weight: 600; display: block;">Revenue Band</span>
-              <strong style="font-size: 15px; color: #111827;">{company.revenue_band || 'Disclosed to SOGC'}</strong>
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80">
+              <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Revenue Band</span>
+              <strong class="text-sm font-semibold text-slate-900 dark:text-white">{company.revenue_band || 'Disclosed to SOGC'}</strong>
             </div>
 
-            <div>
-              <span style="font-size: 11px; text-transform: uppercase; color: #6B7280; font-weight: 600; display: block;">ESG Rating</span>
-              <strong style="font-size: 15px; color: #059669;">{company.esg_rating || 'Tier-1 Rated'}</strong>
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80">
+              <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">ESG Rating</span>
+              <strong class="text-sm font-semibold text-emerald-600 dark:text-emerald-400">{company.esg_rating || 'Tier-1 Rated'}</strong>
             </div>
 
-            <div>
-              <span style="font-size: 11px; text-transform: uppercase; color: #6B7280; font-weight: 600; display: block;">Registry Status</span>
-              <strong style="font-size: 15px; color: #111827;">Active (CH-UID Verified)</strong>
+            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800/80">
+              <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Registry Status</span>
+              <strong class="text-sm font-semibold text-slate-900 dark:text-white">Active (CH-UID)</strong>
             </div>
           </div>
         </section>
 
-        <!-- About Text -->
+        <!-- Executive Overview -->
         {company.about_text && (
-          <section style="background-color: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 8px; padding: 24px; margin-bottom: 36px;">
-            <h2 style="font-family: 'Playfair Display', Georgia, serif; font-size: 20px; font-weight: 700; color: #000000; margin: 0 0 16px 0;">
+          <section class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-6 sm:p-7 shadow-xs space-y-3">
+            <h2 class="text-lg font-bold text-slate-900 dark:text-white">
               Executive Overview
             </h2>
-            <div style="font-size: 15px; line-height: 1.8; color: #374151; white-space: pre-wrap;">
+            <div class="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-wrap">
               {company.about_text}
             </div>
           </section>
@@ -155,11 +144,11 @@ const peerCompanies = getCompanies(false, 4).filter((c: any) => String(c.id) !==
 
         <!-- Sustainability / ESG Summary -->
         {company.sustainability_summary && (
-          <section style="background-color: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 8px; padding: 24px;">
-            <h2 style="font-family: 'Playfair Display', Georgia, serif; font-size: 20px; font-weight: 700; color: #000000; margin: 0 0 16px 0;">
+          <section class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-6 sm:p-7 shadow-xs space-y-3">
+            <h2 class="text-lg font-bold text-slate-900 dark:text-white">
               Sustainability & ESG Compliance
             </h2>
-            <p style="font-size: 15px; line-height: 1.8; color: #374151;">
+            <p class="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
               {company.sustainability_summary}
             </p>
           </section>
@@ -167,43 +156,69 @@ const peerCompanies = getCompanies(false, 4).filter((c: any) => String(c.id) !==
 
       </div>
 
-      <!-- Right Column: Sidebar Contacts & Peers -->
-      <div>
-        <div style="background-color: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 8px; padding: 24px; margin-bottom: 24px;">
-          <h3 style="font-size: 15px; font-weight: 700; color: #000000; margin: 0 0 16px 0; border-bottom: 1px solid #F3F4F6; padding-bottom: 8px;">
-            Official Corporate Links
+      <!-- Right Column: Corporate Links & Industry Peers -->
+      <div class="lg:col-span-4 space-y-6">
+        
+        <!-- Official Links Card -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-6 shadow-xs space-y-4">
+          <h3 class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white pb-2 border-b border-slate-100 dark:border-slate-800">
+            Corporate Channels
           </h3>
 
-          <div style="display: flex; flex-direction: column; gap: 12px; font-size: 13px;">
+          <div class="space-y-3 text-xs sm:text-sm">
             {company.website && (
-              <a href={company.website} target="_blank" rel="noopener noreferrer" style="color: #D52B1E; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 6px;">
-                🌐 Official Website ↗
+              <a 
+                href={String(company.website)} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="flex items-center gap-2 text-red-600 dark:text-red-400 font-semibold hover:underline"
+              >
+                <span>🌐</span>
+                <span class="truncate">Official Website ↗</span>
               </a>
             )}
             {company.linkedin && (
-              <a href={company.linkedin} target="_blank" rel="noopener noreferrer" style="color: #0A66C2; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 6px;">
-                💼 LinkedIn Page ↗
+              <a 
+                href={String(company.linkedin)} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-semibold hover:underline"
+              >
+                <span>💼</span>
+                <span class="truncate">LinkedIn Corporate Page ↗</span>
               </a>
             )}
             {company.contact_email && (
-              <a href={`mailto:${company.contact_email}`} style="color: #374151; text-decoration: none; display: flex; align-items: center; gap: 6px;">
-                ✉️ {company.contact_email}
+              <a 
+                href={`mailto:${String(company.contact_email)}`} 
+                class="flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:text-red-600 transition-colors"
+              >
+                <span>✉️</span>
+                <span class="truncate">{company.contact_email}</span>
               </a>
             )}
           </div>
         </div>
 
-        <!-- Peer Companies -->
+        <!-- Industry Peers Card -->
         {peerCompanies.length > 0 && (
-          <div style="background-color: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 8px; padding: 24px;">
-            <h3 style="font-size: 15px; font-weight: 700; color: #000000; margin: 0 0 16px 0; border-bottom: 1px solid #F3F4F6; padding-bottom: 8px;">
-              Industry Peers
+          <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl p-6 shadow-xs space-y-4">
+            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white pb-2 border-b border-slate-100 dark:border-slate-800">
+              Sector Peers
             </h3>
-            <div style="display: flex; flex-direction: column; gap: 12px;">
+
+            <div class="space-y-2.5">
               {peerCompanies.map((peer: any) => (
-                <a href={`/unternehmen/${peer.slug || peer.id}`} style="text-decoration: none; color: #111827; font-size: 13px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #F9FAFB; padding-bottom: 8px;">
-                  <span>{peer.name}</span>
-                  <span style="color: #9CA3AF; font-size: 11px;">{peer.canton}</span>
+                <a 
+                  href={`/unternehmen/${peer.slug || peer.id}`} 
+                  class="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors group"
+                >
+                  <span class="font-semibold text-xs sm:text-sm text-slate-800 dark:text-slate-200 group-hover:text-red-600 transition-colors truncate">
+                    {peer.name}
+                  </span>
+                  <span class="text-xs text-slate-400 px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 shrink-0 font-medium">
+                    {peer.canton}
+                  </span>
                 </a>
               ))}
             </div>
@@ -213,14 +228,5 @@ const peerCompanies = getCompanies(false, 4).filter((c: any) => String(c.id) !==
       </div>
 
     </div>
-
   </main>
 </Base>
-
-<style>
-  @media (max-width: 840px) {
-    .profile-layout {
-      grid-template-columns: 1fr !important;
-    }
-  }
-</style>

@@ -7,71 +7,90 @@ import Base from "../layouts/Base.astro";
   title="About Us — Mission & Editorial Standards | PrivateSector.ch"
   description="Authoritative source of truth for Swiss B2B relationships, trade indicators, and corporate market intelligence."
 >
-  <div style="background-color: #FFFFFF; border-bottom: 1px solid #E5E7EB; padding: 48px 24px;">
-    <div style="max-width: 860px; margin: 0 auto;">
-      <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #D52B1E; display: block; margin-bottom: 8px;">
+  <!-- Hero Section -->
+  <section class="border-b border-slate-200/80 bg-white/70 py-16 backdrop-blur-md dark:border-slate-800/80 dark:bg-slate-900/70 sm:py-20">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6">
+      <div class="mb-4 inline-flex items-center gap-2 rounded-full border border-red-200/60 bg-red-50/80 px-3 py-1 text-[11px] font-bold tracking-widest text-[#D52B1E] uppercase dark:border-red-900/40 dark:bg-red-950/40 dark:text-red-400">
+        <span class="h-1.5 w-1.5 rounded-full bg-[#D52B1E] dark:bg-red-400"></span>
         MISSION & GOVERNANCE
-      </span>
-      <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 38px; font-weight: 700; color: #000000; margin: 0 0 16px 0; line-height: 1.2;">
+      </div>
+      <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl dark:text-white">
         Bridging Swiss Precision and Global Enterprise Innovation
       </h1>
-      <p style="font-size: 17px; line-height: 1.7; color: #4B5563; margin: 0;">
-        Established in Zurich, <strong>privatesector.ch</strong> serves as Switzerland's independent intelligence platform for verified corporate data, market analyses, commercial registry movements, and transatlantic trade corridors.
+      <p class="mt-6 text-lg leading-relaxed text-slate-600 sm:text-xl dark:text-slate-300">
+        Established in Zurich, <strong class="font-semibold text-slate-900 dark:text-white">privatesector.ch</strong> serves as Switzerland's independent intelligence platform for verified corporate data, market analyses, commercial registry movements, and transatlantic trade corridors.
       </p>
     </div>
-  </div>
+  </section>
 
-  <main style="max-width: 860px; margin: 0 auto; padding: 48px 24px 96px; font-family: Inter, sans-serif;">
-    <div style="font-size: 16px; line-height: 1.8; color: #374151; display: flex; flex-direction: column; gap: 20px;">
+  <!-- Main Narrative & Content -->
+  <main class="mx-auto max-w-4xl px-4 py-16 sm:px-6">
+    <div class="space-y-6 text-base leading-relaxed text-slate-700 sm:text-lg dark:text-slate-300">
       <p>
         Our platform provides verified corporate data, market analyses, and trade reports, ensuring transparency and facilitating cross-border collaborations. With the recent inclusion of our Southern California Gateway, we are directly enabling a pipeline of technology, R&D capital, and structural investments between the two regions.
       </p>
       <p>
-        Every report, company profile, and dataset published on <strong>privatesector.ch</strong> is cross-referenced with the Swiss Official Gazette of Commerce (SOGC / SHAB) and audited for 100% data fidelity.
+        Every report, company profile, and dataset published on <strong class="font-semibold text-slate-900 dark:text-white">privatesector.ch</strong> is cross-referenced with the Swiss Official Gazette of Commerce (SOGC / SHAB) and audited for 100% data fidelity.
       </p>
     </div>
 
     <!-- Core Pillars Grid -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-top: 40px; margin-bottom: 40px;">
-      <div style="background-color: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 8px; padding: 24px;">
-        <span style="font-size: 24px; display: block; margin-bottom: 12px;">🛡️</span>
-        <strong style="display: block; font-size: 16px; color: #000000; margin-bottom: 8px;">Verified Swiss Data</strong>
-        <p style="font-size: 13px; color: #4B5563; line-height: 1.6; margin: 0;">
+    <div class="mt-14 mb-14 grid gap-6 sm:grid-cols-3">
+      <div class="rounded-2xl border border-slate-200/80 bg-white p-7 shadow-xs transition hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
+        <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-red-50 text-2xl dark:bg-red-950/50">
+          🛡️
+        </div>
+        <h2 class="text-base font-bold text-slate-900 dark:text-white">
+          Verified Swiss Data
+        </h2>
+        <p class="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
           Zefix and SOGC-integrated registry checks and audit-trails for all premium business records.
         </p>
       </div>
 
-      <div style="background-color: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 8px; padding: 24px;">
-        <span style="font-size: 24px; display: block; margin-bottom: 12px;">🎯</span>
-        <strong style="display: block; font-size: 16px; color: #000000; margin-bottom: 8px;">Focus Corridors</strong>
-        <p style="font-size: 13px; color: #4B5563; line-height: 1.6; margin: 0;">
+      <div class="rounded-2xl border border-slate-200/80 bg-white p-7 shadow-xs transition hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
+        <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-2xl dark:bg-blue-950/50">
+          🎯
+        </div>
+        <h2 class="text-base font-bold text-slate-900 dark:text-white">
+          Focus Corridors
+        </h2>
+        <p class="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
           Specialized intelligence supporting high-tech, biotechnology, aerospace, and finance trade lanes.
         </p>
       </div>
 
-      <div style="background-color: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 8px; padding: 24px;">
-        <span style="font-size: 24px; display: block; margin-bottom: 12px;">👥</span>
-        <strong style="display: block; font-size: 16px; color: #000000; margin-bottom: 8px;">Bilateral Network</strong>
-        <p style="font-size: 13px; color: #4B5563; line-height: 1.6; margin: 0;">
+      <div class="rounded-2xl border border-slate-200/80 bg-white p-7 shadow-xs transition hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
+        <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-2xl dark:bg-emerald-950/50">
+          👥
+        </div>
+        <h2 class="text-base font-bold text-slate-900 dark:text-white">
+          Bilateral Network
+        </h2>
+        <p class="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-400">
           Dual advisory boards active across Swiss economic hubs and transatlantic partners.
         </p>
       </div>
     </div>
 
     <!-- Call to Action Banner -->
-    <div style="background-color: #D52B1E; color: #FFFFFF; border-radius: 8px; padding: 36px 32px; text-align: center;">
-      <h3 style="font-family: 'Playfair Display', Georgia, serif; font-size: 24px; font-weight: 700; margin: 0 0 10px 0;">
-        List or Verify Your Swiss Enterprise
-      </h3>
-      <p style="font-size: 14px; opacity: 0.9; margin: 0 0 20px 0; max-width: 500px; margin-left: auto; margin-right: auto;">
-        Ensure your company dossier is accurately reflected in Switzerland's definitive private sector register.
-      </p>
-      <a 
-        href="/contact" 
-        style="display: inline-block; background-color: #FFFFFF; color: #D52B1E; font-weight: 700; font-size: 13px; padding: 12px 28px; border-radius: 6px; text-decoration: none;"
-      >
-        Contact the Editorial Desk
-      </a>
+    <div class="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#D52B1E] via-[#B91C1C] to-[#991B1B] p-8 text-center text-white shadow-lg sm:p-12">
+      <div class="relative z-10 mx-auto max-w-xl">
+        <h3 class="text-2xl font-extrabold tracking-tight sm:text-3xl">
+          List or Verify Your Swiss Enterprise
+        </h3>
+        <p class="mt-3 text-sm leading-relaxed text-red-100 sm:text-base">
+          Ensure your company dossier is accurately reflected in Switzerland's definitive private sector register.
+        </p>
+        <div class="mt-8">
+          <a 
+            href="/contact" 
+            class="inline-flex items-center justify-center rounded-full bg-white px-7 py-3 text-sm font-bold text-[#D52B1E] shadow-sm transition hover:bg-red-50 hover:shadow-md"
+          >
+            Contact the Editorial Desk →
+          </a>
+        </div>
+      </div>
     </div>
   </main>
 </Base>
