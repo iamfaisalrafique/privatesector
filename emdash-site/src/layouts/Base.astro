@@ -83,6 +83,30 @@ const isRtl = locale === "ar";
 			})();
 		</script>
 
+		<!-- Google tag (gtag.js) - Google Analytics from original privatesector.ch -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-419KS1C39Z"></script>
+		<script is:inline>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+			gtag('config', 'G-419KS1C39Z');
+
+			// Track SPA route navigation with Astro ClientRouter
+			document.addEventListener('astro:page-load', () => {
+				if (typeof gtag === 'function') {
+					gtag('config', 'G-419KS1C39Z', {
+						page_path: window.location.pathname + window.location.search,
+						page_title: document.title
+					});
+				}
+			});
+		</script>
+
+		<!-- Google Search Console Verification -->
+		{import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION && (
+			<meta name="google-site-verification" content={import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION} />
+		)}
+
 		<ClientRouter />
 		<EmDashHead page={pageCtx} />
 	</head>
