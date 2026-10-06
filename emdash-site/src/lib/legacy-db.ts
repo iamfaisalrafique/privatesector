@@ -1,30 +1,54 @@
 import { DatabaseSync } from 'node:sqlite';
 import path from 'node:path';
-
-// EmDash primary database & Legacy SQLite database
-const emdashDbPath = path.resolve(process.cwd(), 'data.db');
-const legacyDbPath = path.resolve(process.cwd(), '../server/database.sqlite');
+import fs from 'node:fs';
+import { isPostgres, dbQuery, dbGet, dbRun } from './db.ts';
 
 let emdashDb: DatabaseSync | null = null;
 let legacyDb: DatabaseSync | null = null;
 
+function resolveFirstExisting(paths: string[]): string | null {
+  for (const p of paths) {
+    try {
+      if (fs.existsSync(p)) return p;
+    } catch {}
+  }
+  return null;
+}
+
 function getEmdashDb(): DatabaseSync | null {
   try {
     if (!emdashDb) {
-      emdashDb = new DatabaseSync(emdashDbPath);
+      const target = resolveFirstExisting([
+        path.resolve(process.cwd(), 'data.db'),
+        path.resolve(process.cwd(), 'emdash-site/data.db'),
+        path.resolve(process.cwd(), '../data.db'),
+      ]);
+      if (target) {
+        emdashDb = new DatabaseSync(target);
+      }
     }
     return emdashDb;
   } catch (err) {
-    console.error('Error opening EmDash DB:', err);
     return null;
   }
 }
 
-function getLegacyDb(): DatabaseSync {
-  if (!legacyDb) {
-    legacyDb = new DatabaseSync(legacyDbPath);
+function getLegacyDb(): DatabaseSync | null {
+  try {
+    if (!legacyDb) {
+      const target = resolveFirstExisting([
+        path.resolve(process.cwd(), '../server/database.sqlite'),
+        path.resolve(process.cwd(), 'server/database.sqlite'),
+        path.resolve(process.cwd(), '../../server/database.sqlite'),
+      ]);
+      if (target) {
+        legacyDb = new DatabaseSync(target);
+      }
+    }
+    return legacyDb;
+  } catch (err) {
+    return null;
   }
-  return legacyDb;
 }
 
 // Helper: Convert Portable Text JSON blocks or strings to clean markdown/prose
@@ -82,7 +106,52 @@ function resolveMediaUrl(rawImage: any): string | null {
   return null;
 }
 
-export function getNews(limit = 50) {
+export interface NewsFilters {
+  category?: string;
+  tag?: string;
+  search?: string;
+  student_author_id?: number | string;
+}
+
+export async function getNews(limit = 50, filters?: NewsFilters) {
+  if (isPostgres()) {
+    try {
+      let sql = 'SELECT * FROM news WHERE 1=1';
+      const params: any[] = [];
+      if (filters?.category) {
+        sql += ' AND category = ?';
+        params.push(filters.category);
+      }
+      if (filters?.student_author_id) {
+        sql += ' AND student_author_id = ?';
+        params.push(Number(filters.student_author_id));
+      }
+      if (filters?.search) {
+        sql += ' AND (title ILIKE ? OR subtitle ILIKE ? OR content_body ILIKE ?)';
+        params.push(`%${filters.search}%`, `%${filters.search}%`, `%${filters.search}%`);
+      }
+      sql += ' ORDER BY date_published DESC, id DESC LIMIT ?';
+      params.push(limit);
+
+      const rows = await dbQuery(sql, params);
+      let parsed = rows.map((r: any) => ({
+        ...r,
+        tags: typeof r.tags === 'string' ? JSON.parse(r.tags || '[]') : (r.tags || [])
+      }));
+
+      if (filters?.tag) {
+        const normTag = filters.tag.trim().toLowerCase();
+        parsed = parsed.filter((r: any) =>
+          Array.isArray(r.tags) && r.tags.some((t: string) => String(t).toLowerCase() === normTag)
+        );
+      }
+      return parsed;
+    } catch (err) {
+      console.error('Error querying news from PostgreSQL:', err);
+    }
+  }
+
+  // SQLite fallback
   try {
     const edb = getEmdashDb();
     if (edb) {
@@ -111,20 +180,37 @@ export function getNews(limit = 50) {
         }));
       }
     }
-  } catch (err) {
-    console.error('Error fetching news from EmDash DB:', err);
-  }
+  } catch (err) {}
 
   try {
     const ldb = getLegacyDb();
-    return ldb.prepare('SELECT * FROM news ORDER BY date_published DESC, id DESC LIMIT ?').all(limit);
-  } catch (err) {
-    console.error('Error fetching legacy news:', err);
-    return [];
-  }
+    if (ldb) {
+      return ldb.prepare('SELECT * FROM news ORDER BY date_published DESC, id DESC LIMIT ?').all(limit);
+    }
+  } catch (err) {}
+
+  return [];
 }
 
-export function getNewsBySlug(slug: string) {
+export async function getNewsBySlug(slug: string) {
+  if (isPostgres()) {
+    try {
+      const isNum = !isNaN(Number(slug));
+      const row = isNum
+        ? await dbGet('SELECT * FROM news WHERE slug = ? OR id = ? LIMIT 1', [slug, Number(slug)])
+        : await dbGet('SELECT * FROM news WHERE slug = ? LIMIT 1', [slug]);
+      if (row) {
+        return {
+          ...row,
+          tags: typeof row.tags === 'string' ? JSON.parse(row.tags || '[]') : (row.tags || [])
+        };
+      }
+    } catch (err) {
+      console.error('Error fetching news by slug from PostgreSQL:', err);
+    }
+  }
+
+  // SQLite fallback
   try {
     const edb = getEmdashDb();
     if (edb) {
@@ -152,20 +238,65 @@ export function getNewsBySlug(slug: string) {
         };
       }
     }
-  } catch (err) {
-    console.error('Error fetching news by slug from EmDash DB:', err);
-  }
+  } catch (err) {}
 
   try {
     const ldb = getLegacyDb();
-    return ldb.prepare('SELECT * FROM news WHERE slug = ? OR id = ? LIMIT 1').get(slug, slug);
-  } catch (err) {
-    console.error('Error fetching legacy news by slug:', err);
-    return null;
-  }
+    if (ldb) {
+      return ldb.prepare('SELECT * FROM news WHERE slug = ? OR id = ? LIMIT 1').get(slug, slug);
+    }
+  } catch (err) {}
+
+  return null;
 }
 
-export function getCompanies(premiumOnly = false, limit = 50) {
+export interface CompanyFilters {
+  search?: string;
+  canton?: string;
+  industry?: string;
+  size?: string;
+  verified?: boolean;
+}
+
+export async function getCompanies(premiumOnly = false, limit = 50, filters?: CompanyFilters) {
+  if (isPostgres()) {
+    try {
+      let sql = 'SELECT * FROM companies WHERE 1=1';
+      const params: any[] = [];
+      if (premiumOnly) {
+        sql += ' AND premium = 1';
+      }
+      if (filters?.verified) {
+        sql += ' AND verified = 1';
+      }
+      if (filters?.search) {
+        sql += ' AND (name ILIKE ? OR description ILIKE ? OR industry ILIKE ?)';
+        params.push(`%${filters.search}%`, `%${filters.search}%`, `%${filters.search}%`);
+      }
+      if (filters?.canton) {
+        sql += ' AND canton = ?';
+        params.push(filters.canton);
+      }
+      if (filters?.industry) {
+        sql += ' AND industry = ?';
+        params.push(filters.industry);
+      }
+      if (filters?.size && filters.size !== 'All') {
+        sql += ' AND size_class = ?';
+        params.push(filters.size);
+      }
+
+      sql += ' ORDER BY premium DESC, name ASC LIMIT ?';
+      params.push(limit);
+
+      const rows = await dbQuery(sql, params);
+      if (rows && rows.length > 0) return rows;
+    } catch (err) {
+      console.error('Error fetching companies from PostgreSQL:', err);
+    }
+  }
+
+  // SQLite fallback
   try {
     const edb = getEmdashDb();
     if (edb) {
@@ -175,23 +306,34 @@ export function getCompanies(premiumOnly = false, limit = 50) {
       const rows = edb.prepare(sql).all(limit) as any[];
       if (rows && rows.length > 0) return rows;
     }
-  } catch (err) {
-    console.error('Error fetching companies from EmDash DB:', err);
-  }
+  } catch (err) {}
 
   try {
     const ldb = getLegacyDb();
-    if (premiumOnly) {
-      return ldb.prepare('SELECT * FROM companies WHERE premium = 1 LIMIT ?').all(limit);
+    if (ldb) {
+      const sql = premiumOnly
+        ? 'SELECT * FROM companies WHERE premium = 1 LIMIT ?'
+        : 'SELECT * FROM companies LIMIT ?';
+      return ldb.prepare(sql).all(limit);
     }
-    return ldb.prepare('SELECT * FROM companies LIMIT ?').all(limit);
-  } catch (err) {
-    console.error('Error fetching legacy companies:', err);
-    return [];
-  }
+  } catch (err) {}
+
+  return [];
 }
 
-export function getCompanyById(idOrSlug: string | number) {
+export async function getCompanyById(idOrSlug: string | number) {
+  if (isPostgres()) {
+    try {
+      const isNum = !isNaN(Number(idOrSlug));
+      const row = isNum
+        ? await dbGet('SELECT * FROM companies WHERE slug = ? OR id = ? LIMIT 1', [String(idOrSlug), Number(idOrSlug)])
+        : await dbGet('SELECT * FROM companies WHERE slug = ? LIMIT 1', [String(idOrSlug)]);
+      if (row) return row;
+    } catch (err) {
+      console.error('Error fetching company from PostgreSQL:', err);
+    }
+  }
+
   try {
     const edb = getEmdashDb();
     if (edb) {
@@ -202,13 +344,49 @@ export function getCompanyById(idOrSlug: string | number) {
 
   try {
     const ldb = getLegacyDb();
-    return ldb.prepare('SELECT * FROM companies WHERE id = ? OR slug = ? LIMIT 1').get(idOrSlug, idOrSlug);
-  } catch (err) {
-    return null;
-  }
+    if (ldb) {
+      return ldb.prepare('SELECT * FROM companies WHERE id = ? OR slug = ? LIMIT 1').get(idOrSlug, idOrSlug);
+    }
+  } catch (err) {}
+
+  return null;
 }
 
-export function getActiveMorningBriefings(limit = 2) {
+export async function getActiveMorningBriefings(limit = 2) {
+  if (isPostgres()) {
+    try {
+      const rows = await dbQuery(
+        "SELECT * FROM morning_briefings WHERE status = 'published' OR status = 'active' ORDER BY date DESC, id DESC LIMIT ?",
+        [limit]
+      );
+      if (rows && rows.length > 0) {
+        return Promise.all(rows.map(async (b: any) => {
+          let articleIds: any[] = [];
+          try {
+            articleIds = typeof b.linked_articles === 'string' ? JSON.parse(b.linked_articles) : (b.linked_articles || []);
+          } catch {}
+          let articles: any[] = [];
+          if (Array.isArray(articleIds) && articleIds.length > 0) {
+            const placeholders = articleIds.map(() => '?').join(',');
+            articles = await dbQuery(
+              `SELECT id, title, subtitle, category, image_url, date_published, read_time_mins, slug FROM news WHERE id IN (${placeholders})`,
+              articleIds
+            );
+          }
+          return {
+            ...b,
+            image_url: b.featured_image || b.image_url,
+            linked_articles: articleIds,
+            articles
+          };
+        }));
+      }
+    } catch (err) {
+      console.error('Error fetching morning briefings from PostgreSQL:', err);
+    }
+  }
+
+  // SQLite fallback
   try {
     const edb = getEmdashDb();
     if (edb) {
@@ -226,30 +404,40 @@ export function getActiveMorningBriefings(limit = 2) {
 
   try {
     const ldb = getLegacyDb();
-    const rows: any[] = ldb.prepare("SELECT * FROM morning_briefings WHERE status = 'published' OR status = 'active' ORDER BY date DESC, id DESC LIMIT ?").all(limit);
-    return rows.map(b => {
-      let articleIds: any[] = [];
-      try {
-        articleIds = typeof b.linked_articles === 'string' ? JSON.parse(b.linked_articles) : (b.linked_articles || []);
-      } catch {}
-      let articles: any[] = [];
-      if (Array.isArray(articleIds) && articleIds.length > 0) {
-        const placeholders = articleIds.map(() => '?').join(',');
-        const newsRows = ldb.prepare(`SELECT id, title, subtitle, category, image_url, date_published, read_time_mins, slug FROM news WHERE id IN (${placeholders})`).all(...articleIds);
-        articles = newsRows;
-      }
-      return {
-        ...b,
-        linked_articles: articleIds,
-        articles
-      };
-    });
-  } catch (err) {
-    return [];
-  }
+    if (ldb) {
+      const rows: any[] = ldb.prepare("SELECT * FROM morning_briefings WHERE status = 'published' OR status = 'active' ORDER BY date DESC, id DESC LIMIT ?").all(limit);
+      return rows.map(b => {
+        let articleIds: any[] = [];
+        try {
+          articleIds = typeof b.linked_articles === 'string' ? JSON.parse(b.linked_articles) : (b.linked_articles || []);
+        } catch {}
+        let articles: any[] = [];
+        if (Array.isArray(articleIds) && articleIds.length > 0) {
+          const placeholders = articleIds.map(() => '?').join(',');
+          articles = ldb.prepare(`SELECT id, title, subtitle, category, image_url, date_published, read_time_mins, slug FROM news WHERE id IN (${placeholders})`).all(...articleIds);
+        }
+        return {
+          ...b,
+          linked_articles: articleIds,
+          articles
+        };
+      });
+    }
+  } catch (err) {}
+
+  return [];
 }
 
-export function getInterviews(limit = 20) {
+export async function getInterviews(limit = 20) {
+  if (isPostgres()) {
+    try {
+      const rows = await dbQuery('SELECT * FROM interviews ORDER BY date_published DESC, id DESC LIMIT ?', [limit]);
+      if (rows && rows.length > 0) return rows;
+    } catch (err) {
+      console.error('Error fetching interviews from PostgreSQL:', err);
+    }
+  }
+
   try {
     const edb = getEmdashDb();
     if (edb) {
@@ -260,13 +448,66 @@ export function getInterviews(limit = 20) {
 
   try {
     const ldb = getLegacyDb();
-    return ldb.prepare('SELECT * FROM interviews ORDER BY date_published DESC LIMIT ?').all(limit);
-  } catch (err) {
-    return [];
-  }
+    if (ldb) {
+      return ldb.prepare('SELECT * FROM interviews ORDER BY date_published DESC LIMIT ?').all(limit);
+    }
+  } catch (err) {}
+
+  return [];
 }
 
-export function getBlogs(limit = 20) {
+export async function getInterviewById(idOrSlug: string | number) {
+  if (isPostgres()) {
+    try {
+      const isNum = !isNaN(Number(idOrSlug));
+      const row = isNum
+        ? await dbGet('SELECT * FROM interviews WHERE slug = ? OR id = ? LIMIT 1', [String(idOrSlug), Number(idOrSlug)])
+        : await dbGet('SELECT * FROM interviews WHERE slug = ? LIMIT 1', [String(idOrSlug)]);
+      if (row) return row;
+    } catch (err) {
+      console.error('Error fetching interview from PostgreSQL:', err);
+    }
+  }
+
+  try {
+    const edb = getEmdashDb();
+    if (edb) {
+      const isNum = !isNaN(Number(idOrSlug));
+      const row = isNum
+        ? edb.prepare('SELECT * FROM ec_interviews WHERE slug = ? OR legacy_id = ? OR id = ? LIMIT 1').get(String(idOrSlug), Number(idOrSlug), String(idOrSlug))
+        : edb.prepare('SELECT * FROM ec_interviews WHERE slug = ? OR id = ? LIMIT 1').get(String(idOrSlug), String(idOrSlug));
+      if (row) return row;
+    }
+  } catch (err) {}
+
+  try {
+    const ldb = getLegacyDb();
+    if (ldb) {
+      const isNum = !isNaN(Number(idOrSlug));
+      return isNum
+        ? ldb.prepare('SELECT * FROM interviews WHERE slug = ? OR id = ? LIMIT 1').get(String(idOrSlug), Number(idOrSlug))
+        : ldb.prepare('SELECT * FROM interviews WHERE slug = ? LIMIT 1').get(String(idOrSlug));
+    }
+  } catch (err) {}
+
+  return null;
+}
+
+export async function getBlogs(limit = 20) {
+  if (isPostgres()) {
+    try {
+      const rows = await dbQuery('SELECT * FROM blogs ORDER BY date_published DESC, id DESC LIMIT ?', [limit]);
+      if (rows && rows.length > 0) {
+        return rows.map((r: any) => ({
+          ...r,
+          tags: typeof r.tags === 'string' ? JSON.parse(r.tags || '[]') : (r.tags || [])
+        }));
+      }
+    } catch (err) {
+      console.error('Error fetching blogs from PostgreSQL:', err);
+    }
+  }
+
   try {
     const edb = getEmdashDb();
     if (edb) {
@@ -283,18 +524,163 @@ export function getBlogs(limit = 20) {
 
   try {
     const ldb = getLegacyDb();
-    return ldb.prepare('SELECT * FROM blogs ORDER BY date_published DESC LIMIT ?').all(limit);
-  } catch (err) {
-    return [];
-  }
+    if (ldb) {
+      return ldb.prepare('SELECT * FROM blogs ORDER BY date_published DESC LIMIT ?').all(limit);
+    }
+  } catch (err) {}
+
+  return [];
 }
 
-export function getJobs(limit = 20) {
+export async function getBlogBySlug(slug: string) {
+  if (isPostgres()) {
+    try {
+      const isNum = !isNaN(Number(slug));
+      const row = isNum
+        ? await dbGet('SELECT * FROM blogs WHERE slug = ? OR id = ? LIMIT 1', [slug, Number(slug)])
+        : await dbGet('SELECT * FROM blogs WHERE slug = ? LIMIT 1', [slug]);
+      if (row) {
+        return {
+          ...row,
+          tags: typeof row.tags === 'string' ? JSON.parse(row.tags || '[]') : (row.tags || [])
+        };
+      }
+    } catch (err) {
+      console.error('Error fetching blog from PostgreSQL:', err);
+    }
+  }
+
+  try {
+    const edb = getEmdashDb();
+    if (edb) {
+      const isNum = !isNaN(Number(slug));
+      const row: any = isNum
+        ? edb.prepare('SELECT * FROM ec_blogs WHERE slug = ? OR legacy_id = ? OR id = ? LIMIT 1').get(String(slug), Number(slug), String(slug))
+        : edb.prepare('SELECT * FROM ec_blogs WHERE slug = ? OR id = ? LIMIT 1').get(String(slug), String(slug));
+      if (row) {
+        return {
+          ...row,
+          image_url: resolveMediaUrl(row.featured_image),
+          content_body: portableTextToString(row.content),
+          tags: []
+        };
+      }
+    }
+  } catch (err) {}
+
   try {
     const ldb = getLegacyDb();
-    return ldb.prepare('SELECT * FROM jobs ORDER BY id DESC LIMIT ?').all(limit);
-  } catch (err) {
-    console.error('Error fetching jobs:', err);
-    return [];
+    if (ldb) {
+      return ldb.prepare('SELECT * FROM blogs WHERE slug = ? OR id = ? LIMIT 1').get(slug, slug);
+    }
+  } catch (err) {}
+
+  return null;
+}
+
+export async function getJobs(limit = 20) {
+  if (isPostgres()) {
+    try {
+      const rows = await dbQuery('SELECT * FROM jobs ORDER BY id DESC LIMIT ?', [limit]);
+      if (rows && rows.length > 0) return rows;
+    } catch (err) {
+      console.error('Error fetching jobs from PostgreSQL:', err);
+    }
   }
+
+  try {
+    const ldb = getLegacyDb();
+    if (ldb) {
+      return ldb.prepare('SELECT * FROM jobs ORDER BY id DESC LIMIT ?').all(limit);
+    }
+  } catch (err) {}
+
+  return [];
+}
+
+export async function createNews(data: any) {
+  const {
+    title, subtitle, category, author_name, author_avatar,
+    content_body, pull_quote, tags, image_url,
+    student_author_id, focus_keyword, meta_title, meta_description, slug, schema_markup
+  } = data;
+
+  const cleanSlug = slug || title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+  const readTime = Math.max(1, Math.round((content_body || '').split(/\s+/).length / 200));
+  const datePublished = data.date_published || new Date().toISOString().split('T')[0];
+  const tagsStr = typeof tags === 'string' ? tags : JSON.stringify(tags || []);
+
+  const sql = `INSERT INTO news (
+    title, subtitle, category, author_name, author_avatar, date_published, 
+    read_time_mins, content_body, pull_quote, tags, image_url, 
+    student_author_id, focus_keyword, meta_title, meta_description, slug, schema_markup
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+  const params = [
+    title, subtitle || '', category || 'University Perspective',
+    author_name || 'Editorial Team', author_avatar || 'https://i.pravatar.cc/100?img=33',
+    datePublished, readTime, content_body, pull_quote || '', tagsStr,
+    image_url || '', student_author_id || null, focus_keyword || '',
+    meta_title || '', meta_description || '', cleanSlug, schema_markup || ''
+  ];
+
+  if (isPostgres()) {
+    const res = await dbRun(sql, params);
+    return { id: res.id, slug: cleanSlug };
+  }
+
+  const ldb = getLegacyDb();
+  if (ldb) {
+    const res = (ldb.prepare(sql) as any).run(...params);
+    return { id: res.lastInsertRowid, slug: cleanSlug };
+  }
+
+  return { slug: cleanSlug };
+}
+
+export async function updateNews(id: number | string, data: any) {
+  const {
+    title, subtitle, category, author_name, author_avatar,
+    content_body, pull_quote, tags, image_url,
+    student_author_id, focus_keyword, meta_title, meta_description, slug, schema_markup
+  } = data;
+
+  const cleanSlug = slug || (title ? title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') : undefined);
+  const tagsStr = typeof tags === 'string' ? tags : (tags ? JSON.stringify(tags) : undefined);
+
+  const sql = `UPDATE news SET 
+    title = COALESCE(?, title),
+    subtitle = COALESCE(?, subtitle),
+    category = COALESCE(?, category),
+    author_name = COALESCE(?, author_name),
+    author_avatar = COALESCE(?, author_avatar),
+    content_body = COALESCE(?, content_body),
+    pull_quote = COALESCE(?, pull_quote),
+    tags = COALESCE(?, tags),
+    image_url = COALESCE(?, image_url),
+    student_author_id = COALESCE(?, student_author_id),
+    focus_keyword = COALESCE(?, focus_keyword),
+    meta_title = COALESCE(?, meta_title),
+    meta_description = COALESCE(?, meta_description),
+    slug = COALESCE(?, slug),
+    schema_markup = COALESCE(?, schema_markup)
+  WHERE id = ? OR slug = ?`;
+
+  const params = [
+    title ?? null, subtitle ?? null, category ?? null, author_name ?? null, author_avatar ?? null,
+    content_body ?? null, pull_quote ?? null, tagsStr ?? null, image_url ?? null, student_author_id ?? null,
+    focus_keyword ?? null, meta_title ?? null, meta_description ?? null, cleanSlug ?? null, schema_markup ?? null,
+    Number(id) || 0, String(id)
+  ];
+
+  if (isPostgres()) {
+    return await dbRun(sql, params);
+  }
+
+  const ldb = getLegacyDb();
+  if (ldb) {
+    return (ldb.prepare(sql) as any).run(...params);
+  }
+
+  return { changes: 0 };
 }

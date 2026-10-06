@@ -10,7 +10,7 @@ const searchParam = url.searchParams.get("search")?.toLowerCase() || "";
 const cantonParam = url.searchParams.get("canton")?.toUpperCase() || "";
 const verifiedOnly = url.searchParams.get("verified") === "true";
 
-let companies = getCompanies(false, 100);
+let companies = await getCompanies(false, 100);
 
 if (verifiedOnly) {
   companies = companies.filter((c: any) => c.verified === 1 || c.verified === true);

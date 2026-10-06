@@ -3,7 +3,7 @@ import { getActiveMorningBriefings } from '../../../lib/legacy-db';
 
 export const GET: APIRoute = async ({ url }) => {
   const limit = parseInt(url.searchParams.get('limit') || '2', 10);
-  const briefings = getActiveMorningBriefings(limit);
+  const briefings = await getActiveMorningBriefings(limit);
   // parse linked_articles if JSON string
   const formatted = briefings.map((b: any) => {
     if (typeof b.linked_articles === 'string') {

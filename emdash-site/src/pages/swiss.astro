@@ -5,7 +5,7 @@ import NewsCard from "../components/NewsCard.astro";
 import CompanyCard from "../components/CompanyCard.astro";
 import { getNews, getCompanies } from "../lib/legacy-db";
 
-const allNews = getNews();
+const allNews = await getNews();
 const swissNews = allNews.filter((a: any) => 
   a.title?.toLowerCase().includes('swiss') || 
   a.content?.toLowerCase().includes('switzerland') || 
@@ -13,7 +13,7 @@ const swissNews = allNews.filter((a: any) =>
   a.category?.toLowerCase() === 'swiss'
 ).slice(0, 9);
 
-const allCompanies = getCompanies();
+const allCompanies = await getCompanies();
 const swissCompanies = allCompanies.filter((c: any) => 
   !c.country || c.country.toLowerCase() === 'switzerland' || c.country.toLowerCase() === 'ch'
 ).slice(0, 8);

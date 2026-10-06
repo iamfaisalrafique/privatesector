@@ -1,8 +1,7 @@
 ---
 // emdash-site/src/pages/blogs/[...slug].astro
 import Base from "../../layouts/Base.astro";
-import { DatabaseSync } from "node:sqlite";
-import path from "node:path";
+import { getBlogBySlug } from "../../lib/legacy-db";
 import { marked } from "marked";
 
 export const prerender = false;
@@ -12,10 +11,7 @@ if (!rawSlug) {
   return Astro.redirect("/blogs", 301);
 }
 
-const dbPath = path.resolve(process.cwd(), '../server/database.sqlite');
-const db = new DatabaseSync(dbPath);
-
-const blog = db.prepare("SELECT * FROM blogs WHERE slug = ? OR id = ? LIMIT 1").get(rawSlug, rawSlug) as any;
+const blog = await getBlogBySlug(rawSlug);
 
 if (!blog) {
   return Astro.redirect("/blogs", 301);

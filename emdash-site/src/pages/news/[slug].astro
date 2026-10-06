@@ -41,7 +41,7 @@ try {
 let nativeArticle: any = null;
 let renderedHtml = "";
 if (!post) {
-  nativeArticle = getNewsBySlug(slug);
+  nativeArticle = await getNewsBySlug(slug);
   if (!nativeArticle) {
     return Astro.redirect("/404");
   }
@@ -91,14 +91,13 @@ function formatDisplayDate(d?: string | null): string {
 }
 const displayDate = formatDisplayDate(pageDateRaw);
 
-// Related articles for bottom section
-const relatedArticles = getNews(6).filter((n: any) => n.slug !== slug && String(n.id) !== slug).slice(0, 3);
-
-// Latest intelligence stories for sidebar
-const sidebarLatestNews = getNews(8).filter((n: any) => n.slug !== slug && String(n.id) !== slug).slice(0, 4);
+// Related articles and sidebar news
+const allRelatedNews = await getNews(10);
+const relatedArticles = allRelatedNews.filter((n: any) => n.slug !== slug && String(n.id) !== slug).slice(0, 3);
+const sidebarLatestNews = allRelatedNews.filter((n: any) => n.slug !== slug && String(n.id) !== slug).slice(0, 4);
 
 // Verified Swiss spotlight companies for sidebar
-const sidebarCompanies = getCompanies(true, 4);
+const sidebarCompanies = await getCompanies(true, 4);
 
 // Market & Yield indicators
 const marketIndicators = [

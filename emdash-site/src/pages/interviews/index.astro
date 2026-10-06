@@ -5,7 +5,7 @@ import { getInterviews } from "../../lib/legacy-db";
 
 const url = new URL(Astro.request.url);
 const currentLocale = url.searchParams.get("locale") || "en";
-const interviews = getInterviews(50);
+const interviews = await getInterviews(50);
 ---
 
 <Base 

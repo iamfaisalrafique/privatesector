@@ -2,7 +2,7 @@
 // emdash-site/src/components/DailyAudioNews.astro
 import { getActiveMorningBriefings } from "../lib/legacy-db";
 
-const briefings = getActiveMorningBriefings(1);
+const briefings = await getActiveMorningBriefings(1);
 const briefing = briefings.length > 0 ? briefings[0] : null;
 
 const articles: any[] = briefing?.articles || [];

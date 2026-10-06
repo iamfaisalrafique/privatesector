@@ -8,7 +8,7 @@ export const prerender = false;
 
 const url = new URL(Astro.request.url);
 const currentLocale = url.searchParams.get("locale") || "en";
-const blogs = getBlogs(50);
+const blogs = await getBlogs(50);
 ---
 
 <Base

@@ -13,11 +13,11 @@ const url = new URL(Astro.request.url);
 const currentLocale = url.searchParams.get("locale") || "en";
 
 // Fetch news and featured companies directly from native backend
-const allNews = getNews(13);
+const allNews = await getNews(13);
 const leadStory = allNews[0];
 const secondaryStories = allNews.slice(1, 4);
 const gridNews = allNews.slice(4, 13);
-const featuredCompanies = getCompanies(true, 4);
+const featuredCompanies = await getCompanies(true, 4);
 ---
 
 <Base 

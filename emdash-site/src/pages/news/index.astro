@@ -9,7 +9,7 @@ const currentLocale = url.searchParams.get("locale") || "en";
 const searchParam = url.searchParams.get("search")?.toLowerCase() || "";
 const categoryParam = url.searchParams.get("category")?.toLowerCase() || "";
 
-let allNews = getNews(100);
+let allNews = await getNews(100);
 
 if (categoryParam) {
   allNews = allNews.filter((n: any) => n.category && n.category.toLowerCase().includes(categoryParam));

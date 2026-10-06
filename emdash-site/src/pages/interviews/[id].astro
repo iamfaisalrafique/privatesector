@@ -1,18 +1,14 @@
 ---
 // emdash-site/src/pages/interviews/[id].astro
 import Base from "../../layouts/Base.astro";
-import { DatabaseSync } from "node:sqlite";
-import path from "node:path";
+import { getInterviewById } from "../../lib/legacy-db";
 
 const idOrSlug = Astro.params.id;
 if (!idOrSlug) {
   return Astro.redirect("/interviews");
 }
 
-const dbPath = path.resolve(process.cwd(), '../server/database.sqlite');
-const db = new DatabaseSync(dbPath);
-
-const interview = db.prepare("SELECT * FROM interviews WHERE slug = ? OR id = ? LIMIT 1").get(idOrSlug, idOrSlug) as any;
+const interview = await getInterviewById(idOrSlug) as any;
 
 if (!interview) {
   return Astro.redirect("/404");

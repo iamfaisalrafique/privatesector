@@ -5,9 +5,11 @@ import emdash, { local, s3 } from "emdash/astro";
 import { postgres, sqlite } from "emdash/db";
 
 // Postgres adapter for EmDash (or sqlite fallback if running local build without DB)
-const databaseConfig = process.env.EMDASH_DATABASE_URL
+const rawConn = process.env.DATABASE_URL || process.env.EMDASH_DATABASE_URL;
+const isPg = Boolean(rawConn && (rawConn.startsWith('postgres://') || rawConn.startsWith('postgresql://')));
+const databaseConfig = isPg
 	? postgres({
-			connectionString: process.env.EMDASH_DATABASE_URL,
+			connectionString: rawConn,
 		})
 	: sqlite({ url: "file:./data.db" });
 
@@ -40,6 +42,9 @@ export default defineConfig({
 	},
 	vite: {
 		plugins: [tailwindcss()],
+		ssr: {
+			external: ['pg'],
+		},
 	},
 	integrations: [
 		react(),

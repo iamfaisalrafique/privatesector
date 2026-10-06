@@ -21,7 +21,8 @@ function getPgPool(): pg.Pool | null {
   if (pgPool) return pgPool;
   const conn = process.env.DATABASE_URL || process.env.EMDASH_DATABASE_URL;
   if (conn && (conn.startsWith('postgres://') || conn.startsWith('postgresql://'))) {
-    pgPool = new pg.Pool({
+    const PgPool = (pg as any).Pool || (pg as any).default?.Pool || pg;
+    pgPool = new PgPool({
       connectionString: conn,
       max: 10,
       idleTimeoutMillis: 30000,

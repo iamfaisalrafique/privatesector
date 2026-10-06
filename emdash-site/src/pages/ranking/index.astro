@@ -5,7 +5,7 @@ import { getCompanies } from "../../lib/legacy-db";
 
 const url = new URL(Astro.request.url);
 const currentLocale = url.searchParams.get("locale") || "en";
-const companies = getCompanies(false, 50);
+const companies = await getCompanies(false, 50);
 ---
 
 <Base

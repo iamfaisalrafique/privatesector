@@ -8,7 +8,7 @@ if (!idOrSlug) {
   return Astro.redirect("/unternehmen");
 }
 
-const company = getCompanyById(idOrSlug) as any;
+const company = await getCompanyById(idOrSlug) as any;
 if (!company) {
   return Astro.redirect("/404");
 }
@@ -29,7 +29,7 @@ const isSwisscom = normalizedName.includes('swisscom');
 const isAbb = normalizedName.includes('abb');
 
 // Peer companies in same industry or canton
-const peerCompanies = getCompanies(false, 4).filter((c: any) => String(c.id) !== String(company.id)).slice(0, 3);
+const peerCompanies = (await getCompanies(false, 4)).filter((c: any) => String(c.id) !== String(company.id)).slice(0, 3);
 ---
 
 <Base
