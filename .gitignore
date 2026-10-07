@@ -42,9 +42,9 @@ data.db*
 *.mp4
 
 # Uploads and media
-uploads/
-public/uploads/
-server/uploads/
+/uploads/
+/server/uploads/
+public/uploads/audio/
 
 # Cache files
 server/translations_cache.json

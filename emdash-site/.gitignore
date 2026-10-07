@@ -2,8 +2,7 @@ node_modules
 dist
 .astro
 .emdash/migrations.json
-uploads
-public/uploads
+/uploads
 *.db*
 *.sqlite*
 data.db*
