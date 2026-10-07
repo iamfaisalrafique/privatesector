@@ -103,6 +103,11 @@ app.post('/api/upload', (req, res) => {
   }
 });
 
+// Health Check Endpoint
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 // ================= MODULAR API ROUTE MOUNTS =================
 app.use('/api/auth', authRoutes);
 app.use('/api/companies', companyRoutes);

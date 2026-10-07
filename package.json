@@ -4,17 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "npm --prefix emdash-site run dev",
-    "build": "npm --prefix emdash-site run build",
-    "start": "npm --prefix emdash-site run start",
-    "preview": "npm --prefix emdash-site run preview",
-    "typecheck": "npm --prefix emdash-site run typecheck",
-    "dev:legacy": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "dev:client": "vite",
     "dev:server": "nodemon --ignore server/translations_cache.json --ignore server/database.sqlite server/server.js",
-    "build:legacy": "vite build",
-    "start:legacy": "NODE_ENV=production node server/server.js",
-    "lint": "eslint ."
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "start": "NODE_ENV=production node server/server.js"
   },
   "dependencies": {
     "cors": "^2.8.6",
