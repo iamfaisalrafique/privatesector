@@ -7,10 +7,10 @@
 
 import pg from 'pg';
 import path from 'node:path';
-import fs from 'node:fs';
+import { DatabaseSync } from 'node:sqlite';
 
 let pgPool: pg.Pool | null = null;
-let sqliteDb: any = null;
+let sqliteDb: DatabaseSync | null = null;
 
 export function isPostgres(): boolean {
   const conn = process.env.DATABASE_URL || process.env.EMDASH_DATABASE_URL;
@@ -31,19 +31,15 @@ function getPgPool(): pg.Pool | null {
   return pgPool;
 }
 
-async function getSqliteDb() {
+function getSqliteDb(): DatabaseSync {
   if (sqliteDb) return sqliteDb;
 
-  // Use explicit TEST_SQLITE_PATH if provided, else temp file outside tracked paths,
-  // NEVER write to server/database.sqlite
   let dbFile = process.env.TEST_SQLITE_PATH;
   if (!dbFile) {
     dbFile = path.resolve(process.cwd(), 'temp-portal.sqlite');
   }
 
-  const sqlite3Module = await import('sqlite3');
-  const sqlite3 = sqlite3Module.default || sqlite3Module;
-  sqliteDb = new sqlite3.Database(dbFile);
+  sqliteDb = new DatabaseSync(dbFile);
   return sqliteDb;
 }
 
@@ -82,13 +78,8 @@ export async function dbQuery<T = any>(sql: string, params: any[] = []): Promise
     return res.rows;
   }
 
-  const db = await getSqliteDb();
-  return new Promise<T[]>((resolve, reject) => {
-    db.all(adaptedSql, params, (err: any, rows: T[]) => {
-      if (err) reject(err);
-      else resolve(rows || []);
-    });
-  });
+  const db = getSqliteDb();
+  return (db.prepare(adaptedSql).all(...params) || []) as T[];
 }
 
 export async function dbGet<T = any>(sql: string, params: any[] = []): Promise<T | null> {
@@ -99,13 +90,8 @@ export async function dbGet<T = any>(sql: string, params: any[] = []): Promise<T
     return (res.rows[0] as T) || null;
   }
 
-  const db = await getSqliteDb();
-  return new Promise<T | null>((resolve, reject) => {
-    db.get(adaptedSql, params, (err: any, row: T) => {
-      if (err) reject(err);
-      else resolve(row || null);
-    });
-  });
+  const db = getSqliteDb();
+  return (db.prepare(adaptedSql).get(...params) || null) as T | null;
 }
 
 export async function dbRun(sql: string, params: any[] = []): Promise<{ id?: number | string; changes: number }> {
@@ -120,13 +106,12 @@ export async function dbRun(sql: string, params: any[] = []): Promise<{ id?: num
     };
   }
 
-  const db = await getSqliteDb();
-  return new Promise((resolve, reject) => {
-    db.run(adaptedSql, params, function (this: any, err: any) {
-      if (err) reject(err);
-      else resolve({ id: this.lastID, changes: this.changes });
-    });
-  });
+  const db = getSqliteDb();
+  const info = db.prepare(adaptedSql).run(...params);
+  return {
+    id: typeof info.lastInsertRowid === 'bigint' ? Number(info.lastInsertRowid) : info.lastInsertRowid,
+    changes: Number(info.changes)
+  };
 }
 
 export async function ensurePortalAuthTables(): Promise<void> {
@@ -192,46 +177,35 @@ export async function ensurePortalAuthTables(): Promise<void> {
       );
     `);
   } else {
-    const db = await getSqliteDb();
-    await new Promise<void>((resolve, reject) => {
-      db.serialize(() => {
-        db.run(`
-          CREATE TABLE IF NOT EXISTS portal_sessions (
-            session_id TEXT PRIMARY KEY,
-            user_id TEXT NOT NULL,
-            email TEXT NOT NULL,
-            role TEXT NOT NULL,
-            name TEXT,
-            profile_id TEXT,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            expires_at INTEGER NOT NULL,
-            revoked INTEGER DEFAULT 0
-          )
-        `);
+    const db = getSqliteDb();
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS portal_sessions (
+        session_id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        email TEXT NOT NULL,
+        role TEXT NOT NULL,
+        name TEXT,
+        profile_id TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        expires_at INTEGER NOT NULL,
+        revoked INTEGER DEFAULT 0
+      );
 
-        db.run(`
-          CREATE TABLE IF NOT EXISTS portal_login_attempts (
-            lockout_key TEXT PRIMARY KEY,
-            attempts INTEGER DEFAULT 0,
-            locked_until INTEGER DEFAULT 0,
-            action_required TEXT DEFAULT 'none',
-            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-          )
-        `);
+      CREATE TABLE IF NOT EXISTS portal_login_attempts (
+        lockout_key TEXT PRIMARY KEY,
+        attempts INTEGER DEFAULT 0,
+        locked_until INTEGER DEFAULT 0,
+        action_required TEXT DEFAULT 'none',
+        updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      );
 
-        db.run(`
-          CREATE TABLE IF NOT EXISTS portal_password_resets (
-            token_hash TEXT PRIMARY KEY,
-            email TEXT NOT NULL,
-            expires_at INTEGER NOT NULL,
-            consumed INTEGER DEFAULT 0,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-          )
-        `, (err: any) => {
-          if (err) reject(err);
-          else resolve();
-        });
-      });
-    });
+      CREATE TABLE IF NOT EXISTS portal_password_resets (
+        token_hash TEXT PRIMARY KEY,
+        email TEXT NOT NULL,
+        expires_at INTEGER NOT NULL,
+        consumed INTEGER DEFAULT 0,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
   }
 }

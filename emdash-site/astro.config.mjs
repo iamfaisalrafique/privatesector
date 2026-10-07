@@ -43,7 +43,12 @@ export default defineConfig({
 	vite: {
 		plugins: [tailwindcss()],
 		ssr: {
-			external: ['pg'],
+			external: ['pg', 'pg-native', 'node:sqlite'],
+		},
+		build: {
+			rollupOptions: {
+				external: ['pg', 'pg-native', 'node:sqlite'],
+			},
 		},
 	},
 	integrations: [
