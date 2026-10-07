@@ -11,7 +11,7 @@ function enforceProductionStartupInvariants() {
   startupChecked = true;
 
   const isProduction = process.env.NODE_ENV === 'production';
-  const siteOrigin = process.env.PUBLIC_SITE_ORIGIN || process.env.SITE_ORIGIN;
+  const siteOrigin = process.env.PUBLIC_SITE_ORIGIN || process.env.SITE_ORIGIN || process.env.COOLIFY_URL || 'https://privatesector.ch';
   const isTestBypass = process.env.SKIP_HTTPS_STARTUP_CHECK === 'true';
 
   if (isProduction && !isTestBypass) {

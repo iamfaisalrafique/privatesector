@@ -23,6 +23,7 @@ WORKDIR /app/emdash-site
 ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=5000
+ENV PUBLIC_SITE_ORIGIN=https://privatesector.ch
 
 # Install curl for Coolify container healthcheck monitoring
 RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
