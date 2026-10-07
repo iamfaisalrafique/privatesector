@@ -31,9 +31,7 @@ RUN npm ci --omit=dev && npm cache clean --force
 # Copy built artifacts and assets
 COPY --from=builder /app/emdash-site/dist ./dist
 COPY --from=builder /app/emdash-site/seed ./seed
-COPY --from=builder /app/emdash-site/data.db* ./
 COPY --from=builder /app/public /app/public
-COPY --from=builder /app/server /app/server
 
 # Expose Coolify container port
 EXPOSE 5000

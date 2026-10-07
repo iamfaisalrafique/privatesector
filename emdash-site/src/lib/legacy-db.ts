@@ -148,6 +148,7 @@ export async function getNews(limit = 50, filters?: NewsFilters) {
       return parsed;
     } catch (err) {
       console.error('Error querying news from PostgreSQL:', err);
+      return [];
     }
   }
 
@@ -205,8 +206,10 @@ export async function getNewsBySlug(slug: string) {
           tags: typeof row.tags === 'string' ? JSON.parse(row.tags || '[]') : (row.tags || [])
         };
       }
+      return null;
     } catch (err) {
       console.error('Error fetching news by slug from PostgreSQL:', err);
+      return null;
     }
   }
 
@@ -290,9 +293,10 @@ export async function getCompanies(premiumOnly = false, limit = 50, filters?: Co
       params.push(limit);
 
       const rows = await dbQuery(sql, params);
-      if (rows && rows.length > 0) return rows;
+      return rows || [];
     } catch (err) {
       console.error('Error fetching companies from PostgreSQL:', err);
+      return [];
     }
   }
 
@@ -328,9 +332,10 @@ export async function getCompanyById(idOrSlug: string | number) {
       const row = isNum
         ? await dbGet('SELECT * FROM companies WHERE slug = ? OR id = ? LIMIT 1', [String(idOrSlug), Number(idOrSlug)])
         : await dbGet('SELECT * FROM companies WHERE slug = ? LIMIT 1', [String(idOrSlug)]);
-      if (row) return row;
+      return row || null;
     } catch (err) {
       console.error('Error fetching company from PostgreSQL:', err);
+      return null;
     }
   }
 
@@ -381,8 +386,10 @@ export async function getActiveMorningBriefings(limit = 2) {
           };
         }));
       }
+      return [];
     } catch (err) {
       console.error('Error fetching morning briefings from PostgreSQL:', err);
+      return [];
     }
   }
 
@@ -432,9 +439,10 @@ export async function getInterviews(limit = 20) {
   if (isPostgres()) {
     try {
       const rows = await dbQuery('SELECT * FROM interviews ORDER BY date_published DESC, id DESC LIMIT ?', [limit]);
-      if (rows && rows.length > 0) return rows;
+      return rows || [];
     } catch (err) {
       console.error('Error fetching interviews from PostgreSQL:', err);
+      return [];
     }
   }
 
@@ -463,9 +471,10 @@ export async function getInterviewById(idOrSlug: string | number) {
       const row = isNum
         ? await dbGet('SELECT * FROM interviews WHERE slug = ? OR id = ? LIMIT 1', [String(idOrSlug), Number(idOrSlug)])
         : await dbGet('SELECT * FROM interviews WHERE slug = ? LIMIT 1', [String(idOrSlug)]);
-      if (row) return row;
+      return row || null;
     } catch (err) {
       console.error('Error fetching interview from PostgreSQL:', err);
+      return null;
     }
   }
 
@@ -503,8 +512,10 @@ export async function getBlogs(limit = 20) {
           tags: typeof r.tags === 'string' ? JSON.parse(r.tags || '[]') : (r.tags || [])
         }));
       }
+      return [];
     } catch (err) {
       console.error('Error fetching blogs from PostgreSQL:', err);
+      return [];
     }
   }
 
@@ -545,8 +556,10 @@ export async function getBlogBySlug(slug: string) {
           tags: typeof row.tags === 'string' ? JSON.parse(row.tags || '[]') : (row.tags || [])
         };
       }
+      return null;
     } catch (err) {
       console.error('Error fetching blog from PostgreSQL:', err);
+      return null;
     }
   }
 
@@ -582,9 +595,10 @@ export async function getJobs(limit = 20) {
   if (isPostgres()) {
     try {
       const rows = await dbQuery('SELECT * FROM jobs ORDER BY id DESC LIMIT ?', [limit]);
-      if (rows && rows.length > 0) return rows;
+      return rows || [];
     } catch (err) {
       console.error('Error fetching jobs from PostgreSQL:', err);
+      return [];
     }
   }
 
