@@ -24,6 +24,9 @@ ENV NODE_ENV=production
 ENV HOST=0.0.0.0
 ENV PORT=5000
 
+# Install curl for Coolify container healthcheck monitoring
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/*
+
 # Install production dependencies for emdash-site
 COPY emdash-site/package*.json ./
 RUN npm ci --omit=dev && npm cache clean --force
@@ -36,8 +39,8 @@ COPY --from=builder /app/public /app/public
 # Expose Coolify container port
 EXPOSE 5000
 
-# Health check using node native fetch
+# Health check using curl (satisfies Coolify container healthcheck requirement)
 HEALTHCHECK --interval=15s --timeout=5s --start-period=10s --retries=3 \
-  CMD node -e "fetch('http://127.0.0.1:5000/api/health').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))"
+  CMD curl -f http://127.0.0.1:5000/api/health || exit 1
 
 CMD ["node", "./dist/server/entry.mjs"]

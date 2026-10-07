@@ -30,6 +30,11 @@ const storageConfig = process.env.STORAGE_DRIVER === "s3" && process.env.S3_BUCK
 
 import tailwindcss from "@tailwindcss/vite";
 
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 export default defineConfig({
 	publicDir: "../public",
 	output: "server",
@@ -42,13 +47,14 @@ export default defineConfig({
 	},
 	vite: {
 		plugins: [tailwindcss()],
-		ssr: {
-			external: ['pg', 'pg-native', 'node:sqlite'],
-		},
-		build: {
-			rollupOptions: {
-				external: ['pg', 'pg-native', 'node:sqlite'],
+		resolve: {
+			alias: {
+				pg: path.resolve(__dirname, "./src/lib/pg-wrapper.ts"),
 			},
+		},
+		ssr: {
+			noExternal: ['pg'],
+			external: ['node:sqlite'],
 		},
 	},
 	integrations: [
