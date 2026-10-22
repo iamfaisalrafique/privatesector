@@ -44,7 +44,8 @@ data.db*
 # Uploads and media
 /uploads/
 /server/uploads/
-public/uploads/audio/
+public/uploads/audio/*
+!public/uploads/audio/morning_briefing_america_wants_more_ai_data_centers_1788819392485.mp3
 
 # Cache files
 server/translations_cache.json

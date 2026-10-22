@@ -1,21 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
-import { Navbar, Hero, CookieBanner, AdSlot, ErrorBoundary, HomepageGraphics, DailyAudioNews } from './features/shared';
-import { Directory, Profile, CompanyCard } from './features/company';
+import { Navbar, CookieBanner, ErrorBoundary } from './features/shared';
+import { Directory, Profile } from './features/company';
 import { StudentProfile, StudentDashboard, Careers } from './features/students';
 import { Rankings, Statistics } from './features/company-ranking';
 import { Admin, Auth, About, Contact } from './features/system';
 import { Blogs } from './features/blog';
 import { News, Interviews, TranslaticTranscript, SoCalGateway, TradePolicyPulse, CrossBorderRanking } from './features/news';
 import logo from './assets/logo_highres.png';
-import { Landmark, ArrowRight, ShieldCheck } from 'lucide-react';
-import { handleImageFallback } from './shared/utils/imageFallbacks';
+import HomeNews from './features/news/views/HomeNews';
 
 function AppContent() {
   const { t, isRtl } = useLanguage();
   const [pathState, setPathState] = useState(window.location.pathname + window.location.search);
   const [transitioning, setTransitioning] = useState(false);
-  const [homeFeatured, setHomeFeatured] = useState([]);
   const [homeNews, setHomeNews] = useState([]);
 
   // Session and scroll to top state
@@ -87,12 +85,6 @@ function AppContent() {
   useEffect(() => {
     async function loadHomeFeeds() {
       try {
-        const compRes = await fetch('/api/companies?premium=true');
-        if (compRes.ok) {
-          const list = await compRes.json();
-          setHomeFeatured(Array.isArray(list) ? list.slice(0, 3) : []);
-        }
-
         const newsRes = await fetch('/api/news');
         if (newsRes.ok) {
           const list = await newsRes.json();
@@ -106,7 +98,7 @@ function AppContent() {
               }
               return (b.id || 0) - (a.id || 0);
             });
-            setHomeNews(sorted.slice(0, 12));
+            setHomeNews(sorted);
           } else {
             setHomeNews([]);
           }
@@ -252,18 +244,6 @@ function AppContent() {
         <Navbar currentPath={pathState.split('?')[0]} navigate={navigate} currentUser={currentUser} onLogout={handleLogout} />
       )}
 
-      {/* 2. Breaking News deep red banner (Visible on Homepage) */}
-      {routeInfo.route === 'home' && (
-        <div className="breaking-banner">
-          <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <span className="breaking-label">{t('breaking_news', 'BREAKING NEWS')}</span>
-            <marquee scrollamount="4" style={{ fontFamily: 'Inter, sans-serif', fontSize: '12px' }}>
-              {t('marquee_text', '+++ Swiss Federal Council announces tax relief for private R&D hubs +++ Nestlé expands sustainability audits across agricultural supply chains +++ UBS receives approval for tokenized bond pilot project in Geneva +++')}
-            </marquee>
-          </div>
-        </div>
-      )}
-
       {/* 3. Page Content Area with Transition Wrapper */}
       <div 
         className={`page-fade-enter ${!transitioning ? 'page-fade-enter-active' : ''}`}
@@ -271,172 +251,7 @@ function AppContent() {
       >
         
         {/* ROUTE: HOME */}
-        {routeInfo.route === 'home' && (
-          <div>
-            {/* PrivateSector Daily Audio Briefing (Top before Hero) */}
-            <div className="container" style={{ paddingTop: '20px', maxWidth: '1680px' }}>
-              <DailyAudioNews navigate={navigate} />
-            </div>
-
-            <Hero navigate={navigate} />
-
-            {/* Homepage Body content */}
-            <div className="container" style={{ paddingTop: '48px', paddingBottom: '96px', maxWidth: '1680px' }}>
-              
-              {/* Leaderboard Zone A */}
-              <AdSlot position="A" />
-
-              {/* 1. Latest News & Archives Box Grid (Immediately after Hero / AdSlot A, BEFORE Spotlight) */}
-              <div style={{ marginTop: '48px', marginBottom: '64px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '16px', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
-                  <div>
-                    <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--primary-red)', display: 'block', marginBottom: '2px' }}>
-                      {t('news_archive_badge', 'DAILY BUSINESS NEWS & ARCHIVE')}
-                    </span>
-                    <h2 style={{ fontSize: '26px', fontFamily: '"Playfair Display", serif', fontWeight: 700, margin: 0, color: 'var(--text-ink)' }}>
-                      {t('latest_news_heading', 'Latest News & Market Archive')}
-                    </h2>
-                  </div>
-                  
-                  <button 
-                    onClick={() => navigate('/news')}
-                    className="btn btn-gold-fill"
-                    style={{ 
-                      fontSize: '13px', 
-                      padding: '8px 18px', 
-                      fontWeight: 600, 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      gap: '6px',
-                      borderRadius: '4px',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    <span>{t('view_all_news', 'View All News Archives')}</span>
-                    <ArrowRight size={15} />
-                  </button>
-                </div>
-
-                {/* Responsive 3 to 6 Column Box Grid (Laptop: 3 cols x 2 rows = 6 items; Big Screen: 4-6 cols x 2 rows = 8-12 items) */}
-                <div className="home-news-archive-grid">
-                  {(homeNews || []).map(art => (
-                    <div 
-                      key={art.id} 
-                      onClick={() => navigate(`/news/${art.slug || art.id}`)}
-                      style={{ 
-                        backgroundColor: '#FFFFFF',
-                        border: '1px solid #E5E7EB',
-                        borderRadius: '8px',
-                        overflow: 'hidden',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justify: 'space-between',
-                        transition: 'transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease'
-                      }}
-                      className="home-news-card"
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'translateY(-4px)';
-                        e.currentTarget.style.boxShadow = '0 12px 20px -4px rgba(0, 0, 0, 0.08)';
-                        e.currentTarget.style.borderColor = 'var(--primary-red)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = 'none';
-                        e.currentTarget.style.borderColor = '#E5E7EB';
-                      }}
-                    >
-                      {art.image_url ? (
-                        <div style={{ height: '160px', width: '100%', overflow: 'hidden' }}>
-                          <img 
-                            src={art.image_url} 
-                            alt={art.title} 
-                            onError={(e) => handleImageFallback(e, art.category, 600, art.title)}
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                          />
-                        </div>
-                      ) : (
-                        <div style={{ height: '160px', width: '100%', backgroundColor: '#F3F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                          <span style={{ color: '#9CA3AF', fontSize: '12px' }}>PrivateSector News</span>
-                        </div>
-                      )}
-
-                      <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                        <div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                            <span style={{ fontSize: '11px', color: 'var(--primary-red)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 700 }}>
-                              {art.category}
-                            </span>
-                            {art.date_published && (
-                              <span style={{ fontSize: '11px', color: '#9CA3AF' }}>
-                                {art.date_published}
-                              </span>
-                            )}
-                          </div>
-                          <h3 style={{ fontSize: '17px', fontFamily: '"Playfair Display", serif', color: 'var(--text-ink)', margin: '0 0 8px 0', fontWeight: 700, lineHeight: 1.3 }}>
-                            {art.title}
-                          </h3>
-                          <p style={{ fontSize: '13px', color: '#4B5563', lineHeight: 1.5, margin: '0 0 16px 0', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                            {art.subtitle}
-                          </p>
-                        </div>
-
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px', color: 'var(--primary-red)', fontWeight: 600 }}>
-                          <span>Read Article</span>
-                          <ArrowRight size={14} />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* 2. Premium Business Spotlight Section */}
-              <div style={{ marginTop: '64px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', borderBottom: '0.5px solid var(--light-border)', paddingBottom: '12px', marginBottom: '24px' }}>
-                  <h2 style={{ fontSize: '24px', fontFamily: '"Playfair Display", serif', fontWeight: 700 }}>
-                    {t('spotlight_title', 'Premium Business Spotlight')}
-                  </h2>
-                  <a 
-                    href="#/unternehmen" 
-                    onClick={(e) => { e.preventDefault(); navigate('/unternehmen'); }}
-                    style={{ fontSize: '13px', color: 'var(--primary-red)', textDecoration: 'none', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}
-                  >
-                    <span>{t('open_directory', 'Open Directory')}</span>
-                    <ArrowRight size={14} />
-                  </a>
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
-                  {(homeFeatured || []).map(comp => (
-                    <CompanyCard 
-                      key={comp.id}
-                      company={comp}
-                      onClick={() => navigate(`/unternehmen/${comp.id}`)}
-                    />
-                  ))}
-                  {/* Spotlight ad box Zone F */}
-                  <AdSlot position="F" />
-                </div>
-              </div>
-
-              {/* 3. Interactive Canton, Live Register, & Network Graphics */}
-              <HomepageGraphics navigate={navigate} />
-
-            </div>
-
-            <style>{`
-              .home-news-teaser:hover h3 {
-                color: var(--primary-red) !important;
-              }
-              @media (max-width: 768px) {
-                .home-news-row {
-                  grid-template-columns: 1fr !important;
-                }
-              }
-            `}</style>
-          </div>
-        )}
+        {routeInfo.route === 'home' && <HomeNews articles={homeNews} navigate={navigate} />}
 
         {/* ROUTE: DIRECTORY */}
         {routeInfo.route === 'directory' && (
@@ -480,6 +295,7 @@ function AppContent() {
             selectedArticleId={null} 
             selectArticle={(id) => id ? navigate(`/news/${id}`) : navigate('/news')}
             navigate={navigate}
+            initialCategory={routeInfo.params.category || ''}
           />
         )}
 
@@ -625,7 +441,7 @@ function AppContent() {
             backgroundColor: '#f3f4f6',
             borderTop: '1px solid rgba(191, 155, 48, 0.4)',
             color: '#374151',
-            padding: '64px 24px 80px',
+            padding: '32px 24px',
             fontSize: '13px',
             fontFamily: 'Inter, sans-serif'
           }}
@@ -637,8 +453,8 @@ function AppContent() {
               margin: '0 auto',
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-              gap: '48px',
-              marginBottom: '40px'
+              gap: '24px',
+              marginBottom: '24px'
             }}
           >
             <div>

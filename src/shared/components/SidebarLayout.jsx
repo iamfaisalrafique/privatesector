@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Tag, ArrowRight } from 'lucide-react';
-import { handleImageFallback } from '../utils/imageFallbacks';
+import { handleImageFallback, getCategoryFallbackImage } from '../utils/imageFallbacks';
 
 export default function SidebarLayout({ 
   children,
@@ -214,14 +214,13 @@ export default function SidebarLayout({
                   onClick={() => onItemClick(item)}
                   style={{ cursor: 'pointer', display: 'flex', gap: '12px', alignItems: 'start' }}
                 >
-                  {item.image_url && (
                     <img 
-                      src={item.image_url} 
-                      alt="" 
+                      src={item.image_url || getCategoryFallbackImage(item.category, 100, item.title || item.name)}
+                      alt={item.title || item.name}
+                      loading="lazy"
                       onError={(e) => handleImageFallback(e, item.category, 100)}
                       style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '4px', flexShrink: 0 }} 
                     />
-                  )}
                   <div>
                     <h5 style={{ margin: '0 0 4px 0', fontSize: '12px', fontWeight: 600, color: '#111827', lineHeight: 1.4, overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
                       {item.title || item.name}

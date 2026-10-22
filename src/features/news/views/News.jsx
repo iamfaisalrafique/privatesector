@@ -8,6 +8,7 @@ import SeoHead from '../../../shared/components/SeoHead';
 import logo from '../../../assets/logo_highres.png';
 import { handleImageFallback, getCategoryFallbackImage } from '../../../shared/utils/imageFallbacks';
 import { parseInlineMarkdown, renderArticleMarkdown } from '../../../shared/utils/renderArticleContent';
+import ArticleAudio from '../../../shared/components/ArticleAudio';
 
 export default function News({ 
   selectedArticleId, 
@@ -203,17 +204,17 @@ export default function News({
                 </div>
               </div>
 
+              <ArticleAudio briefings={activeArticle.audio_briefings} />
+
               {/* Featured Image */}
-              {activeArticle.image_url ? (
-                <div style={{ width: '100%', maxHeight: '420px', overflow: 'hidden', borderRadius: '6px', marginBottom: '32px' }}>
-                  <img 
-                    src={activeArticle.image_url} 
-                    alt={activeArticle.title} 
-                    onError={(e) => handleImageFallback(e, activeArticle.category, 1200)}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                  />
-                </div>
-              ) : null}
+              <div style={{ width: '100%', maxHeight: '420px', overflow: 'hidden', borderRadius: '6px', marginBottom: '32px' }}>
+                <img
+                  src={activeArticle.image_url || getCategoryFallbackImage(activeArticle.category, 1200, activeArticle.title)}
+                  alt={activeArticle.title}
+                  onError={(e) => handleImageFallback(e, activeArticle.category, 1200)}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              </div>
 
               {/* Editorial Body Content */}
               <div className="editorial-content-body" style={{ fontSize: '16px', lineHeight: 1.8, color: 'var(--text-ink)', overflowWrap: 'break-word', wordBreak: 'break-word', maxWidth: '100%' }}>
@@ -317,19 +318,12 @@ export default function News({
                     e.currentTarget.style.boxShadow = 'none';
                   }}
                 >
-                  {art.image_url ? (
-                    <img 
-                      src={art.image_url} 
-                      alt={art.title} 
-                      onError={(e) => handleImageFallback(e, art.category, 600)}
-                      style={{ width: '200px', height: '140px', objectFit: 'cover', borderRadius: '4px', flexShrink: 0 }} 
-                    />
-                  ) : (
-                    <div style={{ width: '200px', height: '140px', backgroundColor: '#F3F4F6', borderRadius: '4px', flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', border: '1px solid #E5E7EB' }}>
-                      <span style={{ color: 'var(--primary-red)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>PrivateSector</span>
-                      <span style={{ color: '#9CA3AF', fontSize: '10px', marginTop: '4px' }}>Editorial</span>
-                    </div>
-                  )}
+                  <img
+                    src={art.image_url || getCategoryFallbackImage(art.category, 600, art.title)}
+                    alt={art.title}
+                    onError={(e) => handleImageFallback(e, art.category, 600)}
+                    style={{ width: '200px', height: '140px', objectFit: 'cover', borderRadius: '4px', flexShrink: 0 }}
+                  />
                   <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flex: 1 }}>
                     <div>
                       <span style={{ color: 'var(--primary-red)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: '8px' }}>
@@ -341,6 +335,7 @@ export default function News({
                       <p style={{ margin: '0 0 16px 0', fontSize: '13px', color: '#4B5563', lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                         {art.subtitle}
                       </p>
+                      <ArticleAudio briefings={art.audio_briefings} />
                     </div>
                     <div style={{ display: 'flex', gap: '16px', fontSize: '11px', color: '#9CA3AF' }}>
                       <span>{art.date_published}</span>

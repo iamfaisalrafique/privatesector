@@ -1,7 +1,15 @@
 import { Router } from 'express';
 import { dbQuery, dbGet, dbRun } from '../db.js';
+import { attachNewsBriefings } from '../news-briefings.js';
 
 const router = Router();
+
+async function withAudio(articles) {
+  const briefings = await dbQuery(
+    "SELECT id, title, audio_url, linked_articles, status FROM morning_briefings WHERE status = 'published' ORDER BY date DESC, id DESC"
+  );
+  return attachNewsBriefings(articles, briefings);
+}
 
 // News List API
 router.get('/', async (req, res) => {
@@ -38,7 +46,7 @@ router.get('/', async (req, res) => {
       );
     }
 
-    res.json(parsedRows);
+    res.json(await withAudio(parsedRows));
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -71,7 +79,7 @@ router.get('/:id', async (req, res) => {
     );
     
     res.json({
-      article,
+      article: (await withAudio([article]))[0],
       related,
       studentAuthor
     });
